@@ -5,7 +5,7 @@
 export const environment = {
   production: false,
   firebase: {
-    apiKey: "XXX",
+    apiKey: "qqq",
     authDomain: "rpgorganizer-72d0b.firebaseapp.com",
     databaseURL: "https://rpgorganizer-72d0b.firebaseio.com",
     projectId: "rpgorganizer-72d0b",
