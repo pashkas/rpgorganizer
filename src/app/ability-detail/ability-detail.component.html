@@ -1,0 +1,128 @@
+<!-- Просмотр -->
+<div class="container pt-2 pb-4" *ngIf="this.srv.pers && abil && !isEditMode">
+  <form class="pb-4">
+    <!-- Картинка -->
+    <!-- <div class="form-group text-center" *ngIf="abil.image">
+      <img src="{{abil.image}}" class="img-fluid" [ngStyle]="{'object-fit': 'contain', 'height': '25vh'}">
+    </div> -->
+    <!-- Название -->
+    <!-- <div class="md-form">
+      <label class="active">Название</label>
+      {{abil.name}}
+    </div> -->
+    <hr>
+    <h4 class="text-center">{{abil.name}}</h4>
+    <hr>
+    <!-- Значение -->
+    <div class="md-form">
+      <label class="active">Значение</label>
+      {{abil.rang.name}}
+      <div abil="progress" [ngStyle]="{'height': '3px'}">
+        <div class="progress-bar" [style.width]="abil.progressValue + '%'"
+          [ngStyle]="{'background-color': 'LightGreen', 'height': '3px'}">
+        </div>
+      </div>
+    </div>
+    <!-- Описание -->
+    <div class="md-form" *ngIf="abil.descr">
+      <label class="active">Описание</label>
+      <input value="{{abil.descr}}" name="descr" type="text" class="form-control" readonly />
+    </div>
+    <h5>Монстры:</h5>
+    <!-- Задачи -->
+    <ul class="list-group p-0" *ngIf="abil.tasks.length>0">
+      <li *ngFor="let tsk of abil.tasks" class="list-group-item px-0 py-1 border-0">
+        <a class="align-self-center w-100" [routerLink]="['/task', tsk.id]">
+          <div class="d-flex">
+            <div class="flex-grow-1 text-left align-self-baseline">
+              <h6>{{tsk.name}}</h6>
+            </div>
+            <div class="text-right text-nowrap align-self-baseline">
+              <small>{{tsk.requrense}} | {{getDateString(tsk.date)}} | {{tsk.time}}</small>
+            </div>
+          </div>
+        </a>
+        <div class="progress" [ngStyle]="{'height': '3px'}">
+          <div class="progress-bar" [style.width]="tsk.progressValue + '%'"
+            [ngStyle]="{'background-color': 'LightGreen', 'height': '3px'}">
+          </div>
+        </div>
+      </li>
+    </ul>
+  </form>
+</div>
+<!-- Редактирование -->
+<div class="container pt-2 pb-4" *ngIf="this.srv.pers && abil && isEditMode">
+  <form class="pb-4">
+    <!-- Картинка -->
+    <div class="form-group text-center" *ngIf="abil.image">
+      <img src="{{abil.image}}" class="img-fluid" [ngStyle]="{'object-fit': 'contain', 'height': '25vh'}">
+    </div>
+    <!-- Название -->
+    <div class="md-form">
+      <label class="active">Название</label>
+      <input [(ngModel)]="abil.name" name="chaName" type="text" class="form-control">
+    </div>
+    <!-- Изображение -->
+    <!-- <div class="md-form">
+      <label class="active">Изображение</label>
+      <input [(ngModel)]="abil.image" name="chaImg" type="text" class="form-control" />
+    </div> -->
+    <!-- Описание -->
+    <div class="md-form">
+      <label class="active">Описание</label>
+      <input [(ngModel)]="abil.descr" name="descr" type="text" class="form-control" />
+    </div>
+    <!-- Задачи -->
+    <div class="form-row">
+      <h5>Монстры:</h5>
+    </div>
+    <!-- Добавить задачу -->
+    <div class="form-row">
+      <button (click)="addTsk.show();" mat-stroked-button class="w-100">
+        <i class="fas fa-plus"></i>
+      </button>
+      <!-- Модальное окно - добавление монстра -->
+      <div mdbModal #addTsk="mdbModal" class="modal fade" role="dialog" aria-hidden="true"
+        aria-labelledby="myBasicModalLabel">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h4 class="modal-title w-100">Добавить монстра</h4>
+            </div>
+            <div class="modal-body">
+              <div class="md-form">
+                <label>
+                  Название
+                </label>
+                <input type="text" [(ngModel)]="newTsk" name="newTsk" class="form-control"
+                  #addTskImp />{{addTskImp.focus()}}
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button aria-label="Close" (click)="addTsk.hide()" mat-button>Отмена</button>
+              <button (click)="addTsk.hide(); addTask();" mat-button color="accent">ОК</button>
+              <!-- routerLink="./" fragment="tsks" -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Задачи -->
+    <ul id="tsks" class="list-group" *ngIf="abil.tasks.length>0">
+      <li *ngFor="let tsk of abil.tasks" class="list-group-item py-1 border-0">
+        <div class="d-flex">
+          <div class="flex-grow-1 align-self-center">
+            {{tsk.name}}
+          </div>
+          <div class="btn-group btn-group-sm" role="group" aria-label="Действия">
+            <!-- Удалить -->
+            <button (click)="delTask(tsk.id)" mat-icon-button>
+              <i class="fas fa-eraser"></i>
+            </button>
+          </div>
+        </div>
+      </li>
+    </ul>
+  </form>
+</div>

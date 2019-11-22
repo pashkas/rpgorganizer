@@ -1,0 +1,435 @@
+<nav *ngIf="this.srv.pers" class="fixed-bottom">
+  <div class="d-flex w-100 justify-content-end px-2 py-2">
+    <!-- Назад -->
+    <button mat-fab color="accent" (click)="goBack()" class="mx-2">
+      <app-svg-icon icon="icon-left" class="icon"></app-svg-icon>
+    </button>
+    <!-- Редактировать -->
+    <button mat-fab color="accent" (click)="saveData()">
+      <app-svg-icon icon="icon-edit" *ngIf="!isEditMode" class="icon"></app-svg-icon>
+      <app-svg-icon icon="icon-save" *ngIf="isEditMode" class="icon"></app-svg-icon>
+    </button>
+  </div>
+</nav>
+<!-- Модальное окно - добавление характеристики -->
+<div mdbModal #addCha="mdbModal" class="modal fade" role="dialog" aria-labelledby="myBasicModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title w-100" id="myModalLabel">Добавить характеристику</h4>
+      </div>
+      <div class="modal-body">
+        <mat-form-field class="w-100">
+          <input #addChaImp matInput autocomplete="off" placeholder="Название" [(ngModel)]="newCharact"
+            name="newCharact">
+          {{addChaImp.focus()}}
+        </mat-form-field>
+      </div>
+      <div class="modal-footer">
+        <button mat-button aria-label="Close" (click)="addCha.hide()">Отмена</button>
+        <button (click)="addCha.hide(); addCharact();" mat-stroked-button color="accent">ОК</button>
+        <!-- routerLink="./" fragment="characts" -->
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Модальное окно - добавление навыка -->
+<div mdbModal #addAb="mdbModal" class="modal fade" role="dialog" aria-hidden="true" aria-labelledby="myBasicModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title w-100">Добавить навык</h4>
+      </div>
+      <div class="modal-body">
+        <mat-form-field class="w-100">
+          <input #addAbImp matInput autocomplete="off" placeholder="Название" [(ngModel)]="newAbil" name="newAbil">
+          {{addAbImp.focus()}}
+        </mat-form-field>
+      </div>
+      <div class="modal-footer">
+        <button type="button" mat-button aria-label="Close" (click)="addAb.hide()">Отмена</button>
+        <button (click)="addAb.hide(); addAbil(selCha.id);" color="accent" mat-stroked-button>ОК</button>
+        <!-- routerLink="./" fragment="{{chaArea}}" -->
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Модальное окно - добавление задачи -->
+<div mdbModal #addTsk="mdbModal" class="modal fade" role="dialog" aria-hidden="true"
+  aria-labelledby="myBasicModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title w-100">Добавить задачу</h4>
+      </div>
+      <div class="modal-body">
+        <mat-form-field class="w-100">
+          <input #addTskImp matInput autocomplete="off" placeholder="Название" [(ngModel)]="newTsk" name="newTsk">
+          {{addTskImp.focus()}}
+        </mat-form-field>
+      </div>
+      <div class="modal-footer">
+        <button mat-button aria-label="Close" (click)="addTsk.hide()">Отмена</button>
+        <button mat-stroked-button (click)="addTsk.hide(); addTask();" color="accent">ОК</button>
+        <!-- routerLink="./" fragment="{{chaArea}}" -->
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Модальное окно - добавление трофея -->
+<div mdbModal #addRev="mdbModal" class="modal fade" role="dialog" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title w-100">Добавить трофей</h4>
+      </div>
+      <div class="modal-body">
+        <mat-form-field>
+          <input #addRevImp matInput autocomplete="off" placeholder="Название" [(ngModel)]="newRev.name"
+            name="newRev.name">
+        </mat-form-field>
+        <mat-form-field>
+          <input matInput autocomplete="off" placeholder="Вероятность получения" [(ngModel)]="newRev.probability"
+            name="newRev.probability">
+        </mat-form-field>
+        <mat-form-field>
+          <input matInput autocomplete="off" placeholder="Описание" [(ngModel)]="newRev.descr" name="newRev.descr">
+        </mat-form-field>
+      </div>
+      <div class="modal-footer">
+        <button mat-button aria-label="Close" (click)="addRev.hide(); isEditRev=false;">Отмена</button>
+        <button (click)="addRev.hide(); addNewRevard(); isEditRev=false;" color="accent" mat-stroked-button>ОК</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Модальное окно - добавление квеста -->
+<div mdbModal #addQwest="mdbModal" class="modal fade" role="dialog" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title w-100">Добавить квест</h4>
+      </div>
+      <div class="modal-body">
+        <mat-form-field class="w-100">
+          <input #addQwestImp matInput autocomplete="off" placeholder="Название" [(ngModel)]="newQwest" name="newQwest">
+          {{addQwestImp.focus()}}
+        </mat-form-field>
+      </div>
+      <div class="modal-footer">
+        <button mat-button aria-label="Close" (click)="addQwest.hide()">Отмена</button>
+        <button (click)="addQwest.hide(); addNewQwest();" mat-stroked-button color="accent">ОК</button>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="container pt-2 pb-4" *ngIf="this.srv.pers">
+  <mat-tab-group mat-align-tabs="center" animationDuration="0ms" [(selectedIndex)]="this.srv.selTabPersList">
+    <mat-tab label="Перс">
+      <!-- Просмотр -->
+      <div *ngIf="!isEditMode" class="pt-2 pb-4 w-100">
+        <div class="pb-4">
+          <!-- Картинка -->
+          <div class="text-center">
+            <!-- img-cache img-cache-src="{{this.srv.pers.rang.img}}" -->
+            <img src="{{this.srv.pers.rang.img}}" class="img-fluid"
+              [ngStyle]="{'object-fit': 'contain', 'height': '30vh'}">
+          </div>
+          <div fxLayoutGap="4px" fxLayout="row" fxLayoutAlign="space-between center" class="px-1">
+            <!-- Имя -->
+            <div fxFlex>
+              {{this.srv.pers.name}}
+            </div>
+            <!-- Уровень -->
+            <div fxFlex>
+              {{this.srv.pers.level}}
+              <mat-progress-bar *ngIf="true" class="myprogr" color="accent" mode="determinate"
+                value="{{this.srv.pers.progressValue}}">
+              </mat-progress-bar>
+            </div>
+            <!-- Ранг -->
+            <div fxFlex>
+              {{this.srv.pers.rang.name}}
+              <mat-progress-bar *ngIf="true" class="myprogr" color="accent" mode="determinate"
+                value="{{this.srv.pers.rangProgress}}">
+              </mat-progress-bar>
+            </div>
+
+            <div fxFlex class="text-center">
+              {{'ОН: ' + this.srv.pers.ON}}
+            </div>
+
+          </div>
+
+          <!-- История -->
+          <div class="md-form" *ngIf="this.srv.pers.story">
+            <i>{{this.srv.pers.story}}</i>
+          </div>
+
+          <!-- Атрибуты -->
+          <ng-container *ngIf="this.srv.pers.characteristics?.length > 0">
+            <!-- <h5>Атрибуты:</h5> -->
+            <!-- Характеристики -->
+            <ul class="list-group py-0">
+              <li *ngFor="let item of this.srv.pers.characteristics; let i = index;"
+                class="list-group-item pb-0 px-0 mt-0 mb-0 border-0">
+                <!-- Характеристика -->
+                <a class="align-self-center w-100" [ngClass]="{'text-dark': item.abilities.length === 0}"
+                  [routerLink]="['/characteristic', item.id]">
+                  <div class="d-flex">
+                    <div class="flex-grow-1 text-left align-self-baseline">
+                      <h4>{{item.name}}</h4>
+                    </div>
+                    <div class="text-right align-self-baseline">
+                      <h4>{{item.rang.name}}</h4>
+                    </div>
+                  </div>
+                </a>
+                <mat-progress-bar class="myprogr" color="accent" mode="determinate" value="{{item.progressValue}}">
+                </mat-progress-bar>
+                <div class="d-flex flex-column w-100">
+                  <div>
+                    <ul class="list-group py-0" *ngIf="item.abilities.length>0">
+                      <li *ngFor="let ab of item.abilities" class="list-group-item py-0 mt-1 mb-0 pr-0 pl-0 border-0">
+                        <div class="d-flex align-items-baseline w-100">
+                          <div class="w-100 d-flex"
+                            [ngClass]="{'text-dark': ab.tasks.length === 0, 'text-primary': ab.tasks.length > 0}">
+                            <!-- [routerLink]="['/ability', ab.id]" -->
+                            <a (click)="showAbility(ab)" class="flex-grow-1 text-left align-self-baseline">
+                              {{ab.name + ' '}} <i><small>{{ab.tasks[0]?.curLvlDescr2}}</small></i>
+                            </a>
+                            <div fxLayout="row" fxLayoutAlign="space-around" class="text-right align-self-baseline">
+                              <a class="pl-2" (click)="showAbility(ab)">
+                                {{ab.rang.name}}
+                              </a>
+                              <a class="{{ab|abupcol}} ml-1 px-1" *ngIf="this.srv.pers.ON>=1 && ab.value<10"  (click)="upAbil(ab)">
+                                <i class="fas fa-arrow-up"></i>
+                              </a>
+                            </div>
+                          </div>
+                        </div>
+                        <mat-progress-bar class="myprogr" color="accent" mode="determinate"
+                          value="{{ab.progressValue}}">
+                        </mat-progress-bar>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </li>
+            </ul>
+          </ng-container>
+          <br>
+
+          <h5 class="text-right">
+            <a [routerLink]="['/turnirtable']" class="badge badge-primary">Турнирная таблица</a>
+            <a href="http://nerdistway.blogspot.com/2019/09/blog-post.html" target="_blank"
+              class="badge badge-secondary">Руководство</a>
+            <a href="http://rpg-organizer.107353.n8.nabble.com/" target="_blank" class="badge badge-success">Форум</a>
+            <a href="http://nerdistway.blogspot.com/" target="_blank" class="badge badge-warning">Блог</a>
+          </h5>
+        </div>
+      </div>
+      <!-- Редактирование -->
+      <div *ngIf="isEditMode" class="pt-2 pb-4 w-100">
+        <div class="pb-4">
+          <mat-form-field class="w-100">
+            <input matInput autocomplete="off" placeholder="Имя" [(ngModel)]="this.srv.pers.name"
+              name="this.srv.pers.name">
+          </mat-form-field>
+          <mat-form-field class="w-100">
+            <input matInput autocomplete="off" placeholder="История" [(ngModel)]="this.srv.pers.story"
+              name="this.srv.pers.story">
+          </mat-form-field>
+          <div>
+            <button mat-stroked-button color="accent" class="w-100" id="characts" (click)="addCha.show()">
+              <i class="fas fa-plus"></i>
+            </button>
+          </div>
+          <mat-list>
+            <div mat-list-item *ngFor="let item of this.srv.pers.characteristics; let i = index" class="p-0">
+              <div class="d-flex flex-column">
+                <!-- Характеристика -->
+                <div class="d-flex align-items-center">
+                  <div class="flex-grow-1 align-self-center ">
+                    <b>{{item.name}}</b>
+                  </div>
+                  <div class="btn-group btn-group-sm" role="group" aria-label="Действия">
+                    <!-- Добавить навык -->
+                    <button id="cha{{i}}" (click)="addAb.show(); selCha=item;" mat-icon-button color="accent">
+                      <i class="fas fa-plus"></i>
+                    </button>
+                    <!-- Удалить -->
+                    <button (click)="delCharact(item.id)" mat-icon-button>
+                      <i class="fas fa-eraser"></i>
+                    </button>
+                  </div>
+                </div>
+                <!-- Навыки -->
+                <mat-list *ngIf="item.abilities.length>0" class="p-0">
+                  <div mat-list-item *ngFor="let ab of item.abilities">
+                    <div class="d-flex align-items-center">
+                      <div class="flex-grow-1 align-self-center">
+                        <i>{{ab.name}}</i>
+                      </div>
+                      <div class="btn-group btn-group-sm" role="group" aria-label="Действия">
+                        <!-- Добавить задачу -->
+                        <button *ngIf="!GameSettings.isNoAbilities" id="cha{{i}}" (click)="addTsk.show(); selAb=ab;"
+                          mat-stroked-button color="accent" class="w-100">
+                          <i class="fas fa-plus"></i>
+                        </button>
+                        <!-- Удалить -->
+                        <div class="btn-group btn-group-sm" role="group" aria-label="Действия">
+                          <button (click)="delAbil(ab.id)" mat-icon-button>
+                            <i class="fas fa-eraser"></i>
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </mat-list>
+              </div>
+            </div>
+          </mat-list>
+          <br>
+          <div fxLayout="row" class="my-1" fxLayoutAlign="space-between center" fxLayoutGap="4px"
+            *ngFor="let item of this.srv.pers.rangse; let i = index">
+            <mat-form-field fxFlex>
+              <input matInput autocomplete="off" placeholder="Название" [(ngModel)]="item.name" name="rangName{{i}}">
+            </mat-form-field>
+            <mat-form-field fxFlex="40">
+              <input matInput autocomplete="off" placeholder="Изображение" [(ngModel)]="item.img" name="rangImgs{{i}}">
+            </mat-form-field>
+            <div fxFlex="20" class="text-center">
+              <img src="{{item.img}}" class="img-fluid" style="max-height: 100px">
+            </div>
+          </div>
+          <button mat-stroked-button color="accent" class="w-100 mt-2" id="characts" (click)="resp()">
+            Респаун
+          </button>
+          <br>
+          <br>
+        </div>
+      </div>
+    </mat-tab>
+   
+    <mat-tab label="Инвентарь">
+      <!-- Просмотр -->
+      <div *ngIf="!isEditMode" class="pt-2 pb-4 w-100">
+        <div class="pb-4">
+          <!-- Инвентарь -->
+          <ng-container *ngIf="this.srv.pers.inventory?.length > 0">
+            <ul class="list-group py-0 px-0">
+              <li *ngFor="let inv of this.srv.pers.inventory" class="list-group-item px-0 py-1 border-0">
+                <a class="align-self-center w-100 text-primary">
+                  <div class="d-flex justify-content-between align-items-center">
+                    <h6>{{inv.name}}</h6>
+                    <div class="btn-group btn-group-sm" role="group" aria-label="Действия">
+                      <button (click)="useRevard(inv)" type="button" class="btn btn-outline-primary">
+                        <small>x</small>{{inv.count}}
+                      </button>
+                    </div>
+                  </div>
+                </a>
+              </li>
+            </ul>
+            <br>
+          </ng-container>
+        </div>
+      </div>
+      <!-- Редактирование -->
+      <div *ngIf="isEditMode" class="pt-2 pb-4 w-100">
+        <div class="pb-4">
+          <div>
+            <!-- Добвление трофея -->
+            <button mat-stroked-button color="accent" class="w-100" id="characts" (click)="addRev.show();"
+              data-toggle="modal">
+              <i class="fas fa-plus"></i>
+            </button>
+          </div>
+          <!-- Список наград -->
+          <mat-list>
+            <div mat-list-item *ngFor="let rev of this.srv.pers.rewards; let i = index">
+              <div class="d-flex align-items-center">
+                <div class="flex-grow-1 align-self-center">
+                  {{rev.name}} ({{rev.probability}}%) <i>{{rev.descr}}</i>
+                </div>
+                <div class="d-flex">
+                  <!-- Удалить -->
+                  <div class="btn-group btn-group-sm" role="group" aria-label="Действия">
+                    <!-- Редактировать -->
+                    <button (click)="isEditRev=true; newRev=rev; addRev.show();" mat-icon-button>
+                      <i class="fas fa-edit"></i>
+                    </button>
+                    <button (click)="delReward(rev.id)" mat-icon-button>
+                      <i class="fas fa-eraser"></i>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </mat-list>
+          <!-- <small class="pt-1" *ngIf="this.srv.pers.totalRewardProbability"><i>Вероятность награды:
+              {{this.srv.pers.totalRewardProbability}}%</i></small> -->
+          <br>
+        </div>
+      </div>
+    </mat-tab>
+
+    <mat-tab label="Квесты">
+        <!-- Просмотр -->
+        <div *ngIf="!isEditMode" class="pt-2 pb-4 w-100">
+          <div class="pb-4">
+            <!-- Квесты -->
+            <ng-container *ngIf="this.srv.pers.qwests?.length > 0">
+  
+              <ul class="list-group py-0 px-0">
+                <li *ngFor="let qwest of this.srv.pers.qwests" class="list-group-item px-0 py-1 border-0">
+                  <a class="align-self-center w-100" [routerLink]="['/qwest', qwest.id]">
+                    <h6>{{qwest.name}}</h6>
+                  </a>
+                  <mat-progress-bar class="myprogr" color="accent" mode="determinate" value="{{qwest.progressValue}}">
+                  </mat-progress-bar>
+                </li>
+              </ul>
+              <br>
+            </ng-container>
+          </div>
+        </div>
+        <!-- Редактирование -->
+        <div *ngIf="isEditMode" class="pt-2 pb-4">
+          <div class="pb-4">
+            <!-- Квесты -->
+            <div>
+              <!-- Добавление квеста -->
+              <button mat-stroked-button color="accent" class="w-100" id="characts" data-toggle="modal"
+                (click)="addQwest.show()">
+                <i class="fas fa-plus"></i>
+              </button>
+            </div>
+            <!-- Список квестов -->
+            <mat-list>
+              <div mat-list-item *ngFor="let qwest of this.srv.pers.qwests; let i = index">
+                <div class="d-flex align-items-center">
+                  <div class="flex-grow-1 align-self-center">
+                    {{qwest.name}}
+                  </div>
+                  <div class="d-flex">
+                    <!-- Удалить -->
+                    <div class="btn-group btn-group-sm" role="group" aria-label="Действия">
+                      <button (click)="delQwest(qwest.id)" mat-icon-button>
+                        <i class="fas fa-eraser"></i>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </mat-list>
+            <br>
+          </div>
+        </div>
+      </mat-tab>
+  </mat-tab-group>
+  <br>
+  <br>
+</div>

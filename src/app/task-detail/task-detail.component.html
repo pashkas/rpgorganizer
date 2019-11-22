@@ -1,0 +1,218 @@
+<nav *ngIf="this.srv.pers" class="fixed-bottom">
+  <div class="d-flex w-100 justify-content-end px-2 py-2">
+    <!-- Назад -->
+    <button mat-fab color="accent" (click)="goBack()" class="mx-2">
+      <app-svg-icon icon="icon-left" class="icon"></app-svg-icon>
+    </button>
+    <!-- Редактировать -->
+    <button mat-fab color="accent" (click)="saveData()">
+      <app-svg-icon icon="icon-edit" *ngIf="!isEditMode" class="icon"></app-svg-icon>
+      <app-svg-icon icon="icon-save" *ngIf="isEditMode" class="icon"></app-svg-icon>
+    </button>
+  </div>
+</nav>
+<!-- Просмотр -->
+<div class="container pt-2 pb-4" *ngIf="this.srv.pers && tsk && !isEditMode">
+  <form class="pb-4">
+    <!-- Картинка -->
+    <!-- <div class="form-group text-center" *ngIf="tsk.image">
+      <img img-cache img-cache-src="{{tsk.image}}" class="img-fluid"
+        [ngStyle]="{'object-fit': 'contain', 'height': '25vh'}">
+    </div> -->
+    <!-- Название -->
+    <!-- <div class="md-form">
+      <label class="active">Название</label>
+      {{tsk.name}}
+    </div> -->
+    <hr *ngIf="!tskAbility">
+    <h4 class="text-center">{{tsk.name}}
+    </h4>
+    <div abil="progress" *ngIf="tskAbility" [ngStyle]="{'height': '3px'}">
+      <div class="progress-bar" [style.width]="tskAbility.progressValue + '%'"
+        [ngStyle]="{'background-color': 'LightGreen', 'height': '3px'}">
+      </div>
+    </div>
+    <br *ngIf="tskAbility">
+    <hr *ngIf="!tskAbility">
+    <!-- Дата и время, повтор -->
+    <div xLayout="row" fxLayoutAlign="space-evenly center" class="form-row" *ngIf="tskAbility">
+      <div>
+        <!-- <label class="active">Дата</label> -->
+        {{getDateString(tsk)}}
+      </div>
+      <div *ngIf="tskAbility">
+        <!-- <label class="active">Повтор</label> -->
+        {{tsk.requrense}}
+      </div>
+    </div>
+    <!-- Описание -->
+    <div class="text-center pt-2" *ngIf="tsk.descr">
+      <!-- <label class="active">Описание</label> -->
+      <i>
+        {{tsk.descr}}
+      </i>
+    </div>
+
+    <!-- Действия -->
+    <!-- <div div fxLayout="row" *ngIf="this.srv.pers.ON>=1" fxLayoutAlign="space-between center" class="py-2">
+      <button fxFlex mat-stroked-button color="accent" (click)="upAbil();">
+        <i class="fas fa-arrow-up"></i> {{' ОН:'+this.srv.pers.ON}}
+      </button>
+    </div> -->
+    <!-- Таймер, счетчик -->
+    <!-- <div class="form-row">
+      <div class="md-form col">
+        <label class="active">Минут</label>
+        {{tsk.aimTimer}}
+      </div>
+      <div class="md-form col">
+        <label class="active">Раз</label>
+        {{tsk.aimCounter}}
+      </div>
+    </div> -->
+    <!-- Состояния -->
+    <!-- <div class="form-row" *ngIf="tsk.states.length>0">
+      <h5>Состояния</h5>
+    </div> -->
+    <ng-container *ngFor="let st of tsk.statesDescr; let i = index;">
+      <div class="text-center px-0 py-1 border-0" [ngClass]="{'bg-success': i==tsk.value}">
+        <b>{{i}}<ng-container *ngIf="st">: </ng-container></b>{{st}}
+      </div>
+    </ng-container>
+    <!-- <div class="text-center px-0 py-1 border-0">
+      {{tsk.curLvlDescr}}
+    </div> -->
+  </form>
+  <br>
+  <br>
+</div>
+<!-- Режим редактирования -->
+<div class="container pt-2 pb-4" *ngIf="this.srv.pers && tsk && isEditMode">
+  <form class="pb-4">
+    <!-- Название -->
+    <mat-form-field>
+      <input matInput autocomplete="off" placeholder="Название" [(ngModel)]="tsk.name" name="tsk.name">
+    </mat-form-field>
+    <!-- Дата, повторение -->
+    <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="8px">
+      <mat-form-field>
+        <input matInput autocomplete="off" placeholder="Дата" [ngModel]="tsk.date" name="tsk.date"
+          (ngModelChange)="onTskDateChange($event)" [owlDateTimeTrigger]="dt1" [owlDateTime]="dt1">
+        <owl-date-time [pickerType]="'calendar'" #dt1></owl-date-time>
+      </mat-form-field>
+
+      <ng-container *ngIf="tsk.requrense != 'нет'">
+        <!-- Повторение -->
+        <mat-form-field>
+          <mat-label>Повторение</mat-label>
+          <mat-select [(ngModel)]="tsk.requrense" name="tsk.requrense">
+            <mat-option *ngFor="let req of requrenses" [value]="req">
+              {{req}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </ng-container>
+    </div>
+
+    <!-- Описание -->
+    <mat-form-field>
+      <input matInput autocomplete="off" placeholder="Описание" [(ngModel)]="tsk.descr" name="tsk.descr">
+    </mat-form-field>
+
+    <ng-container *ngIf="tsk.requrense != 'нет'">
+      <!-- Таймер, счетчик -->
+      <div fxLayoutGap="8px" fxLayout="row" fxLayoutAlign="space-between center">
+        <mat-form-field>
+          <input matInput autocomplete="off" placeholder="Минут" [(ngModel)]="tsk.aimTimer" name="tsk.aimTimer">
+        </mat-form-field>
+        <mat-form-field>
+          <input matInput autocomplete="off" placeholder="Раз" [(ngModel)]="tsk.aimCounter" name="tsk.aimCounter">
+        </mat-form-field>
+        <span (click)="setSumStates()"
+          [ngClass]="{'text-dark':!tsk.isSumStates, 'badge-unchecked': !tsk.isSumStates, 'primary-color-dark': tsk.isSumStates}"
+          class="badge pointer">
+          ∑ состояния
+        </span>
+        <!-- <span (click)="setIsHard()"
+          [ngClass]="{'text-dark':!tsk.isHard, 'badge-unchecked': !tsk.isHard, 'primary-color-dark': tsk.isHard}"
+          class="badge p-2 mb-1 pointer">
+          cложный
+        </span> -->
+      </div>
+      <!-- Состояния -->
+      <!-- <h5>Состояния:</h5> -->
+      <div class="form-row">
+        <button (click)="isEditState = false; getNewState(); addState.show();" mat-stroked-button color="accent"
+          class="w-100">
+          <i class="fas fa-plus"></i>
+        </button>
+        <!-- Модальное окно - добавление состояния -->
+        <div mdbModal #addState="mdbModal" class="modal fade" role="dialog" aria-hidden="true"
+          aria-labelledby="myBasicModalLabel">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h4 class="modal-title w-100">Добавить состояние</h4>
+              </div>
+              <div class="modal-body">
+                <mat-form-field>
+                  <input #addStateImp matInput autocomplete="off" placeholder="Название" [(ngModel)]="newState.name"
+                    name="newState.name">
+                  {{addStateImp.focus()}}
+                </mat-form-field>
+              </div>
+              <div class="modal-footer">
+                <button type="button" aria-label="Close" (click)="addState.hide()" mat-button>Отмена</button>
+                <button (click)="addState.hide(); addStateToTask();" mat-button color="accent">ОК</button>
+                <!-- routerLink="./" fragment="states" -->
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Состояния -->
+      <!-- <ng-container *ngIf="tsk.aimTimer==0 && tsk.aimCounter==0">
+        <div class="d-flex" *ngFor="let st of tsk.states; let i = index">
+          <label class="align-self-center m-1"><b>{{st.abRang.name}}</b></label>
+          <div class="flex-grow-1 align-self-center m-1">
+            <input [(ngModel)]="st.name" name="stName{{i}}" type="text" class="form-control">
+          </div>
+        </div>
+      </ng-container> -->
+
+      <mat-list (cdkDropListDropped)="drop($event)" cdkDropList id="states" *ngIf="tsk.states.length>0">
+        <div mat-list-item cdkDrag *ngFor="let st of tsk.states; let i = index">
+          <div class="d-flex">
+            <div class="flex-grow-1 align-self-center">
+              <a href="#">
+                {{st.name}}
+              </a>
+            </div>
+            <div class="btn-group btn-group-sm" role="group" aria-label="Действия">
+              <!-- <button (click)="up(i)" type="button" class="btn btn-outline-default border-right-0">
+                <i class="fas fa-arrow-up"></i>
+              </button>
+              <button (click)="down(i)" type="button" class="btn btn-outline-default border-right-0">
+                <i class="fas fa-arrow-down"></i>
+              </button> -->
+
+              <button (click)="delState(st.id)" mat-icon-button>
+                <i class="fas fa-eraser"></i>
+              </button>
+
+              <button (click)="isEditState=true; newState=st; addState.show();" mat-icon-button>
+                <i class="fas fa-edit"></i>
+              </button>
+
+              <button mat-icon-button cdkDragHandle>
+                <i class="fas fa-expand-arrows-alt"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+      </mat-list>
+    </ng-container>
+  </form>
+  <br>
+  <br>
+</div>

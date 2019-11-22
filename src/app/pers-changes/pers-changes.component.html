@@ -1,0 +1,12 @@
+<div fxFill fxLayoutAlign="space-around center"  class="text-light">
+    <img *ngIf="isGood" class="img-fluid" style='height: 75px' img-cache img-cache-src="assets/img/good.png" [ngStyle]="{'object-fit': 'contain'}">
+    <img *ngIf="!isGood" class="img-fluid" style='height: 75px' img-cache img-cache-src="assets/img/bad.png" [ngStyle]="{'object-fit': 'contain'}">
+    <div fxFlex class="px-2 py-1 text-center">
+        <mat-list class="p-1">
+            <div mat-list-item *ngIf="headText">{{headText|uppercase}}</div>
+            <div mat-list-item *ngFor="let item of this.changes; let i = index">
+                {{item}}
+            </div>
+        </mat-list>
+    </div>
+</div>

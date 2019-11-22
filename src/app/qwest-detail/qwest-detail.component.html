@@ -1,0 +1,228 @@
+<nav *ngIf="this.srv.pers" class="fixed-bottom">
+  <div class="d-flex w-100 justify-content-end px-2 py-2">
+    <!-- Назад -->
+    <button mat-fab color="accent" (click)="goBack()" class="mx-2">
+      <app-svg-icon icon="icon-left" class="icon"></app-svg-icon>
+    </button>
+    <!-- Редактировать -->
+    <button mat-fab color="accent" (click)="saveData()">
+      <app-svg-icon icon="icon-edit" *ngIf="!isEditMode" class="icon"></app-svg-icon>
+      <app-svg-icon icon="icon-save" *ngIf="isEditMode" class="icon"></app-svg-icon>
+    </button>
+  </div>
+</nav>
+<!-- Модальное окно - добавление монстра -->
+<div mdbModal #addTsk="mdbModal" class="modal fade" role="dialog" aria-hidden="true"
+  aria-labelledby="myBasicModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title w-100">Добавить миссию</h4>
+      </div>
+      <div class="modal-body">
+        <mat-form-field class="w-100">
+          <input #addTskImp matInput autocomplete="off" placeholder="Название" [(ngModel)]="newTsk" name="newTsk">
+          {{addTskImp.focus()}}
+        </mat-form-field>
+      </div>
+      <div class="modal-footer">
+        <button (click)="addTsk.hide()" mat-button>Отмена</button>
+        <button (click)="addTsk.hide(); addTask();" mat-stroked-button color="accent">ОК</button>
+        <!-- routerLink="./" fragment="tsks" -->
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Модальное окно - добавление награды -->
+<div mdbModal #addRev="mdbModal" class="modal fade" role="dialog" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title w-100">Добавление награды</h4>
+      </div>
+      <div class="modal-body">
+        <mat-form-field class="w-100">
+          <input #addRevImp matInput autocomplete="off" placeholder="Название" [(ngModel)]="newRev.name" name="newRev">
+          {{addRevImp.focus()}}
+        </mat-form-field>
+      </div>
+      <div class="modal-footer">
+        <button (click)="addRev.hide(); isEditRev=false;" mat-button>Отмена</button>
+        <button (click)="addRev.hide(); addNewRevard(); isEditRev=false;" mat-stroked-button color="accent">ОК</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Просмотр -->
+<div class="container pt-2 pb-4" *ngIf="this.srv.pers && qwest && !isEditMode">
+  <div class="pb-4">
+    <!-- Картинка -->
+    <div *ngIf="qwest.image" fxLayout="row" fxLayoutAlign="center center" class="p-2">
+      <img src="{{qwest.image}}" class="img-fluid" [ngStyle]="{'object-fit': 'contain', 'height': '25vh'}">
+    </div>
+
+    <h4 class="text-center">{{qwest.name}}</h4>
+    <mat-progress-bar class="myprogr" color="accent" mode="determinate" value="{{qwest.progressValue}}">
+    </mat-progress-bar>
+
+    <!-- Описание -->
+    <div *ngIf="qwest.descr" class="text-center pt-2">
+      <i>
+        {{qwest.descr}}
+      </i>
+    </div>
+    <!-- Действия -->
+    <div div fxLayout="row" fxLayoutAlign="space-between center" class="py-2">
+      <button fxFlex mat-stroked-button color="accent" *ngIf="qwest.progressValue >= 100" (click)="doneQwest(qwest)">
+        <i class="fas fa-thumbs-up"></i>
+      </button>
+      <button fxFlex mat-stroked-button color="accent" (click)="isFromDoneQwest=true; addTsk.show();">
+        <i class="fas fa-plus"></i>
+      </button>
+    </div>
+
+    <!-- Награды -->
+    <ng-container *ngIf="qwest.rewards?.length > 0 || qwest.exp > 0">
+      <h5>Награда:</h5>
+      <ul class="list-group p-0">
+        <li *ngIf="qwest.exp > 0" class="list-group-item px-0 py-1 border-0">
+          <a class="align-self-center w-100 text-primary">
+            <div class="d-flex justify-content-between align-items-center">
+              <h6>+{{qwest.exp}} exp</h6>
+            </div>
+          </a>
+        </li>
+        <li *ngFor="let inv of qwest.rewards" class="list-group-item px-0 py-1 border-0">
+          <a class="align-self-center w-100 text-primary">
+            <div class="d-flex justify-content-between align-items-center">
+              <h6>{{inv.name}}</h6>
+            </div>
+          </a>
+        </li>
+      </ul>
+      <br>
+    </ng-container>
+
+    <ng-container *ngIf="qwest.tasks.length>0">
+      <h5>Миссии:</h5>
+      <!-- Задачи -->
+      <ul class="list-group p-0">
+        <li *ngFor="let tsk of qwest.tasks" class="list-group-item px-0 py-1 border-0">
+          <a class="align-self-center w-100" [routerLink]="['/task', tsk.id]">
+            <div class="d-flex">
+              <div class="flex-grow-1 text-left align-self-baseline">
+                <ng-container *ngIf="tsk.isDone; else elseTemplate">
+                  <del>
+                    <h6>{{tsk.name}}</h6>
+                  </del>
+                </ng-container>
+                <ng-template #elseTemplate>
+                  <h6>{{tsk.name}}</h6>
+                </ng-template>
+              </div>
+            </div>
+          </a>
+        </li>
+      </ul>
+    </ng-container>
+  </div>
+  <br>
+  <br>
+</div>
+<!-- Редактирование -->
+<div class="container pt-2 pb-4" *ngIf="this.srv.pers && qwest && isEditMode">
+  <div class="pb-4">
+    <!-- Название -->
+    <mat-form-field class="w-100">
+      <input matInput autocomplete="off" placeholder="Название" [(ngModel)]="qwest.name" name="qwest.name">
+    </mat-form-field>
+
+    <!-- Изображение -->
+    <mat-form-field class="w-100">
+      <input matInput autocomplete="off" placeholder="Изображение" [(ngModel)]="qwest.image" name="qwImg">
+    </mat-form-field>
+
+    <!-- Описание -->
+    <mat-form-field class="w-100">
+      <input matInput autocomplete="off" placeholder="Описание" [(ngModel)]="qwest.descr" name="descr">
+    </mat-form-field>
+
+    <!-- Опыт -->
+    <mat-form-field class="w-100">
+      <input matInput autocomplete="off" placeholder="Опыт" [(ngModel)]="qwest.exp" name="exp">
+    </mat-form-field>
+
+    <!-- Награды -->
+    <div class="form-row">
+      <h5>Награды:</h5>
+    </div>
+    <!-- Добавить награду -->
+    <div class="form-row">
+      <!-- Добавление трофея -->
+      <button (click)="addRev.show()" mat-stroked-button color="accent" class="w-100">
+        <i class="fas fa-plus"></i>
+      </button>
+    </div>
+    <!-- Список наград -->
+    <mat-list>
+      <div mat-list-item *ngFor="let rev of qwest.rewards; let i = index">
+        <div class="d-flex">
+          <div class="flex-grow-1 align-self-center">
+            {{rev.name}} <i>{{rev.descr}}</i>
+          </div>
+          <div class="d-flex">
+            <!-- Удалить -->
+            <div class="btn-group btn-group-sm" role="group" aria-label="Действия">
+              <!-- Редактировать -->
+              <button (click)="isEditRev=true; newRev=rev; addRev.show();" mat-icon-button>
+                <i class="fas fa-edit"></i>
+              </button>
+              <button (click)="delReward(rev.id)" mat-icon-button>
+                <i class="fas fa-eraser"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </mat-list>
+    <br>
+    <!-- Задачи -->
+    <div class="form-row">
+      <h5>Миссии:</h5>
+    </div>
+    <!-- Добавить задачу -->
+    <div class="form-row">
+      <button (click)="addTsk.show();" mat-stroked-button color="accent" class="w-100">
+        <i class="fas fa-plus"></i>
+      </button>
+    </div>
+    <!-- Задачи -->
+    <mat-list (cdkDropListDropped)="drop($event)" cdkDropList id="tsks" *ngIf="qwest.tasks.length>0">
+      <div mat-list-item cdkDrag *ngFor="let tsk of qwest.tasks; let i = index">
+        <div class="d-flex">
+          <div class="flex-grow-1 align-self-center">
+            <ng-container *ngIf="tsk.isDone; else elseTemplate">
+              <del>
+                <h6>{{tsk.name}}</h6>
+              </del>
+            </ng-container>
+            <ng-template #elseTemplate>
+              <h6>{{tsk.name}}</h6>
+            </ng-template>
+          </div>
+          <div class="btn-group btn-group-sm" role="group" aria-label="Действия">
+            <button (click)="delTask(tsk.id)" mat-icon-button>
+              <i class="fas fa-eraser"></i>
+            </button>
+            <button mat-icon-button cdkDragHandle>
+              <i class="fas fa-expand-arrows-alt"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </mat-list>
+  </div>
+  <br>
+  <br>
+</div>

@@ -1,0 +1,29 @@
+<div class="container pt-2 pb-4" *ngIf="(champions$|async) as ch">
+  <div class="d-flex justify-content-center align-items-center">
+    <!-- <div (click)="goBack()">
+      <svg-icon name="left" [svgStyle]="{'width.em': 3.5,'height.em':3.5}"></svg-icon>
+    </div> -->
+    <div class="text-center">
+        <h1>Турнирная таблица</h1>
+        <h1>Лидер: <span class="text-primary">{{ch[0].Name|uppercase}}</span>!!!</h1>
+      </div>
+  </div>
+  
+  <table class="table table-striped table-borderless table-custom-style table-condensed">
+    <tbody>
+      <tr *ngFor="let r of ch; let i = index;" class="border p-1"
+        [ngClass]="{'border-success': this.srv.pers?.id===r.Id, 'border-secondary': this.srv.pers?.id!=r.Id, 'border-3': this.srv.pers?.id===r.Id}">
+        <td class="align-middle text-center">
+          <h5 class="p-1">№{{i+1}}</h5>
+        </td>
+        <td class="align-middle text-center">
+          <h5 class="p-1"><span class="text-primary">{{r.Name|uppercase}}:</span> {{r.Level}} уровень</h5>
+        </td>
+        <td class="align-middle text-center">
+          <div><img src="{{r.Pic}}" class="img-fluid p-1" [ngStyle]="{'object-fit': 'contain', 'height': '100px'}">
+          </div>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>

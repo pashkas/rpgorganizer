@@ -1,0 +1,7 @@
+.grid-login {
+    height: 100vh;
+    display: grid;
+    grid-template-columns: auto;
+    grid-template-rows: auto 1fr auto;
+    background: black;
+}

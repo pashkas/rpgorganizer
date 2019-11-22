@@ -1,0 +1,144 @@
+<div class="grid-container" *ngIf="srv.pers">
+  <!-- Если пусто -->
+  <div *ngIf="!this.srv.pers.currentTask" fxLayout="row" fxLayoutAlign="center center">
+    <h3 class="text-center" *ngIf="this.srv.pers.exp<=1">
+      Пока пусто... Может стоит
+      <a href="https://nerdistway.blogspot.com/2019/08/blog-post_23.html" target="_blank">
+        посетить инструкцию?
+      </a>
+    </h3>
+  </div>
+  <div *ngIf="!this.srv.pers.currentTask">
+
+
+  </div>
+
+  <!-- Задачи -->
+  <ng-container *ngIf="this.srv.pers.currentTask && this.srv.isGlobalTaskView">
+    <mat-list (cdkDropListDropped)="drop($event)" cdkDropList class="list-group  py-2 h-100 w-100 overflow-auto">
+      <!-- <button class="btn btn-default" (click)="autoFalse()"
+        *ngIf="srv.pers?.tasks.length>0 && srv.pers?.tasks[0].requrense != 'нет' && checkDate(srv.pers?.tasks[0].date)">
+        Пропуск всех прошедших
+      </button> -->
+      <ng-container *ngFor="let t of srv.pers.tasks; let i = index;">
+        <div cdkDrag mat-list-item (click)="tskClick(i);"
+          [ngClass]="{'list-group-item-danger': t.lastNotDone && !isSort, 'list-group-item-warning': t.requrense != 'нет' && checkDate(t.date)}">
+          <div class="d-flex align-items-center" [ngClass]="{' py-2': !isSort}">
+            <div class="flex-grow-1 text-center">
+              <div class="pointer">
+                <ng-container *ngIf="t.requrense != 'нет' && checkDate(t.date)" class="bg-danger">
+                  [{{getDateString(t.date)}}!]
+                </ng-container>
+                {{t.tittle}}
+              </div>
+              <ng-container *ngIf="t.requrense==='нет' && t.plusToNames && t.plusToNames.length>0;">
+                <span *ngFor="let pl of t.plusToNames; let i=index;">
+                  <ng-container>
+                    <ng-container *ngIf="pl.linkName; else elseTemplate">
+                      <a class="text-secondary" [routerLink]="[pl.linkName, pl.linkId]"><small>{{pl.name}}</small></a>
+                    </ng-container>
+                    <ng-template #elseTemplate>
+                      <small class="text-secondary">{{pl.name}}</small>
+                    </ng-template>
+                  </ng-container>
+                </span>
+              </ng-container>
+            </div>
+
+            <button mat-button cdkDragHandle [hidden]="!isSort">
+              <i class="fa fa-lg fa-expand-arrows-alt"></i>
+            </button>
+          </div>
+        </div>
+      </ng-container>
+    </mat-list>
+    <div></div>
+  </ng-container>
+  <!-- Сфокусированный вид задач -->
+  <ng-container *ngIf="this.srv.pers.currentTask && !this.srv.isGlobalTaskView">
+
+    <img (press)="setIndex(0); $event.stopPropagation();" (swipeup)="done(this.srv.pers.currentTask)" (swipedown)="fail(this.srv.pers.currentTask)" (swiperight)="onSwipeLeft($event)" (swipeleft)="onSwipeRight($event)" img-cache img-cache-src="{{this.srv.pers.currentTask.image}}" class="img-fluid pt-2 pb-0 px-2 mh-100 w-100"
+      [ngStyle]="{'object-fit': 'contain'}">
+
+    <div fxLayout="column" fxLayoutAlign="center center" class="w-100 py-1 px-2" [ngStyle]="{'min-height': '3em'}">
+      <a [routerLink]="['/task', this.srv.pers.currentTask.parrentTask ? this.srv.pers.currentTask.parrentTask : this.srv.pers.currentTask.id]"
+        class="text-dark text-center">
+        <h4 class="m-0">
+          <ng-container>
+            <ng-container
+              *ngIf="this.srv.pers.currentTask.requrense != 'нет' && checkDate(this.srv.pers.currentTask.date)"
+              class="bg-danger">
+              [{{getDateString(this.srv.pers.currentTask.date)}}!]
+            </ng-container>
+            {{this.srv.pers.currentTask.tittle}}
+          </ng-container>
+        </h4>
+      </a>
+
+      <small *ngIf="this.srv.pers.currentTask.plusToNames&&this.srv.pers.currentTask.plusToNames.length>0;">
+        <ng-container *ngFor="let pl of this.srv.pers.currentTask.plusToNames; let i=index;">
+          <ng-container *ngIf="i>0"> | </ng-container>
+          <ng-container *ngIf="pl.linkName; else elseTemplate">
+            <a class="text-secondary" [routerLink]="[pl.linkName, pl.linkId]">{{pl.name}}</a>
+          </ng-container>
+          <ng-template #elseTemplate>
+            <span class="text-secondary">{{pl.name}}</span>
+          </ng-template>
+        </ng-container>
+      </small>
+
+    </div>
+
+  </ng-container>
+
+  <!-- Строка инфы о персонаже -->
+  <div class="border border-dark flex-grow-1 w-100" [ngStyle]="{'height': '24px'}">
+    <div class="progress h-100 position-relative" *ngIf="true">
+      <div [style.width]="srv.pers.progressValue + '%'" class="progress-bar h-100"
+        [ngStyle]="{'background-color': 'LightGreen', 'width': '50%'}">
+      </div>
+      <p [ngStyle]="{'font-size': 'small'}"
+        class="align-self-center justify-content-center d-flex position-absolute w-100">
+        {{srv.pers.name}} ({{srv.pers.rang.name | lowercase}}), уровень
+        {{srv.pers.level}}:{{' '+(srv.pers.exp *10.0 | number : '1.0-0')+'/'+(srv.pers.nextExp*10.0 | number : '1.0-0')}}
+      </p>
+    </div>
+  </div>
+  <div class="w-100 h-100 d-flex py-1 px-1" style="min-height: 120px;">
+
+    <button class="h-100 w-100 pr-1 text-left" mat-button routerLink="/pers" (click)="openPersList()">
+      <!-- img-cache img-cache-src="{{srv.pers.rang.img}}" -->
+      <img img-cache src="{{srv.pers.rang.img}}" class="img-fluid h-100" [ngStyle]="{'object-fit': 'contain'}">
+    </button>
+    <!-- Кнопки -->
+    <div fxLayout="row" fxLayoutAlign="end center" fxLayoutGap="0.3em" class="w-100 h-100 px-2">
+
+      <button [autofocus]="false" [ngClass]="{'disabled': isSort}" (click)="firstOrGlobal()" mat-fab>
+        <app-svg-icon *ngIf="this.srv.isGlobalTaskView" icon="icon-right" class="icon"></app-svg-icon>
+        <app-svg-icon *ngIf="!this.srv.isGlobalTaskView" icon="icon-left" class="icon"></app-svg-icon>
+      </button>
+
+      <div fxLayout="column" fxLayoutAlign="center center" fxLayoutGap="0.3em" class="h-100">
+        <button [ngClass]="{'disabled': isSort}" (click)="setView()" mat-mini-fab>
+          <app-svg-icon *ngIf="srv.pers.sellectedView!='навыки'" icon="icon-abil" class="icon"></app-svg-icon>
+          <app-svg-icon *ngIf="srv.pers.sellectedView!='квесты'" icon="icon-qwest" class="icon"></app-svg-icon>
+        </button>
+        <button (click)="setSort()" mat-mini-fab>
+          <app-svg-icon icon="icon-sort" class="icon"></app-svg-icon>
+        </button>
+      </div>
+
+      <button [ngClass]="{'disabled': isSort||this.srv.isGlobalTaskView||!this.srv.pers.currentTask}"
+        (click)="done(this.srv.pers.currentTask)" mat-fab>
+        <app-svg-icon icon="icon-sword" class="icon"></app-svg-icon>
+      </button>
+
+      <button
+        [ngClass]="{'disabled': isSort||this.srv.isGlobalTaskView||!this.srv.pers.currentTask||this.srv.pers.currentTask?.requrense=='нет'}"
+        (click)="fail(this.srv.pers.currentTask)" mat-mini-fab>
+        <app-svg-icon icon="icon-shild" class="icon"></app-svg-icon>
+      </button>
+
+    </div>
+  </div>
+</div>

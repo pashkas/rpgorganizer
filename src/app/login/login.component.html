@@ -1,0 +1,22 @@
+<!-- <div class="container py-2">
+  <form>
+    <div class="form-row">
+      <h1 class="header">Вход в систему</h1>
+    </div>
+    <div class="form-row">
+      <div class="col-md-4 col-md-offset-4">
+        <button type="button" class="btn btn-danger btn-block" (click)="tryGoogleLogin()">Логин с Google</button>
+      </div>
+    </div>
+  </form>
+</div> -->
+
+<div class="grid-login p-2  text-center">
+  <h1 class="header text-light">Молви GOOGLE, друг, и войди!</h1>
+
+  <img class="img-fluid p-4 h-100 w-100" [src]="'assets/img/mellon.png'" [ngStyle]="{'object-fit': 'contain'}">
+
+  <div class="form-row pl-2">
+    <button type="button" class="btn btn-danger btn-block" (click)="tryGoogleLogin()">Войти с GOOGLE.</button>
+  </div>
+</div>

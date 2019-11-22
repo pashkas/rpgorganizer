@@ -1,0 +1,17 @@
+.grid-container {
+    height: 100vh;
+    display: grid;
+    grid-template-columns: auto;
+    grid-template-rows: 1fr auto auto 20vh;
+}
+
+li:hover {
+    cursor: pointer;
+}
+
+.example-handle {
+    color: #ccc;
+    cursor: move;
+    width: 24px;
+    height: 24px;
+}

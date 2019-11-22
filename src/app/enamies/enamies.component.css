@@ -1,0 +1,6 @@
+.grid-container {
+    height: 100vh;
+    display: grid;
+    grid-template-columns: auto;
+    grid-template-rows: 1fr auto auto 30vh;
+}
