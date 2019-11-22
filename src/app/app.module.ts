@@ -58,7 +58,7 @@ import * as Hammer from 'hammerjs';
 export class MyHammerConfig extends HammerGestureConfig {
   overrides = <any> {
     swipe: { direction: Hammer.DIRECTION_ALL },
-    press: {time: 500}
+    press: {time: 525}
   };
 }
 
