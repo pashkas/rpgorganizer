@@ -23,6 +23,15 @@ export class MainWindowComponent implements OnInit {
   constructor(private route: ActivatedRoute, public srv: PersService) {
   }
 
+  onLongPress(e){
+    // e.preventDefault && e.preventDefault();
+    // e.stopPropagation && e.stopPropagation();
+    // e.cancelBubble = true;
+    // e.returnValue = false;
+
+    this.setIndex(0);
+  }
+
   autoFalse() {
     this.srv.pers.tasks.forEach(tsk => {
       this.srv.taskMinus(tsk.id, true);
