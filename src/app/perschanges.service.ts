@@ -150,7 +150,7 @@ export class PerschangesService {
 
     setTimeout(()=>{
       dialogRef.close();
-    }, 3000);
+    }, 3250);
   }
 
   private fillChangesMap(changesMap: {}, chType: string, prs: Pers) {
