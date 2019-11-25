@@ -13,6 +13,7 @@ import { plusToName } from 'src/Models/plusToName';
 import { Rangse } from 'src/Models/Rangse';
 import { Router } from '@angular/router';
 import { PerschangesService } from './perschanges.service';
+import { EnamiesService } from './enamies.service';
 
 @Injectable({
   providedIn: 'root'
@@ -23,12 +24,18 @@ export class PersService {
 
   baseTaskPoints: number = 1.0;
   isGlobalTaskView: boolean;
+  mn0Count: number = 183;
+  mn1Count: number = 108;
+  mn2Count: number = 211;
+  mn3Count: number = 235;
+  mn4Count: number = 330;
+  mn5Count: number = 156;
   pers: Pers;
   selTabPersList: number = 0;
   // Пользователь
   user: FirebaseUserModel;
 
-  constructor(public db: AngularFirestore, private router: Router, private changes: PerschangesService) {
+  constructor(public db: AngularFirestore, private router: Router, private changes: PerschangesService, private enmSrv: EnamiesService) {
   }
 
   /**
@@ -100,22 +107,117 @@ export class PersService {
     }
 
     if (lvl >= 90) {
-      return Pers.Enamies5[Math.floor(Math.random() * Pers.Enamies5.length)].image;
+      if (this.pers.Monsters5Queue == null || this.pers.Monsters5Queue == undefined) {
+        this.pers.Monsters5Queue = 0;
+      }
+      if (this.pers.Monsters5Queue > this.mn5Count) {
+        this.pers.Monsters5Queue = 0;
+      }
+
+      let path = this.getImgPath(this.pers.Monsters5Queue, 5);
+      this.pers.Monsters5Queue++;
+
+      tsk.imageLvl = '5';
+
+      return path;
     }
     if (lvl >= 80) {
-      return Pers.Enamies4[Math.floor(Math.random() * Pers.Enamies4.length)].image;
+      if (this.pers.Monsters4Queue == null || this.pers.Monsters4Queue == undefined) {
+        this.pers.Monsters4Queue = 0;
+      }
+      if (this.pers.Monsters4Queue > this.mn4Count) {
+        this.pers.Monsters4Queue = 0;
+      }
+
+      let path = this.getImgPath(this.pers.Monsters4Queue, 4);
+      this.pers.Monsters4Queue++;
+
+      tsk.imageLvl = '4';
+
+      return path;
     }
     if (lvl >= 60) {
-      return Pers.Enamies3[Math.floor(Math.random() * Pers.Enamies3.length)].image;
+      if (this.pers.Monsters3Queue == null || this.pers.Monsters3Queue == undefined) {
+        this.pers.Monsters3Queue = 0;
+      }
+      if (this.pers.Monsters3Queue > this.mn3Count) {
+        this.pers.Monsters3Queue = 0;
+      }
+
+      let path = this.getImgPath(this.pers.Monsters3Queue, 3);
+      this.pers.Monsters3Queue++;
+
+      tsk.imageLvl = '3';
+
+      return path;
     }
     if (lvl >= 40) {
-      return Pers.Enamies2[Math.floor(Math.random() * Pers.Enamies2.length)].image;
+      if (this.pers.Monsters2Queue == null || this.pers.Monsters2Queue == undefined) {
+        this.pers.Monsters2Queue = 0;
+      }
+      if (this.pers.Monsters2Queue > this.mn2Count) {
+        this.pers.Monsters2Queue = 0;
+      }
+
+      let path = this.getImgPath(this.pers.Monsters2Queue, 2);
+      this.pers.Monsters2Queue++;
+
+      tsk.imageLvl = '2';
+
+      return path;
     }
     if (lvl >= 20) {
-      return Pers.Enamies1[Math.floor(Math.random() * Pers.Enamies1.length)].image;
+      if (this.pers.Monsters1Queue == null || this.pers.Monsters1Queue == undefined) {
+        this.pers.Monsters1Queue = 0;
+      }
+      if (this.pers.Monsters1Queue > this.mn1Count) {
+        this.pers.Monsters1Queue = 0;
+      }
+
+      let path = this.getImgPath(this.pers.Monsters1Queue, 1);
+      this.pers.Monsters1Queue++;
+
+      tsk.imageLvl = '1';
+
+      return path;
     }
 
-    return Pers.Enamies0[Math.floor(Math.random() * Pers.Enamies0.length)].image;
+    if (this.pers.Monsters0Queue == null || this.pers.Monsters0Queue == undefined) {
+      this.pers.Monsters0Queue = 0;
+    }
+    if (this.pers.Monsters0Queue > this.mn0Count) {
+      this.pers.Monsters0Queue = 0;
+    }
+
+    let path = this.getImgPath(this.pers.Monsters0Queue, 0);
+    this.pers.Monsters0Queue++;
+
+    tsk.imageLvl = '0';
+
+    return path;
+
+    // let lvl = tsk.value * 10.0;//this.pers.level;
+    // if (tsk.requrense == 'нет') {
+    //   lvl = this.pers.level;
+    // }
+
+    // if (lvl >= 90) {
+    //   return Pers.Enamies5[Math.floor(Math.random() * Pers.Enamies5.length)].image;
+    // }
+    // if (lvl >= 80) {
+    //   return Pers.Enamies4[Math.floor(Math.random() * Pers.Enamies4.length)].image;
+    // }
+    // if (lvl >= 60) {
+    //   return Pers.Enamies3[Math.floor(Math.random() * Pers.Enamies3.length)].image;
+    // }
+    // if (lvl >= 40) {
+    //   return Pers.Enamies2[Math.floor(Math.random() * Pers.Enamies2.length)].image;
+    // }
+    // if (lvl >= 20) {
+    //   return Pers.Enamies1[Math.floor(Math.random() * Pers.Enamies1.length)].image;
+    // }
+
+    // return Pers.Enamies0[Math.floor(Math.random() * Pers.Enamies0.length)].image;
   }
 
   /**
@@ -451,6 +553,17 @@ export class PersService {
         take(1),
         share()
       );
+  }
+
+  getImgPath(num: number, lvl: number): string {
+    let result: string = ''; //'assets/img/' + lvl + '/';
+
+    let ss = '000' + num;
+    ss = ss.substr(ss.length - 3);
+
+    result += ss; // + '.jpg';
+
+    return result;
   }
 
   /**
@@ -912,6 +1025,45 @@ export class PersService {
     }
   }
 
+  checkUpdateTaskImage(t: Task) {
+    let id;
+
+    if (t.parrentTask) {
+      id = t.parrentTask;
+    }
+    else {
+      id = t.id;
+    }
+
+    let task: Task;
+    let abil: Ability;
+
+    ({ task, abil } = this.findTaskAnAb(id, task, abil));
+
+    if (task) {
+      task.image = this.GetRndEnamy(task);
+      task.states.forEach(st => {
+        st.img = this.GetRndEnamy(task);
+      });
+    }
+    else {
+      for (let index = 0; index < this.pers.qwests.length; index++) {
+        const qw = this.pers.qwests[index];
+        qw.tasks.forEach(tsk => {
+          if (tsk.id === id) {
+            task = tsk;
+          }
+        });
+      }
+
+      if (task) {
+        task.image = this.GetRndEnamy(task);
+      }
+    }
+
+    this.savePers(false);
+  }
+
   /**
    * Клик минус по задаче.
    * @param id Идентификатор задачи.
@@ -1216,6 +1368,7 @@ export class PersService {
       st.img = this.GetRndEnamy(tsk);
     }
     stT.image = st.img;
+    stT.imageLvl = tsk.imageLvl;
 
     stT.id = st.id;
     stT.parrentTask = tsk.id;

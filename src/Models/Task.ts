@@ -54,6 +54,7 @@ export class Task {
     parrentTask: string;
     curLvlDescr: string;
     curLvlDescr2: string;
+    imageLvl: string = '0';
 
     /**
      * Получить формулу для роста/понижения значения задачи.
