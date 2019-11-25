@@ -1025,42 +1025,27 @@ export class PersService {
     }
   }
 
-  checkUpdateTaskImage(t: Task) {
-    let id;
-
-    if (t.parrentTask) {
-      id = t.parrentTask;
-    }
-    else {
-      id = t.id;
-    }
-
-    let task: Task;
-    let abil: Ability;
-
-    ({ task, abil } = this.findTaskAnAb(id, task, abil));
-
-    if (task) {
-      task.image = this.GetRndEnamy(task);
-      task.states.forEach(st => {
-        st.img = this.GetRndEnamy(task);
-      });
-    }
-    else {
-      for (let index = 0; index < this.pers.qwests.length; index++) {
-        const qw = this.pers.qwests[index];
-        qw.tasks.forEach(tsk => {
-          if (tsk.id === id) {
-            task = tsk;
-          }
+  /**
+   * Обновление всех картинок монстров.
+   */
+  reImages() {
+    this.pers.characteristics.forEach(ch => {
+      ch.abilities.forEach(ab => {
+        ab.tasks.forEach(tsk => {
+          tsk.image = this.GetRndEnamy(tsk);
+          tsk.states.forEach(st => {
+            st.img = this.GetRndEnamy(tsk);
+          });
         });
-      }
+      });
+    });
 
-      if (task) {
-        task.image = this.GetRndEnamy(task);
-      }
-    }
-
+    this.pers.qwests.forEach(qw => {
+      qw.tasks.forEach(tsk => {
+        tsk.image = this.GetRndEnamy(tsk);
+      });
+    });
+   
     this.savePers(false);
   }
 

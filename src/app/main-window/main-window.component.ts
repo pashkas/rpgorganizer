@@ -32,8 +32,8 @@ export class MainWindowComponent implements OnInit {
     this.setIndex(0);
   }
 
-  getEnamyImg(){
-    this.srv.checkUpdateTaskImage(this.srv.pers.currentTask);
+  ReImages(){
+    this.srv.reImages();
   }
 
   autoFalse() {
