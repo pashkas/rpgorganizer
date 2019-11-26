@@ -30,7 +30,7 @@ speed-measure-plugin.json
 !.vscode/tasks.json
 !.vscode/launch.json
 !.vscode/extensions.json
-.firebase/*
+.firebase/
 
 # misc
 /.sass-cache
