@@ -1045,7 +1045,7 @@ export class PersService {
         tsk.image = this.GetRndEnamy(tsk);
       });
     });
-   
+
     this.savePers(false);
   }
 
@@ -1159,6 +1159,10 @@ export class PersService {
       }
 
       if (tsk.value == 0) {
+        tsk.order = 0;
+        tsk.states.forEach(st => {
+          st.order = 0;
+        });
         isOpenForEdit = true;
       }
 
@@ -1173,9 +1177,9 @@ export class PersService {
     this.savePers(true, 'plus');
 
     // Переходим в настройку навыка, если это первый уровень
-    if (isOpenForEdit) {
-      this.showAbility(ab);
-    }
+    // if (isOpenForEdit) {
+    //   this.showAbility(ab);
+    // }
   }
 
   /**
