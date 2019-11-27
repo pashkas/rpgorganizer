@@ -57,12 +57,12 @@
   <!-- Сфокусированный вид задач -->
   <ng-container *ngIf="this.srv.pers.currentTask && !this.srv.isGlobalTaskView">
 
+    <!-- (error)="ReImages()" -->
     <img (press)="onLongPress($event)" (contextmenu)="$event.preventDefault()"
       (swipeup)="done(this.srv.pers.currentTask)" (swipedown)="fail(this.srv.pers.currentTask)"
       (swiperight)="onSwipeLeft($event)" (swipeleft)="onSwipeRight($event)" img-cache
       class="img-fluid pt-2 pb-0 px-2 mh-100 w-100" [ngStyle]="{'object-fit': 'contain'}"
-      img-cache-src="{{'assets/img/'+ this.srv.pers.currentTask.imageLvl + '/' + this.srv.pers.currentTask.image + '.jpg'}}"
-      (error)="ReImages()">
+      img-cache-src="{{'assets/img/'+ this.srv.pers.currentTask.imageLvl + '/' + this.srv.pers.currentTask.image + '.jpg'}}">
 
     <div fxLayout="column" fxLayoutAlign="center center" class="w-100 py-1 px-2" [ngStyle]="{'min-height': '3em'}">
       <a [routerLink]="['/task', this.srv.pers.currentTask.parrentTask ? this.srv.pers.currentTask.parrentTask : this.srv.pers.currentTask.id]"
@@ -112,7 +112,7 @@
 
     <button class="h-100 w-100 pr-1 text-left" mat-button routerLink="/pers" (click)="openPersList()">
       <!-- img-cache img-cache-src="{{srv.pers.rang.img}}" -->
-      <img img-cache src="{{srv.pers.rang.img}}" class="img-fluid h-100" [ngStyle]="{'object-fit': 'contain'}">
+      <img src="{{srv.pers.rang.img}}" class="img-fluid h-100" [ngStyle]="{'object-fit': 'contain'}">
     </button>
     <!-- Кнопки -->
     <div fxLayout="row" fxLayoutAlign="end center" fxLayoutGap="0.3em" class="w-100 h-100 px-2">

@@ -91,7 +91,7 @@ export class CharacteristicDetailsComponent implements OnInit {
     if (Pers.GameSettings.isNoAbilities) {
       let tsk = ab.tasks[0];
       if (tsk) {
-        this.router.navigate(['/task', tsk.id]);
+        this.router.navigate(['/task', tsk.id, false]);
       }
     }
     else {

@@ -143,6 +143,11 @@ export class TaskDetailComponent implements OnInit {
         });
       }
     }
+
+    const isEdit = this.route.snapshot.paramMap.get('isEdit');
+    if (isEdit == 'true') {
+      this.isEditMode = true;
+    }
   }
 
   onTskDateChange(ev) {

@@ -19,7 +19,7 @@ const routes: Routes = [
   { path: 'pers', component: PersListComponent },
   { path: 'characteristic/:id', component: CharacteristicDetailsComponent },
   { path: 'ability/:id', component: AbilityDetailComponent },
-  { path: 'task/:id', component: TaskDetailComponent },
+  { path: 'task/:id/:isEdit', component: TaskDetailComponent },
   { path: 'qwest/:id', component: QwestDetailComponent },
   { path: 'enamies', component: EnamiesComponent },
   { path: 'turnirtable', component: TurnirTableComponent, resolve: { data: UserResolver } },

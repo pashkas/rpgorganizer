@@ -3,6 +3,9 @@ import { Pers } from 'src/Models/Pers';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { PersChangesComponent } from './pers-changes/pers-changes.component';
 import { MatDialog } from '@angular/material/dialog';
+import { Ability } from 'src/Models/Ability';
+import { PersService } from './pers.service';
+import { Router } from '@angular/router';
 
 
 @Injectable({
@@ -12,7 +15,7 @@ export class PerschangesService {
   afterPers: Pers;
   beforePers: Pers;
 
-  constructor(private _snackBar: MatSnackBar, public dialog: MatDialog) { }
+  constructor(private _snackBar: MatSnackBar, public dialog: MatDialog, private router: Router) { }
 
   getClone(pers: Pers): Pers {
     return JSON.parse(JSON.stringify(pers));
@@ -28,6 +31,9 @@ export class PerschangesService {
 
     // Ищем изменения
     let changes: string[] = [];
+
+    // Показать настройку навыка
+    let abToEdit: any = null;
 
     Object.keys(changesMap).forEach(n => {
       // Квесты
@@ -69,6 +75,10 @@ export class PerschangesService {
       else if (changesMap[n].type == 'abil') {
         if (changesMap[n].after != changesMap[n].before) {
           changes.push('' + changesMap[n].name + ' ' + changesMap[n].after);
+
+          if (changesMap[n].after == 1) {
+            abToEdit = n;
+          }
         }
         // Прогрес в стейтах
         else if (changesMap[n].tskProgrBefore != changesMap[n].tskProgrAfter
@@ -148,9 +158,12 @@ export class PerschangesService {
       hasBackdrop: false
     });
 
-    setTimeout(()=>{
+    setTimeout(() => {
       dialogRef.close();
-    }, 2750);
+      if (abToEdit != null) {
+        this.router.navigate(['/task', abToEdit, false]);
+      }
+    }, 3000);
   }
 
   private fillChangesMap(changesMap: {}, chType: string, prs: Pers) {
