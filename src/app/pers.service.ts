@@ -1476,7 +1476,7 @@ export class PersService {
       startExp = exp;
       exp += Math.ceil(i * this.pers.ONPerLevel);
       nextExp = exp;
-      if (exp >= this.pers.exp) {
+      if (exp > this.pers.exp) {
         persLevel = i - 1;
         break;
       }

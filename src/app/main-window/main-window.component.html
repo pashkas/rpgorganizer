@@ -65,7 +65,7 @@
       img-cache-src="{{'assets/img/'+ this.srv.pers.currentTask.imageLvl + '/' + this.srv.pers.currentTask.image + '.jpg'}}">
 
     <div fxLayout="column" fxLayoutAlign="center center" class="w-100 py-1 px-2" [ngStyle]="{'min-height': '3em'}">
-      <a [routerLink]="['/task', this.srv.pers.currentTask.parrentTask ? this.srv.pers.currentTask.parrentTask : this.srv.pers.currentTask.id]"
+      <a [routerLink]="['/task', this.srv.pers.currentTask.parrentTask ? this.srv.pers.currentTask.parrentTask : this.srv.pers.currentTask.id, false]"
         class="text-dark text-center">
         <h4 class="m-0">
           <ng-container>
