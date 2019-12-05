@@ -23,7 +23,7 @@ export class MainWindowComponent implements OnInit {
   constructor(private route: ActivatedRoute, public srv: PersService) {
   }
 
-  onLongPress(e){
+  onLongPress(e) {
     // e.preventDefault && e.preventDefault();
     // e.stopPropagation && e.stopPropagation();
     // e.cancelBubble = true;
@@ -32,14 +32,14 @@ export class MainWindowComponent implements OnInit {
     this.setIndex(0);
   }
 
-  ReImages(){
+  ReImages() {
     this.srv.reImages();
   }
 
   autoFalse() {
-    this.srv.pers.tasks.forEach(tsk => {
+    for (const tsk of this.srv.pers.tasks) {
       this.srv.taskMinus(tsk.id, true);
-    });
+    }
   }
 
   checkDate(date: Date) {
@@ -54,29 +54,45 @@ export class MainWindowComponent implements OnInit {
   }
 
   done(t: Task) {
-    debugger;
     this.srv.changesBefore();
 
     if (t.parrentTask) {
-      // Если все активные на сегодня выполнены
-      // Находим задачу
-      let task: Task;
-      let abil: Ability;
-      ({ task, abil } = this.srv.findTaskAnAb(t.parrentTask, task, abil));
+      // Логика для навыков
+      if (t.requrense != 'нет') {
+        // Если все активные на сегодня выполнены
+        // Находим задачу
+        let task: Task;
+        let abil: Ability;
+        ({ task, abil } = this.srv.findTaskAnAb(t.parrentTask, task, abil));
 
-      // Находим нужный стайт
-      for (let i = 0; i < task.states.length; i++) {
-        const element = task.states[i];
-        if (element.id === t.id) {
-          element.isDone = true;
-          this.srv.savePers(true);
+        // Находим нужный стайт
+        for (let i = 0; i < task.states.length; i++) {
+          const element = task.states[i];
+          if (element.id === t.id) {
+            element.isDone = true;
+            this.srv.savePers(true);
+          }
+        }
+
+        if (task.states.filter(n => {
+          return n.isActive && !n.isDone
+        }).length === 0) {
+          this.srv.taskPlus(t.parrentTask);
         }
       }
-
-      if (task.states.filter(n => {
-        return n.isActive && !n.isDone
-      }).length === 0) {
-        this.srv.taskPlus(t.parrentTask);
+      // Логика для задач
+      else {
+        for (const qw of this.srv.pers.qwests) {
+          for (const tsk of qw.tasks) {
+            for (const st of tsk.states) {
+              if (st.id === t.id) {
+                st.isDone = true;
+                this.srv.savePers(true);
+                break;
+              }
+            }
+          }
+        }
       }
     }
     else {

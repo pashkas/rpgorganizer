@@ -112,24 +112,36 @@ export class TaskDetailComponent implements OnInit {
     const id = this.route.snapshot.paramMap.get('id');
 
     // Находим задачу
-    this.srv.pers.characteristics.forEach(cha => {
-      cha.abilities.forEach(ab => {
-        ab.tasks.forEach(tsk => {
+    let isFind = false;
+
+    // В квестах
+    if (isFind === false) {
+      for (const qw of this.srv.pers.qwests) {
+        for (const tsk of qw.tasks) {
           if (tsk.id === id) {
             this.tsk = tsk;
-            this.tskAbility = ab;
+            isFind = true;
+            break;
           }
-        });
-      });
-    });
-    // В квестах
-    this.srv.pers.qwests.forEach(qw => {
-      qw.tasks.forEach(tsk => {
-        if (tsk.id === id) {
-          this.tsk = tsk;
         }
-      });
-    });
+      }
+    }
+
+    // В навыках
+    if (isFind === false) {
+      for (const cha of this.srv.pers.characteristics) {
+        for (const ab of cha.abilities) {
+          for (const tsk of ab.tasks) {
+            if (tsk.id === id) {
+              this.tsk = tsk;
+              this.tskAbility = ab;
+              isFind = true;
+              break;
+            }
+          }
+        }
+      }
+    }
 
     if (this.tsk) {
       if (this.tsk.requrense === 'нет') {

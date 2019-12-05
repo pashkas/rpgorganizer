@@ -6,6 +6,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { Ability } from 'src/Models/Ability';
 import { PersService } from './pers.service';
 import { Router } from '@angular/router';
+import { Task } from 'src/Models/Task';
 
 
 @Injectable({
@@ -36,6 +37,17 @@ export class PerschangesService {
     let abToEdit: any = null;
 
     Object.keys(changesMap).forEach(n => {
+
+      // Подзадачи
+      if (changesMap[n].type == 'tsk') {
+        debugger;
+        // Прогрес в стейтах
+        if (changesMap[n].tskProgrBefore != changesMap[n].tskProgrAfter
+          && changesMap[n].tskProgrAfter != 0) {
+          changes.push('' + changesMap[n].name + ' ' + changesMap[n].tskProgrAfter + '/' + changesMap[n].tskProgrTotal);
+        }
+      }
+
       // Квесты
       if (changesMap[n].type == 'qwest') {
         if (changesMap[n].after === null || changesMap[n].after === undefined) {
@@ -68,13 +80,23 @@ export class PerschangesService {
       // Характеристики
       else if (changesMap[n].type == 'cha') {
         if (changesMap[n].after != changesMap[n].before) {
-          changes.push('' + changesMap[n].name + ' ' + changesMap[n].after);
+          let change = ' ↑';
+          if (changesMap[n].after < changesMap[n].before) {
+            change = ' ↓';
+          }
+
+          changes.push('' + changesMap[n].name + ' ' + change); // + changesMap[n].after);
         }
       }
       // Навыки
       else if (changesMap[n].type == 'abil') {
         if (changesMap[n].after != changesMap[n].before) {
-          changes.push('' + changesMap[n].name + ' ' + changesMap[n].after);
+          let change = ' ↑';
+          if (changesMap[n].after < changesMap[n].before) {
+            change = ' ↓';
+          }
+
+          changes.push('' + changesMap[n].name + ' ' + change);//' ' + changesMap[n].after);
 
           if (changesMap[n].after == 1) {
             abToEdit = n;
@@ -203,23 +225,8 @@ export class PerschangesService {
 
           changesMap[tsk.id][chType] = Math.floor(tsk.value);
 
-          if (tsk.isSumStates && tsk.states.length > 0) {
-            let done = tsk.states.filter(n => n.isActive && n.isDone).length;
-
-            if (chType == 'before') {
-              changesMap[tsk.id]['tskProgrBefore'] = done;
-            }
-            else {
-              changesMap[tsk.id]['tskProgrAfter'] = done;
-            }
-
-            let all = tsk.states.filter(n => n.isActive).length;
-            changesMap[tsk.id]['tskProgrTotal'] = all;
-          }
-          else {
-            changesMap[tsk.id]['tskProgrBefore'] = 1;
-            changesMap[tsk.id]['tskProgrAfter'] = 1;
-            changesMap[tsk.id]['tskProgrTotal'] = 1;
+          if (tsk.isSumStates) {
+            this.tskStatesProgress(tsk, chType, changesMap, true);
           }
 
         });
@@ -235,6 +242,15 @@ export class PerschangesService {
 
       changesMap[qw.id][chType] = qw.tasks.filter(n => n.isDone).length;
       changesMap[qw.id]['total'] = qw.tasks.length;
+
+      // Подзадачи
+      qw.tasks.forEach(tsk => {
+        if (!changesMap[tsk.id]) {
+          let qwitem = this.getChItem('tsk', tsk.name);
+          changesMap[tsk.id] = qwitem;
+        }
+        this.tskStatesProgress(tsk, chType, changesMap, false);
+      });
     });
 
     // Инвентарь
@@ -245,6 +261,25 @@ export class PerschangesService {
 
       changesMap[inv.id][chType] = inv.count;
     });
+  }
+
+  private tskStatesProgress(tsk: Task, chType: string, changesMap: any, isCheckActive: boolean) {
+    if (tsk.states.length > 0) {
+      let done = tsk.states.filter(n => (n.isActive || !isCheckActive) && n.isDone).length;
+      if (chType == 'before') {
+        changesMap[tsk.id]['tskProgrBefore'] = done;
+      }
+      else {
+        changesMap[tsk.id]['tskProgrAfter'] = done;
+      }
+      let all = tsk.states.filter(n => (n.isActive || !isCheckActive)).length;
+      changesMap[tsk.id]['tskProgrTotal'] = all;
+    }
+    else {
+      changesMap[tsk.id]['tskProgrBefore'] = 1;
+      changesMap[tsk.id]['tskProgrAfter'] = 1;
+      changesMap[tsk.id]['tskProgrTotal'] = 1;
+    }
   }
 
   private getChItem(type, name): any {

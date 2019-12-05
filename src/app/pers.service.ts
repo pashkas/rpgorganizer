@@ -106,7 +106,7 @@ export class PersService {
       lvl = this.pers.level;
     }
 
-    if (lvl >= 90) {
+    if (lvl >= 100) {
       if (this.pers.Monsters5Queue == null || this.pers.Monsters5Queue == undefined) {
         this.pers.Monsters5Queue = 0;
       }
@@ -121,7 +121,7 @@ export class PersService {
 
       return path;
     }
-    if (lvl >= 80) {
+    if (lvl >= 90) {
       if (this.pers.Monsters4Queue == null || this.pers.Monsters4Queue == undefined) {
         this.pers.Monsters4Queue = 0;
       }
@@ -136,7 +136,7 @@ export class PersService {
 
       return path;
     }
-    if (lvl >= 60) {
+    if (lvl >= 70) {
       if (this.pers.Monsters3Queue == null || this.pers.Monsters3Queue == undefined) {
         this.pers.Monsters3Queue = 0;
       }
@@ -151,7 +151,7 @@ export class PersService {
 
       return path;
     }
-    if (lvl >= 40) {
+    if (lvl >= 50) {
       if (this.pers.Monsters2Queue == null || this.pers.Monsters2Queue == undefined) {
         this.pers.Monsters2Queue = 0;
       }
@@ -166,7 +166,7 @@ export class PersService {
 
       return path;
     }
-    if (lvl >= 20) {
+    if (lvl >= 30) {
       if (this.pers.Monsters1Queue == null || this.pers.Monsters1Queue == undefined) {
         this.pers.Monsters1Queue = 0;
       }
@@ -492,16 +492,20 @@ export class PersService {
    * @param abil Навык, который будет найден.
    */
   findTaskAnAb(id: string, task: Task, abil: Ability) {
-    this.pers.characteristics.forEach(cha => {
-      cha.abilities.forEach(ab => {
-        ab.tasks.forEach(tsk => {
+
+    for (const cha of this.pers.characteristics) {
+      for (const ab of cha.abilities) {
+        for (const tsk of ab.tasks) {
           if (tsk.id === id) {
             task = tsk;
             abil = ab;
+
+            break;
           }
-        });
-      });
-    });
+        }
+      }
+    }
+
     return { task, abil };
   }
 
@@ -841,6 +845,11 @@ export class PersService {
         tsk.plusToNames.push(new plusToName(qw.name, qw.id, '/qwest'));
         if (tsk.descr) {
           tsk.plusToNames.push(new plusToName(tsk.descr, '', ''));
+        }
+        if (tsk.states.length > 0) {
+          tsk.states = tsk.states.sort((a, b) => {
+            return a.isDone === b.isDone ? 0 : a.isDone ? -1 : 1;
+          });
         }
       });
 
@@ -1253,7 +1262,7 @@ export class PersService {
   }
 
   private getCongrantMsg() {
-    return Pers.Inspirations[Math.floor(Math.random() * Pers.Inspirations.length)] + '!';
+    return Pers.Inspirations[Math.floor(Math.random() * Pers.Inspirations.length)] + ', ' + this.pers.name + '!';
   }
 
   private getCurRang(val: number) {
@@ -1264,7 +1273,7 @@ export class PersService {
   }
 
   private getFailMsg() {
-    return Pers.Abuses[Math.floor(Math.random() * Pers.Abuses.length)] + '!';
+    return Pers.Abuses[Math.floor(Math.random() * Pers.Abuses.length)] + ', ' + this.pers.name + '!';
   }
 
   private getPersTasks() {
@@ -1320,7 +1329,15 @@ export class PersService {
           const tsk = qw.tasks[index];
           if (!tsk.isDone) {
             if (this.checkTask(tsk)) {
-              tasks.push(tsk);
+              const subTasks = tsk.states.filter(n => !n.isDone);
+              if (subTasks.length > 0) {
+                let stT = this.getTskFromState(tsk, subTasks[0], false);
+                tasks.push(stT);
+              }
+              else {
+                tasks.push(tsk);
+              }
+
               if (qw.id === this.pers.currentQwestId) {
                 this.setCurInd(tasks.indexOf(tsk));
               }
@@ -1337,8 +1354,8 @@ export class PersService {
   private getTskFromState(tsk: Task, st: taskState, isAll: boolean) {
     let stT = new Task();
     let stateProgr;
-    //stT.tittle = tsk.name + ': ' + st.name;
-    stT.tittle = st.name;
+    stT.tittle = tsk.name + ': ' + st.name;
+    //stT.tittle = st.name;
 
     if (!isAll) {
       let all = tsk.states.filter(n => n.isActive).length;
@@ -1351,6 +1368,7 @@ export class PersService {
     stT.name = stT.tittle;
     stT.order = st.order;
     stT.date = tsk.date;
+    stT.requrense = tsk.requrense;
 
     //stT.image = tsk.image;
     if (!st.img) {
@@ -1599,7 +1617,12 @@ export class PersService {
       let plusState = tsk.statesDescr[Math.floor(tsk.value)];
 
       if (plusState) {
-        tsk.tittle = tsk.name + ' ' + plusState;
+        if (tsk.states.length > 0 && !tsk.isSumStates) {
+          tsk.tittle = tsk.name + ': ' + plusState;
+        }
+        else {
+          tsk.tittle = tsk.name + ' ' + plusState;
+        }
       }
       else {
         tsk.tittle = tsk.name;

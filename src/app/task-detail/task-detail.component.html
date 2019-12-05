@@ -74,6 +74,24 @@
     <!-- <div class="form-row" *ngIf="tsk.states.length>0">
       <h5>Состояния</h5>
     </div> -->
+    <ng-container *ngIf="!tskAbility && tsk.states.length>0">
+      <mat-list (cdkDropListDropped)="drop($event)" cdkDropList id="states" *ngIf="tsk.states.length > 0">
+        <div mat-list-item *ngFor="let st of tsk.states; let i = index">
+          <ng-container *ngIf="st.isDone">
+            <del>
+              <div class="text-center">
+                  {{st.name}}
+              </div>
+            </del>
+          </ng-container>
+          <ng-container *ngIf="!st.isDone">
+            <div class="text-center">
+                {{st.name}}
+            </div>
+          </ng-container>
+        </div>
+      </mat-list>
+    </ng-container>
     <ng-container *ngFor="let st of tsk.statesDescr; let i = index;">
       <div class="text-center px-0 py-1 border-0" [ngClass]="{'bg-success': i==tsk.value}">
         <b>{{i}}<ng-container *ngIf="st">: </ng-container></b>{{st}}
@@ -139,39 +157,47 @@
           cложный
         </span> -->
       </div>
-      <!-- Состояния -->
-      <!-- <h5>Состояния:</h5> -->
-      <div class="form-row">
-        <button (click)="isEditState = false; getNewState(); addState.show();" mat-stroked-button color="accent"
-          class="w-100">
-          <i class="fas fa-plus"></i>
-        </button>
-        <!-- Модальное окно - добавление состояния -->
-        <div mdbModal #addState="mdbModal" class="modal fade" role="dialog" aria-hidden="true"
-          aria-labelledby="myBasicModalLabel">
-          <div class="modal-dialog" role="document">
-            <div class="modal-content">
-              <div class="modal-header">
-                <h4 class="modal-title w-100">Добавить состояние</h4>
-              </div>
-              <div class="modal-body">
-                <mat-form-field>
-                  <input #addStateImp matInput autocomplete="off" placeholder="Название" [(ngModel)]="newState.name"
-                    name="newState.name">
-                  {{addStateImp.focus()}}
-                </mat-form-field>
-              </div>
-              <div class="modal-footer">
-                <button type="button" aria-label="Close" (click)="addState.hide()" mat-button>Отмена</button>
-                <button (click)="addState.hide(); addStateToTask();" mat-button color="accent">ОК</button>
-                <!-- routerLink="./" fragment="states" -->
-              </div>
+    </ng-container>
+    <!-- Состояния -->
+    <!-- <h5>Состояния:</h5> -->
+    <div class="form-row">
+      <button (click)="isEditState = false; getNewState(); addState.show();" mat-stroked-button color="accent"
+        class="w-100">
+        <i class="fas fa-plus"></i>
+      </button>
+      <!-- Модальное окно - добавление состояния -->
+      <div mdbModal #addState="mdbModal" class="modal fade" role="dialog" aria-hidden="true"
+        aria-labelledby="myBasicModalLabel">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h4 class="modal-title w-100">
+                <ng-container>
+                  Добавить состояние
+                </ng-container>
+                <ng-container>
+                  Добавить подзадачу
+                </ng-container>
+              </h4>
+            </div>
+            <div class="modal-body">
+              <mat-form-field>
+                <input #addStateImp matInput autocomplete="off" placeholder="Название" [(ngModel)]="newState.name"
+                  name="newState.name">
+                {{addStateImp.focus()}}
+              </mat-form-field>
+            </div>
+            <div class="modal-footer">
+              <button type="button" aria-label="Close" (click)="addState.hide()" mat-button>Отмена</button>
+              <button (click)="addState.hide(); addStateToTask();" mat-button color="accent">ОК</button>
+              <!-- routerLink="./" fragment="states" -->
             </div>
           </div>
         </div>
       </div>
-      <!-- Состояния -->
-      <!-- <ng-container *ngIf="tsk.aimTimer==0 && tsk.aimCounter==0">
+    </div>
+    <!-- Состояния -->
+    <!-- <ng-container *ngIf="tsk.aimTimer==0 && tsk.aimCounter==0">
         <div class="d-flex" *ngFor="let st of tsk.states; let i = index">
           <label class="align-self-center m-1"><b>{{st.abRang.name}}</b></label>
           <div class="flex-grow-1 align-self-center m-1">
@@ -180,38 +206,38 @@
         </div>
       </ng-container> -->
 
-      <mat-list (cdkDropListDropped)="drop($event)" cdkDropList id="states" *ngIf="tsk.states.length>0">
-        <div mat-list-item cdkDrag *ngFor="let st of tsk.states; let i = index">
-          <div class="d-flex">
-            <div class="flex-grow-1 align-self-center">
-              <a href="#">
-                {{st.name}}
-              </a>
-            </div>
-            <div class="btn-group btn-group-sm" role="group" aria-label="Действия">
-              <!-- <button (click)="up(i)" type="button" class="btn btn-outline-default border-right-0">
+    <mat-list (cdkDropListDropped)="drop($event)" cdkDropList id="states" *ngIf="tsk.states.length > 0">
+      <div mat-list-item cdkDrag *ngFor="let st of tsk.states; let i = index">
+        <div class="d-flex">
+          <div class="flex-grow-1 align-self-center">
+            <a href="#">
+              {{st.name}}
+            </a>
+          </div>
+          <div class="btn-group btn-group-sm" role="group" aria-label="Действия">
+            <!-- <button (click)="up(i)" type="button" class="btn btn-outline-default border-right-0">
                 <i class="fas fa-arrow-up"></i>
               </button>
               <button (click)="down(i)" type="button" class="btn btn-outline-default border-right-0">
                 <i class="fas fa-arrow-down"></i>
               </button> -->
 
-              <button (click)="delState(st.id)" mat-icon-button>
-                <i class="fas fa-eraser"></i>
-              </button>
+            <button (click)="delState(st.id)" mat-icon-button>
+              <i class="fas fa-eraser"></i>
+            </button>
 
-              <button (click)="isEditState=true; newState=st; addState.show();" mat-icon-button>
-                <i class="fas fa-edit"></i>
-              </button>
+            <button (click)="isEditState=true; newState=st; addState.show();" mat-icon-button>
+              <i class="fas fa-edit"></i>
+            </button>
 
-              <button mat-icon-button cdkDragHandle>
-                <i class="fas fa-expand-arrows-alt"></i>
-              </button>
-            </div>
+            <button mat-icon-button cdkDragHandle>
+              <i class="fas fa-expand-arrows-alt"></i>
+            </button>
           </div>
         </div>
-      </mat-list>
-    </ng-container>
+      </div>
+    </mat-list>
+
   </form>
   <br>
   <br>

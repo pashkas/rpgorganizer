@@ -111,11 +111,13 @@ export class QwestDetailComponent implements OnInit {
     }
 
     const id = this.route.snapshot.paramMap.get('id');
-    this.srv.pers.qwests.forEach(qw => {
+
+    for (const qw of this.srv.pers.qwests) {
       if (qw.id === id) {
         this.qwest = qw;
+        break;
       }
-    });
+    }
   }
 
   /**

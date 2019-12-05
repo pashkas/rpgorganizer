@@ -69,20 +69,19 @@ export class AbilityDetailComponent implements OnInit {
   }
 
   ngOnInit() {
-
     if (!this.srv.pers) {
       this.router.navigate(['/main']);
     }
 
     const id = this.route.snapshot.paramMap.get('id');
-    this.srv.pers.characteristics.forEach(cha => {
-      cha.abilities.forEach(ab => {
+    for (const cha of this.srv.pers.characteristics) {
+      for (const ab of cha.abilities) {
         if (ab.id === id) {
           this.abil = ab;
+          break;
         }
-      });
-    });
-
+      }
+    }
   }
 
   /**
