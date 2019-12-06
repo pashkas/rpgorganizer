@@ -1,13 +1,15 @@
 <nav *ngIf="this.srv.pers" class="fixed-bottom">
   <div class="d-flex w-100 justify-content-end px-2 py-2">
     <!-- Назад -->
-    <button mat-icon-button (click)="goBack()" class="mx-2">
+    <button *ngIf="!isEditMode" mat-icon-button (click)="goBack()" class="mx-2">
       <img img-cache img-cache-src="assets/icons/left.png" *ngIf="!this.srv.isGlobalTaskView" class="img-fluid"
         [ngStyle]="{'object-fit': 'contain', 'height':'2.5em'}">
     </button>
     <!-- Редактировать -->
     <button mat-icon-button (click)="saveData()">
-      <img img-cache img-cache-src="assets/icons/edit.png" class="img-fluid"
+      <img *ngIf="!isEditMode" img-cache img-cache-src="assets/icons/edit.png" class="img-fluid"
+        [ngStyle]="{'object-fit': 'contain', 'height':'3em'}">
+      <img *ngIf="isEditMode" img-cache img-cache-src="assets/icons/create.png" class="img-fluid"
         [ngStyle]="{'object-fit': 'contain', 'height':'3em'}">
     </button>
   </div>
