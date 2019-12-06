@@ -1,13 +1,14 @@
 <nav *ngIf="this.srv.pers" class="fixed-bottom">
   <div class="d-flex w-100 justify-content-end px-2 py-2">
     <!-- Назад -->
-    <button mat-fab color="accent" (click)="goBack()" class="mx-2">
-      <app-svg-icon icon="icon-left" class="icon"></app-svg-icon>
+    <button mat-icon-button (click)="goBack()" class="mx-2">
+      <img img-cache img-cache-src="assets/icons/left.png" *ngIf="!this.srv.isGlobalTaskView" class="img-fluid"
+        [ngStyle]="{'object-fit': 'contain', 'height':'2.5em'}">
     </button>
     <!-- Редактировать -->
-    <button mat-fab color="accent" (click)="saveData()">
-      <app-svg-icon icon="icon-edit" *ngIf="!isEditMode" class="icon"></app-svg-icon>
-      <app-svg-icon icon="icon-save" *ngIf="isEditMode" class="icon"></app-svg-icon>
+    <button mat-icon-button (click)="saveData()">
+      <img img-cache img-cache-src="assets/icons/edit.png" class="img-fluid"
+        [ngStyle]="{'object-fit': 'contain', 'height':'3em'}">
     </button>
   </div>
 </nav>
@@ -172,10 +173,10 @@
           <div class="modal-content">
             <div class="modal-header">
               <h4 class="modal-title w-100">
-                <ng-container>
+                <ng-container *ngIf="tsk.requrense != 'нет'">
                   Добавить состояние
                 </ng-container>
-                <ng-container>
+                <ng-container *ngIf="tsk.requrense === 'нет'">
                   Добавить подзадачу
                 </ng-container>
               </h4>
