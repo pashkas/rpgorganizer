@@ -80,13 +80,13 @@
           <ng-container *ngIf="st.isDone">
             <del>
               <div class="text-center">
-                  {{st.name}}
+                {{st.name}}
               </div>
             </del>
           </ng-container>
           <ng-container *ngIf="!st.isDone">
             <div class="text-center">
-                {{st.name}}
+              {{st.name}}
             </div>
           </ng-container>
         </div>
@@ -211,7 +211,14 @@
         <div class="d-flex">
           <div class="flex-grow-1 align-self-center">
             <a href="#">
-              {{st.name}}
+              <ng-container *ngIf="tsk.requrense != 'нет' || st.isDone == false">
+                {{st.name}}
+              </ng-container>
+              <ng-container *ngIf="tsk.requrense === 'нет' && st.isDone == true">
+                <del>
+                  {{st.name}}
+                </del>
+              </ng-container>
             </a>
           </div>
           <div class="btn-group btn-group-sm" role="group" aria-label="Действия">

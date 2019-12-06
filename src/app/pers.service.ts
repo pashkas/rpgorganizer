@@ -848,7 +848,7 @@ export class PersService {
         }
         if (tsk.states.length > 0) {
           tsk.states = tsk.states.sort((a, b) => {
-            return a.isDone === b.isDone ? 0 : a.isDone ? -1 : 1;
+            return a.isDone === b.isDone ? 0 : b.isDone ? -1 : 1;
           });
         }
       });

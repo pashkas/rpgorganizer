@@ -37,6 +37,10 @@ export class TaskDetailComponent implements OnInit {
     this.newState.img = this.srv.GetRndEnamy(this.tsk);
     this.tsk.states.push(this.newState);
 
+    this.tsk.states = this.tsk.states.sort((a, b) => {
+      return a.isDone === b.isDone ? 0 : b.isDone ? -1 : 1;
+    });
+
     this.newState = new taskState();
   }
 
@@ -121,6 +125,7 @@ export class TaskDetailComponent implements OnInit {
           if (tsk.id === id) {
             this.tsk = tsk;
             isFind = true;
+
             break;
           }
         }
@@ -136,6 +141,7 @@ export class TaskDetailComponent implements OnInit {
               this.tsk = tsk;
               this.tskAbility = ab;
               isFind = true;
+
               break;
             }
           }
