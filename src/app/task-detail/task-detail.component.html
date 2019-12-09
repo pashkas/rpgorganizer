@@ -58,8 +58,8 @@
 
     <!-- Действия -->
     <div *ngIf="this.srv.pers.ON >= 1 && tsk.requrense != 'нет'" class="py-2 text-center">
-      <button mat-icon-button (click)="upAbil();">
-        <img src="assets/icons/up.png" class="img-fluid" [ngStyle]="{'object-fit': 'contain', 'height':'1.5em'}">
+      <button class="icon-small" mat-icon-button (click)="upAbil();">
+        <img src="assets/icons/up.png" class="img-fluid">
       </button>
     </div>
     <!-- Таймер, счетчик -->
@@ -164,8 +164,8 @@
     <!-- Состояния -->
     <!-- <h5>Состояния:</h5> -->
     <div class="text-right">
-      <button (click)="isEditState = false; getNewState(); addState.show();" mat-icon-button>
-        <img src="assets/icons/create.png" class="img-fluid" [ngStyle]="{'object-fit': 'contain', 'height':'1.5em'}">
+      <button class="icon-small" (click)="isEditState = false; getNewState(); addState.show();" mat-icon-button>
+        <img src="assets/icons/create.png" class="img-fluid">
       </button>
       <!-- Модальное окно - добавление состояния -->
       <div mdbModal #addState="mdbModal" class="modal fade" role="dialog" aria-hidden="true"
@@ -224,25 +224,17 @@
             </a>
           </div>
           <div class="btn-group btn-group-sm" role="group" aria-label="Действия">
-            <!-- <button (click)="up(i)" type="button" class="btn btn-outline-default border-right-0">
-                <i class="fas fa-arrow-up"></i>
-              </button>
-              <button (click)="down(i)" type="button" class="btn btn-outline-default border-right-0">
-                <i class="fas fa-arrow-down"></i>
-              </button> -->
-
-            <button (click)="delState(st.id)" mat-icon-button>
-              <img src="assets/icons/del.png" class="img-fluid" [ngStyle]="{'object-fit': 'contain', 'height':'1.5em'}">
+           
+            <button class="icon-small" (click)="delState(st.id)" mat-icon-button>
+              <img src="assets/icons/del.png" class="img-fluid">
             </button>
 
-            <button (click)="isEditState=true; newState=st; addState.show();" mat-icon-button>
-              <img src="assets/icons/edit.png" class="img-fluid"
-                [ngStyle]="{'object-fit': 'contain', 'height':'1.5em'}">
+            <button class="icon-small" (click)="isEditState=true; newState=st; addState.show();" mat-icon-button>
+              <img src="assets/icons/edit.png" class="img-fluid">
             </button>
 
-            <button mat-icon-button cdkDragHandle>
-              <img src="assets/icons/right.png" class="img-fluid"
-                [ngStyle]="{'object-fit': 'contain', 'height':'1.5em'}">
+            <button class="icon-small" mat-icon-button cdkDragHandle>
+              <img src="assets/icons/right.png" class="img-fluid">
             </button>
           </div>
         </div>

@@ -77,11 +77,11 @@
     </div>
     <!-- Действия -->
     <div div fxLayout="row" fxLayoutAlign="space-around center" class="py-2">
-      <button mat-icon-button *ngIf="qwest.progressValue >= 100" (click)="doneQwest(qwest)">
-        <img src="assets/icons/star.png" class="img-fluid" [ngStyle]="{'object-fit': 'contain', 'height':'1.5em'}">
+      <button class="icon-small" mat-icon-button *ngIf="qwest.progressValue >= 100" (click)="doneQwest(qwest)">
+        <img src="assets/icons/star.png" class="img-fluid">
       </button>
-      <button mat-icon-button (click)="isFromDoneQwest=true; addTsk.show();">
-        <img src="assets/icons/create.png" class="img-fluid" [ngStyle]="{'object-fit': 'contain', 'height':'1.5em'}">
+      <button class="icon-small" mat-icon-button (click)="isFromDoneQwest=true; addTsk.show();">
+        <img src="assets/icons/create.png" class="img-fluid">
       </button>
     </div>
 
@@ -163,8 +163,8 @@
     <!-- Добавить награду -->
     <div class="text-right">
       <!-- Добавление трофея -->
-      <button (click)="addRev.show()" mat-icon-button>
-        <img src="assets/icons/create.png" class="img-fluid" [ngStyle]="{'object-fit': 'contain', 'height':'1.5em'}">
+      <button class="icon-small" (click)="addRev.show()" mat-icon-button>
+        <img src="assets/icons/create.png" class="img-fluid">
       </button>
     </div>
     <!-- Список наград -->
@@ -178,13 +178,11 @@
             <!-- Удалить -->
             <div class="btn-group btn-group-sm" role="group" aria-label="Действия">
               <!-- Редактировать -->
-              <button (click)="isEditRev=true; newRev=rev; addRev.show();" mat-icon-button>
-                <img src="assets/icons/edit.png" class="img-fluid"
-                  [ngStyle]="{'object-fit': 'contain', 'height':'1.5em'}">
+              <button class="icon-small" (click)="isEditRev=true; newRev=rev; addRev.show();" mat-icon-button>
+                <img src="assets/icons/edit.png" class="img-fluid">
               </button>
-              <button (click)="delReward(rev.id)" mat-icon-button>
-                <img src="assets/icons/del.png" class="img-fluid"
-                  [ngStyle]="{'object-fit': 'contain', 'height':'1.5em'}">
+              <button class="icon-small" (click)="delReward(rev.id)" mat-icon-button>
+                <img src="assets/icons/del.png" class="img-fluid">
               </button>
             </div>
           </div>
@@ -198,8 +196,8 @@
     </div>
     <!-- Добавить задачу -->
     <div class="text-right">
-      <button (click)="addTsk.show();" mat-icon-button>
-        <img src="assets/icons/create.png" class="img-fluid" [ngStyle]="{'object-fit': 'contain', 'height':'1.5em'}">
+      <button class="icon-small" (click)="addTsk.show();" mat-icon-button>
+        <img src="assets/icons/create.png" class="img-fluid">
       </button>
     </div>
     <!-- Задачи -->
@@ -217,11 +215,11 @@
             </ng-template>
           </div>
           <div class="btn-group btn-group-sm" role="group" aria-label="Действия">
-            <button (click)="delTask(tsk.id)" mat-icon-button>
-              <img src="assets/icons/del.png" class="img-fluid" [ngStyle]="{'object-fit': 'contain', 'height':'1.5em'}">
+            <button class="icon-small" (click)="delTask(tsk.id)" mat-icon-button>
+              <img src="assets/icons/del.png" class="img-fluid">
             </button>
-            <button mat-icon-button cdkDragHandle>
-                <img src="assets/icons/right.png" class="img-fluid" [ngStyle]="{'object-fit': 'contain', 'height':'1.5em'}">
+            <button class="icon-small" mat-icon-button cdkDragHandle>
+              <img src="assets/icons/right.png" class="img-fluid">
             </button>
           </div>
         </div>

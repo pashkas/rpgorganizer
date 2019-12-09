@@ -109,9 +109,8 @@
     <!-- Навыки -->
     <!-- Добавить навык -->
     <div class="text-right">
-      <button (click)="addAb.show();" mat-icon-button>
-        <img src="assets/icons/create.png" *ngIf="!this.srv.isGlobalTaskView" class="img-fluid"
-          [ngStyle]="{'object-fit': 'contain', 'height':'1.5em'}">
+      <button class="icon-small" (click)="addAb.show();" mat-icon-button>
+        <img src="assets/icons/create.png" *ngIf="!this.srv.isGlobalTaskView" class="img-fluid">
       </button>
     </div>
     <!-- Навыки -->
@@ -125,9 +124,8 @@
           </div>
           <div class="btn-group btn-group-sm" role="group" aria-label="Действия">
             <!-- Удалить -->
-            <button (click)="delAbil(ab.id)" mat-icon-button>
-              <img src="assets/icons/del.png" *ngIf="!this.srv.isGlobalTaskView" class="img-fluid"
-                [ngStyle]="{'object-fit': 'contain', 'height':'1.5em'}">
+            <button class="icon-small" (click)="delAbil(ab.id)" mat-icon-button>
+              <img src="assets/icons/del.png" *ngIf="!this.srv.isGlobalTaskView" class="img-fluid">
             </button>
           </div>
         </div>

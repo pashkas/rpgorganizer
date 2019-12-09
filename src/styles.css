@@ -79,6 +79,25 @@ button:focus {
     background-color: white !important;
 }
 
+/* .icon-small.mat-icon-button {
+    font-size: 1em !important;
+    height: 1em !important;
+    width: 1em !important;
+} */
+
+.icon-small.mat-icon-button {
+    width: 1.7em;
+    height: 1.7em;
+    line-height: 0px;
+    margin: 0.2em;
+}
+
+.icon-small.mat-icon-button img {
+    width: 1.7em;
+    height: 1.7em;
+    object-fit: 'contain';
+}
+
 .my-good {}
 
 .my-bad {}

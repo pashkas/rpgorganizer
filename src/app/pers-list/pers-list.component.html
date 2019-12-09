@@ -161,7 +161,7 @@
 
             <div fxFlex class="text-center">
               <img src="assets/icons/diamond.png" *ngIf="!this.srv.isGlobalTaskView" class="img-fluid"
-              [ngStyle]="{'object-fit': 'contain', 'height':'1.5em'}">
+                [ngStyle]="{'object-fit': 'contain', 'height':'1.5em'}">
               {{this.srv.pers.ON}}
             </div>
 
@@ -248,9 +248,8 @@
               name="this.srv.pers.story">
           </mat-form-field>
           <div class="text-right">
-            <button mat-icon-button id="characts" (click)="addCha.show()">
-              <img src="assets/icons/create.png" *ngIf="!this.srv.isGlobalTaskView" class="img-fluid"
-                [ngStyle]="{'object-fit': 'contain', 'height':'1.5em'}">
+            <button class="icon-small" mat-icon-button  (click)="addCha.show()">
+              <img src="assets/icons/create.png" *ngIf="!this.srv.isGlobalTaskView" class="img-fluid">
             </button>
           </div>
           <mat-list>
@@ -263,14 +262,12 @@
                   </div>
                   <div class="btn-group btn-group-sm" role="group" aria-label="Действия">
                     <!-- Добавить навык -->
-                    <button id="cha{{i}}" (click)="addAb.show(); selCha=item;" mat-icon-button color="accent">
-                      <img src="assets/icons/create.png" *ngIf="!this.srv.isGlobalTaskView" class="img-fluid"
-                        [ngStyle]="{'object-fit': 'contain', 'height':'1.5em'}">
+                    <button class="icon-small" id="cha{{i}}" (click)="addAb.show(); selCha=item;" mat-icon-button>
+                      <img src="assets/icons/create.png" *ngIf="!this.srv.isGlobalTaskView" class="img-fluid">
                     </button>
                     <!-- Удалить -->
-                    <button (click)="delCharact(item.id)" mat-icon-button>
-                      <img src="assets/icons/del.png" *ngIf="!this.srv.isGlobalTaskView" class="img-fluid"
-                        [ngStyle]="{'object-fit': 'contain', 'height':'1.5em'}">
+                    <button class="icon-small" (click)="delCharact(item.id)" mat-icon-button>
+                      <img src="assets/icons/del.png" *ngIf="!this.srv.isGlobalTaskView" class="img-fluid">
                     </button>
                   </div>
                 </div>
@@ -289,9 +286,8 @@
                         </button>
                         <!-- Удалить -->
                         <div class="btn-group btn-group-sm" role="group" aria-label="Действия">
-                          <button (click)="delAbil(ab.id)" mat-icon-button>
-                            <img src="assets/icons/del.png" *ngIf="!this.srv.isGlobalTaskView" class="img-fluid"
-                              [ngStyle]="{'object-fit': 'contain', 'height':'1.5em'}">
+                          <button class="icon-small" (click)="delAbil(ab.id)" mat-icon-button>
+                            <img src="assets/icons/del.png" *ngIf="!this.srv.isGlobalTaskView" class="img-fluid">
                           </button>
                         </div>
                       </div>
@@ -314,7 +310,7 @@
               <img src="{{item.img}}" class="img-fluid" style="max-height: 100px">
             </div>
           </div>
-          <button mat-stroked-button color="accent" class="w-100 mt-2" id="characts" (click)="resp()">
+          <button mat-stroked-button color="accent" class="w-100 mt-2"  (click)="resp()">
             Респаун
           </button>
           <br>
@@ -352,9 +348,8 @@
         <div class="pb-4">
           <div class="text-right">
             <!-- Добвление трофея -->
-            <button mat-icon-button id="characts" (click)="addRev.show();" data-toggle="modal">
-              <img src="assets/icons/create.png" *ngIf="!this.srv.isGlobalTaskView" class="img-fluid"
-                [ngStyle]="{'object-fit': 'contain', 'height':'1.5em'}">
+            <button class="icon-small" mat-icon-button  (click)="addRev.show();" data-toggle="modal">
+              <img src="assets/icons/create.png" *ngIf="!this.srv.isGlobalTaskView" class="img-fluid">
             </button>
           </div>
           <!-- Список наград -->
@@ -368,13 +363,11 @@
                   <!-- Удалить -->
                   <div class="btn-group btn-group-sm" role="group" aria-label="Действия">
                     <!-- Редактировать -->
-                    <button (click)="isEditRev=true; newRev=rev; addRev.show();" mat-icon-button>
-                      <img src="assets/icons/edit.png" *ngIf="!this.srv.isGlobalTaskView" class="img-fluid"
-                        [ngStyle]="{'object-fit': 'contain', 'height':'1.5em'}">
+                    <button class="icon-small" (click)="isEditRev=true; newRev=rev; addRev.show();" mat-icon-button>
+                      <img src="assets/icons/edit.png" *ngIf="!this.srv.isGlobalTaskView" class="img-fluid">
                     </button>
-                    <button (click)="delReward(rev.id)" mat-icon-button>
-                      <img src="assets/icons/del.png" *ngIf="!this.srv.isGlobalTaskView" class="img-fluid"
-                        [ngStyle]="{'object-fit': 'contain', 'height':'1.5em'}">
+                    <button class="icon-small" (click)="delReward(rev.id)" mat-icon-button>
+                      <img src="assets/icons/del.png" *ngIf="!this.srv.isGlobalTaskView" class="img-fluid">
                     </button>
                   </div>
                 </div>
@@ -414,9 +407,8 @@
           <!-- Квесты -->
           <div class="text-right">
             <!-- Добавление квеста -->
-            <button mat-icon-button id="characts" data-toggle="modal" (click)="addQwest.show()">
-              <img src="assets/icons/create.png" *ngIf="!this.srv.isGlobalTaskView" class="img-fluid"
-                [ngStyle]="{'object-fit': 'contain', 'height':'1.5em'}">
+            <button class="icon-small" mat-icon-button  data-toggle="modal" (click)="addQwest.show()">
+              <img src="assets/icons/create.png" *ngIf="!this.srv.isGlobalTaskView" class="img-fluid">
             </button>
           </div>
           <!-- Список квестов -->
@@ -429,9 +421,8 @@
                 <div class="d-flex">
                   <!-- Удалить -->
                   <div class="btn-group btn-group-sm" role="group" aria-label="Действия">
-                    <button (click)="delQwest(qwest.id)" mat-icon-button>
-                      <img src="assets/icons/del.png" *ngIf="!this.srv.isGlobalTaskView" class="img-fluid"
-                        [ngStyle]="{'object-fit': 'contain', 'height':'1.5em'}">
+                    <button class="icon-small" (click)="delQwest(qwest.id)" mat-icon-button>
+                      <img src="assets/icons/del.png" *ngIf="!this.srv.isGlobalTaskView" class="img-fluid">
                     </button>
                   </div>
                 </div>
