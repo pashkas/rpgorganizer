@@ -76,11 +76,11 @@
       </i>
     </div>
     <!-- Действия -->
-    <div div fxLayout="row" fxLayoutAlign="space-between center" class="py-2">
-      <button fxFlex mat-icon-button *ngIf="qwest.progressValue >= 100" (click)="doneQwest(qwest)">
+    <div div fxLayout="row" fxLayoutAlign="space-around center" class="py-2">
+      <button mat-icon-button *ngIf="qwest.progressValue >= 100" (click)="doneQwest(qwest)">
         <img src="assets/icons/star.png" class="img-fluid" [ngStyle]="{'object-fit': 'contain', 'height':'1.5em'}">
       </button>
-      <button fxFlex mat-icon-button (click)="isFromDoneQwest=true; addTsk.show();">
+      <button mat-icon-button (click)="isFromDoneQwest=true; addTsk.show();">
         <img src="assets/icons/create.png" class="img-fluid" [ngStyle]="{'object-fit': 'contain', 'height':'1.5em'}">
       </button>
     </div>
