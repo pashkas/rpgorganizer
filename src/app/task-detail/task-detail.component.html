@@ -57,7 +57,7 @@
     </div>
 
     <!-- Действия -->
-    <div *ngIf="this.srv.pers.ON>=1" class="py-2 text-center">
+    <div *ngIf="this.srv.pers.ON >= 1 && tsk.requrense != 'нет'" class="py-2 text-center">
       <button mat-icon-button (click)="upAbil();">
         <img src="assets/icons/up.png" class="img-fluid" [ngStyle]="{'object-fit': 'contain', 'height':'1.5em'}">
       </button>
