@@ -177,7 +177,7 @@ export class PerschangesService {
         changes: changes,
         isGood: isGood
       },
-      hasBackdrop: false
+      //hasBackdrop: false
     });
 
     setTimeout(() => {

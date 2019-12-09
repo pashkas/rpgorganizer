@@ -2,14 +2,14 @@
   <div class="d-flex w-100 justify-content-end px-2 py-2">
     <!-- Назад -->
     <button *ngIf="!isEditMode" mat-icon-button (click)="goBack()" class="mx-2">
-      <img img-cache img-cache-src="assets/icons/left.png" *ngIf="!this.srv.isGlobalTaskView" class="img-fluid"
+      <img src="assets/icons/left.png" *ngIf="!this.srv.isGlobalTaskView" class="img-fluid"
         [ngStyle]="{'object-fit': 'contain', 'height':'2.5em'}">
     </button>
     <!-- Редактировать -->
     <button mat-icon-button (click)="saveData()">
-      <img *ngIf="!isEditMode" img-cache img-cache-src="assets/icons/edit.png" class="img-fluid"
+      <img *ngIf="!isEditMode" src="assets/icons/edit.png" class="img-fluid"
         [ngStyle]="{'object-fit': 'contain', 'height':'3em'}">
-      <img *ngIf="isEditMode" img-cache img-cache-src="assets/icons/create.png" class="img-fluid"
+      <img *ngIf="isEditMode" src="assets/icons/create.png" class="img-fluid"
         [ngStyle]="{'object-fit': 'contain', 'height':'3em'}">
     </button>
   </div>
@@ -77,11 +77,11 @@
     </div>
     <!-- Действия -->
     <div div fxLayout="row" fxLayoutAlign="space-between center" class="py-2">
-      <button fxFlex mat-stroked-button color="accent" *ngIf="qwest.progressValue >= 100" (click)="doneQwest(qwest)">
-        <i class="fas fa-thumbs-up"></i>
+      <button fxFlex mat-icon-button *ngIf="qwest.progressValue >= 100" (click)="doneQwest(qwest)">
+        <img src="assets/icons/star.png" class="img-fluid" [ngStyle]="{'object-fit': 'contain', 'height':'1.5em'}">
       </button>
-      <button fxFlex mat-stroked-button color="accent" (click)="isFromDoneQwest=true; addTsk.show();">
-        <i class="fas fa-plus"></i>
+      <button fxFlex mat-icon-button (click)="isFromDoneQwest=true; addTsk.show();">
+        <img src="assets/icons/create.png" class="img-fluid" [ngStyle]="{'object-fit': 'contain', 'height':'1.5em'}">
       </button>
     </div>
 
@@ -114,7 +114,7 @@
         <li *ngFor="let tsk of qwest.tasks" class="list-group-item px-0 py-1 border-0">
           <a class="align-self-center w-100" [routerLink]="['/task', tsk.id, false]">
             <div class="d-flex">
-              <div class="flex-grow-1 text-left align-self-baseline">
+              <div class="flex-grow-1 text-center align-self-baseline">
                 <ng-container *ngIf="tsk.isDone; else elseTemplate">
                   <del>
                     <h6>{{tsk.name}}</h6>
@@ -161,10 +161,10 @@
       <h5>Награды:</h5>
     </div>
     <!-- Добавить награду -->
-    <div class="form-row">
+    <div class="text-right">
       <!-- Добавление трофея -->
-      <button (click)="addRev.show()" mat-stroked-button color="accent" class="w-100">
-        <i class="fas fa-plus"></i>
+      <button (click)="addRev.show()" mat-icon-button>
+        <img src="assets/icons/create.png" class="img-fluid" [ngStyle]="{'object-fit': 'contain', 'height':'1.5em'}">
       </button>
     </div>
     <!-- Список наград -->
@@ -179,10 +179,12 @@
             <div class="btn-group btn-group-sm" role="group" aria-label="Действия">
               <!-- Редактировать -->
               <button (click)="isEditRev=true; newRev=rev; addRev.show();" mat-icon-button>
-                <i class="fas fa-edit"></i>
+                <img src="assets/icons/edit.png" class="img-fluid"
+                  [ngStyle]="{'object-fit': 'contain', 'height':'1.5em'}">
               </button>
               <button (click)="delReward(rev.id)" mat-icon-button>
-                <i class="fas fa-eraser"></i>
+                <img src="assets/icons/del.png" class="img-fluid"
+                  [ngStyle]="{'object-fit': 'contain', 'height':'1.5em'}">
               </button>
             </div>
           </div>
@@ -195,9 +197,9 @@
       <h5>Миссии:</h5>
     </div>
     <!-- Добавить задачу -->
-    <div class="form-row">
-      <button (click)="addTsk.show();" mat-stroked-button color="accent" class="w-100">
-        <i class="fas fa-plus"></i>
+    <div class="text-right">
+      <button (click)="addTsk.show();" mat-icon-button>
+        <img src="assets/icons/create.png" class="img-fluid" [ngStyle]="{'object-fit': 'contain', 'height':'1.5em'}">
       </button>
     </div>
     <!-- Задачи -->
@@ -216,10 +218,10 @@
           </div>
           <div class="btn-group btn-group-sm" role="group" aria-label="Действия">
             <button (click)="delTask(tsk.id)" mat-icon-button>
-              <i class="fas fa-eraser"></i>
+              <img src="assets/icons/del.png" class="img-fluid" [ngStyle]="{'object-fit': 'contain', 'height':'1.5em'}">
             </button>
             <button mat-icon-button cdkDragHandle>
-              <i class="fas fa-expand-arrows-alt"></i>
+                <img src="assets/icons/right.png" class="img-fluid" [ngStyle]="{'object-fit': 'contain', 'height':'1.5em'}">
             </button>
           </div>
         </div>

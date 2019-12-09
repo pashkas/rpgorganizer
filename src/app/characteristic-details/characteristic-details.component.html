@@ -2,14 +2,14 @@
   <div class="d-flex w-100 justify-content-end px-2 py-2">
     <!-- Назад -->
     <button *ngIf="!isEditMode" mat-icon-button (click)="goBack()" class="mx-2">
-      <img img-cache img-cache-src="assets/icons/left.png" *ngIf="!this.srv.isGlobalTaskView" class="img-fluid"
+      <img src="assets/icons/left.png" *ngIf="!this.srv.isGlobalTaskView" class="img-fluid"
         [ngStyle]="{'object-fit': 'contain', 'height':'2.5em'}">
     </button>
     <!-- Редактировать -->
     <button mat-icon-button (click)="saveData()">
-      <img *ngIf="!isEditMode" img-cache img-cache-src="assets/icons/edit.png" class="img-fluid"
+      <img *ngIf="!isEditMode" src="assets/icons/edit.png" class="img-fluid"
         [ngStyle]="{'object-fit': 'contain', 'height':'3em'}">
-      <img *ngIf="isEditMode" img-cache img-cache-src="assets/icons/create.png" class="img-fluid"
+      <img *ngIf="isEditMode" src="assets/icons/create.png" class="img-fluid"
         [ngStyle]="{'object-fit': 'contain', 'height':'3em'}">
     </button>
   </div>
@@ -108,9 +108,10 @@
 
     <!-- Навыки -->
     <!-- Добавить навык -->
-    <div class="form-row">
-      <button (click)="addAb.show();" mat-stroked-button color="accent" class="w-100">
-        <i class="fas fa-plus"></i>
+    <div class="text-right">
+      <button (click)="addAb.show();" mat-icon-button>
+        <img src="assets/icons/create.png" *ngIf="!this.srv.isGlobalTaskView" class="img-fluid"
+          [ngStyle]="{'object-fit': 'contain', 'height':'1.5em'}">
       </button>
     </div>
     <!-- Навыки -->
@@ -125,7 +126,8 @@
           <div class="btn-group btn-group-sm" role="group" aria-label="Действия">
             <!-- Удалить -->
             <button (click)="delAbil(ab.id)" mat-icon-button>
-              <i class="fas fa-eraser"></i>
+              <img src="assets/icons/del.png" *ngIf="!this.srv.isGlobalTaskView" class="img-fluid"
+                [ngStyle]="{'object-fit': 'contain', 'height':'1.5em'}">
             </button>
           </div>
         </div>

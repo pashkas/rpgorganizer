@@ -79,15 +79,14 @@ button:focus {
     background-color: white !important;
 }
 
-.my-good {
-    
-    
-}
+.my-good {}
 
-.my-bad {
-    
-    
-}
+.my-bad {}
+
+/* .mat-icon-button {
+    height: auto !important;
+    width: auto !important;
+} */
 
 .my-good .mat-dialog-container {
     background: green;
