@@ -118,36 +118,33 @@
     <div fxLayout="row" fxLayoutAlign="end center" fxLayoutGap="0.3em" class="w-100 h-100 px-2">
 
       <button [autofocus]="false" [ngClass]="{'disabled': isSort}" (click)="firstOrGlobal()" mat-icon-button>
-        <img *ngIf="this.srv.isGlobalTaskView" img-cache img-cache-src="assets/icons/right.png" class="img-fluid"
+        <img *ngIf="this.srv.isGlobalTaskView" src="assets/icons/right.png" class="img-fluid"
           [ngStyle]="{'object-fit': 'contain', 'height':'3em'}">
-        <img img-cache img-cache-src="assets/icons/left.png" *ngIf="!this.srv.isGlobalTaskView" class="img-fluid"
+        <img src="assets/icons/left.png" *ngIf="!this.srv.isGlobalTaskView" class="img-fluid"
           [ngStyle]="{'object-fit': 'contain', 'height':'3em'}">
       </button>
 
       <div fxLayout="column" fxLayoutAlign="center center" fxLayoutGap="0.3em" class="h-100">
         <button [ngClass]="{'disabled': isSort}" (click)="setView()" mat-icon-button>
-          <img *ngIf="srv.pers.sellectedView!='навыки'" img-cache img-cache-src="assets/icons/abils.png"  class="img-fluid"
-          [ngStyle]="{'object-fit': 'contain', 'height':'2.2em'}">
-          <img  *ngIf="srv.pers.sellectedView!='квесты'" img-cache img-cache-src="assets/icons/qwests.png"  class="img-fluid"
-          [ngStyle]="{'object-fit': 'contain', 'height':'2.5em'}">
+          <img *ngIf="srv.pers.sellectedView!='навыки'" src="assets/icons/abils.png" class="img-fluid"
+            [ngStyle]="{'object-fit': 'contain', 'height':'2.2em'}">
+          <img *ngIf="srv.pers.sellectedView!='квесты'" src="assets/icons/qwests.png" class="img-fluid"
+            [ngStyle]="{'object-fit': 'contain', 'height':'2.5em'}">
         </button>
         <button (click)="setSort()" mat-icon-button>
-          <img img-cache img-cache-src="assets/icons/edit.png" class="img-fluid"
-          [ngStyle]="{'object-fit': 'contain', 'height':'3em'}">
+          <img src="assets/icons/edit.png" class="img-fluid" [ngStyle]="{'object-fit': 'contain', 'height':'3em'}">
         </button>
       </div>
 
       <button [ngClass]="{'disabled': isSort||this.srv.isGlobalTaskView||!this.srv.pers.currentTask}"
         (click)="done(this.srv.pers.currentTask)" mat-icon-button>
-        <img img-cache img-cache-src="assets/icons/sword.png" class="img-fluid"
-          [ngStyle]="{'object-fit': 'contain', 'height':'3em'}">
+        <img src="assets/icons/sword.png" class="img-fluid" [ngStyle]="{'object-fit': 'contain', 'height':'3em'}">
       </button>
 
       <button
         [ngClass]="{'disabled': isSort||this.srv.isGlobalTaskView||!this.srv.pers.currentTask||this.srv.pers.currentTask?.requrense=='нет'}"
         (click)="fail(this.srv.pers.currentTask)" mat-icon-button>
-        <img img-cache img-cache-src="assets/icons/shild.png" class="img-fluid"
-          [ngStyle]="{'object-fit': 'contain', 'height':'3em'}">
+        <img src="assets/icons/shild.png" class="img-fluid" [ngStyle]="{'object-fit': 'contain', 'height':'3em'}">
       </button>
 
     </div>
