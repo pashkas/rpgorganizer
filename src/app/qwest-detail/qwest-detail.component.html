@@ -75,6 +75,25 @@
         {{qwest.descr}}
       </i>
     </div>
+
+
+    <!-- Награды -->
+    <ng-container *ngIf="qwest.rewards?.length > 0 || qwest.exp > 0">
+      <br>
+      <div fxLayout="row wrap" fxLayoutAlign="center center">
+        <div *ngIf="qwest.exp > 0">
+          <span class="text-success">
+            +{{qwest.exp}} exp;&nbsp;
+          </span>
+        </div>
+        <div *ngFor="let inv of qwest.rewards">
+          <span class="text-success">
+            {{inv.name}};&nbsp;
+          </span>
+        </div>
+      </div>
+    </ng-container>
+
     <!-- Действия -->
     <div div fxLayout="row" fxLayoutAlign="space-around center" class="py-2">
       <button class="icon-small" mat-icon-button *ngIf="qwest.progressValue >= 100" (click)="doneQwest(qwest)">
@@ -85,30 +104,7 @@
       </button>
     </div>
 
-    <!-- Награды -->
-    <ng-container *ngIf="qwest.rewards?.length > 0 || qwest.exp > 0">
-      <h5>Награда:</h5>
-      <ul class="list-group p-0">
-        <li *ngIf="qwest.exp > 0" class="list-group-item px-0 py-1 border-0">
-          <a class="align-self-center w-100 text-primary">
-            <div class="d-flex justify-content-between align-items-center">
-              <h6>+{{qwest.exp}} exp</h6>
-            </div>
-          </a>
-        </li>
-        <li *ngFor="let inv of qwest.rewards" class="list-group-item px-0 py-1 border-0">
-          <a class="align-self-center w-100 text-primary">
-            <div class="d-flex justify-content-between align-items-center">
-              <h6>{{inv.name}}</h6>
-            </div>
-          </a>
-        </li>
-      </ul>
-      <br>
-    </ng-container>
-
     <ng-container *ngIf="qwest.tasks.length>0">
-      <h5>Миссии:</h5>
       <!-- Задачи -->
       <ul class="list-group p-0">
         <li *ngFor="let tsk of qwest.tasks" class="list-group-item px-0 py-1 border-0">
@@ -156,46 +152,11 @@
       <input matInput autocomplete="off" placeholder="Опыт" [(ngModel)]="qwest.exp" name="exp">
     </mat-form-field>
 
-    <!-- Награды -->
-    <div class="form-row">
-      <h5>Награды:</h5>
-    </div>
-    <!-- Добавить награду -->
-    <div class="text-right">
-      <!-- Добавление трофея -->
-      <button class="icon-small" (click)="addRev.show()" mat-icon-button>
-        <img src="assets/icons/create.png" class="img-fluid">
-      </button>
-    </div>
-    <!-- Список наград -->
-    <mat-list>
-      <div mat-list-item *ngFor="let rev of qwest.rewards; let i = index">
-        <div class="d-flex">
-          <div class="flex-grow-1 align-self-center">
-            {{rev.name}} <i>{{rev.descr}}</i>
-          </div>
-          <div class="d-flex">
-            <!-- Удалить -->
-            <div class="btn-group btn-group-sm" role="group" aria-label="Действия">
-              <!-- Редактировать -->
-              <button class="icon-small" (click)="isEditRev=true; newRev=rev; addRev.show();" mat-icon-button>
-                <img src="assets/icons/edit.png" class="img-fluid">
-              </button>
-              <button class="icon-small" (click)="delReward(rev.id)" mat-icon-button>
-                <img src="assets/icons/del.png" class="img-fluid">
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </mat-list>
-    <br>
+
+
     <!-- Задачи -->
-    <div class="form-row">
+    <div fxLayout="row" fxLayoutAlign="space-between center">
       <h5>Миссии:</h5>
-    </div>
-    <!-- Добавить задачу -->
-    <div class="text-right">
       <button class="icon-small" (click)="addTsk.show();" mat-icon-button>
         <img src="assets/icons/create.png" class="img-fluid">
       </button>
@@ -221,6 +182,38 @@
             <button class="icon-small" mat-icon-button cdkDragHandle>
               <img src="assets/icons/right.png" class="img-fluid">
             </button>
+          </div>
+        </div>
+      </div>
+    </mat-list>
+    <br>
+
+    <!-- Добавить награду -->
+    <div fxLayout="row" fxLayoutAlign="space-between center">
+      <h5>Награды:</h5>
+      <!-- Добавление трофея -->
+      <button class="icon-small" (click)="addRev.show()" mat-icon-button>
+        <img src="assets/icons/create.png" class="img-fluid">
+      </button>
+    </div>
+    <!-- Список наград -->
+    <mat-list>
+      <div mat-list-item *ngFor="let rev of qwest.rewards; let i = index">
+        <div class="d-flex">
+          <div class="flex-grow-1 align-self-center">
+            {{rev.name}} <i>{{rev.descr}}</i>
+          </div>
+          <div class="d-flex">
+            <!-- Удалить -->
+            <div class="btn-group btn-group-sm" role="group" aria-label="Действия">
+              <!-- Редактировать -->
+              <button class="icon-small" (click)="isEditRev=true; newRev=rev; addRev.show();" mat-icon-button>
+                <img src="assets/icons/edit.png" class="img-fluid">
+              </button>
+              <button class="icon-small" (click)="delReward(rev.id)" mat-icon-button>
+                <img src="assets/icons/del.png" class="img-fluid">
+              </button>
+            </div>
           </div>
         </div>
       </div>

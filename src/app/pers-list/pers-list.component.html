@@ -247,8 +247,9 @@
             <input matInput autocomplete="off" placeholder="История" [(ngModel)]="this.srv.pers.story"
               name="this.srv.pers.story">
           </mat-form-field>
-          <div class="text-right">
-            <button class="icon-small" mat-icon-button  (click)="addCha.show()">
+          <div fxLayout="row" fxLayoutAlign="space-between center">
+            <h5>Атрбуты:</h5>
+            <button class="icon-small" mat-icon-button (click)="addCha.show()">
               <img src="assets/icons/create.png" *ngIf="!this.srv.isGlobalTaskView" class="img-fluid">
             </button>
           </div>
@@ -310,7 +311,7 @@
               <img src="{{item.img}}" class="img-fluid" style="max-height: 100px">
             </div>
           </div>
-          <button mat-stroked-button color="accent" class="w-100 mt-2"  (click)="resp()">
+          <button mat-stroked-button color="accent" class="w-100 mt-2" (click)="resp()">
             Респаун
           </button>
           <br>
@@ -346,9 +347,10 @@
       <!-- Редактирование -->
       <div *ngIf="isEditMode" class="pt-2 pb-4 w-100">
         <div class="pb-4">
-          <div class="text-right">
+          <div fxLayout="row" fxLayoutAlign="space-between center">
+            <h5>Трофеи:</h5>
             <!-- Добвление трофея -->
-            <button class="icon-small" mat-icon-button  (click)="addRev.show();" data-toggle="modal">
+            <button class="icon-small" mat-icon-button (click)="addRev.show();" data-toggle="modal">
               <img src="assets/icons/create.png" *ngIf="!this.srv.isGlobalTaskView" class="img-fluid">
             </button>
           </div>
@@ -405,9 +407,10 @@
       <div *ngIf="isEditMode" class="pt-2 pb-4">
         <div class="pb-4">
           <!-- Квесты -->
-          <div class="text-right">
+          <div fxLayout="row" fxLayoutAlign="space-between center">
+            <h5>Квесты:</h5>
             <!-- Добавление квеста -->
-            <button class="icon-small" mat-icon-button  data-toggle="modal" (click)="addQwest.show()">
+            <button class="icon-small" mat-icon-button data-toggle="modal" (click)="addQwest.show()">
               <img src="assets/icons/create.png" *ngIf="!this.srv.isGlobalTaskView" class="img-fluid">
             </button>
           </div>

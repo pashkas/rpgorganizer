@@ -687,38 +687,38 @@ export class PersService {
    */
   getWeekKoef(requrense: string, isPlus: boolean): number {
     if (requrense === 'будни') {
-      return 7.0 / 5.0;
+      return 5.0 / 5.0;
     }
     if (requrense === 'выходные') {
-      return 7.0 / 2.0;
+      return 5.0 / 2.0;
     }
     if (requrense === 'ежедневно') {
-      return 7.0 / 7.0;
+      return 5.0 / 7.0;
     }
     if (requrense === 'пн,ср,пт') {
-      return 7.0 / 3.0;
+      return 5.0 / 3.0;
     }
     if (requrense === 'вт,чт,сб') {
-      return 7.0 / 3.0;
+      return 5.0 / 3.0;
     }
     if (requrense === 'пн,вт,чт,сб') {
-      return 7.0 / 4.0;
+      return 5.0 / 4.0;
     }
     if (requrense === 'не суббота') {
-      return 7.0 / 6.0;
+      return 5.0 / 6.0;
     }
     if (requrense === 'не воскресенье') {
-      return 7.0 / 6.0;
+      return 5.0 / 6.0;
     }
     if (isPlus) {
       if (requrense === 'через 1 день') {
-        return 2;
+        return (5 / 7) * 2;
       }
       if (requrense === 'через 2 дня') {
-        return 3;
+        return (5 / 7) * 3;
       }
       if (requrense === 'через 3 дня') {
-        return 4;
+        return (5 / 7) * 4;
       }
     }
 

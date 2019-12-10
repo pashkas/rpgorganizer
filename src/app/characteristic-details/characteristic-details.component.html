@@ -108,7 +108,8 @@
 
     <!-- Навыки -->
     <!-- Добавить навык -->
-    <div class="text-right">
+    <div fxLayout="row" fxLayoutAlign="space-between center">
+      <h5>Навыки:</h5>
       <button class="icon-small" (click)="addAb.show();" mat-icon-button>
         <img src="assets/icons/create.png" *ngIf="!this.srv.isGlobalTaskView" class="img-fluid">
       </button>
