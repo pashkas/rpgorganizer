@@ -136,7 +136,7 @@
           <!-- Картинка -->
           <div class="text-center">
             <!-- img-cache img-cache-src="{{this.srv.pers.rang.img}}" -->
-            <img src="{{this.srv.pers.rang.img}}" class="img-fluid"
+            <img src="{{this.srv.pers.image}}" class="img-fluid"
               [ngStyle]="{'object-fit': 'contain', 'height': '30vh'}">
           </div>
           <div fxLayoutGap="4px" fxLayout="row" fxLayoutAlign="space-between center" class="px-1">
@@ -244,6 +244,10 @@
               name="this.srv.pers.name">
           </mat-form-field>
           <mat-form-field class="w-100">
+            <input matInput autocomplete="off" placeholder="Изображение" [(ngModel)]="this.srv.pers.image"
+              name="this.srv.pers.image">
+          </mat-form-field>
+          <mat-form-field class="w-100">
             <input matInput autocomplete="off" placeholder="История" [(ngModel)]="this.srv.pers.story"
               name="this.srv.pers.story">
           </mat-form-field>
@@ -299,7 +303,8 @@
             </div>
           </mat-list>
           <br>
-          <div fxLayout="row" class="my-1" fxLayoutAlign="space-between center" fxLayoutGap="4px"
+          <ng-container *ngIf="false">
+            <div fxLayout="row" class="my-1" fxLayoutAlign="space-between center" fxLayoutGap="4px"
             *ngFor="let item of this.srv.pers.rangse; let i = index">
             <mat-form-field fxFlex>
               <input matInput autocomplete="off" placeholder="Название" [(ngModel)]="item.name" name="rangName{{i}}">
@@ -311,6 +316,8 @@
               <img src="{{item.img}}" class="img-fluid" style="max-height: 100px">
             </div>
           </div>
+          </ng-container>
+          
           <button mat-stroked-button color="accent" class="w-100 mt-2" (click)="resp()">
             Респаун
           </button>
@@ -393,7 +400,10 @@
             <ul class="list-group py-0 px-0">
               <li *ngFor="let qwest of this.srv.pers.qwests" class="list-group-item px-0 py-1 border-0">
                 <a class="align-self-center w-100" [routerLink]="['/qwest', qwest.id]">
-                  <h6>{{qwest.name}}</h6>
+                  <div fxLayout="row" fxLayoutAlign="space-between center">
+                    <h6>{{qwest.name}}</h6>
+                    <h6>{{qwest.tasksDone}}/{{qwest.tasks.length}}</h6>
+                  </div>
                 </a>
                 <mat-progress-bar class="myprogr" color="accent" mode="determinate" value="{{qwest.progressValue}}">
                 </mat-progress-bar>

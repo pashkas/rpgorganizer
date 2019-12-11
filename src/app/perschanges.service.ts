@@ -53,9 +53,9 @@ export class PerschangesService {
       // Квесты
       if (changesMap[n].type == 'qwest') {
         if (changesMap[n].after === null || changesMap[n].after === undefined) {
-          changes.push(
-            new ChangesModel(changesMap[n].name, 'qwestDone', null, null, null, null)
-          );
+          // changes.push(
+          //   new ChangesModel(changesMap[n].name, 'qwestDone', null, null, null, null)
+          // );
         }
         else if (changesMap[n].after > changesMap[n].before) {
           changes.push(
@@ -129,27 +129,27 @@ export class PerschangesService {
       // Уровень
       else if (changesMap[n].type == 'lvl') {
         if (changesMap[n].after > changesMap[n].before) {
-          changes.push(
-            new ChangesModel('Уровень', 'lvl', changesMap[n].before, changesMap[n].after, 0, Pers.maxLevel)
-          );
+          // changes.push(
+          //   new ChangesModel('Уровень', 'lvl', changesMap[n].before, changesMap[n].after, 0, Pers.maxLevel)
+          // );
         }
         else if (changesMap[n].after > changesMap[n].before) {
-          changes.push(
-            new ChangesModel('Уровень', 'lvl', changesMap[n].before, changesMap[n].after, 0, Pers.maxLevel)
-          );
+          // changes.push(
+          //   new ChangesModel('Уровень', 'lvl', changesMap[n].before, changesMap[n].after, 0, Pers.maxLevel)
+          // );
         }
       }
       // Ранг
       else if (changesMap[n].type == 'rang') {
         if (changesMap[n].after > changesMap[n].before) {
-          changes.push(
-            new ChangesModel('Ранг', 'rang', changesMap[n].before, changesMap[n].after, 0, Pers.rangLvls.length)
-          );
+          // changes.push(
+          //   new ChangesModel('Ранг', 'rang', changesMap[n].before, changesMap[n].after, 0, Pers.rangLvls.length)
+          // );
         }
         else if (changesMap[n].after > changesMap[n].before) {
-          changes.push(
-            new ChangesModel('Ранг', 'rang', changesMap[n].before, changesMap[n].after, 0, Pers.rangLvls.length)
-          );
+          // changes.push(
+          //   new ChangesModel('Ранг', 'rang', changesMap[n].before, changesMap[n].after, 0, Pers.rangLvls.length)
+          // );
         }
       }
     });

@@ -78,7 +78,7 @@ export class Pers {
     dateLastUse: Date = new Date();
     exp: number = 0;
     id: any;
-    image: string = "";
+    image: string = "https://live.staticflickr.com/7888/47533068482_b007e8ae03_o.png";
     inventory: Reward[] = [];
     level: number = 0;
     name: string = "Хиро";

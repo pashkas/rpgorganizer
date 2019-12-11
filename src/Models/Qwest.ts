@@ -7,6 +7,7 @@ export class Qwest {
     image: string = "";
     descr: string = "";
     rewards: Reward[] = [];
+    tasksDone: number = 0;
     tasks: Task[] = [];
     progressValue: number = 0;
     exp: number = 0;

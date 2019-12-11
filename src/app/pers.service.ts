@@ -686,39 +686,41 @@ export class PersService {
    * @param requrense Повтор задачи.
    */
   getWeekKoef(requrense: string, isPlus: boolean): number {
+    let base = 7.0;
+
     if (requrense === 'будни') {
-      return 5.0 / 5.0;
+      return base / 5.0;
     }
     if (requrense === 'выходные') {
-      return 5.0 / 2.0;
+      return base / 2.0;
     }
     if (requrense === 'ежедневно') {
-      return 5.0 / 7.0;
+      return base / 7.0;
     }
     if (requrense === 'пн,ср,пт') {
-      return 5.0 / 3.0;
+      return base / 3.0;
     }
     if (requrense === 'вт,чт,сб') {
-      return 5.0 / 3.0;
+      return base / 3.0;
     }
     if (requrense === 'пн,вт,чт,сб') {
-      return 5.0 / 4.0;
+      return base / 4.0;
     }
     if (requrense === 'не суббота') {
-      return 5.0 / 6.0;
+      return base / 6.0;
     }
     if (requrense === 'не воскресенье') {
-      return 5.0 / 6.0;
+      return base / 6.0;
     }
     if (isPlus) {
       if (requrense === 'через 1 день') {
-        return (5 / 7) * 2;
+        return (base / 7.0) * 2;
       }
       if (requrense === 'через 2 дня') {
-        return (5 / 7) * 3;
+        return (base / 7.0) * 3;
       }
       if (requrense === 'через 3 дня') {
-        return (5 / 7) * 4;
+        return (base / 7.0) * 4;
       }
     }
 
@@ -859,6 +861,8 @@ export class PersService {
       else {
         qw.progressValue = 0;
       }
+
+      qw.tasksDone = doneTsks;
 
       // Сортировка задач квеста
       this.sortQwestTasks(qw);
@@ -1256,6 +1260,10 @@ export class PersService {
    * @param prs Персонаж.
    */
   private checkPersNewFields(prs: Pers) {
+    if (!prs.image) {
+      prs.image = prs.rang.img;
+    }
+
     if (!prs.qwests) {
       prs.qwests = [];
     }
@@ -1482,7 +1490,8 @@ export class PersService {
     }
 
     // Очки навыков
-    this.pers.ONPerLevel = totalAbilities / Ability.maxValue;
+    //this.pers.ONPerLevel = totalAbilities / Ability.maxValue;
+    this.pers.ONPerLevel = 1;
 
     let persLevel = 0;
 
@@ -1532,19 +1541,55 @@ export class PersService {
       this.pers.rangse.push(rang);
     }
 
-    this.pers.nextRangLvl = Pers.rangLvls[Pers.rangLvls.length - 1];
+    let maxLevel = this.pers.characteristics.reduce((a, b) => {
+      return a + b.abilities.length * 10
+    }, 0);
 
-    for (let index = this.pers.rangse.length - 1; index >= 0; index--) {
-      this.pers.rangse[index].val = Pers.rangLvls[index];
+    if (maxLevel < 5) {
+      maxLevel = 5;
+    }
 
-      const rang = this.pers.rangse[index];
-      if (this.pers.level >= rang.val) {
-        this.pers.rang = rang;
-        return;
+    let step = Math.floor(maxLevel / 5);
+    let curRangLvl = 0;
+    let nextRangLvl = step;
+    let rangIndex = 0;
+
+    for (let i = 0; i < this.pers.rangse.length; i++) {
+      curRangLvl = i * step;
+      nextRangLvl = (i + 1) * step;
+
+      if (i == this.pers.rangse.length) {
+        nextRangLvl = maxLevel;
+        rangIndex = this.pers.rangse.length - 1;
+        break;
       }
 
-      this.pers.nextRangLvl = this.pers.rangse[index].val;
+      if (nextRangLvl > this.pers.level) {
+        rangIndex = i;
+        break;
+      }
     }
+
+    this.pers.nextRangLvl = nextRangLvl;
+
+    this.pers.rang = this.pers.rangse[rangIndex];
+    this.pers.rang.val = curRangLvl;
+
+    debugger;
+
+    // this.pers.nextRangLvl = Pers.rangLvls[Pers.rangLvls.length - 1];
+
+    // for (let index = this.pers.rangse.length - 1; index >= 0; index--) {
+    //   this.pers.rangse[index].val = Pers.rangLvls[index];
+
+    //   const rang = this.pers.rangse[index];
+    //   if (this.pers.level >= rang.val) {
+    //     this.pers.rang = rang;
+    //     return;
+    //   }
+
+    //   this.pers.nextRangLvl = this.pers.rangse[index].val;
+    // }
   }
 
   private setTaskTittle(tsk: Task) {

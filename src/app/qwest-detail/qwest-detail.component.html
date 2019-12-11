@@ -76,11 +76,19 @@
       </i>
     </div>
 
+    <!-- Действия -->
+    <div div fxLayout="row" fxLayoutAlign="space-around center" class="pt-2" *ngIf="qwest.progressValue >= 100">
+      <button class="icon-small" mat-icon-button *ngIf="qwest.progressValue >= 100" (click)="doneQwest(qwest)">
+        <img src="assets/icons/star.png" class="img-fluid">
+      </button>
+      <!-- <button class="icon-small" mat-icon-button (click)="isFromDoneQwest=true; addTsk.show();">
+          <img src="assets/icons/create.png" class="img-fluid">
+        </button> -->
+    </div>
 
     <!-- Награды -->
     <ng-container *ngIf="qwest.rewards?.length > 0 || qwest.exp > 0">
-      <br>
-      <div fxLayout="row wrap" fxLayoutAlign="center center">
+      <div fxLayout="row wrap" fxLayoutAlign="center center" class="pt-2">
         <div *ngIf="qwest.exp > 0">
           <span class="text-success">
             +{{qwest.exp}} exp;&nbsp;
@@ -94,17 +102,9 @@
       </div>
     </ng-container>
 
-    <!-- Действия -->
-    <div div fxLayout="row" fxLayoutAlign="space-around center" class="py-2">
-      <button class="icon-small" mat-icon-button *ngIf="qwest.progressValue >= 100" (click)="doneQwest(qwest)">
-        <img src="assets/icons/star.png" class="img-fluid">
-      </button>
-      <button class="icon-small" mat-icon-button (click)="isFromDoneQwest=true; addTsk.show();">
-        <img src="assets/icons/create.png" class="img-fluid">
-      </button>
-    </div>
 
-    <ng-container *ngIf="qwest.tasks.length>0">
+
+    <div *ngIf="qwest.tasks.length>0" class="pt-2">
       <!-- Задачи -->
       <ul class="list-group p-0">
         <li *ngFor="let tsk of qwest.tasks" class="list-group-item px-0 py-1 border-0">
@@ -124,7 +124,7 @@
           </a>
         </li>
       </ul>
-    </ng-container>
+    </div>
   </div>
   <br>
   <br>

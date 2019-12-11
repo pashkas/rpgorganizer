@@ -24,11 +24,22 @@ export class ChangesModel {
         this.name = name;
         this.type = type;
 
-        let change = valTo - valFrom;
-        if (change > 0) {
-            this.valChange = '+' + change;
+        let change = Math.floor(valTo) - Math.floor(valFrom);
+        if (change != 0 && type != 'subtask' && type != 'qwest' && type != 'state' && type != 'inv') {
+            if (change > 0) {
+                this.valChange = '+' + change;
+            } else {
+                this.valChange = '' + change;
+            }
         }
-        this.valChange = '' + change;
+        if (type == 'inv') {
+            this.name = '"' + this.name + '"';
+            if (change > 0) {
+                this.valChange = 'получен!';
+            } else {
+                this.valChange = 'использован!';
+            }
+        }
 
         //--------------------------------------
         this.totalMin = totalMin;
