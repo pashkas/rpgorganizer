@@ -1502,6 +1502,7 @@ export class PersService {
 
     this.pers.level = persLevel;
     this.pers.nextExp = nextExp;
+    this.pers.prevExp = startExp;
 
     let lvlExp = nextExp - startExp;
     let progr = (this.pers.exp - startExp) / lvlExp;

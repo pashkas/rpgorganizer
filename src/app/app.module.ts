@@ -53,7 +53,9 @@ import { MatDialogModule } from '@angular/material/dialog';
 import {MatCardModule} from '@angular/material'
 import { PersChangesComponent } from './pers-changes/pers-changes.component';
 import { AbupcolPipe } from './abupcol.pipe';
+import { CountoModule }  from 'angular2-counto';
 import * as Hammer from 'hammerjs';
+import { PersChangesItemComponent } from './pers-changes-item/pers-changes-item.component';
 
 export class MyHammerConfig extends HammerGestureConfig {
   overrides = <any> {
@@ -78,9 +80,11 @@ export class MyHammerConfig extends HammerGestureConfig {
     TurnirTableComponent,
     SvgIconComponent,
     PersChangesComponent,
-    AbupcolPipe
+    AbupcolPipe,
+    PersChangesItemComponent
   ],
   imports: [
+    CountoModule,
     MatCardModule,
     MatSnackBarModule,
     MatDialogModule,
@@ -100,6 +104,7 @@ export class MyHammerConfig extends HammerGestureConfig {
     MDBBootstrapModule.forRoot(),
     BrowserModule,
     BrowserAnimationsModule,
+
     FormsModule,
     ReactiveFormsModule,
     AngularFireModule.initializeApp(environment.firebase),

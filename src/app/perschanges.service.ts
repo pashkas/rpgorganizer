@@ -7,6 +7,8 @@ import { Ability } from 'src/Models/Ability';
 import { PersService } from './pers.service';
 import { Router } from '@angular/router';
 import { Task } from 'src/Models/Task';
+import { ChangesModel } from 'src/Models/ChangesModel';
+import { Characteristic } from 'src/Models/Characteristic';
 
 
 @Injectable({
@@ -31,7 +33,7 @@ export class PerschangesService {
     this.fillChangesMap(changesMap, 'after', this.afterPers);
 
     // Ищем изменения
-    let changes: string[] = [];
+    let changes: ChangesModel[] = [];
 
     // Показать настройку навыка
     let abToEdit: any = null;
@@ -40,63 +42,64 @@ export class PerschangesService {
 
       // Подзадачи
       if (changesMap[n].type == 'tsk') {
-        debugger;
         // Прогрес в стейтах
         if (changesMap[n].tskProgrBefore != changesMap[n].tskProgrAfter
           && changesMap[n].tskProgrAfter != 0) {
-          changes.push('' + changesMap[n].name + ' ' + changesMap[n].tskProgrAfter + '/' + changesMap[n].tskProgrTotal);
+          changes.push(
+            new ChangesModel(changesMap[n].name, 'subtask', changesMap[n].tskProgrBefore, changesMap[n].tskProgrAfter, 0, changesMap[n].tskProgrTotal)
+          );
         }
       }
-
       // Квесты
       if (changesMap[n].type == 'qwest') {
         if (changesMap[n].after === null || changesMap[n].after === undefined) {
-          changes.push('' + changesMap[n].name + ' выполнен');
+          changes.push(
+            new ChangesModel(changesMap[n].name, 'qwestDone', null, null, null, null)
+          );
         }
         else if (changesMap[n].after > changesMap[n].before) {
-          if (changesMap[n].after == changesMap[n].total) {
-            changes.push('Миссии квеста ' + changesMap[n].name + ' выполнены!!!');
-          }
-          else {
-            changes.push('' + changesMap[n].name + ' ' + changesMap[n].after + '/' + changesMap[n].total);
-          }
+          changes.push(
+            new ChangesModel(changesMap[n].name, 'qwest', changesMap[n].before, changesMap[n].after, 0, changesMap[n].total)
+          );
         }
       }
       // Награды
       else if (changesMap[n].type == 'inv') {
         if (changesMap[n].after === null || changesMap[n].after === undefined) {
-          changes.push('' + changesMap[n].name + ' использован');
+          changes.push(
+            new ChangesModel(changesMap[n].name, 'inv', 1, 0, 0, 0)
+          );
         }
         else if (changesMap[n].before === null || changesMap[n].before === undefined) {
-          changes.push('' + changesMap[n].name + ' получен');
+          changes.push(
+            new ChangesModel(changesMap[n].name, 'inv', 0, 1, 0, 1)
+          );
         }
         else if (changesMap[n].after > changesMap[n].before) {
-          changes.push('' + changesMap[n].name + ' получен');
+          changes.push(
+            new ChangesModel(changesMap[n].name, 'inv', changesMap[n].before, changesMap[n].after, 0, changesMap[n].after)
+          );
         }
         else if (changesMap[n].after < changesMap[n].before) {
-          changes.push('' + changesMap[n].name + ' использован');
+          changes.push(
+            new ChangesModel(changesMap[n].name, 'inv', changesMap[n].before, changesMap[n].after, 0, changesMap[n].after)
+          );
         }
       }
       // Характеристики
       else if (changesMap[n].type == 'cha') {
         if (changesMap[n].after != changesMap[n].before) {
-          let change = ' ↑';
-          if (changesMap[n].after < changesMap[n].before) {
-            change = ' ↓';
-          }
-
-          changes.push('' + changesMap[n].name + ' ' + change); // + changesMap[n].after);
+          changes.push(
+            new ChangesModel(changesMap[n].name, 'cha', changesMap[n].before, changesMap[n].after, 0, Characteristic.maxValue)
+          );
         }
       }
       // Навыки
       else if (changesMap[n].type == 'abil') {
         if (changesMap[n].after != changesMap[n].before) {
-          let change = ' ↑';
-          if (changesMap[n].after < changesMap[n].before) {
-            change = ' ↓';
-          }
-
-          changes.push('' + changesMap[n].name + ' ' + change);//' ' + changesMap[n].after);
+          changes.push(
+            new ChangesModel(changesMap[n].name, 'abil', changesMap[n].before, changesMap[n].after, 0, Ability.maxValue)
+          );
 
           if (changesMap[n].after == 1) {
             abToEdit = n;
@@ -105,38 +108,48 @@ export class PerschangesService {
         // Прогрес в стейтах
         else if (changesMap[n].tskProgrBefore != changesMap[n].tskProgrAfter
           && changesMap[n].tskProgrAfter != 0) {
-          changes.push('' + changesMap[n].name + ' ' + changesMap[n].tskProgrAfter + '/' + changesMap[n].tskProgrTotal);
+          changes.push(
+            new ChangesModel(changesMap[n].name, 'state', changesMap[n].tskProgrBefore, changesMap[n].tskProgrAfter, 0, changesMap[n].tskProgrTotal)
+          );
         }
       }
       // Опыт
       else if (changesMap[n].type == 'exp') {
         if (changesMap[n].after > changesMap[n].before) {
-          let chExp = Math.floor((changesMap[n].after - changesMap[n].before) * 10.0);
-
-          changes.push('Опыт +' + chExp);
+          changes.push(
+            new ChangesModel('Опыт', 'exp', changesMap[n].before * 10, changesMap[n].after * 10, this.afterPers.prevExp * 10, this.afterPers.nextExp * 10)
+          );
         }
         else if (changesMap[n].after < changesMap[n].before) {
-          let chExp = Math.floor((changesMap[n].before - changesMap[n].after) * 10.0);
-
-          changes.push('Опыт -' + chExp);
+          changes.push(
+            new ChangesModel('Опыт', 'exp', changesMap[n].before * 10, changesMap[n].after * 10, this.afterPers.prevExp * 10, this.afterPers.nextExp * 10)
+          );
         }
       }
       // Уровень
       else if (changesMap[n].type == 'lvl') {
         if (changesMap[n].after > changesMap[n].before) {
-          changes.push('Новый уровень!');
+          changes.push(
+            new ChangesModel('Уровень', 'lvl', changesMap[n].before, changesMap[n].after, 0, Pers.maxLevel)
+          );
         }
         else if (changesMap[n].after > changesMap[n].before) {
-          changes.push('Уровень понижен!');
+          changes.push(
+            new ChangesModel('Уровень', 'lvl', changesMap[n].before, changesMap[n].after, 0, Pers.maxLevel)
+          );
         }
       }
       // Ранг
       else if (changesMap[n].type == 'rang') {
         if (changesMap[n].after > changesMap[n].before) {
-          changes.push('Новый ранг: ' + changesMap[n].after);
+          changes.push(
+            new ChangesModel('Ранг', 'rang', changesMap[n].before, changesMap[n].after, 0, Pers.rangLvls.length)
+          );
         }
         else if (changesMap[n].after > changesMap[n].before) {
-          changes.push('Ранг понижен: ' + changesMap[n].after);
+          changes.push(
+            new ChangesModel('Ранг', 'rang', changesMap[n].before, changesMap[n].after, 0, Pers.rangLvls.length)
+          );
         }
       }
     });
@@ -158,18 +171,6 @@ export class PerschangesService {
 
     let classPanel = isGood ? 'my-good' : 'my-bad';
 
-    // this._snackBar.openFromComponent(PersChangesComponent, {
-    //   duration: 2000,
-    //   data: {
-    //     headText: head,
-    //     changes: changes,
-    //     isGood: isGood
-    //   },
-    //   verticalPosition: 'top',
-    //   horizontalPosition: 'center',
-    //   panelClass: [classPanel]
-    // });
-
     let dialogRef = this.dialog.open(PersChangesComponent, {
       panelClass: classPanel,
       data: {
@@ -177,6 +178,7 @@ export class PerschangesService {
         changes: changes,
         isGood: isGood
       },
+      backdropClass: 'backdrop'
       //hasBackdrop: false
     });
 
@@ -185,7 +187,7 @@ export class PerschangesService {
       if (abToEdit != null) {
         this.router.navigate(['/task', abToEdit, false]);
       }
-    }, 3000);
+    }, 4500);
   }
 
   private fillChangesMap(changesMap: {}, chType: string, prs: Pers) {

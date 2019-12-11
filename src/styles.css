@@ -92,6 +92,10 @@ button:focus {
     margin: 0.2em;
 }
 
+.backdrop {
+    background: rgba(0, 0, 0, 0.85);
+}
+
 .icon-small.mat-icon-button img {
     width: 1.7em;
     height: 1.7em;
@@ -109,10 +113,12 @@ button:focus {
 
 .my-good .mat-dialog-container {
     background: green;
+    width: 80vw !important;
 }
 
 .my-bad .mat-dialog-container {
     background: red;
+    width: 80vw !important;
 }
 
 mat-form-field {

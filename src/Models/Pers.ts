@@ -103,4 +103,5 @@ export class Pers {
     totalRewardProbability: number = 0;
     userId: any;
     nextExp: number;
+    prevExp:number;
 }
