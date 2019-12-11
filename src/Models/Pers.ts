@@ -69,6 +69,7 @@ export class Pers {
     static maxLevel: number = 100;
     static rangLvls: number[] = [0, 20, 40, 60, 80, 100];
 
+    storyProgress: number = 0;
     characteristics: Characteristic[] = [];
     curEndOfListSeq: number;
     curOrderSeq: number = 0;

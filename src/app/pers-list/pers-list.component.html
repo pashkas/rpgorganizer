@@ -134,32 +134,18 @@
       <div *ngIf="!isEditMode" class="pt-2 pb-4 w-100">
         <div class="pb-4">
           <!-- Картинка -->
-          <div class="text-center">
+          <div class="text-center p-1">
             <!-- img-cache img-cache-src="{{this.srv.pers.rang.img}}" -->
-            <img src="{{this.srv.pers.image}}" class="img-fluid"
-              [ngStyle]="{'object-fit': 'contain', 'height': '30vh'}">
+            <img src="{{this.srv.pers.image}}" class="img-fluid rounded"
+              [ngStyle]="{'object-fit': 'contain', 'height': '25vh'}">
           </div>
-          <div fxLayoutGap="4px" fxLayout="row" fxLayoutAlign="space-between center" class="px-1">
+          <div fxFill>
             <!-- Имя -->
-            <div fxFlex>
-              {{this.srv.pers.name}}
-            </div>
-            <!-- Уровень -->
-            <div fxFlex>
-              {{this.srv.pers.level}}
-              <mat-progress-bar *ngIf="true" class="myprogr" color="accent" mode="determinate"
-                value="{{this.srv.pers.progressValue}}">
-              </mat-progress-bar>
-            </div>
-            <!-- Ранг -->
-            <div fxFlex>
-              {{this.srv.pers.rang.name}}
-              <mat-progress-bar *ngIf="true" class="myprogr" color="accent" mode="determinate"
-                value="{{this.srv.pers.rangProgress}}">
-              </mat-progress-bar>
+            <div fxFlex class="text-center">
+              {{this.srv.pers.name + ' (' + (this.srv.pers.rang.name|lowercase) + ') ' + 'уровень ' + this.srv.pers.level}}
             </div>
 
-            <div fxFlex class="text-center">
+            <div class="text-center">
               <img src="assets/icons/diamond.png" *ngIf="!this.srv.isGlobalTaskView" class="img-fluid"
                 [ngStyle]="{'object-fit': 'contain', 'height':'1.5em'}">
               {{this.srv.pers.ON}}
@@ -305,19 +291,20 @@
           <br>
           <ng-container *ngIf="false">
             <div fxLayout="row" class="my-1" fxLayoutAlign="space-between center" fxLayoutGap="4px"
-            *ngFor="let item of this.srv.pers.rangse; let i = index">
-            <mat-form-field fxFlex>
-              <input matInput autocomplete="off" placeholder="Название" [(ngModel)]="item.name" name="rangName{{i}}">
-            </mat-form-field>
-            <mat-form-field fxFlex="40">
-              <input matInput autocomplete="off" placeholder="Изображение" [(ngModel)]="item.img" name="rangImgs{{i}}">
-            </mat-form-field>
-            <div fxFlex="20" class="text-center">
-              <img src="{{item.img}}" class="img-fluid" style="max-height: 100px">
+              *ngFor="let item of this.srv.pers.rangse; let i = index">
+              <mat-form-field fxFlex>
+                <input matInput autocomplete="off" placeholder="Название" [(ngModel)]="item.name" name="rangName{{i}}">
+              </mat-form-field>
+              <mat-form-field fxFlex="40">
+                <input matInput autocomplete="off" placeholder="Изображение" [(ngModel)]="item.img"
+                  name="rangImgs{{i}}">
+              </mat-form-field>
+              <div fxFlex="20" class="text-center">
+                <img src="{{item.img}}" class="img-fluid" style="max-height: 100px">
+              </div>
             </div>
-          </div>
           </ng-container>
-          
+
           <button mat-stroked-button color="accent" class="w-100 mt-2" (click)="resp()">
             Респаун
           </button>

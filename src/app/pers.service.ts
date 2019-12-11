@@ -548,11 +548,11 @@ export class PersService {
    * Загрузить персонажей с уровнем, большим чем 0;
    */
   getChampions(): Observable<any> {
-    return this.db.collection<Pers>('/pers', ref => ref.where('level', '>=', 1).orderBy('level', 'desc'))
+    return this.db.collection<Pers>('/pers', ref => ref.where('storyProgress', '>=', 0).orderBy('storyProgress', 'desc'))
       .valueChanges()
       .pipe(
         map(champ => champ.map(n => {
-          return { Name: n.name, Level: n.level, Pic: n.rang.img, Id: n.id };
+          return { Name: n.name, Level: n.storyProgress, Pic: n.image ? n.image : n.rang.img, Id: n.id };
         })),
         take(1),
         share()
@@ -1575,7 +1575,8 @@ export class PersService {
     this.pers.rang = this.pers.rangse[rangIndex];
     this.pers.rang.val = curRangLvl;
 
-    debugger;
+    this.pers.storyProgress = (this.pers.level/maxLevel) * 100;
+
 
     // this.pers.nextRangLvl = Pers.rangLvls[Pers.rangLvls.length - 1];
 
