@@ -9,7 +9,7 @@ import { Router } from '@angular/router';
 import { Task } from 'src/Models/Task';
 import { ChangesModel } from 'src/Models/ChangesModel';
 import { Characteristic } from 'src/Models/Characteristic';
-
+import { LevelUpMsgComponent } from './level-up-msg/level-up-msg.component';
 
 @Injectable({
   providedIn: 'root'
@@ -38,8 +38,10 @@ export class PerschangesService {
     // Показать настройку навыка
     let abToEdit: any = null;
 
-    Object.keys(changesMap).forEach(n => {
+    // Отображать - новый уровень
+    let newLevel: boolean = false;
 
+    Object.keys(changesMap).forEach(n => {
       // Подзадачи
       if (changesMap[n].type == 'tsk') {
         // Прогрес в стейтах
@@ -129,6 +131,7 @@ export class PerschangesService {
       // Уровень
       else if (changesMap[n].type == 'lvl') {
         if (changesMap[n].after > changesMap[n].before) {
+          newLevel = true;
           // changes.push(
           //   new ChangesModel('Уровень', 'lvl', changesMap[n].before, changesMap[n].after, 0, Pers.maxLevel)
           // );
@@ -179,13 +182,27 @@ export class PerschangesService {
         isGood: isGood
       },
       backdropClass: 'backdrop'
-      //hasBackdrop: false
     });
 
     setTimeout(() => {
       dialogRef.close();
       if (abToEdit != null) {
         this.router.navigate(['/task', abToEdit, false]);
+      }
+
+      // Новый уровень
+      if (newLevel) {
+        let dialogRefLvlUp = this.dialog.open(LevelUpMsgComponent, {
+          panelClass: classPanel,
+          backdropClass: 'backdrop'
+        });
+
+        setTimeout(() => {
+          dialogRefLvlUp.close();
+
+          //this.srv.selTabPersList = 0;
+          this.router.navigate(['/pers', true]);
+        }, 3500);
       }
     }, 4500);
   }
@@ -265,6 +282,14 @@ export class PerschangesService {
     });
   }
 
+  private getChItem(type, name): any {
+    let ch = new changesItem();
+    ch.type = type;
+    ch.name = name;
+
+    return ch;
+  }
+
   private tskStatesProgress(tsk: Task, chType: string, changesMap: any, isCheckActive: boolean) {
     if (tsk.states.length > 0) {
       let done = tsk.states.filter(n => (n.isActive || !isCheckActive) && n.isDone).length;
@@ -283,24 +308,16 @@ export class PerschangesService {
       changesMap[tsk.id]['tskProgrTotal'] = 1;
     }
   }
-
-  private getChItem(type, name): any {
-    let ch = new changesItem();
-    ch.type = type;
-    ch.name = name;
-
-    return ch;
-  }
 }
 
 export class changesItem {
-  before;
   after;
-  type;
+  before;
   img;
-  total;
   name;
-  tskProgrBefore;
+  total;
   tskProgrAfter;
+  tskProgrBefore;
   tskProgrTotal;
+  type;
 }

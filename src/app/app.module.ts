@@ -56,6 +56,7 @@ import { AbupcolPipe } from './abupcol.pipe';
 import { CountoModule }  from 'angular2-counto';
 import * as Hammer from 'hammerjs';
 import { PersChangesItemComponent } from './pers-changes-item/pers-changes-item.component';
+import { LevelUpMsgComponent } from './level-up-msg/level-up-msg.component';
 
 export class MyHammerConfig extends HammerGestureConfig {
   overrides = <any> {
@@ -81,7 +82,8 @@ export class MyHammerConfig extends HammerGestureConfig {
     SvgIconComponent,
     PersChangesComponent,
     AbupcolPipe,
-    PersChangesItemComponent
+    PersChangesItemComponent,
+    LevelUpMsgComponent
   ],
   imports: [
     CountoModule,
@@ -130,7 +132,7 @@ export class MyHammerConfig extends HammerGestureConfig {
     useClass: MyHammerConfig,
   }],
   bootstrap: [AppComponent],
-  entryComponents: [PersChangesComponent]
+  entryComponents: [PersChangesComponent, LevelUpMsgComponent]
 })
 export class AppModule {
   constructor(imgCache: ImgCacheService) {

@@ -17,6 +17,7 @@ const routes: Routes = [
   { path: 'login', component: LoginComponent, canActivate: [AuthGuard] },
   { path: 'main', component: MainWindowComponent, resolve: { data: UserResolver } },
   { path: 'pers', component: PersListComponent },
+  { path: 'pers/:isFirst', component: PersListComponent },
   { path: 'characteristic/:id', component: CharacteristicDetailsComponent },
   { path: 'ability/:id', component: AbilityDetailComponent },
   { path: 'task/:id/:isEdit', component: TaskDetailComponent },

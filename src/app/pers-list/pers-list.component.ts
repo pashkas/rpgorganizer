@@ -133,14 +133,11 @@ export class PersListComponent implements OnInit {
     if (!this.srv.pers) {
       this.router.navigate(['/main']);
     }
-  }
 
-  upAbil(ab:Ability) {
-    this.srv.changesBefore();
-
-    this.srv.upAbility(ab);
-
-    this.srv.changesAfter(true);
+    const id = this.route.snapshot.paramMap.get('isFirst');
+    if (id) {
+      this.srv.selTabPersList = 0;
+    }
   }
 
   /**
@@ -185,6 +182,14 @@ export class PersListComponent implements OnInit {
 
   showAbility(ab: Ability) {
     this.srv.showAbility(ab);
+  }
+
+  upAbil(ab:Ability) {
+    this.srv.changesBefore();
+
+    this.srv.upAbility(ab);
+
+    this.srv.changesAfter(true);
   }
 
   /**
