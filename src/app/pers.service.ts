@@ -61,7 +61,7 @@ export class PersService {
     let tDate = new Date(tsk.date);
 
     while (true) {
-      if (this.checkDate(tDate, tsk.requrense)) {
+      if (this.checkDate(tDate, tsk.requrense, tsk.tskWeekDays)) {
         break;
       }
 
@@ -313,7 +313,7 @@ export class PersService {
    * @param tDate Дата задачи.
    * @param requrense Повтор задачи.
    */
-  checkDate(tDate: Date, requrense: string): any {
+  checkDate(tDate: Date, requrense: string, weekDays: string[]): any {
     if (requrense === "ежедневно"
       || requrense === "нет"
       || requrense === "через 1 день"
@@ -332,11 +332,30 @@ export class PersService {
         || weekDay === 5) {
         return true;
       }
-    }
-    else if (requrense === "выходные") {
+    } else if (requrense === "выходные") {
       if (weekDay === 6
         || weekDay === 0) {
         return true;
+      }
+    } else if (requrense === 'дни недели') {
+      switch (weekDay) {
+        case 1:
+          return weekDays.includes('пн');
+        case 2:
+          return weekDays.includes('вт');
+        case 3:
+          return weekDays.includes('ср');
+        case 4:
+          return weekDays.includes('чт');
+        case 5:
+          return weekDays.includes('пт');
+        case 6:
+          return weekDays.includes('сб');
+        case 7:
+          return weekDays.includes('вс');
+
+        default:
+          return false;
       }
     }
     else if (requrense === "пн,ср,пт") {
@@ -345,28 +364,24 @@ export class PersService {
         || weekDay === 5) {
         return true;
       }
-    }
-    else if (requrense === "вт,чт,сб") {
+    } else if (requrense === "вт,чт,сб") {
       if (weekDay === 2
         || weekDay === 4
         || weekDay === 6) {
         return true;
       }
-    }
-    else if (requrense === "пн,вт,чт,сб") {
+    } else if (requrense === "пн,вт,чт,сб") {
       if (weekDay === 1
         || weekDay === 2
         || weekDay === 4
         || weekDay === 6) {
         return true;
       }
-    }
-    else if (requrense === "не суббота") {
+    } else if (requrense === "не суббота") {
       if (weekDay != 6) {
         return true;
       }
-    }
-    else if (requrense === "не воскресенье") {
+    } else if (requrense === "не воскресенье") {
       if (weekDay != 7) {
         return true;
       }
@@ -689,7 +704,7 @@ export class PersService {
    * Получить коефициент - чем реже задача тем больше за нее опыта!
    * @param requrense Повтор задачи.
    */
-  getWeekKoef(requrense: string, isPlus: boolean): number {
+  getWeekKoef(requrense: string, isPlus: boolean, weekDays: string[]): number {
     let base = 7.0;
 
     if (requrense === 'будни') {
@@ -715,6 +730,9 @@ export class PersService {
     }
     if (requrense === 'не воскресенье') {
       return base / 6.0;
+    }
+    if (requrense === 'дни недели') {
+      return base / weekDays.length;
     }
     if (isPlus) {
       if (requrense === 'через 1 день') {
@@ -780,7 +798,7 @@ export class PersService {
           tsk.plusToNames = [];
           tsk.plusToNames.push(new plusToName(cha.name, cha.id, '/characteristic'));
 
-          let exp = Math.floor(tsk.value) * this.getWeekKoef(tsk.requrense, true) * 10.0;
+          let exp = Math.floor(tsk.value) * this.getWeekKoef(tsk.requrense, true, tsk.tskWeekDays) * 10.0;
           exp = Math.floor(exp);
 
           tsk.plusToNames.unshift(new plusToName('+' + exp + ' exp', null, null));
@@ -1087,7 +1105,7 @@ export class PersService {
       this.setStatesNotDone(task);
 
       // Плюсуем значение
-      let chVal = this.baseTaskPoints * this.getWeekKoef(task.requrense, false);
+      let chVal = this.baseTaskPoints * this.getWeekKoef(task.requrense, false, task.tskWeekDays);
       //Task.valueDecrease(chVal, task, this.pers.level);
       this.pers.exp -= chVal * Math.floor(task.value);
       if (this.pers.exp < 0) {
@@ -1127,7 +1145,7 @@ export class PersService {
       this.setStatesNotDone(task);
 
       // Плюсуем значение
-      let chVal = this.baseTaskPoints * this.getWeekKoef(task.requrense, true);
+      let chVal = this.baseTaskPoints * this.getWeekKoef(task.requrense, true, task.tskWeekDays);
       //Task.valueIncrease(chVal, task, this.pers.level);
       this.pers.exp += chVal * Math.floor(task.value);
 

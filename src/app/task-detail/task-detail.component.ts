@@ -21,10 +21,22 @@ export class TaskDetailComponent implements OnInit {
   isEditState: boolean = false;
   newState: taskState = new taskState();
   requrenses: string[] = Task.requrenses;
+  weekDays: string[] = Task.weekDays;
   tsk: Task;
   tskAbility: Ability;
 
   constructor(private location: Location, private route: ActivatedRoute, public srv: PersService, private router: Router) { }
+
+  setWeekDays(wd){
+    let idx = this.tsk.tskWeekDays.indexOf(wd);
+
+    if (idx == -1) {
+      this.tsk.tskWeekDays.push(wd);
+    }
+    else {
+      this.tsk.tskWeekDays.splice(idx, 1);
+    }
+  }
 
   /**
    * Добавить состояние к задаче.
@@ -165,6 +177,10 @@ export class TaskDetailComponent implements OnInit {
     const isEdit = this.route.snapshot.paramMap.get('isEdit');
     if (isEdit == 'true') {
       this.isEditMode = true;
+    }
+
+    if (!this.tsk.tskWeekDays) {
+      this.tsk.tskWeekDays = [...Task.weekDays];
     }
   }
 
