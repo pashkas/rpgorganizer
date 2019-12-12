@@ -17,16 +17,6 @@
 <!-- Просмотр -->
 <div class="container pt-2 pb-4" *ngIf="this.srv.pers && tsk && !isEditMode">
   <form class="pb-4">
-    <!-- Картинка -->
-    <!-- <div class="form-group text-center" *ngIf="tsk.image">
-      <img img-cache img-cache-src="{{tsk.image}}" class="img-fluid"
-        [ngStyle]="{'object-fit': 'contain', 'height': '25vh'}">
-    </div> -->
-    <!-- Название -->
-    <!-- <div class="md-form">
-      <label class="active">Название</label>
-      {{tsk.name}}
-    </div> -->
     <hr *ngIf="!tskAbility">
     <h4 class="text-center">{{tsk.name}}
     </h4>

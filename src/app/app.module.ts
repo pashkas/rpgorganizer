@@ -57,6 +57,7 @@ import { CountoModule }  from 'angular2-counto';
 import * as Hammer from 'hammerjs';
 import { PersChangesItemComponent } from './pers-changes-item/pers-changes-item.component';
 import { LevelUpMsgComponent } from './level-up-msg/level-up-msg.component';
+import { ServiceWorkerModule } from '@angular/service-worker';
 
 export class MyHammerConfig extends HammerGestureConfig {
   overrides = <any> {
@@ -125,7 +126,8 @@ export class MyHammerConfig extends HammerGestureConfig {
         newestOnTop: false,
         disableTimeOut: true
       }
-    )
+    ),
+    ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production })
   ],
   providers: [{ provide: OWL_DATE_TIME_LOCALE, useValue: 'ru' },{
     provide: HAMMER_GESTURE_CONFIG,
