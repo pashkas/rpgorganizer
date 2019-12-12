@@ -103,7 +103,11 @@ export class PersService {
   GetRndEnamy(tsk: Task): string {
     let lvl = tsk.value * 10.0;//this.pers.level;
     if (tsk.requrense == 'нет') {
-      lvl = this.pers.level;
+      if (this.pers.storyProgress) {
+        lvl = this.pers.storyProgress;
+      } else {
+        lvl = 0;
+      }
     }
 
     if (lvl >= 100) {
@@ -1575,7 +1579,7 @@ export class PersService {
     this.pers.rang = this.pers.rangse[rangIndex];
     this.pers.rang.val = curRangLvl;
 
-    this.pers.storyProgress = (this.pers.level/maxLevel) * 100;
+    this.pers.storyProgress = (this.pers.level / maxLevel) * 100;
 
 
     // this.pers.nextRangLvl = Pers.rangLvls[Pers.rangLvls.length - 1];
