@@ -7,7 +7,7 @@ import { Ability } from 'src/Models/Ability';
 import { PersService } from './pers.service';
 import { Router } from '@angular/router';
 import { Task } from 'src/Models/Task';
-import { ChangesModel } from 'src/Models/ChangesModel';
+import { ChangesModel, persExpChanges } from 'src/Models/ChangesModel';
 import { Characteristic } from 'src/Models/Characteristic';
 import { LevelUpMsgComponent } from './level-up-msg/level-up-msg.component';
 
@@ -68,11 +68,13 @@ export class PerschangesService {
       // Награды
       else if (changesMap[n].type == 'inv') {
         if (changesMap[n].after === null || changesMap[n].after === undefined) {
+          // Использован больше нет
           changes.push(
-            new ChangesModel(changesMap[n].name, 'inv', 1, 0, 0, 0)
+            new ChangesModel(changesMap[n].name, 'inv', 1, 0, 0, 1)
           );
         }
         else if (changesMap[n].before === null || changesMap[n].before === undefined) {
+          // Получен новый
           changes.push(
             new ChangesModel(changesMap[n].name, 'inv', 0, 1, 0, 1)
           );
@@ -84,7 +86,7 @@ export class PerschangesService {
         }
         else if (changesMap[n].after < changesMap[n].before) {
           changes.push(
-            new ChangesModel(changesMap[n].name, 'inv', changesMap[n].before, changesMap[n].after, 0, changesMap[n].after)
+            new ChangesModel(changesMap[n].name, 'inv', changesMap[n].before, changesMap[n].after, 0, changesMap[n].before)
           );
         }
       }
@@ -117,15 +119,34 @@ export class PerschangesService {
       }
       // Опыт
       else if (changesMap[n].type == 'exp') {
-        if (changesMap[n].after > changesMap[n].before) {
-          changes.push(
-            new ChangesModel('Опыт', 'exp', changesMap[n].before * 10, changesMap[n].after * 10, this.afterPers.prevExp * 10, this.afterPers.nextExp * 10)
-          );
-        }
-        else if (changesMap[n].after < changesMap[n].before) {
-          changes.push(
-            new ChangesModel('Опыт', 'exp', changesMap[n].before * 10, changesMap[n].after * 10, this.afterPers.prevExp * 10, this.afterPers.nextExp * 10)
-          );
+        if (changesMap[n].after != changesMap[n].before) {
+          let expChanges = new ChangesModel('Опыт', 'exp', changesMap[n].before * 10, changesMap[n].after * 10, this.afterPers.prevExp * 10, this.afterPers.nextExp * 10);
+
+          let beforeExp = changesMap[n].before;
+          let afterExp = changesMap[n].after;
+
+          let prevLvl = this.beforePers.level;
+          let afterLvl = this.afterPers.level;
+
+          let eCh: persExpChanges[] = [];
+          
+          if (afterLvl > prevLvl) {
+            //1
+            eCh.push(new persExpChanges(beforeExp, this.beforePers.nextExp, this.beforePers.prevExp, this.beforePers.nextExp));
+            //2
+            eCh.push(new persExpChanges(this.afterPers.prevExp, afterExp, this.afterPers.prevExp, this.afterPers.nextExp));
+          } else if (afterLvl < prevLvl) {
+            //1
+            eCh.push(new persExpChanges(beforeExp, this.beforePers.prevExp, this.beforePers.prevExp, this.beforePers.nextExp));
+            //2
+            eCh.push(new persExpChanges(this.afterPers.nextExp, afterExp, this.afterPers.prevExp, this.afterPers.nextExp));
+          } else {
+            eCh.push(new persExpChanges(beforeExp, afterExp, this.afterPers.prevExp, this.afterPers.nextExp));
+          }
+
+          expChanges.expChanges = eCh;
+
+          changes.push(expChanges);
         }
       }
       // Уровень
@@ -202,9 +223,9 @@ export class PerschangesService {
 
           //this.srv.selTabPersList = 0;
           this.router.navigate(['/pers', true]);
-        }, 3500);
+        }, 3000);
       }
-    }, 4500);
+    }, 4000);
   }
 
   private fillChangesMap(changesMap: {}, chType: string, prs: Pers) {

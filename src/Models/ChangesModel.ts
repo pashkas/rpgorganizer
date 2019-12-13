@@ -6,6 +6,7 @@ export class ChangesModel {
     valChange: string;
     totalMax: number;
     totalMin: number;
+    expChanges: persExpChanges[] = [];
 
     constructor(name, type, valFrom, valTo, totalMin, totalMax) {
         if (totalMin == null || totalMin == undefined) {
@@ -49,5 +50,24 @@ export class ChangesModel {
         this.valTo = ((valTo - totalMin) / (totalMax - totalMin)) * 100;
         //---------------------------------------
 
+    }
+}
+
+export class persExpChanges {
+    valFrom: number;
+    valTo: number;
+    lvlStartExp: number;
+    lvlEndExp: number;
+
+    constructor(valFrom, valTo, lvlStartExp, lvlEndExp) {
+        lvlStartExp = lvlStartExp;
+        lvlEndExp = lvlEndExp;
+      
+
+        this.valFrom = ((valFrom - lvlStartExp) / (lvlEndExp - lvlStartExp)) * 100;
+        this.valTo = ((valTo - lvlStartExp) / (lvlEndExp - lvlStartExp)) * 100;
+
+        this.lvlStartExp = 0;
+        this.lvlEndExp = 100;
     }
 }
