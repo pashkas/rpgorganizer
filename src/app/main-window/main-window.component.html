@@ -1,6 +1,6 @@
 <div class="grid-container" *ngIf="srv.pers">
   <!-- Если пусто -->
-  <div *ngIf="!this.srv.pers.currentTask" fxLayout="row" fxLayoutAlign="center center">
+  <div *ngIf="!this.srv.pers.currentTask && !this.srv.isGlobalTaskView" fxLayout="row" fxLayoutAlign="center center">
     <h3 class="text-center" *ngIf="this.srv.pers.exp<=1">
       Пока пусто... Может стоит
       <a href="https://nerdistway.blogspot.com/2019/08/blog-post_23.html" target="_blank">
@@ -8,13 +8,13 @@
       </a>
     </h3>
   </div>
-  <div *ngIf="!this.srv.pers.currentTask">
+  <div *ngIf="!this.srv.pers.currentTask && !this.srv.isGlobalTaskView">
 
 
   </div>
 
   <!-- Задачи -->
-  <ng-container *ngIf="this.srv.pers.currentTask && this.srv.isGlobalTaskView">
+  <ng-container *ngIf="this.srv.isGlobalTaskView">
     <mat-list (cdkDropListDropped)="drop($event)" cdkDropList class="list-group  py-2 h-100 w-100 overflow-auto">
       <!-- <button class="btn btn-default" (click)="autoFalse()"
         *ngIf="srv.pers?.tasks.length>0 && srv.pers?.tasks[0].requrense != 'нет' && checkDate(srv.pers?.tasks[0].date)">
@@ -81,7 +81,7 @@
         </h4>
       </a>
 
-      <small *ngIf="this.srv.pers.currentTask.plusToNames&&this.srv.pers.currentTask.plusToNames.length>0;">
+      <small class="text-center" *ngIf="this.srv.pers.currentTask.plusToNames&&this.srv.pers.currentTask.plusToNames.length>0;">
         <ng-container *ngFor="let pl of this.srv.pers.currentTask.plusToNames; let i=index;">
           <ng-container *ngIf="i>0"> | </ng-container>
           <ng-container *ngIf="pl.linkName; else elseTemplate">

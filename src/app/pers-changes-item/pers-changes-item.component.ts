@@ -55,7 +55,7 @@ export class PersChangesItemComponent implements OnInit {
     } else {
       let factory = this.builder.build([
         style({ width: this.item.valFrom + '%' }),
-        animate('1000ms', style({ width: this.item.valTo + '%' }))
+        animate('2000ms', style({ width: this.item.valTo + '%' }))
       ]);
 
       let player = factory.create(this.progress.nativeElement, {})
