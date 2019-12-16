@@ -1712,6 +1712,13 @@ export class PersService {
       tsk.curLvlDescr2 = '';
     }
 
+    if (tsk.value <= 9 && tsk.value >= 1 && tsk.statesDescr[Math.floor(tsk.value)] == tsk.statesDescr[Math.floor(tsk.value + 1)]) {
+      tsk.IsNextLvlSame = true;
+    }
+    else{
+      tsk.IsNextLvlSame = false;
+    }
+
     if (tsk.value < 1) {
       tsk.curLvlDescr2 = '';
       tsk.curLvlDescr = '';
