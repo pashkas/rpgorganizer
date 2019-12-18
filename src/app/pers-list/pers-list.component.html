@@ -132,23 +132,34 @@
     <mat-tab label="Перс">
       <!-- Просмотр -->
       <div *ngIf="!isEditMode" class="pt-2 pb-4 w-100">
+
         <div class="pb-4">
           <!-- Картинка -->
-          <div class="text-center p-1">         
+          <div class="text-center p-1">
             <img src="{{this.srv.pers.image}}" class="img-fluid rounded"
               [ngStyle]="{'object-fit': 'contain', 'height': '30vh'}">
           </div>
-          <div fxFill>
+          <div fxLayout="row" fxLayoutAlign="space-between center">
+            <span>
+              <img src="assets/icons/chartUp.png" class="img-fluid"
+                [ngStyle]="{'object-fit': 'contain', 'height':'1.5em'}">
+              <span>
+                {{(this.srv.pers.storyProgress | number: '1.0-2')}}%
+              </span>
+            </span>
+
             <!-- Имя -->
-            <div fxFlex class="text-center">
+            <div class="text-center text-dark">
               {{this.srv.pers.name + ' (' + (this.srv.pers.rang.name|lowercase) + ') ' + 'уровень ' + this.srv.pers.level}}
             </div>
 
-            <div class="text-center">
-              <img src="assets/icons/diamond.png" *ngIf="!this.srv.isGlobalTaskView" class="img-fluid"
+            <span>
+              <img src="assets/icons/diamond.png" class="img-fluid"
                 [ngStyle]="{'object-fit': 'contain', 'height':'1.5em'}">
-              {{this.srv.pers.ON}}
-            </div>
+              <span>
+                {{this.srv.pers.ON}}
+              </span>
+            </span>
 
           </div>
 
@@ -186,11 +197,14 @@
                           <div class="w-100 d-flex"
                             [ngClass]="{'text-dark': ab.tasks.length === 0, 'text-primary': ab.tasks.length > 0}">
                             <!-- [routerLink]="['/ability', ab.id]" -->
-                            <a (click)="showAbility(ab)" [ngClass]="{'text-success' : this.srv.pers.ON>=1 && ab.value<10 && ab.tasks[0]?.IsNextLvlSame}" class="flex-grow-1 text-left align-self-baseline">
+                            <a (click)="showAbility(ab)"
+                              [ngClass]="{'text-success' : this.srv.pers.ON>=1 && ab.value<10 && ab.tasks[0]?.IsNextLvlSame}"
+                              class="flex-grow-1 text-left align-self-baseline">
                               {{ab.name + ' '}}<i><small>{{ab.tasks[0]?.curLvlDescr2}}</small></i>
                             </a>
                             <div fxLayout="row" fxLayoutAlign="space-around" class="text-right align-self-baseline">
-                              <a class="pl-2" (click)="showAbility(ab)" [ngClass]="{'text-success' : this.srv.pers.ON>=1 && ab.value<10 && ab.tasks[0]?.IsNextLvlSame}">
+                              <a class="pl-2" (click)="showAbility(ab)"
+                                [ngClass]="{'text-success' : this.srv.pers.ON>=1 && ab.value<10 && ab.tasks[0]?.IsNextLvlSame}">
                                 {{ab.rang.name}}
                               </a>
                               <a class="ml-1 px-1" *ngIf="this.srv.pers.ON>=1 && ab.value<10" (click)="upAbil(ab)">

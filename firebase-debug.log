@@ -1,0 +1,27 @@
+[debug] [2019-12-18T08:56:12.882Z] ----------------------------------------------------------------------
+[debug] [2019-12-18T08:56:12.884Z] Command:       C:\Program Files\nodejs\node.exe C:\Users\tretyakovpk\AppData\Roaming\npm\node_modules\firebase-tools\lib\bin\firebase.js deploy
+[debug] [2019-12-18T08:56:12.884Z] CLI Version:   6.5.0
+[debug] [2019-12-18T08:56:12.884Z] Platform:      win32
+[debug] [2019-12-18T08:56:12.884Z] Node Version:  v10.16.3
+[debug] [2019-12-18T08:56:12.885Z] Time:          Wed Dec 18 2019 11:56:12 GMT+0300 (GMT+03:00)
+[debug] [2019-12-18T08:56:12.885Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2019-12-18T08:56:12.902Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2019-12-18T08:56:12.903Z] > authorizing via signed-in user
+[debug] [2019-12-18T08:56:12.903Z] [iam] checking project rpgorganizer-72d0b for permissions ["firebase.projects.get","firebasehosting.sites.update"]
+[debug] [2019-12-18T08:56:12.904Z] > refreshing access token with scopes: ["email","https://www.googleapis.com/auth/cloud-platform","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","openid"]
+[debug] [2019-12-18T08:56:12.905Z] >>> HTTP REQUEST POST https://www.googleapis.com/oauth2/v3/token  
+ <request body omitted>
+[debug] [2019-12-18T08:56:13.047Z] <<< HTTP RESPONSE 200
+[debug] [2019-12-18T08:56:13.056Z] >>> HTTP REQUEST POST https://cloudresourcemanager.googleapis.com/v1/projects/rpgorganizer-72d0b:testIamPermissions  
+
+[debug] [2019-12-18T08:56:14.054Z] <<< HTTP RESPONSE 200
+[debug] [2019-12-18T08:56:14.055Z] >>> HTTP REQUEST GET https://firebase.googleapis.com/v1beta1/projects/rpgorganizer-72d0b  
+ 
+[debug] [2019-12-18T08:56:14.393Z] <<< HTTP RESPONSE 200
+[info] 
+[info] === Deploying to 'rpgorganizer-72d0b'...
+[info] 
+[info] i  deploying hosting
+[debug] [2019-12-18T08:56:14.419Z] >>> HTTP REQUEST POST https://firebasehosting.googleapis.com/v1beta1/sites/rpgorganizer-72d0b/versions  
+

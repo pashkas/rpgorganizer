@@ -28,7 +28,7 @@ import { EnamiesComponent } from './enamies/enamies.component';
 import { HttpClientModule } from '@angular/common/http';
 import { QwestDetailComponent } from './qwest-detail/qwest-detail.component';
 import { SelectOnClickDirective } from './select-on-click.directive';
-import { ImgCacheModule, ImgCacheService } from 'ng-imgcache';
+// import { ImgCacheModule, ImgCacheService } from 'ng-imgcache';
 
 import { ToastrModule } from 'ngx-toastr';
 import { TurnirTableComponent } from './turnir-table/turnir-table.component';
@@ -103,11 +103,10 @@ export class MyHammerConfig extends HammerGestureConfig {
     MatRippleModule,
     MatButtonModule,
     DragDropModule,
-    ImgCacheModule,
+    // ImgCacheModule,
     MDBBootstrapModule.forRoot(),
     BrowserModule,
     BrowserAnimationsModule,
-
     FormsModule,
     ReactiveFormsModule,
     AngularFireModule.initializeApp(environment.firebase),
@@ -137,9 +136,9 @@ export class MyHammerConfig extends HammerGestureConfig {
   entryComponents: [PersChangesComponent, LevelUpMsgComponent]
 })
 export class AppModule {
-  constructor(imgCache: ImgCacheService) {
-    imgCache.init({
-      // Pass any options here...
-    });
-  }
+  // constructor(imgCache: ImgCacheService) {
+  //   imgCache.init({
+  //     // Pass any options here...
+  //   });
+  // }
  }
