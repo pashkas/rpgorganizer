@@ -18,6 +18,6 @@ export class LoginComponent implements OnInit {
     this.authService.doGoogleLogin()
       .then(res => {
         this.router.navigate(['/main']);
-      })
+      });
   }
 }

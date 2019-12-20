@@ -23,7 +23,7 @@ const routes: Routes = [
   { path: 'task/:id/:isEdit', component: TaskDetailComponent },
   { path: 'qwest/:id', component: QwestDetailComponent },
   { path: 'enamies', component: EnamiesComponent },
-  { path: 'turnirtable', component: TurnirTableComponent, resolve: { data: UserResolver } },
+  { path: 'turnirtable', component: TurnirTableComponent },
 ];
 
 @NgModule({

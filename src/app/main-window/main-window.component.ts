@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Pers } from 'src/Models/Pers';
 import { PersService } from '../pers.service';
 import { Task } from 'src/Models/Task';
@@ -20,7 +20,7 @@ export class MainWindowComponent implements OnInit {
   isSort: boolean = false;
   lastGlobalBeforeSort: boolean;
 
-  constructor(private route: ActivatedRoute, public srv: PersService) {
+  constructor(private route: ActivatedRoute, public srv: PersService,  private router: Router) {
   }
 
   onLongPress(e) {
@@ -213,7 +213,9 @@ export class MainWindowComponent implements OnInit {
         .subscribe(routeData => {
           let data = routeData['data'];
           if (data) {
-            this.srv.setUser(data);
+            //this.srv.setUser(data);
+          } else{
+            this.router.navigate(['/login']);
           }
         });
     }
