@@ -593,58 +593,59 @@ export class PersService {
   /**
    * Получить персонажа.
    */
-  // getPers(usr: FirebaseUserModel): any {
-  //   this.loadPers(usr.id)
-  //     .pipe(takeUntil(this.unsubscribe$))
-  //     .subscribe(data => {
-  //       // Если перс есть
-  //       if (data != undefined) {
-  //         const pers = data;
-  //         const prs = (pers as Pers);
+  getPers(usr: FirebaseUserModel): any {
+    this.loadPers(usr.id)
+      .pipe(takeUntil(this.unsubscribe$))
+      .subscribe(data => {
+        // Если перс есть
+        if (data != undefined) {
+          const pers = data;
+          const prs = (pers as Pers);
 
-  //         if (prs.tasks && prs.tasks.length > 0) {
-  //           prs.currentTaskIndex = 0;
-  //           prs.currentTask = prs.tasks[0];
-  //         }
+          if (prs.tasks && prs.tasks.length > 0) {
+            prs.currentTaskIndex = 0;
+            prs.currentTask = prs.tasks[0];
+          }
 
-  //         this.checkPersNewFields(prs);
+          this.checkPersNewFields(prs);
 
-  //         this.pers = prs;
+          this.pers = prs;
 
-  //         if (this.checkNullOrUndefined(this.pers.prevOrderSeq)
-  //           || this.checkNullOrUndefined(this.pers.curOrderSeq)
-  //           || this.checkNullOrUndefined(this.pers.curEndOfListSeq)
-  //         ) {
-  //           this.pers.prevOrderSeq = 0;
-  //           this.pers.curOrderSeq = 0;
-  //           this.pers.curEndOfListSeq = 9999;
-  //         }
+          if (this.checkNullOrUndefined(this.pers.prevOrderSeq)
+            || this.checkNullOrUndefined(this.pers.curOrderSeq)
+            || this.checkNullOrUndefined(this.pers.curEndOfListSeq)
+          ) {
+            this.pers.prevOrderSeq = 0;
+            this.pers.curOrderSeq = 0;
+            this.pers.curEndOfListSeq = 9999;
+          }
 
-  //         // Если наступил следующий день, меняем счетчики
-  //         let curDate = new Date().setHours(0, 0, 0, 0);
-  //         let lastUse = new Date(this.pers.dateLastUse).setHours(0, 0, 0, 0);
-  //         if (curDate.valueOf() > lastUse.valueOf()) {
-  //           this.pers.prevOrderSeq = this.pers.curOrderSeq;
-  //           this.pers.curOrderSeq = 0;
-  //           this.pers.curEndOfListSeq = 9999;
+          // Если наступил следующий день, меняем счетчики
+          let curDate = new Date().setHours(0, 0, 0, 0);
+          let lastUse = new Date(this.pers.dateLastUse).setHours(0, 0, 0, 0);
+          if (curDate.valueOf() > lastUse.valueOf()) {
+            this.pers.prevOrderSeq = this.pers.curOrderSeq;
+            this.pers.curOrderSeq = 0;
+            this.pers.curEndOfListSeq = 9999;
 
-  //           this.savePers(false);
-  //         }
-  //       }
-  //       // Если перса пока что не было
-  //       else if (data === undefined && usr.id != undefined) {
-  //         const pers = new Pers();
-  //         pers.userId = usr.id;
-  //         pers.id = usr.id;
+            this.savePers(false);
+          }
+        }
+        // Если перса пока что не было
+        else if (data === undefined && usr.id != undefined) {
+          const pers = new Pers();
+          pers.userId = usr.id;
+          pers.id = usr.id;
+          pers.level = 0;
 
-  //         this.checkPersNewFields(pers);
+          this.checkPersNewFields(pers);
 
-  //         this.pers = pers;
+          this.pers = pers;
 
-  //         this.savePers(false, false);
-  //       }
-  //     });
-  // }
+          this.savePers(false, false);
+        }
+      });
+  }
 
   getSet(tsk: Task, aim: number): number[] {
     let result: number[] = [];
@@ -756,7 +757,7 @@ export class PersService {
    * Загрузить персонажа из БД.
    * @param userId Идентификатор пользователя
    */
-  public loadPers(userId: string) {
+  loadPers(userId: string) {
     return this.db.collection<Pers>('pers').doc(userId).valueChanges().pipe(take(1), share());
   }
 
@@ -1063,10 +1064,10 @@ export class PersService {
    * Задать пользователя.
    * @param usr Пользователь.
    */
-  // setUser(usr: FirebaseUserModel) {
-  //   this.user = usr;
-  //   this.getPers(usr);
-  // }
+  setUser(usr: FirebaseUserModel) {
+    this.user = usr;
+    this.getPers(usr);
+  }
 
   /**
    * Задать вид - задачи, квесты.
@@ -1311,7 +1312,7 @@ export class PersService {
    * Проверка полей персонажа (вдруг новые появились).
    * @param prs Персонаж.
    */
-  public checkPersNewFields(prs: Pers) {
+  private checkPersNewFields(prs: Pers) {
     if (!prs.image) {
       prs.image = prs.rang.img;
     }
