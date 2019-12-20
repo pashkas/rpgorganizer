@@ -567,19 +567,13 @@ export class PersService {
    * Загрузить персонажей с уровнем, большим чем 0;
    */
   getChampions(): Observable<any> {
-    let dat = new Date();
-    dat.setDate(dat.getDate() - 14);
-
     return this.db.collection<Pers>('/pers', ref => ref.where('storyProgress', '>=', 0.1)
       .orderBy('storyProgress', 'desc'))
       .valueChanges()
       .pipe(
         map(champ => champ.map(n => {
           return { Name: n.name, Level: n.storyProgress, Pic: n.image ? n.image : n.rang.img, Id: n.id, date: new Date(n.dateLastUse) };
-        }).filter(n=>{
-          const v1 = n.date.valueOf();
-          const v2 = dat.valueOf();
-          return v1 >= v2})),
+        })),
         take(1),
         share()
       );
@@ -646,6 +640,8 @@ export class PersService {
           this.checkPersNewFields(pers);
 
           this.pers = pers;
+
+          this.savePers(false, false);
         }
       });
   }
