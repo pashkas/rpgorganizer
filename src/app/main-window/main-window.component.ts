@@ -221,6 +221,7 @@ export class MainWindowComponent implements OnInit {
 
   openPersList() {
     this.srv.selTabPersList = 0;
+    // Фух
   }
 
   prevTask() {
