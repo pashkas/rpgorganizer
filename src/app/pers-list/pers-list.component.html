@@ -198,16 +198,16 @@
                             [ngClass]="{'text-dark': ab.tasks.length === 0, 'text-primary': ab.tasks.length > 0}">
                             <!-- [routerLink]="['/ability', ab.id]" -->
                             <a (click)="showAbility(ab)"
-                              [ngClass]="{'text-success' : this.srv.pers.ON>=1 && ab.value<10 && ab.tasks[0]?.IsNextLvlSame}"
+                              [ngClass]="{'text-success' : ab.tasks[0]?.mayUp && ab.tasks[0]?.IsNextLvlSame}"
                               class="flex-grow-1 text-left align-self-baseline">
                               {{ab.name + ' '}}<i><small>{{ab.tasks[0]?.curLvlDescr2}}</small></i>
                             </a>
                             <div fxLayout="row" fxLayoutAlign="space-around" class="text-right align-self-baseline">
                               <a class="pl-2" (click)="showAbility(ab)"
-                                [ngClass]="{'text-success' : this.srv.pers.ON>=1 && ab.value<10 && ab.tasks[0]?.IsNextLvlSame}">
+                                [ngClass]="{'text-success' : ab.tasks[0]?.mayUp && ab.tasks[0]?.IsNextLvlSame}">
                                 {{ab.rang.name}}
                               </a>
-                              <a class="ml-1 px-1" *ngIf="this.srv.pers.ON>=1 && ab.value<10" (click)="upAbil(ab)">
+                              <a class="ml-1 px-1" *ngIf="ab.tasks[0]?.mayUp" (click)="upAbil(ab)">
                                 <img src="assets/icons/up.png" *ngIf="!this.srv.isGlobalTaskView" class="img-fluid"
                                   [ngStyle]="{'object-fit': 'contain', 'height':'1.5em'}">
                               </a>

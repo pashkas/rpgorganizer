@@ -29,9 +29,14 @@
                 <ng-container *ngIf="t.requrense != 'нет' && checkDate(t.date)" class="bg-danger">
                   [{{getDateString(t.date)}}!]
                 </ng-container>
-                {{t.tittle}}
+                <ng-container *ngIf="t.requrense != 'нет'; else elseTemplate">
+                  {{t.tittle}}
+                </ng-container>
+                <ng-template #elseTemplate>
+                  {{t.plusToNames[0]?.name}}
+                </ng-template>
               </div>
-              <ng-container *ngIf="t.requrense==='нет' && t.plusToNames && t.plusToNames.length>0;">
+              <!-- <ng-container *ngIf="t.requrense==='нет' && t.plusToNames && t.plusToNames.length>0;">
                 <span *ngFor="let pl of t.plusToNames; let i=index;">
                   <ng-container>
                     <ng-container *ngIf="pl.linkName; else elseTemplate">
@@ -42,7 +47,7 @@
                     </ng-template>
                   </ng-container>
                 </span>
-              </ng-container>
+              </ng-container> -->
             </div>
 
             <button mat-button cdkDragHandle [hidden]="!isSort">

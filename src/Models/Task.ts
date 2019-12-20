@@ -64,6 +64,7 @@ export class Task {
     curLvlDescr2: string;
     imageLvl: string = '0';
     IsNextLvlSame: boolean;
+    mayUp: boolean;
 
     /**
      * Получить формулу для роста/понижения значения задачи.

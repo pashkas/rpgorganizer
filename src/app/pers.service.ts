@@ -6,7 +6,7 @@ import { FirebaseUserModel } from 'src/Models/User';
 import { Characteristic } from 'src/Models/Characteristic';
 import { Ability } from 'src/Models/Ability';
 import { Task, taskState } from 'src/Models/Task';
-import { first, take, takeUntil, share, map } from 'rxjs/operators';
+import { first, take, takeUntil, share, map, filter } from 'rxjs/operators';
 import { Qwest } from 'src/Models/Qwest';
 import { Reward } from 'src/Models/Reward';
 import { plusToName } from 'src/Models/plusToName';
@@ -125,7 +125,7 @@ export class PersService {
 
       return path;
     }
-    if (lvl >= 90) {
+    if (lvl >= 80) {
       if (this.pers.Monsters4Queue == null || this.pers.Monsters4Queue == undefined) {
         this.pers.Monsters4Queue = 0;
       }
@@ -140,7 +140,7 @@ export class PersService {
 
       return path;
     }
-    if (lvl >= 70) {
+    if (lvl >= 60) {
       if (this.pers.Monsters3Queue == null || this.pers.Monsters3Queue == undefined) {
         this.pers.Monsters3Queue = 0;
       }
@@ -155,7 +155,7 @@ export class PersService {
 
       return path;
     }
-    if (lvl >= 50) {
+    if (lvl >= 40) {
       if (this.pers.Monsters2Queue == null || this.pers.Monsters2Queue == undefined) {
         this.pers.Monsters2Queue = 0;
       }
@@ -170,7 +170,7 @@ export class PersService {
 
       return path;
     }
-    if (lvl >= 30) {
+    if (lvl >= 20) {
       if (this.pers.Monsters1Queue == null || this.pers.Monsters1Queue == undefined) {
         this.pers.Monsters1Queue = 0;
       }
@@ -567,11 +567,12 @@ export class PersService {
    * Загрузить персонажей с уровнем, большим чем 0;
    */
   getChampions(): Observable<any> {
-    return this.db.collection<Pers>('/pers', ref => ref.where('storyProgress', '>=', 0).orderBy('storyProgress', 'desc'))
+    return this.db.collection<Pers>('/pers', ref => ref.where('storyProgress', '>=', 0.1)
+      .orderBy('storyProgress', 'desc'))
       .valueChanges()
       .pipe(
         map(champ => champ.map(n => {
-          return { Name: n.name, Level: n.storyProgress, Pic: n.image ? n.image : n.rang.img, Id: n.id };
+          return { Name: n.name, Level: n.storyProgress, Pic: n.image ? n.image : n.rang.img, Id: n.id, date: new Date(n.dateLastUse) };
         })),
         take(1),
         share()
@@ -635,10 +636,13 @@ export class PersService {
           const pers = new Pers();
           pers.userId = usr.id;
           pers.id = usr.id;
+          pers.level = 0;
 
           this.checkPersNewFields(pers);
 
           this.pers = pers;
+
+          this.savePers(false, false);
         }
       });
   }
@@ -939,8 +943,35 @@ export class PersService {
 
     this.setCurPersTask();
 
+    this.setAbUpVis();
+
     this.db.collection('pers').doc(this.pers.id)
       .set(JSON.parse(JSON.stringify(this.pers)));
+  }
+
+  /**
+   * Задаем видимости для прокачки навыков.
+   */
+  setAbUpVis() {
+    for (const ch of this.pers.characteristics) {
+      for (const ab of ch.abilities) {
+        for (const tsk of ab.tasks) {
+          if (this.pers.ON > 0 && tsk.value <= 9) {
+            if (tsk.value >= 1 && tsk.statesDescr[Math.floor(tsk.value)] == tsk.statesDescr[Math.floor(tsk.value + 1)]) {
+              tsk.IsNextLvlSame = true;
+            }
+            else {
+              tsk.IsNextLvlSame = false;
+            }
+
+            tsk.mayUp = true;
+          } else {
+            tsk.IsNextLvlSame = false;
+            tsk.mayUp = false;
+          }
+        }
+      }
+    }
   }
 
   setCurInd(i: number): any {
@@ -1597,7 +1628,12 @@ export class PersService {
     this.pers.rang = this.pers.rangse[rangIndex];
     this.pers.rang.val = curRangLvl;
 
-    this.pers.storyProgress = (this.pers.level / maxLevel) * 100;
+    let maxForStory = maxLevel;
+    if (maxForStory < 80) {
+      maxForStory = 80;
+    }
+
+    this.pers.storyProgress = (this.pers.level / maxForStory) * 100;
 
 
     // this.pers.nextRangLvl = Pers.rangLvls[Pers.rangLvls.length - 1];
@@ -1710,13 +1746,6 @@ export class PersService {
       tsk.tittle = tsk.name;
       tsk.curLvlDescr = Math.floor(tsk.value) + "";
       tsk.curLvlDescr2 = '';
-    }
-
-    if (tsk.value <= 9 && tsk.value >= 1 && tsk.statesDescr[Math.floor(tsk.value)] == tsk.statesDescr[Math.floor(tsk.value + 1)]) {
-      tsk.IsNextLvlSame = true;
-    }
-    else{
-      tsk.IsNextLvlSame = false;
     }
 
     if (tsk.value < 1) {
