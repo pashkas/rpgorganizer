@@ -567,13 +567,16 @@ export class PersService {
    * Загрузить персонажей с уровнем, большим чем 0;
    */
   getChampions(): Observable<any> {
+    var dat = new Date();
+    dat.setDate(dat.getDate() - 21);
+
     return this.db.collection<Pers>('/pers', ref => ref.where('level', '>=', 1)
       .orderBy('level', 'desc'))
       .valueChanges()
       .pipe(
         map(champ => champ.map(n => {
           return { Name: n.name, Level: n.level, Pic: n.image ? n.image : n.rang.img, Id: n.id, date: new Date(n.dateLastUse) };
-        })),
+        }).filter(n => n.date.valueOf() >= dat.valueOf())),
         take(1),
         share()
       );
@@ -637,12 +640,12 @@ export class PersService {
           pers.userId = usr.id;
           pers.id = usr.id;
           pers.level = 0;
+          pers.prevExp = 0;
+          pers.nextExp = 0;
 
           this.checkPersNewFields(pers);
 
           this.pers = pers;
-
-          this.savePers(false, false);
         }
       });
   }
@@ -924,7 +927,7 @@ export class PersService {
           return -(a.value - b.value);
         }
 
-        return a.name.localeCompare(b.name);
+        return 0;
       });
     // Сортировка навыков
     this.pers.characteristics.forEach(cha => {
@@ -933,7 +936,7 @@ export class PersService {
           return -(a.value - b.value);
         }
 
-        return a.name.localeCompare(b.name);
+        return 0;
       });
     });
 
@@ -1326,6 +1329,10 @@ export class PersService {
     return Pers.Inspirations[Math.floor(Math.random() * Pers.Inspirations.length)] + ', ' + this.pers.name + '!';
   }
 
+  private getFailMsg() {
+    return Pers.Abuses[Math.floor(Math.random() * Pers.Abuses.length)] + ', ' + this.pers.name + '!';
+  }
+
   private getCurRang(val: number) {
     const rng = new Rangse();
     rng.val = Math.floor(val);
@@ -1333,9 +1340,7 @@ export class PersService {
     return rng;
   }
 
-  private getFailMsg() {
-    return Pers.Abuses[Math.floor(Math.random() * Pers.Abuses.length)] + ', ' + this.pers.name + '!';
-  }
+
 
   private getPersTasks() {
     let tasks: Task[] = [];
@@ -1564,6 +1569,7 @@ export class PersService {
       nextExp = exp;
       if (exp > this.pers.exp) {
         persLevel = i - 1;
+
         break;
       }
     }
@@ -1573,7 +1579,11 @@ export class PersService {
     this.pers.prevExp = startExp;
 
     let lvlExp = nextExp - startExp;
-    let progr = (this.pers.exp - startExp) / lvlExp;
+    let progr = 0;
+    if (lvlExp != 0) {
+      (this.pers.exp - startExp) / lvlExp;
+    }
+
     this.pers.progressValue = progr * 100.0;
 
     let ons = Math.ceil(((this.pers.level + 1) * this.pers.ONPerLevel) - curV);

@@ -11,19 +11,20 @@ export class UserResolver implements Resolve<FirebaseUserModel> {
 
   constructor(public userService: UserService, private router: Router) { }
 
-  resolve(route: ActivatedRouteSnapshot): Promise<FirebaseUserModel> {
-
+  async resolve(route: ActivatedRouteSnapshot): Promise<FirebaseUserModel> {
     let user = new FirebaseUserModel();
 
-    return new Promise((resolve, reject) => {
+    return await new Promise((resolve, reject) => {
       this.userService.getCurrentUser()
         .then(res => {
           user.name = res.displayName;
           user.provider = res.providerData[0].providerId;
           user.id = res.uid;
+          
           return resolve(user);
         }, err => {
           this.router.navigate(['/login']);
+
           return reject(err);
         })
     })

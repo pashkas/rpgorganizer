@@ -15,8 +15,8 @@ export class UserService {
   }
 
 
-  getCurrentUser() {
-    return new Promise<any>((resolve, reject) => {
+  async getCurrentUser() {
+    return await new Promise<any>((resolve, reject) => {
       var user = firebase.auth().onAuthStateChanged(function (user) {
         if (user) {
           resolve(user);

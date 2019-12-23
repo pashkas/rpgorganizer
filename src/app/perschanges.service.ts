@@ -24,7 +24,7 @@ export class PerschangesService {
     return JSON.parse(JSON.stringify(pers));
   }
 
-  showChanges(congrantMsg: string, failMsg: string, isGood: boolean) {
+  async showChanges(congrantMsg: string, failMsg: string, isGood: boolean) {
     let changesMap = {};
 
     // Значения до
@@ -48,7 +48,7 @@ export class PerschangesService {
         if (changesMap[n].tskProgrBefore != changesMap[n].tskProgrAfter
           && changesMap[n].tskProgrAfter != 0) {
           changes.push(
-            new ChangesModel(changesMap[n].name, 'subtask', changesMap[n].tskProgrBefore, changesMap[n].tskProgrAfter, 0, changesMap[n].tskProgrTotal)
+            new ChangesModel(changesMap[n].name, 'subtask', changesMap[n].tskProgrBefore, changesMap[n].tskProgrAfter, 0, changesMap[n].tskProgrTotal, changesMap[n].img)
           );
         }
       }
@@ -61,7 +61,7 @@ export class PerschangesService {
         }
         else if (changesMap[n].after > changesMap[n].before) {
           changes.push(
-            new ChangesModel(changesMap[n].name, 'qwest', changesMap[n].before, changesMap[n].after, 0, changesMap[n].total)
+            new ChangesModel(changesMap[n].name, 'qwest', changesMap[n].before, changesMap[n].after, 0, changesMap[n].total, changesMap[n].img)
           );
         }
       }
@@ -70,23 +70,23 @@ export class PerschangesService {
         if (changesMap[n].after === null || changesMap[n].after === undefined) {
           // Использован больше нет
           changes.push(
-            new ChangesModel(changesMap[n].name, 'inv', 1, 0, 0, 1)
+            new ChangesModel(changesMap[n].name, 'inv', 1, 0, 0, 1, changesMap[n].img)
           );
         }
         else if (changesMap[n].before === null || changesMap[n].before === undefined) {
           // Получен новый
           changes.push(
-            new ChangesModel(changesMap[n].name, 'inv', 0, 1, 0, 1)
+            new ChangesModel(changesMap[n].name, 'inv', 0, 1, 0, 1, changesMap[n].img)
           );
         }
         else if (changesMap[n].after > changesMap[n].before) {
           changes.push(
-            new ChangesModel(changesMap[n].name, 'inv', changesMap[n].before, changesMap[n].after, 0, changesMap[n].after)
+            new ChangesModel(changesMap[n].name, 'inv', changesMap[n].before, changesMap[n].after, 0, changesMap[n].after, changesMap[n].img)
           );
         }
         else if (changesMap[n].after < changesMap[n].before) {
           changes.push(
-            new ChangesModel(changesMap[n].name, 'inv', changesMap[n].before, changesMap[n].after, 0, changesMap[n].before)
+            new ChangesModel(changesMap[n].name, 'inv', changesMap[n].before, changesMap[n].after, 0, changesMap[n].before, changesMap[n].img)
           );
         }
       }
@@ -94,7 +94,7 @@ export class PerschangesService {
       else if (changesMap[n].type == 'cha') {
         if (changesMap[n].after != changesMap[n].before) {
           changes.push(
-            new ChangesModel(changesMap[n].name, 'cha', changesMap[n].before, changesMap[n].after, 0, Characteristic.maxValue)
+            new ChangesModel(changesMap[n].name, 'cha', changesMap[n].before, changesMap[n].after, 0, Characteristic.maxValue, changesMap[n].img)
           );
         }
       }
@@ -102,7 +102,7 @@ export class PerschangesService {
       else if (changesMap[n].type == 'abil') {
         if (changesMap[n].after != changesMap[n].before) {
           changes.push(
-            new ChangesModel(changesMap[n].name, 'abil', changesMap[n].before, changesMap[n].after, 0, Ability.maxValue)
+            new ChangesModel(changesMap[n].name, 'abil', changesMap[n].before, changesMap[n].after, 0, Ability.maxValue, changesMap[n].img)
           );
 
           if (changesMap[n].after == 1) {
@@ -113,14 +113,14 @@ export class PerschangesService {
         else if (changesMap[n].tskProgrBefore != changesMap[n].tskProgrAfter
           && changesMap[n].tskProgrAfter != 0) {
           changes.push(
-            new ChangesModel(changesMap[n].name, 'state', changesMap[n].tskProgrBefore, changesMap[n].tskProgrAfter, 0, changesMap[n].tskProgrTotal)
+            new ChangesModel(changesMap[n].name, 'state', changesMap[n].tskProgrBefore, changesMap[n].tskProgrAfter, 0, changesMap[n].tskProgrTotal, changesMap[n].img)
           );
         }
       }
       // Опыт
       else if (changesMap[n].type == 'exp') {
         if (changesMap[n].after != changesMap[n].before) {
-          let expChanges = new ChangesModel('Опыт', 'exp', changesMap[n].before * 10, changesMap[n].after * 10, this.afterPers.prevExp * 10, this.afterPers.nextExp * 10);
+          let expChanges = new ChangesModel('Опыт', 'exp', changesMap[n].before * 10, changesMap[n].after * 10, this.afterPers.prevExp * 10, this.afterPers.nextExp * 10, changesMap[n].img);
 
           let beforeExp = changesMap[n].before;
           let afterExp = changesMap[n].after;
@@ -129,7 +129,7 @@ export class PerschangesService {
           let afterLvl = this.afterPers.level;
 
           let eCh: persExpChanges[] = [];
-          
+
           if (afterLvl > prevLvl) {
             //1
             eCh.push(new persExpChanges(beforeExp, this.beforePers.nextExp, this.beforePers.prevExp, this.beforePers.nextExp));
@@ -153,114 +153,113 @@ export class PerschangesService {
       else if (changesMap[n].type == 'lvl') {
         if (changesMap[n].after > changesMap[n].before) {
           newLevel = true;
-          // changes.push(
-          //   new ChangesModel('Уровень', 'lvl', changesMap[n].before, changesMap[n].after, 0, Pers.maxLevel)
-          // );
         }
         else if (changesMap[n].after > changesMap[n].before) {
-          // changes.push(
-          //   new ChangesModel('Уровень', 'lvl', changesMap[n].before, changesMap[n].after, 0, Pers.maxLevel)
-          // );
         }
       }
       // Ранг
       else if (changesMap[n].type == 'rang') {
         if (changesMap[n].after > changesMap[n].before) {
-          // changes.push(
-          //   new ChangesModel('Ранг', 'rang', changesMap[n].before, changesMap[n].after, 0, Pers.rangLvls.length)
-          // );
         }
         else if (changesMap[n].after > changesMap[n].before) {
-          // changes.push(
-          //   new ChangesModel('Ранг', 'rang', changesMap[n].before, changesMap[n].after, 0, Pers.rangLvls.length)
-          // );
         }
       }
     });
 
-    let head = '';
+    function sleep(ms) {
+      return new Promise(resolve => setTimeout(resolve, ms));
+    }
 
+    let classPanel = isGood ? 'my-good' : 'my-bad';
+
+    for (let index = 0; index < changes.length; index++) {
+      let head;
+      ({ head, isGood } = this.GetHead(isGood, congrantMsg, failMsg));
+
+      let dialogRef = this.dialog.open(PersChangesComponent, {
+        panelClass: classPanel,
+        data: {
+          headText: head,
+          changes: [changes[index]],
+          isGood: isGood
+        },
+        backdropClass: 'backdrop'
+      });
+
+      await sleep(4000);
+
+      dialogRef.close();
+      if (abToEdit != null) {
+        this.router.navigate(['/task', abToEdit, false]);
+      }
+
+    }
+
+    if (newLevel) {
+      let dialogRefLvlUp = this.dialog.open(LevelUpMsgComponent, {
+        panelClass: classPanel,
+        backdropClass: 'backdrop'
+      });
+
+      await sleep(4000);
+
+      dialogRefLvlUp.close();
+
+      this.router.navigate(['/pers', true]);
+    }
+
+  }
+
+  private getCongrantMsg() {
+    return Pers.Inspirations[Math.floor(Math.random() * Pers.Inspirations.length)] + ', ' + this.afterPers.name + '!';
+  }
+
+  private getFailMsg() {
+    return Pers.Abuses[Math.floor(Math.random() * Pers.Abuses.length)] + ', ' + this.afterPers.name + '!';
+  }
+
+  private GetHead(isGood: boolean, congrantMsg: string, failMsg: string) {
+    let head = '';
     if (isGood == null) {
       head = null;
       isGood = true;
     }
     else {
       if (isGood) {
-        head = congrantMsg;
+        head = this.getCongrantMsg();
       }
       else {
-        head = failMsg;
+        head = this.getFailMsg();
       }
     }
-
-    let classPanel = isGood ? 'my-good' : 'my-bad';
-
-    let dialogRef = this.dialog.open(PersChangesComponent, {
-      panelClass: classPanel,
-      data: {
-        headText: head,
-        changes: changes,
-        isGood: isGood
-      },
-      backdropClass: 'backdrop'
-    });
-
-    setTimeout(() => {
-      dialogRef.close();
-      if (abToEdit != null) {
-        this.router.navigate(['/task', abToEdit, false]);
-      }
-
-      // Новый уровень
-      if (newLevel) {
-        let dialogRefLvlUp = this.dialog.open(LevelUpMsgComponent, {
-          panelClass: classPanel,
-          backdropClass: 'backdrop'
-        });
-
-        setTimeout(() => {
-          dialogRefLvlUp.close();
-
-          //this.srv.selTabPersList = 0;
-          this.router.navigate(['/pers', true]);
-        }, 3000);
-      }
-    }, 4000);
+    return { head, isGood };
   }
 
   private fillChangesMap(changesMap: {}, chType: string, prs: Pers) {
     // Ранг
     if (!changesMap['rang']) {
-      changesMap['rang'] = this.getChItem('rang', 'rang');
+      changesMap['rang'] = this.getChItem('rang', 'rang', null);
     }
     changesMap['rang'][chType] = prs.rang.name;
 
     // Уровень
     if (!changesMap['lvl']) {
-      changesMap['lvl'] = this.getChItem('lvl', 'lvl');
+      changesMap['lvl'] = this.getChItem('lvl', 'lvl', null);
     }
     changesMap['lvl'][chType] = prs.level;
 
     // Опыт
     if (!changesMap['exp']) {
-      changesMap['exp'] = this.getChItem('exp', 'exp');
+      changesMap['exp'] = this.getChItem('exp', 'exp', 'assets/icons/опыт.png');
     }
     changesMap['exp'][chType] = prs.exp;
-
-    // Характеристики
-    prs.characteristics.forEach(ch => {
-      if (!changesMap[ch.id]) {
-        changesMap[ch.id] = this.getChItem('cha', ch.name);
-      }
-      changesMap[ch.id][chType] = Math.floor(ch.value);
-    });
 
     // Навыки
     prs.characteristics.forEach(ch => {
       ch.abilities.forEach(ab => {
         ab.tasks.forEach(tsk => {
           if (!changesMap[tsk.id]) {
-            changesMap[tsk.id] = this.getChItem('abil', ab.name);
+            changesMap[tsk.id] = this.getChItem('abil', ab.name, ab.image);
           }
 
           changesMap[tsk.id][chType] = Math.floor(tsk.value);
@@ -273,10 +272,18 @@ export class PerschangesService {
       });
     });
 
+    // Характеристики
+    prs.characteristics.forEach(ch => {
+      if (!changesMap[ch.id]) {
+        changesMap[ch.id] = this.getChItem('cha', ch.name, ch.image);
+      }
+      changesMap[ch.id][chType] = Math.floor(ch.value);
+    });
+
     // Квесты
     prs.qwests.forEach(qw => {
       if (!changesMap[qw.id]) {
-        let qwitem = this.getChItem('qwest', qw.name);
+        let qwitem = this.getChItem('qwest', qw.name, qw.image);
         changesMap[qw.id] = qwitem;
       }
 
@@ -286,7 +293,7 @@ export class PerschangesService {
       // Подзадачи
       qw.tasks.forEach(tsk => {
         if (!changesMap[tsk.id]) {
-          let qwitem = this.getChItem('tsk', tsk.name);
+          let qwitem = this.getChItem('tsk', tsk.name, null);
           changesMap[tsk.id] = qwitem;
         }
         this.tskStatesProgress(tsk, chType, changesMap, false);
@@ -296,17 +303,18 @@ export class PerschangesService {
     // Инвентарь
     prs.inventory.forEach(inv => {
       if (!changesMap[inv.id]) {
-        changesMap[inv.id] = this.getChItem('inv', inv.name);
+        changesMap[inv.id] = this.getChItem('inv', inv.name, inv.image);
       }
 
       changesMap[inv.id][chType] = inv.count;
     });
   }
 
-  private getChItem(type, name): any {
+  private getChItem(type, name, img): any {
     let ch = new changesItem();
     ch.type = type;
     ch.name = name;
+    ch.img = img;
 
     return ch;
   }

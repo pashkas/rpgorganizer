@@ -7,8 +7,11 @@ export class ChangesModel {
     totalMax: number;
     totalMin: number;
     expChanges: persExpChanges[] = [];
+    img: string;
 
-    constructor(name, type, valFrom, valTo, totalMin, totalMax) {
+    constructor(name, type, valFrom, valTo, totalMin, totalMax, img) {
+        this.img = img;
+
         if (totalMin == null || totalMin == undefined) {
             totalMin = 0;
         }
