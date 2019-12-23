@@ -176,8 +176,7 @@
               <li *ngFor="let item of this.srv.pers.characteristics; let i = index;"
                 class="list-group-item pb-0 px-0 mt-0 mb-0 border-0">
                 <!-- Характеристика -->
-                <a class="align-self-center w-100" [ngClass]="{'text-dark': item.abilities.length === 0}"
-                  [routerLink]="['/characteristic', item.id]">
+                <a class="align-self-center w-100" [routerLink]="['/characteristic', item.id]">
                   <div class="d-flex">
                     <div class="flex-grow-1 text-left align-self-baseline">
                       <h4>{{item.name}}</h4>
@@ -194,8 +193,7 @@
                     <ul class="list-group py-0" *ngIf="item.abilities.length>0">
                       <li *ngFor="let ab of item.abilities" class="list-group-item py-0 mt-1 mb-0 pr-0 pl-0 border-0">
                         <div class="d-flex align-items-baseline w-100">
-                          <div class="w-100 d-flex"
-                            [ngClass]="{'text-dark': ab.tasks.length === 0, 'text-primary': ab.tasks.length > 0}">
+                          <div class="w-100 d-flex text-primary">
                             <!-- [routerLink]="['/ability', ab.id]" -->
                             <a (click)="showAbility(ab)"
                               [ngClass]="{'text-success' : ab.tasks[0]?.mayUp && ab.tasks[0]?.IsNextLvlSame}"

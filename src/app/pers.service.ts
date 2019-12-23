@@ -1581,7 +1581,7 @@ export class PersService {
     let lvlExp = nextExp - startExp;
     let progr = 0;
     if (lvlExp != 0) {
-      (this.pers.exp - startExp) / lvlExp;
+      progr = (this.pers.exp - startExp) / lvlExp;
     }
 
     this.pers.progressValue = progr * 100.0;
