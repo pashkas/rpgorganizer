@@ -141,16 +141,16 @@
           </div>
           <div fxLayout="row" fxLayoutAlign="space-between center">
             <span>
-              <img src="assets/icons/chartUp.png" class="img-fluid"
+              <img src="assets/icons/опыт.png" class="img-fluid"
                 [ngStyle]="{'object-fit': 'contain', 'height':'1.5em'}">
               <span>
-                {{(this.srv.pers.storyProgress | number: '1.0-2')}}%
+                {{(this.srv.pers.level)}}
               </span>
             </span>
 
             <!-- Имя -->
             <div class="text-center text-dark">
-              {{this.srv.pers.name + ' (' + (this.srv.pers.rang.name|lowercase) + ') ' + 'уровень ' + this.srv.pers.level}}
+              {{this.srv.pers.name + ' (' + (this.srv.pers.rang.name|lowercase) + ')'}}
             </div>
 
             <span>

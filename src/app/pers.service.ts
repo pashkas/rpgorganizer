@@ -567,12 +567,12 @@ export class PersService {
    * Загрузить персонажей с уровнем, большим чем 0;
    */
   getChampions(): Observable<any> {
-    return this.db.collection<Pers>('/pers', ref => ref.where('storyProgress', '>=', 0.1)
-      .orderBy('storyProgress', 'desc'))
+    return this.db.collection<Pers>('/pers', ref => ref.where('level', '>=', 1)
+      .orderBy('level', 'desc'))
       .valueChanges()
       .pipe(
         map(champ => champ.map(n => {
-          return { Name: n.name, Level: n.storyProgress, Pic: n.image ? n.image : n.rang.img, Id: n.id, date: new Date(n.dateLastUse) };
+          return { Name: n.name, Level: n.level, Pic: n.image ? n.image : n.rang.img, Id: n.id, date: new Date(n.dateLastUse) };
         })),
         take(1),
         share()
@@ -956,7 +956,7 @@ export class PersService {
     for (const ch of this.pers.characteristics) {
       for (const ab of ch.abilities) {
         for (const tsk of ab.tasks) {
-          if (this.pers.ON > 0 && tsk.value <= 9) {
+          if (this.pers.ON > 0 && tsk.value <= 9 && this.pers.ON >= Math.floor(tsk.value) + 1) {
             if (tsk.value >= 1 && tsk.statesDescr[Math.floor(tsk.value)] == tsk.statesDescr[Math.floor(tsk.value + 1)]) {
               tsk.IsNextLvlSame = true;
             }
@@ -1536,15 +1536,21 @@ export class PersService {
   private setPersExpAndON(chaCur: number, chaMax: number, absCur: number, absMax: number, skillCur: number, skillMax: number, totalAbilities: number) {
     // Считаем по развитости всех скиллов
     let maxV = skillMax;
-    let curV = skillCur;
+    //let curV = skillCur;
 
     if (maxV <= 1) {
       maxV = 1;
     }
 
+    let curV = 0;
+    this.pers.characteristics.forEach(cha => {
+      cha.abilities.forEach(ab => {
+        curV += (ab.value * (ab.value + 1)) / 2.0;
+      });
+    });
+
     // Очки навыков
-    //this.pers.ONPerLevel = totalAbilities / Ability.maxValue;
-    this.pers.ONPerLevel = 1;
+    this.pers.ONPerLevel = (totalAbilities * 55) / 100;
 
     let persLevel = 0;
 

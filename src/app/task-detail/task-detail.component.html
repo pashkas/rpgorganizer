@@ -18,6 +18,9 @@
 <div class="container pt-2 pb-4" *ngIf="this.srv.pers && tsk && !isEditMode">
   <form class="pb-4">
     <hr *ngIf="!tskAbility">
+    <div *ngIf="tskAbility && tskAbility?.image" fxLayout="row" fxLayoutAlign="center center" class="p-2">
+      <img src="{{tskAbility.image}}" class="img-fluid" [ngStyle]="{'object-fit': 'contain', 'height': '25vh'}">
+    </div>
     <h4 class="text-center">{{tsk.name}}
     </h4>
     <div abil="progress" *ngIf="tskAbility" [ngStyle]="{'height': '3px'}">
@@ -47,10 +50,25 @@
     </div>
 
     <!-- Действия -->
-    <div *ngIf="this.srv.pers.ON >= 1 && tsk.requrense != 'нет'" class="py-2 text-center">
+    <div fxLayout="row" fxLayoutAlign="space-between center" *ngIf="tsk.requrense != 'нет' && tsk.mayUp"
+      class="py-2 text-center">
+      <span style="visibility: hidden;">
+        <img src="assets/icons/diamond.png" class="img-fluid" [ngStyle]="{'object-fit': 'contain', 'height':'1.5em'}">
+        <span>
+          {{this.srv.pers.ON}}
+        </span>
+      </span>
+
       <button class="icon-small" mat-icon-button (click)="upAbil();">
         <img src="assets/icons/up.png" class="img-fluid">
       </button>
+
+      <span>
+        <img src="assets/icons/diamond.png" class="img-fluid" [ngStyle]="{'object-fit': 'contain', 'height':'1.5em'}">
+        <span>
+          {{this.srv.pers.ON}}
+        </span>
+      </span>
     </div>
     <!-- Таймер, счетчик -->
     <!-- <div class="form-row">
@@ -103,6 +121,10 @@
     <!-- Название -->
     <mat-form-field>
       <input matInput autocomplete="off" placeholder="Название" [(ngModel)]="tsk.name" name="tsk.name">
+    </mat-form-field>
+    <mat-form-field *ngIf="tskAbility">
+      <input matInput autocomplete="off" placeholder="Изображение" [(ngModel)]="tskAbility.image"
+        name="tskAbility.image">
     </mat-form-field>
     <!-- Дата, повторение -->
     <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="8px">
