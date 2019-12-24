@@ -1567,7 +1567,7 @@ export class PersService {
 
     for (let i = 1; i < Pers.maxLevel; i++) {
       startExp = exp;
-      exp += i * (1.05 * i) * onPerLevelCeil;
+      exp += i * onPerLevelCeil + (i * 0.05) * onPerLevelCeil;
       nextExp = exp;
 
       if (exp > this.pers.exp) {
