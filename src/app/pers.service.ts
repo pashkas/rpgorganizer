@@ -805,7 +805,7 @@ export class PersService {
           tsk.plusToNames = [];
           tsk.plusToNames.push(new plusToName(cha.name, cha.id, '/characteristic'));
 
-          let exp = Math.floor(tsk.value) * this.getWeekKoef(tsk.requrense, true, tsk.tskWeekDays) * 10.0;
+          let exp = this.getTaskChangesExp(tsk) * 10.0;
           exp = Math.floor(exp);
 
           tsk.plusToNames.unshift(new plusToName('+' + exp + ' exp', null, null));
@@ -1138,10 +1138,8 @@ export class PersService {
       this.setTaskNextDate(task, false);
       this.setStatesNotDone(task);
 
-      // Плюсуем значение
-      let chVal = this.baseTaskPoints * this.getWeekKoef(task.requrense, false, task.tskWeekDays);
-      //Task.valueDecrease(chVal, task, this.pers.level);
-      this.pers.exp -= chVal * Math.floor(task.value);
+      // Минусуем значение
+      this.pers.exp -= this.getTaskChangesExp(task);
       if (this.pers.exp < 0) {
         this.pers.exp = 0;
       }
@@ -1179,9 +1177,7 @@ export class PersService {
       this.setStatesNotDone(task);
 
       // Плюсуем значение
-      let chVal = this.baseTaskPoints * this.getWeekKoef(task.requrense, true, task.tskWeekDays);
-      //Task.valueIncrease(chVal, task, this.pers.level);
-      this.pers.exp += chVal * Math.floor(task.value);
+      this.pers.exp += this.getTaskChangesExp(task);
 
       task.image = this.GetRndEnamy(task);
       task.states.forEach(st => {
@@ -1215,6 +1211,12 @@ export class PersService {
 
       return 'квест';
     }
+  }
+
+  private getTaskChangesExp(task: Task) {
+    let chVal = this.baseTaskPoints * this.getWeekKoef(task.requrense, true, task.tskWeekDays);
+    const chValFinaly = chVal * Math.floor((task.value * (task.value + 1) / 2.0));
+    return chValFinaly;
   }
 
   upAbility(ab: Ability) {
@@ -1554,22 +1556,22 @@ export class PersService {
       });
     });
 
+    const onPerLevel = (totalAbilities * 55) / 100;
+    const onPerLevelCeil = Math.ceil(onPerLevel);
     // Очки навыков
-    this.pers.ONPerLevel = (totalAbilities * 55) / 100;
-
+    this.pers.ONPerLevel = onPerLevelCeil;
     let persLevel = 0;
-
     let exp: number = 0;
     let startExp = 0;
     let nextExp = 0;
 
     for (let i = 1; i < Pers.maxLevel; i++) {
       startExp = exp;
-      exp += Math.ceil(i * this.pers.ONPerLevel);
+      exp += i * (1.05 * i) * onPerLevelCeil;
       nextExp = exp;
+
       if (exp > this.pers.exp) {
         persLevel = i - 1;
-
         break;
       }
     }
@@ -1586,13 +1588,7 @@ export class PersService {
 
     this.pers.progressValue = progr * 100.0;
 
-    let ons = Math.ceil(((this.pers.level + 1) * this.pers.ONPerLevel) - curV);
-    // let persProgress = curV / maxV;
-    // const lvl = Pers.maxLevel * persProgress;
-    // let totalExp = lvl * 1000;
-    // this.pers.exp = totalExp;
-    // this.pers.level = Math.floor(lvl);
-    // this.pers.progressValue = (lvl - Math.floor(lvl)) * 100.0;
+    let ons = Math.ceil(((this.pers.level + 1) * onPerLevel) - curV);
 
     if (ons < 0) {
       ons = 0;

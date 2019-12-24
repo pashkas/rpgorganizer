@@ -16,6 +16,7 @@ export class PersChangesComponent implements OnInit {
   isGood: boolean = true;
   counto: number[] = [];
   slidingDoorValue: string = 'out';
+  abPoints: any;
 
   constructor(@Inject(MAT_DIALOG_DATA) public data: any) {
     this.headText = data.headText;
@@ -24,6 +25,7 @@ export class PersChangesComponent implements OnInit {
       this.counto.push(element.valFrom);
     });
     this.isGood = data.isGood;
+    this.abPoints = data.abPoints;
   }
 
   ngOnInit() {

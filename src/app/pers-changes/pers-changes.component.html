@@ -1,13 +1,33 @@
 <div fxLayout="column" fxFill fxLayoutAlign="space-around center" class="text-light">
-    <img *ngIf="isGood && !this.changes[0].img" class="img-fluid" style='height: 75px' src="assets/img/good.png"
-        [ngStyle]="{'object-fit': 'contain'}">
-    <img *ngIf="!isGood && !this.changes[0].img" class="img-fluid" style='height: 75px' src="assets/img/bad.png"
-        [ngStyle]="{'object-fit': 'contain'}">
-    <img *ngIf="changes[0]?.img" class="img-fluid" style='height: 75px' src="{{changes[0]?.img}}"
-        [ngStyle]="{'object-fit': 'contain'}">
+    <div fxLayout="row" fxLayoutAlign="space-evenly end">
+        <div *ngIf="this.abPoints != null" class=" m-2">
+            <span>
+                {{this.abPoints}}
+            </span>
+            <img src="assets/icons/diamond.png" class="img-fluid"
+                [ngStyle]="{'object-fit': 'contain', 'height':'1.5em'}">
+        </div>
+        <img *ngIf="isGood && !this.changes[0].img" class="img-fluid" style='height: 75px' src="assets/img/good.png"
+            [ngStyle]="{'object-fit': 'contain'}">
+        <img *ngIf="!isGood && !this.changes[0].img" class="img-fluid" style='height: 75px' src="assets/img/bad.png"
+            [ngStyle]="{'object-fit': 'contain'}">
+        <img *ngIf="changes[0]?.img" class="img-fluid" style='height: 75px' src="{{changes[0]?.img}}"
+            [ngStyle]="{'object-fit': 'contain'}">
+
+        <div *ngIf="this.abPoints != null" class=" m-2">
+            <img src="assets/icons/diamond.png" class="img-fluid"
+                [ngStyle]="{'object-fit': 'contain', 'height':'1.5em'}">
+            <span>
+                {{this.abPoints}}
+            </span>
+        </div>
+    </div>
+
     <div fxFlex class="px-2 py-1 text-center" style="width: 75vw;">
         <mat-list class="p-1">
-            <div mat-list-item *ngIf="headText"><b>{{headText|uppercase}}</b></div>
+            <div mat-list-item *ngIf="headText">
+                <b>{{headText|uppercase}}</b>
+            </div>
             <div mat-list-item *ngFor="let item of this.changes; let i = index">
                 <app-pers-changes-item [item]="item"></app-pers-changes-item>
             </div>

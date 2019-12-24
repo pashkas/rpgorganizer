@@ -176,12 +176,18 @@ export class PerschangesService {
       let head;
       ({ head, isGood } = this.GetHead(isGood, congrantMsg, failMsg));
 
+      let abPoints;
+      if (changes[index].type == 'abil') {
+        abPoints = this.afterPers.ON;
+      }
+
       let dialogRef = this.dialog.open(PersChangesComponent, {
         panelClass: classPanel,
         data: {
           headText: head,
           changes: [changes[index]],
-          isGood: isGood
+          isGood: isGood,
+          abPoints: abPoints
         },
         backdropClass: 'backdrop'
       });
@@ -192,7 +198,6 @@ export class PerschangesService {
       if (abToEdit != null) {
         this.router.navigate(['/task', abToEdit, false]);
       }
-
     }
 
     if (newLevel) {
@@ -207,15 +212,6 @@ export class PerschangesService {
 
       this.router.navigate(['/pers', true]);
     }
-
-  }
-
-  private getCongrantMsg() {
-    return Pers.Inspirations[Math.floor(Math.random() * Pers.Inspirations.length)] + ', ' + this.afterPers.name + '!';
-  }
-
-  private getFailMsg() {
-    return Pers.Abuses[Math.floor(Math.random() * Pers.Abuses.length)] + ', ' + this.afterPers.name + '!';
   }
 
   private GetHead(isGood: boolean, congrantMsg: string, failMsg: string) {
@@ -250,7 +246,7 @@ export class PerschangesService {
 
     // Опыт
     if (!changesMap['exp']) {
-      changesMap['exp'] = this.getChItem('exp', 'exp', 'assets/icons/опыт.png');
+      changesMap['exp'] = this.getChItem('exp', 'exp', null);
     }
     changesMap['exp'][chType] = prs.exp;
 
@@ -317,6 +313,14 @@ export class PerschangesService {
     ch.img = img;
 
     return ch;
+  }
+
+  private getCongrantMsg() {
+    return Pers.Inspirations[Math.floor(Math.random() * Pers.Inspirations.length)] + ', ' + this.afterPers.name + '!';
+  }
+
+  private getFailMsg() {
+    return Pers.Abuses[Math.floor(Math.random() * Pers.Abuses.length)] + ', ' + this.afterPers.name + '!';
   }
 
   private tskStatesProgress(tsk: Task, chType: string, changesMap: any, isCheckActive: boolean) {
