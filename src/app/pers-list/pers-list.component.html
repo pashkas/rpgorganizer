@@ -1,4 +1,4 @@
-<nav *ngIf="this.srv.pers" class="fixed-bottom">
+<nav *ngIf="this.srv.pers && !this.srv.isDialogOpen" class="fixed-bottom">
   <div class="d-flex w-100 justify-content-end px-2 py-2">
     <!-- Назад -->
     <button *ngIf="!isEditMode" mat-icon-button (click)="goBack()" class="mx-2">
@@ -14,50 +14,8 @@
     </button>
   </div>
 </nav>
-<!-- Модальное окно - добавление характеристики -->
-<div mdbModal #addCha="mdbModal" class="modal fade" role="dialog" aria-labelledby="myBasicModalLabel"
-  aria-hidden="true">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h4 class="modal-title w-100" id="myModalLabel">Добавить характеристику</h4>
-      </div>
-      <div class="modal-body">
-        <mat-form-field class="w-100">
-          <input #addChaImp matInput autocomplete="off" placeholder="Название" [(ngModel)]="newCharact"
-            name="newCharact">
-          {{addChaImp.focus()}}
-        </mat-form-field>
-      </div>
-      <div class="modal-footer">
-        <button mat-button aria-label="Close" (click)="addCha.hide()">Отмена</button>
-        <button (click)="addCha.hide(); addCharact();" mat-stroked-button color="accent">ОК</button>
-        <!-- routerLink="./" fragment="characts" -->
-      </div>
-    </div>
-  </div>
-</div>
-<!-- Модальное окно - добавление навыка -->
-<div mdbModal #addAb="mdbModal" class="modal fade" role="dialog" aria-hidden="true" aria-labelledby="myBasicModalLabel">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h4 class="modal-title w-100">Добавить навык</h4>
-      </div>
-      <div class="modal-body">
-        <mat-form-field class="w-100">
-          <input #addAbImp matInput autocomplete="off" placeholder="Название" [(ngModel)]="newAbil" name="newAbil">
-          {{addAbImp.focus()}}
-        </mat-form-field>
-      </div>
-      <div class="modal-footer">
-        <button type="button" mat-button aria-label="Close" (click)="addAb.hide()">Отмена</button>
-        <button (click)="addAb.hide(); addAbil(selCha.id);" color="accent" mat-stroked-button>ОК</button>
-        <!-- routerLink="./" fragment="{{chaArea}}" -->
-      </div>
-    </div>
-  </div>
-</div>
+
+
 <!-- Модальное окно - добавление задачи -->
 <div mdbModal #addTsk="mdbModal" class="modal fade" role="dialog" aria-hidden="true"
   aria-labelledby="myBasicModalLabel">
@@ -103,26 +61,6 @@
       <div class="modal-footer">
         <button mat-button aria-label="Close" (click)="addRev.hide(); isEditRev=false;">Отмена</button>
         <button (click)="addRev.hide(); addNewRevard(); isEditRev=false;" color="accent" mat-stroked-button>ОК</button>
-      </div>
-    </div>
-  </div>
-</div>
-<!-- Модальное окно - добавление квеста -->
-<div mdbModal #addQwest="mdbModal" class="modal fade" role="dialog" aria-hidden="true">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h4 class="modal-title w-100">Добавить квест</h4>
-      </div>
-      <div class="modal-body">
-        <mat-form-field class="w-100">
-          <input #addQwestImp matInput autocomplete="off" placeholder="Название" [(ngModel)]="newQwest" name="newQwest">
-          {{addQwestImp.focus()}}
-        </mat-form-field>
-      </div>
-      <div class="modal-footer">
-        <button mat-button aria-label="Close" (click)="addQwest.hide()">Отмена</button>
-        <button (click)="addQwest.hide(); addNewQwest();" mat-stroked-button color="accent">ОК</button>
       </div>
     </div>
   </div>
@@ -250,7 +188,7 @@
           </mat-form-field>
           <div fxLayout="row" fxLayoutAlign="space-between center">
             <h5>Атрбуты:</h5>
-            <button class="icon-small" mat-icon-button (click)="addCha.show()">
+            <button class="icon-small" mat-icon-button (click)="addCharact()">
               <img src="assets/icons/create.png" *ngIf="!this.srv.isGlobalTaskView" class="img-fluid">
             </button>
           </div>
@@ -264,7 +202,7 @@
                   </div>
                   <div class="btn-group btn-group-sm" role="group" aria-label="Действия">
                     <!-- Добавить навык -->
-                    <button class="icon-small" id="cha{{i}}" (click)="addAb.show(); selCha=item;" mat-icon-button>
+                    <button class="icon-small" id="cha{{i}}" (click)="addAbil(item?.id); selCha=item;" mat-icon-button>
                       <img src="assets/icons/create.png" *ngIf="!this.srv.isGlobalTaskView" class="img-fluid">
                     </button>
                     <!-- Удалить -->
@@ -418,7 +356,7 @@
           <div fxLayout="row" fxLayoutAlign="space-between center">
             <h5>Квесты:</h5>
             <!-- Добавление квеста -->
-            <button class="icon-small" mat-icon-button data-toggle="modal" (click)="addQwest.show()">
+            <button class="icon-small" mat-icon-button (click)="addNewQwest()">
               <img src="assets/icons/create.png" *ngIf="!this.srv.isGlobalTaskView" class="img-fluid">
             </button>
           </div>

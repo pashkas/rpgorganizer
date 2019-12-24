@@ -111,6 +111,16 @@ button:focus {
     width: auto !important;
 } */
 
+.my-dialog {}
+
+.my-dialog .mat-dialog-container {
+    width: 80vw !important;
+}
+
+.my-dialog .mat-dialog-container {
+    width: 80vw !important;
+}
+
 .my-good .mat-dialog-container {
     background: green;
     width: 80vw !important;

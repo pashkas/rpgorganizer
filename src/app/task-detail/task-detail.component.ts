@@ -8,6 +8,8 @@ import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { Ability } from 'src/Models/Ability';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
+import { MatDialog } from '@angular/material';
+import { AddItemDialogComponent } from '../add-item-dialog/add-item-dialog.component';
 
 @Component({
   selector: 'app-task-detail',
@@ -18,52 +20,38 @@ export class TaskDetailComponent implements OnInit {
   private unsubscribe$ = new Subject();
 
   isEditMode: boolean = false;
-  isEditState: boolean = false;
-  newState: taskState = new taskState();
   requrenses: string[] = Task.requrenses;
-  weekDays: string[] = Task.weekDays;
   tsk: Task;
   tskAbility: Ability;
+  weekDays: string[] = Task.weekDays;
 
-  constructor(private location: Location, private route: ActivatedRoute, public srv: PersService, private router: Router) { }
-
-  setWeekDays(wd){
-    let idx = this.tsk.tskWeekDays.indexOf(wd);
-
-    if (idx == -1) {
-      this.tsk.tskWeekDays.push(wd);
-    }
-    else {
-      this.tsk.tskWeekDays.splice(idx, 1);
-    }
-  }
+  constructor(private location: Location, private route: ActivatedRoute, public srv: PersService, private router: Router, public dialog: MatDialog) { }
 
   /**
    * Добавить состояние к задаче.
    */
   addStateToTask() {
-    if (this.isEditState) {
-      return;
-    }
-
-    this.newState.img = this.srv.GetRndEnamy(this.tsk);
-    this.tsk.states.push(this.newState);
-
-    this.tsk.states = this.tsk.states.sort((a, b) => {
-      return a.isDone === b.isDone ? 0 : b.isDone ? -1 : 1;
+    this.srv.isDialogOpen = true;
+    const dialogRef = this.dialog.open(AddItemDialogComponent, {
+      panelClass: 'my-dialog',
+      data: { header: this.tsk.requrense == 'нет' ? 'Добавить подзадачу' : 'Добавить состояние', text: '' },
+      backdropClass: 'backdrop'
     });
 
-    this.newState = new taskState();
-  }
+    dialogRef.afterClosed()
+      .subscribe(name => {
+        if (name) {
+          let state = new taskState();
+          state.img = this.srv.GetRndEnamy(this.tsk);
+          state.name = name;
+          this.tsk.states.push(state);
 
-  upAbil() {
-    if (this.tskAbility) {
-      this.srv.changesBefore();
-
-      this.srv.upAbility(this.tskAbility);
-
-      this.srv.changesAfter(true);
-    }
+          this.tsk.states = this.tsk.states.sort((a, b) => {
+            return a.isDone === b.isDone ? 0 : b.isDone ? -1 : 1;
+          });
+        }
+        this.srv.isDialogOpen = false;
+      });
   }
 
   /**
@@ -105,10 +93,6 @@ export class TaskDetailComponent implements OnInit {
     // }
 
     return dt;
-  }
-
-  getNewState() {
-    this.newState = new taskState();
   }
 
   goBack() {
@@ -218,6 +202,17 @@ export class TaskDetailComponent implements OnInit {
     this.tsk.isSumStates = !this.tsk.isSumStates;
   }
 
+  setWeekDays(wd) {
+    let idx = this.tsk.tskWeekDays.indexOf(wd);
+
+    if (idx == -1) {
+      this.tsk.tskWeekDays.push(wd);
+    }
+    else {
+      this.tsk.tskWeekDays.splice(idx, 1);
+    }
+  }
+
   /**
    * Сдвинуть задачу вверх.
    * @param i Индекс задачи.
@@ -228,6 +223,16 @@ export class TaskDetailComponent implements OnInit {
 
       this.tsk.states[i] = this.tsk.states[i - 1];
       this.tsk.states[i - 1] = tmp;
+    }
+  }
+
+  upAbil() {
+    if (this.tskAbility) {
+      this.srv.changesBefore();
+
+      this.srv.upAbility(this.tskAbility);
+
+      this.srv.changesAfter(true);
     }
   }
 }

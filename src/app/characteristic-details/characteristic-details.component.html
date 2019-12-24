@@ -1,4 +1,4 @@
-<nav *ngIf="this.srv.pers" class="fixed-bottom">
+<nav *ngIf="this.srv.pers && !this.srv.isDialogOpen" class="fixed-bottom">
   <div class="d-flex w-100 justify-content-end px-2 py-2">
     <!-- Назад -->
     <button *ngIf="!isEditMode" mat-icon-button (click)="goBack()" class="mx-2">
@@ -15,27 +15,6 @@
   </div>
 </nav>
 
-<!-- Модальное окно - добавление навыка -->
-<div mdbModal #addAb="mdbModal" class="modal fade" role="dialog" aria-hidden="true" aria-labelledby="myBasicModalLabel">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h4 class="modal-title w-100">Добавить навык</h4>
-      </div>
-      <div class="modal-body">
-        <mat-form-field class="w-100">
-          <input #addAbImp matInput autocomplete="off" placeholder="Название" [(ngModel)]="newAbil" name="newAbil">
-          {{addAbImp.focus()}}
-        </mat-form-field>
-      </div>
-      <div class="modal-footer">
-        <button aria-label="Close" (click)="addAb.hide()" mat-button>Отмена</button>
-        <button (click)="addAb.hide(); addAbil();" mat-stroked-button color="accent">ОК</button>
-        <!-- routerLink="./" fragment="abs" -->
-      </div>
-    </div>
-  </div>
-</div>
 
 <!-- Просмотр -->
 <div class="container pt-2 pb-4" *ngIf="this.srv.pers && charact && !isEditMode">
@@ -110,7 +89,7 @@
     <!-- Добавить навык -->
     <div fxLayout="row" fxLayoutAlign="space-between center">
       <h5>Навыки:</h5>
-      <button class="icon-small" (click)="addAb.show();" mat-icon-button>
+      <button class="icon-small" (click)="addAbil();" mat-icon-button>
         <img src="assets/icons/create.png" *ngIf="!this.srv.isGlobalTaskView" class="img-fluid">
       </button>
     </div>

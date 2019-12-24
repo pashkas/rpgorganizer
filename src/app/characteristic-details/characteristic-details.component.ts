@@ -8,6 +8,8 @@ import { Location } from '@angular/common';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { Ability } from 'src/Models/Ability';
+import { MatDialog } from '@angular/material';
+import { AddItemDialogComponent } from '../add-item-dialog/add-item-dialog.component';
 
 @Component({
   selector: 'app-characteristic-details',
@@ -19,20 +21,30 @@ export class CharacteristicDetailsComponent implements OnInit {
 
   charact: Characteristic;
   isEditMode: boolean = false;
-  //.filter(n=>n.val!=Characteristic.maxValue);
-  newAbil: string;
 
   rangse: Rangse[];
 
   //  = Characteristic.rangse;
-  constructor(private location: Location, private route: ActivatedRoute, public srv: PersService, private router: Router) { }
+  constructor(private location: Location, private route: ActivatedRoute, public srv: PersService, private router: Router, public dialog: MatDialog) { }
 
   /**
    * Добавление навыка.
    */
   addAbil() {
-    this.srv.addAbil(this.charact.id, this.newAbil);
-    this.newAbil = "";
+    this.srv.isDialogOpen = true;
+    const dialogRef = this.dialog.open(AddItemDialogComponent, {
+      panelClass: 'my-dialog',
+      data: { header: 'Добавить навык', text: '' },
+      backdropClass: 'backdrop'
+    });
+
+    dialogRef.afterClosed()
+      .subscribe(name => {
+        if (name) {
+          this.srv.addAbil(this.charact.id, name);
+        }
+        this.srv.isDialogOpen = false;
+      });
   }
 
   /**
@@ -59,7 +71,7 @@ export class CharacteristicDetailsComponent implements OnInit {
       let rng = new Rangse();
       rng.val = index;
       rng.img = '';
-      rng.name = ''+index;
+      rng.name = '' + index;
       this.rangse.push(rng);
 
     }

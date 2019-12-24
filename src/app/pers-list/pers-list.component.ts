@@ -10,6 +10,8 @@ import { takeUntil, first } from 'rxjs/operators';
 import { Ability } from 'src/Models/Ability';
 import { ImgCacheService } from 'ng-imgcache';
 import { Task } from 'src/Models/Task';
+import { MatDialog } from '@angular/material';
+import { AddItemDialogComponent } from '../add-item-dialog/add-item-dialog.component';
 
 @Component({
   selector: 'app-pers-list',
@@ -23,38 +25,71 @@ export class PersListComponent implements OnInit {
   chaArea: string = "";
   isEditMode: boolean = false;
   isEditRev: boolean = false;
-  newAbil: string;
-  newCharact: string;
-  newQwest: string;
   newRev: Reward = new Reward();
   newTsk: string;
   selAb: Ability;
   selCha: Characteristic;
 
-  constructor(private location: Location, private route: ActivatedRoute, public srv: PersService, private router: Router) { }
+  constructor(private location: Location, private route: ActivatedRoute, public srv: PersService, private router: Router, public dialog: MatDialog) { }
 
   /**
    * Добавление навыка.
    */
   addAbil(charactId: string) {
-    this.srv.addAbil(charactId, this.newAbil);
-    this.newAbil = "";
+    this.srv.isDialogOpen = true;
+    const dialogRef = this.dialog.open(AddItemDialogComponent, {
+      panelClass: 'my-dialog',
+      data: { header: 'Добавить навык', text: '' },
+      backdropClass: 'backdrop'
+    });
+
+    dialogRef.afterClosed()
+      .subscribe(name => {
+        if (name) {
+          this.srv.addAbil(charactId, name);
+        }
+        this.srv.isDialogOpen = false;
+      });
   }
 
   /**
    * Добавление характеристки
    */
   addCharact() {
-    this.srv.addCharact(this.newCharact);
-    this.newCharact = "";
+    this.srv.isDialogOpen = true;
+    const dialogRef = this.dialog.open(AddItemDialogComponent, {
+      panelClass: 'my-dialog',
+      data: { header: 'Добавить характеристику', text: '' },
+      backdropClass: 'backdrop'
+    });
+
+    dialogRef.afterClosed()
+      .subscribe(name => {
+        if (name) {
+          this.srv.addCharact(name);
+        }
+        this.srv.isDialogOpen = false;
+      });
   }
 
   /**
    * Создание нового квеста.
    */
   addNewQwest() {
-    this.srv.addQwest(this.newQwest);
-    this.newQwest = "";
+    this.srv.isDialogOpen = true;
+    const dialogRef = this.dialog.open(AddItemDialogComponent, {
+      panelClass: 'my-dialog',
+      data: { header: 'Добавить квест', text: '' },
+      backdropClass: 'backdrop'
+    });
+
+    dialogRef.afterClosed()
+      .subscribe(name => {
+        if (name) {
+          this.srv.addQwest(name);
+        }
+        this.srv.isDialogOpen = false;
+      });
   }
 
   /**
@@ -184,7 +219,7 @@ export class PersListComponent implements OnInit {
     this.srv.showAbility(ab);
   }
 
-  upAbil(ab:Ability) {
+  upAbil(ab: Ability) {
     this.srv.changesBefore();
 
     this.srv.upAbility(ab);

@@ -7,6 +7,9 @@ import { Pers } from 'src/Models/Pers';
 import { Qwest } from 'src/Models/Qwest';
 import { Reward } from 'src/Models/Reward';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
+import { MatDialog } from '@angular/material';
+import { AddItemDialogComponent } from '../add-item-dialog/add-item-dialog.component';
+import { filter } from 'rxjs/operators';
 
 @Component({
   selector: 'app-qwest-detail',
@@ -21,10 +24,9 @@ export class QwestDetailComponent implements OnInit {
    */
   isFromDoneQwest: boolean = false;
   newRev: Reward = new Reward();
-  newTsk: string;
   qwest: Qwest;
 
-  constructor(private location: Location, private route: ActivatedRoute, public srv: PersService, private router: Router) { }
+  constructor(private location: Location, private route: ActivatedRoute, public srv: PersService, private router: Router, public dialog: MatDialog) { }
 
   /**
  * Добавить награду.
@@ -46,13 +48,20 @@ export class QwestDetailComponent implements OnInit {
    * Добавление задачи.
    */
   addTask() {
-    this.srv.addTskToQwest(this.qwest, this.newTsk);
-    this.newTsk = "";
+    this.srv.isDialogOpen = true;
+    const dialogRef = this.dialog.open(AddItemDialogComponent, {
+      panelClass: 'my-dialog',
+      data: { header: 'Добавить миссию', text: '' },
+      backdropClass: 'backdrop'
+    });
 
-    if (this.isFromDoneQwest) {
-      this.srv.savePers(false);
-      this.isFromDoneQwest = false;
-    }
+    dialogRef.afterClosed()
+      .subscribe(name => {
+        if (name) {
+          this.srv.addTskToQwest(this.qwest, name);
+        }
+        this.srv.isDialogOpen = false;
+      });
   }
 
   /**

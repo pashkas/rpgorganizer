@@ -1,4 +1,4 @@
-<nav *ngIf="this.srv.pers" class="fixed-bottom">
+<nav *ngIf="this.srv.pers && !this.srv.isDialogOpen" class="fixed-bottom">
   <div class="d-flex w-100 justify-content-end px-2 py-2">
     <!-- Назад -->
     <button *ngIf="!isEditMode" mat-icon-button (click)="goBack()" class="mx-2">
@@ -14,28 +14,7 @@
     </button>
   </div>
 </nav>
-<!-- Модальное окно - добавление монстра -->
-<div mdbModal #addTsk="mdbModal" class="modal fade" role="dialog" aria-hidden="true"
-  aria-labelledby="myBasicModalLabel">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h4 class="modal-title w-100">Добавить миссию</h4>
-      </div>
-      <div class="modal-body">
-        <mat-form-field class="w-100">
-          <input #addTskImp matInput autocomplete="off" placeholder="Название" [(ngModel)]="newTsk" name="newTsk">
-          {{addTskImp.focus()}}
-        </mat-form-field>
-      </div>
-      <div class="modal-footer">
-        <button (click)="addTsk.hide()" mat-button>Отмена</button>
-        <button (click)="addTsk.hide(); addTask();" mat-stroked-button color="accent">ОК</button>
-        <!-- routerLink="./" fragment="tsks" -->
-      </div>
-    </div>
-  </div>
-</div>
+
 <!-- Модальное окно - добавление награды -->
 <div mdbModal #addRev="mdbModal" class="modal fade" role="dialog" aria-hidden="true">
   <div class="modal-dialog" role="document">
@@ -157,7 +136,7 @@
     <!-- Задачи -->
     <div fxLayout="row" fxLayoutAlign="space-between center">
       <h5>Миссии:</h5>
-      <button class="icon-small" (click)="addTsk.show();" mat-icon-button>
+      <button class="icon-small" (click)="addTask();" mat-icon-button>
         <img src="assets/icons/create.png" class="img-fluid">
       </button>
     </div>

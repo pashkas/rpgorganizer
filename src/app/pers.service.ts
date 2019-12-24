@@ -21,7 +21,7 @@ import { EnamiesService } from './enamies.service';
 export class PersService {
   // Персонаж
   private unsubscribe$ = new Subject();
-
+  isDialogOpen: boolean = false;
   baseTaskPoints: number = 1.0;
   isGlobalTaskView: boolean;
   mn0Count: number = 183;
