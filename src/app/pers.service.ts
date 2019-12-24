@@ -567,8 +567,8 @@ export class PersService {
    * Загрузить персонажей с уровнем, большим чем 0;
    */
   getChampions(): Observable<any> {
-    var dat = new Date();
-    dat.setDate(dat.getDate() - 21);
+    //var dat = new Date();
+    //dat.setDate(dat.getDate() - 21);
 
     return this.db.collection<Pers>('/pers', ref => ref.where('level', '>=', 1)
       .orderBy('level', 'desc'))
@@ -576,7 +576,8 @@ export class PersService {
       .pipe(
         map(champ => champ.map(n => {
           return { Name: n.name, Level: n.level, Pic: n.image ? n.image : n.rang.img, Id: n.id, date: new Date(n.dateLastUse) };
-        }).filter(n => n.date.valueOf() >= dat.valueOf())),
+        })),
+        //.filter(n => n.date.valueOf() >= dat.valueOf())),
         take(1),
         share()
       );
