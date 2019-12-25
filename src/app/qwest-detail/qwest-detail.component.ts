@@ -52,6 +52,7 @@ export class QwestDetailComponent implements OnInit {
     const dialogRef = this.dialog.open(AddItemDialogComponent, {
       panelClass: 'my-dialog',
       data: { header: 'Добавить миссию', text: '' },
+      
       backdropClass: 'backdrop'
     });
 
