@@ -15,27 +15,6 @@
   </div>
 </nav>
 
-<!-- Модальное окно - добавление награды -->
-<div mdbModal #addRev="mdbModal" class="modal fade" role="dialog" aria-hidden="true">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h4 class="modal-title w-100">Добавление награды</h4>
-      </div>
-      <div class="modal-body">
-        <mat-form-field class="w-100">
-          <input #addRevImp matInput autocomplete="off" placeholder="Название" [(ngModel)]="newRev.name" name="newRev">
-          {{addRevImp.focus()}}
-        </mat-form-field>
-      </div>
-      <div class="modal-footer">
-        <button (click)="addRev.hide(); isEditRev=false;" mat-button>Отмена</button>
-        <button (click)="addRev.hide(); addNewRevard(); isEditRev=false;" mat-stroked-button color="accent">ОК</button>
-      </div>
-    </div>
-  </div>
-</div>
-
 <!-- Просмотр -->
 <div class="container pt-2 pb-4" *ngIf="this.srv.pers && qwest && !isEditMode">
   <div class="pb-4">
@@ -45,7 +24,7 @@
     </div>
 
     <h4 class="text-center">{{qwest.name}}</h4>
-    <mat-progress-bar class="myprogr" color="accent" mode="determinate" value="{{qwest.progressValue}}">
+    <mat-progress-bar *ngIf="true" class="myprogr" color="accent" mode="determinate" value="{{qwest.progressValue}}">
     </mat-progress-bar>
 
     <!-- Описание -->
@@ -56,9 +35,9 @@
     </div>
 
     <!-- Действия -->
-    <div div fxLayout="row" fxLayoutAlign="space-around center" class="pt-2" *ngIf="qwest.progressValue >= 100">
-      <button class="icon-small" mat-icon-button *ngIf="qwest.progressValue >= 100" (click)="doneQwest(qwest)">
-        <img src="assets/icons/star.png" class="img-fluid">
+    <div div fxLayout="row" fxLayoutAlign="space-around center" class="mt-2" *ngIf="qwest.progressValue >= 100">
+      <button mat-icon-button *ngIf="qwest.progressValue >= 100" (click)="doneQwest(qwest)">
+        <img src="assets/icons/star.png" class="img-fluid" [ngStyle]="{'object-fit': 'contain', 'height':'3em'}">
       </button>
       <!-- <button class="icon-small" mat-icon-button (click)="isFromDoneQwest=true; addTsk.show();">
           <img src="assets/icons/create.png" class="img-fluid">
@@ -67,7 +46,34 @@
 
     <!-- Награды -->
     <ng-container *ngIf="qwest.rewards?.length > 0 || qwest.exp > 0">
-      <div fxLayout="row wrap" fxLayoutAlign="center center" class="pt-2">
+
+      <div class="mt-2" style="padding-left: 10px;" fxFlexFill fxLayout="row wrap" fxLayoutAlign="center center"
+        fxLayoutGap="10px grid">
+        <div fxFlex="33" *ngIf="qwest.exp > 0">
+          <div fxLayout="column" fxLayoutAlign="space-around center">
+            <img src="assets/icons/опыт.png" class="img-fluid rounded"
+              [ngStyle]="{'object-fit': 'contain', 'height': '50px'}">
+            <div fxLayout="row" fxLayoutAlign="space-evenly center">
+              <div>
+                +{{qwest.exp}} exp;
+              </div>
+            </div>
+          </div>
+        </div>
+        <div fxFlex="33" *ngFor="let rev of qwest.rewards">
+          <div fxLayout="column" fxLayoutAlign="space-around center">
+            <img src="{{rev.image}}" class="img-fluid rounded" [ngStyle]="{'object-fit': 'contain', 'height': '50px'}">
+            <div fxLayout="row" fxLayoutAlign="space-evenly center">
+              <div>
+                {{rev.name}}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+      <!-- <div fxLayout="row wrap" fxLayoutAlign="center center" class="pt-2">
         <div *ngIf="qwest.exp > 0">
           <span class="text-success">
             +{{qwest.exp}} exp;&nbsp;
@@ -78,10 +84,8 @@
             {{inv.name}};&nbsp;
           </span>
         </div>
-      </div>
+      </div> -->
     </ng-container>
-
-
 
     <div *ngIf="qwest.tasks.length>0" class="pt-2">
       <!-- Задачи -->
@@ -170,8 +174,7 @@
     <!-- Добавить награду -->
     <div fxLayout="row" fxLayoutAlign="space-between center">
       <h5>Награды:</h5>
-      <!-- Добавление трофея -->
-      <button class="icon-small" (click)="addRev.show()" mat-icon-button>
+      <button class="icon-small" (click)="addNewRevard(null)" mat-icon-button>
         <img src="assets/icons/create.png" class="img-fluid">
       </button>
     </div>
@@ -186,7 +189,7 @@
             <!-- Удалить -->
             <div class="btn-group btn-group-sm" role="group" aria-label="Действия">
               <!-- Редактировать -->
-              <button class="icon-small" (click)="isEditRev=true; newRev=rev; addRev.show();" mat-icon-button>
+              <button class="icon-small" (click)="addNewRevard(rev)" mat-icon-button>
                 <img src="assets/icons/edit.png" class="img-fluid">
               </button>
               <button class="icon-small" (click)="delReward(rev.id)" mat-icon-button>

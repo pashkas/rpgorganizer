@@ -127,28 +127,14 @@ button:focus {
 
 .my-good .mat-dialog-container {
     background: green;
-    position: absolute;
-    left:0;
-    right:0;
-    top: 10px;
-    height: auto;
-    margin-left: auto;
-    margin-right: auto;
+    width: 80vw !important;
     max-width: 500px;
-    width: 75%;
 }
 
 .my-bad .mat-dialog-container {
     background: red;
-    position: absolute;
-    left:0;
-    right:0;
-    top: 10px;
-    height: auto;
-    margin-left: auto;
-    margin-right: auto;
+    width: 80vw !important;
     max-width: 500px;
-    width: 75%;
 }
 
 mat-form-field {

@@ -4,6 +4,7 @@ import { Task } from './Task';
 import { Enamy } from './Enamy';
 import { Reward } from './Reward';
 import { Qwest } from './Qwest';
+import { revSetting } from './revSetting';
 
 export class Pers {
 
@@ -27,6 +28,11 @@ export class Pers {
         "ХРЕНЬ", "МАЗАФАКА", "Ну вот...", "Минус", "Капец", "Чудовищно", "Ужасно", "Пипец"
     ];
 
+    static commonRevSet: revSetting = { name: 'Обычный', probability: 100, cumulative: 9.928961749};
+    static uncommonRevSet: revSetting = { name: 'Необычный', probability: 50, cumulative: 15.39344262};
+    static rareRevSet: revSetting = { name: 'Редкий', probability: 100, cumulative: 18.12568306};
+    static epicRevSet: revSetting = { name: 'Эпический', probability: 100, cumulative: 18.67213115};
+    static legendaryRevSet: revSetting = { name: 'Легендарный', probability: 100, cumulative: 19};
 
     Monsters0Queue: number;
     Monsters1Queue: number;
@@ -104,5 +110,5 @@ export class Pers {
     totalRewardProbability: number = 0;
     userId: any;
     nextExp: number;
-    prevExp:number;
+    prevExp: number;
 }

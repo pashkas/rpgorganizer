@@ -11,7 +11,7 @@
             [ngStyle]="{'object-fit': 'contain'}">
         <img *ngIf="!isGood && !this.changes[0].img" class="img-fluid" style='height: 85px' src="assets/img/bad.png"
             [ngStyle]="{'object-fit': 'contain'}">
-        <img *ngIf="changes[0]?.img" class="img-fluid" style='height: 150px' src="{{changes[0]?.img}}"
+        <img *ngIf="changes[0]?.img" class="img-fluid" style='height: 85px' src="{{changes[0]?.img}}"
             [ngStyle]="{'object-fit': 'contain'}">
 
         <div *ngIf="this.abPoints != null" class=" m-2">
@@ -23,7 +23,7 @@
         </div>
     </div>
 
-    <div fxFlex class="px-2 py-1 text-center">
+    <div fxFlex class="px-2 py-1 text-center" style="width: 95%;">
         <mat-list class="p-1">
             <div mat-list-item *ngIf="headText">
                 <b>{{headText|uppercase}}</b>

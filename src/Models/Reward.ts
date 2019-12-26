@@ -7,4 +7,5 @@ export class Reward {
     probability: number = 1;
     cumulative: number = 0;
     count: number = 0;
+    rare: string = 'Обычный';
 }

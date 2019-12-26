@@ -10,6 +10,7 @@ import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { MatDialog } from '@angular/material';
 import { AddItemDialogComponent } from '../add-item-dialog/add-item-dialog.component';
 import { filter } from 'rxjs/operators';
+import { AddOrEditRevardComponent } from '../add-or-edit-revard/add-or-edit-revard.component';
 
 @Component({
   selector: 'app-qwest-detail',
@@ -18,12 +19,10 @@ import { filter } from 'rxjs/operators';
 })
 export class QwestDetailComponent implements OnInit {
   isEditMode: boolean = false;
-  isEditRev: boolean = false;
   /**
    * Добавление задачи из просмотра, когда квест выполнен.
    */
   isFromDoneQwest: boolean = false;
-  newRev: Reward = new Reward();
   qwest: Qwest;
 
   constructor(private location: Location, private route: ActivatedRoute, public srv: PersService, private router: Router, public dialog: MatDialog) { }
@@ -31,17 +30,39 @@ export class QwestDetailComponent implements OnInit {
   /**
  * Добавить награду.
  */
-  addNewRevard() {
-    if (!this.isEditRev) {
-      let r = new Reward();
-      r.name = this.newRev.name;
-      r.descr = this.newRev.descr;
-      r.count = 1;
+  addNewRevard(r: Reward) {
 
-      this.qwest.rewards.push(r);
+    let header, isEdit;
+
+    if (r) {
+      header = 'Редактировать артефакт';
+      isEdit = true;
+    } else {
+      header = 'Добавить артефакт';
+      isEdit = false;
+      r = new Reward();
+      r.image = 'assets/icons/tresure.png';
     }
 
-    this.newRev = new Reward();
+    this.srv.isDialogOpen = true;
+    const dialogRef = this.dialog.open(AddOrEditRevardComponent, {
+      panelClass: 'my-dialog',
+      data: { header: header, rev: r, isArt: true },
+      backdropClass: 'backdrop'
+    });
+
+    dialogRef.afterClosed()
+      .subscribe(rev => {
+        if (rev) {
+          if (!isEdit) {
+            r.count = 1;
+            this.qwest.rewards.push(rev);
+          }
+
+          this.srv.sortRevards();
+        }
+        this.srv.isDialogOpen = false;
+      });
   }
 
   /**

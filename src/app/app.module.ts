@@ -59,6 +59,7 @@ import { PersChangesItemComponent } from './pers-changes-item/pers-changes-item.
 import { LevelUpMsgComponent } from './level-up-msg/level-up-msg.component';
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { AddItemDialogComponent } from './add-item-dialog/add-item-dialog.component';
+import { AddOrEditRevardComponent } from './add-or-edit-revard/add-or-edit-revard.component';
 
 export class MyHammerConfig extends HammerGestureConfig {
   overrides = <any>{
@@ -86,7 +87,8 @@ export class MyHammerConfig extends HammerGestureConfig {
     AbupcolPipe,
     PersChangesItemComponent,
     LevelUpMsgComponent,
-    AddItemDialogComponent
+    AddItemDialogComponent,
+    AddOrEditRevardComponent
   ],
   imports: [
     CountoModule,
@@ -139,7 +141,8 @@ export class MyHammerConfig extends HammerGestureConfig {
     [
       PersChangesComponent,
       LevelUpMsgComponent,
-      AddItemDialogComponent
+      AddItemDialogComponent,
+      AddOrEditRevardComponent
     ]
 })
 export class AppModule {

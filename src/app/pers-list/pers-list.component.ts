@@ -12,6 +12,7 @@ import { ImgCacheService } from 'ng-imgcache';
 import { Task } from 'src/Models/Task';
 import { MatDialog } from '@angular/material';
 import { AddItemDialogComponent } from '../add-item-dialog/add-item-dialog.component';
+import { AddOrEditRevardComponent } from '../add-or-edit-revard/add-or-edit-revard.component';
 
 @Component({
   selector: 'app-pers-list',
@@ -24,9 +25,7 @@ export class PersListComponent implements OnInit {
   GameSettings = Pers.GameSettings;
   chaArea: string = "";
   isEditMode: boolean = false;
-  isEditRev: boolean = false;
-  newRev: Reward = new Reward();
-  newTsk: string;
+
   selAb: Ability;
   selCha: Characteristic;
 
@@ -95,18 +94,37 @@ export class PersListComponent implements OnInit {
   /**
  * Добавить награду.
  */
-  addNewRevard() {
-    if (!this.isEditRev) {
-      this.srv.AddRevard(this.newRev.name, this.newRev.probability, this.newRev.descr);
+  addNewRevard(r) {
+    let header, isEdit;
+
+    if (r) {
+      header = 'Редактировать трофей';
+      isEdit = true;
+    } else {
+      header = 'Добавить трофей';
+      isEdit = false;
+      r = new Reward();
+      r.image = 'assets/icons/tresure.png';
     }
 
-    this.srv.countToatalRewProb();
-    this.newRev = new Reward();
-  }
+    this.srv.isDialogOpen = true;
+    const dialogRef = this.dialog.open(AddOrEditRevardComponent, {
+      panelClass: 'my-dialog',
+      data: { header: header, rev: r },
+      backdropClass: 'backdrop'
+    });
 
-  addTask() {
-    this.srv.addTsk(this.selAb, this.newTsk);
-    this.newTsk = "";
+    dialogRef.afterClosed()
+      .subscribe(rev => {
+        if (rev) {
+          if (!isEdit) {
+            this.srv.AddRevard(rev);
+          }
+
+          this.srv.sortRevards();
+        }
+        this.srv.isDialogOpen = false;
+      });
   }
 
   /**

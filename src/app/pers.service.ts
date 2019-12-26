@@ -21,8 +21,9 @@ import { EnamiesService } from './enamies.service';
 export class PersService {
   // Персонаж
   private unsubscribe$ = new Subject();
-  isDialogOpen: boolean = false;
+
   baseTaskPoints: number = 1.0;
+  isDialogOpen: boolean = false;
   isGlobalTaskView: boolean;
   mn0Count: number = 183;
   mn1Count: number = 108;
@@ -40,17 +41,9 @@ export class PersService {
 
   /**
    * Добавить новую награду.
-   * @param newRev Название награды.
-   * @param probability Вероятность получения.
-   * @param descr Описание.
    */
-  AddRevard(newRev: string, probability: number, descr: string): any {
-    var rev = new Reward();
-    rev.name = newRev;
-    rev.probability = probability;
-    rev.descr = descr;
+  AddRevard(rev: Reward): any {
     this.pers.rewards.push(rev);
-    this.countToatalRewProb();
   }
 
   /**
@@ -300,6 +293,10 @@ export class PersService {
   }
 
   changesAfter(isGood) {
+    if (isGood == null) {
+      isGood = true;
+    }
+
     this.changes.afterPers = this.changes.getClone(this.pers);
     this.changes.showChanges(this.getCongrantMsg(), this.getFailMsg(), isGood);
   }
@@ -511,7 +508,6 @@ export class PersService {
    * @param abil Навык, который будет найден.
    */
   findTaskAnAb(id: string, task: Task, abil: Ability) {
-
     for (const cha of this.pers.characteristics) {
       for (const ab of cha.abilities) {
         for (const tsk of ab.tasks) {
@@ -770,6 +766,30 @@ export class PersService {
     this.unsubscribe$.complete();
   }
 
+  /**
+   * Обновление всех картинок монстров.
+   */
+  reImages() {
+    this.pers.characteristics.forEach(ch => {
+      ch.abilities.forEach(ab => {
+        ab.tasks.forEach(tsk => {
+          tsk.image = this.GetRndEnamy(tsk);
+          tsk.states.forEach(st => {
+            st.img = this.GetRndEnamy(tsk);
+          });
+        });
+      });
+    });
+
+    this.pers.qwests.forEach(qw => {
+      qw.tasks.forEach(tsk => {
+        tsk.image = this.GetRndEnamy(tsk);
+      });
+    });
+
+    this.savePers(false);
+  }
+
   saveGlobalTaskViewState(b: boolean) {
     this.isGlobalTaskView = b;
   }
@@ -945,6 +965,8 @@ export class PersService {
 
     this.sortPersTasks(tasks);
 
+    this.sortRevards();
+
     this.setCurPersTask();
 
     this.setAbUpVis();
@@ -1095,28 +1117,25 @@ export class PersService {
     }
   }
 
-  /**
-   * Обновление всех картинок монстров.
-   */
-  reImages() {
-    this.pers.characteristics.forEach(ch => {
-      ch.abilities.forEach(ab => {
-        ab.tasks.forEach(tsk => {
-          tsk.image = this.GetRndEnamy(tsk);
-          tsk.states.forEach(st => {
-            st.img = this.GetRndEnamy(tsk);
-          });
-        });
-      });
+  sortRevards() {
+    this.pers.rewards.forEach(rev => {
+      if (rev.rare == Pers.commonRevSet.name) {
+        rev.cumulative = Pers.commonRevSet.cumulative;
+      } else if (rev.rare == Pers.uncommonRevSet.name) {
+        rev.cumulative = Pers.uncommonRevSet.cumulative;
+      } else if (rev.rare == Pers.rareRevSet.name) {
+        rev.cumulative = Pers.rareRevSet.cumulative;
+      } else if (rev.rare == Pers.epicRevSet.name) {
+        rev.cumulative = Pers.epicRevSet.cumulative;
+      } else if (rev.rare == Pers.legendaryRevSet.name) {
+        rev.cumulative = Pers.legendaryRevSet.cumulative;
+      } else {
+        rev.cumulative = Pers.commonRevSet.cumulative;
+        rev.rare = Pers.commonRevSet.name;
+      }
     });
 
-    this.pers.qwests.forEach(qw => {
-      qw.tasks.forEach(tsk => {
-        tsk.image = this.GetRndEnamy(tsk);
-      });
-    });
-
-    this.savePers(false);
+    this.pers.rewards = this.pers.rewards.sort((a, b) => a.cumulative - b.cumulative);
   }
 
   /**
@@ -1214,12 +1233,6 @@ export class PersService {
     }
   }
 
-  private getTaskChangesExp(task: Task) {
-    let chVal = this.baseTaskPoints * this.getWeekKoef(task.requrense, true, task.tskWeekDays);
-    const chValFinaly = chVal * Math.floor((task.value * (task.value + 1) / 2.0));
-    return chValFinaly;
-  }
-
   upAbility(ab: Ability) {
     let isOpenForEdit = false;
 
@@ -1258,61 +1271,42 @@ export class PersService {
    * Розыгрыш наград.
    */
   private CasinoRevards() {
-    for (let i = 0; i < this.pers.rewards.length; i++) {
-      let rand = Math.random() * 100.0;
-      let el = this.pers.rewards[i];
+    let rand = Math.random() * 100.0;
 
-      if (rand <= el.probability) {
+    let revType = null;
+
+    if (rand < Pers.commonRevSet.cumulative) {
+      revType = Pers.commonRevSet.name;
+    } else if (rand < Pers.uncommonRevSet.cumulative) {
+      revType = Pers.uncommonRevSet.name;
+    } else if (rand < Pers.rareRevSet.cumulative) {
+      revType = Pers.rareRevSet.name;
+    } else if (rand < Pers.epicRevSet.cumulative) {
+      revType = Pers.epicRevSet.name;
+    } else if (rand < Pers.legendaryRevSet.cumulative) {
+      revType = Pers.legendaryRevSet.name;
+    }
+
+    if (revType) {
+      let revsOfType = this.pers.rewards.filter(n => n.rare = revType);
+      if (revsOfType.length > 0) {
+        var rev = revsOfType[Math.floor(Math.random() * revsOfType.length)];
+
         // То добавляем к наградам
         let idx = this.pers.inventory.findIndex(n => {
-          return n.id === el.id;
+          return n.id === rev.id;
         });
 
         if (idx === -1) {
-          el.count = 1;
-          this.pers.inventory.push(el);
+          rev.count = 1;
+          this.pers.inventory.push(rev);
         }
         else {
           this.pers.inventory[idx].count = this.pers.inventory[idx].count + 1;
         }
       }
     }
-
-    // for (let index = 0; index < this.pers.rewards.length; index++) {
-    //   const r = this.pers.rewards[index];
-
-    //   if (!r.cumulative) {
-    //     this.countRewProbCumulative();
-    //   }
-
-    //   if (rand < r.cumulative) {
-    //     // То добавляем к наградам
-    //     let idx = this.pers.inventory.findIndex(n => {
-    //       return n.id === r.id;
-    //     });
-
-    //     if (idx === -1) {
-    //       r.count = 1;
-    //       this.pers.inventory.push(r);
-    //     }
-    //     else {
-    //       this.pers.inventory[idx].count = this.pers.inventory[idx].count + 1;
-    //     }
-
-    //     let t = this.toastr.success(r.name, 'Получен трофей!');
-    //     this.closeToast(t);
-
-    //     break;
-    //   }
-    // }
   }
-
-  // private addTaskDescrState(rang: Rangse, tsk: Task) {
-  //   let state: taskState = new taskState();
-  //   state.abRang = rang;
-  //   state.name = "";
-  //   tsk.statesDescr.push(state);
-  // }
 
   /**
    * Проверка полей персонажа (вдруг новые появились).
@@ -1332,10 +1326,6 @@ export class PersService {
     return Pers.Inspirations[Math.floor(Math.random() * Pers.Inspirations.length)] + ', ' + this.pers.name + '!';
   }
 
-  private getFailMsg() {
-    return Pers.Abuses[Math.floor(Math.random() * Pers.Abuses.length)] + ', ' + this.pers.name + '!';
-  }
-
   private getCurRang(val: number) {
     const rng = new Rangse();
     rng.val = Math.floor(val);
@@ -1343,7 +1333,9 @@ export class PersService {
     return rng;
   }
 
-
+  private getFailMsg() {
+    return Pers.Abuses[Math.floor(Math.random() * Pers.Abuses.length)] + ', ' + this.pers.name + '!';
+  }
 
   private getPersTasks() {
     let tasks: Task[] = [];
@@ -1418,6 +1410,12 @@ export class PersService {
     }
 
     return tasks;
+  }
+
+  private getTaskChangesExp(task: Task) {
+    let chVal = this.baseTaskPoints * this.getWeekKoef(task.requrense, true, task.tskWeekDays);
+    const chValFinaly = chVal * Math.floor((task.value * (task.value + 1) / 2.0));
+    return chValFinaly;
   }
 
   private getTskFromState(tsk: Task, st: taskState, isAll: boolean) {
@@ -1553,11 +1551,11 @@ export class PersService {
     let curV = 0;
     this.pers.characteristics.forEach(cha => {
       cha.abilities.forEach(ab => {
-        curV += (ab.value * (ab.value + 1)) / 2.0;
+        curV += (ab.value * (ab.value + 1.0)) / 2.0;
       });
     });
 
-    const onPerLevel = (totalAbilities * 55) / 100;
+    const onPerLevel = (totalAbilities * 55.0) / 100.0;
     const onPerLevelCeil = Math.ceil(onPerLevel);
     // Очки навыков
     this.pers.ONPerLevel = onPerLevelCeil;
@@ -1647,7 +1645,6 @@ export class PersService {
     }
 
     this.pers.storyProgress = (this.pers.level / maxForStory) * 100;
-
 
     // this.pers.nextRangLvl = Pers.rangLvls[Pers.rangLvls.length - 1];
 

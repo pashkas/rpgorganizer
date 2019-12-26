@@ -1,0 +1,33 @@
+<h1 mat-dialog-title class="text-center">{{data.header}}</h1>
+<div mat-dialog-content>
+    <div fxLayout="column" fxLayoutAlign="space-around center">
+        <div class="text-center p-1" *ngIf="data.rev.image">
+            <img src="{{data.rev.image}}" class="img-fluid rounded"
+                [ngStyle]="{'object-fit': 'contain', 'height': '100px'}">
+        </div>
+
+        <div fxFill fxLayoutGap='15px'>
+            <mat-form-field fxFlex>
+                <input cdkFocusInitial matInput [(ngModel)]="data.rev.name" autocomplete="off" placeholder="Название"
+                    name="data.rev.name">
+            </mat-form-field>
+            <mat-form-field fxFlex="30">
+                <input matInput [(ngModel)]="data.rev.image" autocomplete="off" placeholder="Изображение"
+                    name="data.rev.image">
+            </mat-form-field>
+        </div>
+
+        <mat-form-field *ngIf="!data.isArt">
+            <mat-label>Редкость</mat-label>
+            <mat-select [(ngModel)]="data.rev.rare" name="data.rev.rare">
+                <mat-option *ngFor="let t of revTypes" [value]="t">
+                    {{t}}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+    </div>
+</div>
+<div mat-dialog-actions [align]="'end'">
+    <button mat-button mat-dialog-close>Отмена</button>
+    <button mat-button [mat-dialog-close]="data.rev">Ok</button>
+</div>
