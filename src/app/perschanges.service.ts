@@ -41,6 +41,9 @@ export class PerschangesService {
     // Отображать - новый уровень
     let newLevel: boolean = false;
 
+    // Произошло выполнение квеста
+    let isDoneQwest;
+
     Object.keys(changesMap).forEach(n => {
       // Подзадачи
       if (changesMap[n].type == 'tsk') {
@@ -54,10 +57,12 @@ export class PerschangesService {
       }
       // Квесты
       if (changesMap[n].type == 'qwest') {
+        // Квест выполнен
         if (changesMap[n].after === null || changesMap[n].after === undefined) {
-          // changes.push(
-          //   new ChangesModel(changesMap[n].name, 'qwestDone', null, null, null, null)
-          // );
+          changes.push(
+            new ChangesModel('Квест завершен - ' + changesMap[n].name, 'qwest', changesMap[n].before, changesMap[n].before, 0, changesMap[n].total, changesMap[n].img)
+          );
+          isDoneQwest = true;
         }
         else if (changesMap[n].after > changesMap[n].before) {
           changes.push(
@@ -172,6 +177,10 @@ export class PerschangesService {
 
     let classPanel = isGood ? 'my-good' : 'my-bad';
 
+    if (isDoneQwest) {
+      changes = changes.filter(n=>n.type != 'subtask');
+    }
+
     for (let index = 0; index < changes.length; index++) {
       let head;
       ({ head, isGood } = this.GetHead(isGood, congrantMsg, failMsg));
@@ -179,6 +188,11 @@ export class PerschangesService {
       let abPoints;
       if (changes[index].type == 'abil') {
         abPoints = this.afterPers.ON;
+      }
+
+      if (isDoneQwest) {
+        head = changes[index].name + '!';
+        changes[index].name = ' ';
       }
 
       let dialogRef = this.dialog.open(PersChangesComponent, {
