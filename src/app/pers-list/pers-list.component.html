@@ -246,16 +246,12 @@
           <!-- Список наград -->
           <mat-list>
             <div mat-list-item *ngFor="let rev of this.srv.pers.rewards; let i = index">
-              <div fxFill>
-                <div fxFlex fxLayout="row" fxLayoutAlign="space-between center">
-                  <div>
-                    {{rev.name}}
-                  </div>
-                  <div>
-                    <span class="badge pointer mr-1" [ngStyle]="{'background-color': rev.rare | rarecol}">
-                      {{rev.rare}}
-                    </span>
-                  </div>
+              <div fxFlex fxLayout="row" fxLayoutAlign="space-between center">
+                <div>
+                  {{rev.name}}&nbsp;
+                  <span class="badge pointer mr-1" [ngStyle]="{'background-color': rev.rare | rarecol}">
+                    {{rev.rare}}
+                  </span>
                 </div>
                 <div>
                   <!-- Удалить -->
