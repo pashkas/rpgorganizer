@@ -1271,6 +1271,10 @@ export class PersService {
    * Розыгрыш наград.
    */
   private CasinoRevards() {
+    if (!this.pers.rewards || this.pers.rewards.length == 0) {
+      return;
+    }
+
     let rand = Math.random() * 100.0;
 
     let revType = null;
@@ -1288,7 +1292,8 @@ export class PersService {
     }
 
     if (revType) {
-      let revsOfType = this.pers.rewards.filter(n => n.rare = revType);
+      let revsOfType = this.getRewsOfType(revType);
+
       if (revsOfType.length > 0) {
         var rev = revsOfType[Math.floor(Math.random() * revsOfType.length)];
 
@@ -1320,6 +1325,10 @@ export class PersService {
     if (!prs.qwests) {
       prs.qwests = [];
     }
+  }
+
+  private filterRevs(revType: any) {
+    return this.pers.rewards.filter(n => n.rare = revType);
   }
 
   private getCongrantMsg() {
@@ -1410,6 +1419,32 @@ export class PersService {
     }
 
     return tasks;
+  }
+
+  private getRewsOfType(revType: any) {
+    let revsOfType = this.filterRevs(revType);
+
+    if (revsOfType.length == 0 && revType == Pers.legendaryRevSet.name) {
+      revType = Pers.epicRevSet.name;
+      revsOfType = this.filterRevs(revType);
+    }
+
+    if (revsOfType.length == 0 && revType == Pers.epicRevSet.name) {
+      revType = Pers.rareRevSet.name;
+      revsOfType = this.filterRevs(revType);
+    }
+
+    if (revsOfType.length == 0 && revType == Pers.rareRevSet.name) {
+      revType = Pers.uncommonRevSet.name;
+      revsOfType = this.filterRevs(revType);
+    }
+
+    if (revsOfType.length == 0 && revType == Pers.uncommonRevSet.name) {
+      revType = Pers.commonRevSet.name;
+      revsOfType = this.filterRevs(revType);
+    }
+
+    return revsOfType;
   }
 
   private getTaskChangesExp(task: Task) {
