@@ -1277,7 +1277,7 @@ export class PersService {
 
     let rand = Math.random() * 100.0;
 
-    let revType = null;
+    let revType = '';
 
     if (rand < Pers.commonRevSet.cumulative) {
       revType = Pers.commonRevSet.name;
@@ -1289,26 +1289,26 @@ export class PersService {
       revType = Pers.epicRevSet.name;
     } else if (rand < Pers.legendaryRevSet.cumulative) {
       revType = Pers.legendaryRevSet.name;
+    } else {
+      return;
     }
 
-    if (revType) {
-      let revsOfType = this.getRewsOfType(revType);
+    let revsOfType = this.getRewsOfType(revType);
 
-      if (revsOfType.length > 0) {
-        var rev = revsOfType[Math.floor(Math.random() * revsOfType.length)];
+    if (revsOfType.length > 0) {
+      var rev = revsOfType[Math.floor(Math.random() * revsOfType.length)];
 
-        // То добавляем к наградам
-        let idx = this.pers.inventory.findIndex(n => {
-          return n.id === rev.id;
-        });
+      // То добавляем к наградам
+      let idx = this.pers.inventory.findIndex(n => {
+        return n.id === rev.id;
+      });
 
-        if (idx === -1) {
-          rev.count = 1;
-          this.pers.inventory.push(rev);
-        }
-        else {
-          this.pers.inventory[idx].count = this.pers.inventory[idx].count + 1;
-        }
+      if (idx === -1) {
+        rev.count = 1;
+        this.pers.inventory.push(rev);
+      }
+      else {
+        this.pers.inventory[idx].count = this.pers.inventory[idx].count + 1;
       }
     }
   }
@@ -1328,7 +1328,7 @@ export class PersService {
   }
 
   private filterRevs(revType: any) {
-    return this.pers.rewards.filter(n => n.rare = revType);
+    return this.pers.rewards.filter(n => n.rare == revType);
   }
 
   private getCongrantMsg() {

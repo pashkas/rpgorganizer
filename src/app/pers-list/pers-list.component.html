@@ -222,10 +222,10 @@
                   [ngStyle]="{'object-fit': 'contain', 'height': '65px'}">
                 <div fxLayout="row" fxLayoutAlign="space-evenly center">
                   <div>
-                    {{rev.name}}
+                    <small>{{rev.name}}</small>
                   </div>
                   <div>
-                    &nbsp;<small>x</small>{{rev.count}}
+                    &nbsp;<small>x{{rev.count}}</small>
                   </div>
                 </div>
               </div>
@@ -246,9 +246,11 @@
           <!-- Список наград -->
           <mat-list>
             <div mat-list-item *ngFor="let rev of this.srv.pers.rewards; let i = index">
-              <div fxFlex fxLayout="row" fxLayoutAlign="space-between center">
-                <div>
-                  {{rev.name}}&nbsp;
+              <div fxFill>
+                <div fxFlex fxLayout="row" fxLayoutAlign="start center">
+                  <div>
+                    {{rev.name}}&nbsp;
+                  </div>
                   <span class="badge pointer mr-1" [ngStyle]="{'background-color': rev.rare | rarecol}">
                     {{rev.rare}}
                   </span>
