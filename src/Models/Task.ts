@@ -26,7 +26,7 @@ export class Task {
         "вс",
     ];
 
-    tskWeekDays: string[] = [...Task.weekDays];
+    tskWeekDays: string[] = [];
 
     aimCounter: number = 0;
     aimTimer: number = 0;

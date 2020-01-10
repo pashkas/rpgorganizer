@@ -54,6 +54,10 @@ export class PersService {
     let tDate = new Date(tsk.date);
 
     while (true) {
+      if (tsk.requrense === 'дни недели' && tsk.tskWeekDays.length === 0) {
+        break;
+      }
+
       if (this.checkDate(tDate, tsk.requrense, tsk.tskWeekDays)) {
         break;
       }
@@ -982,7 +986,7 @@ export class PersService {
     for (const ch of this.pers.characteristics) {
       for (const ab of ch.abilities) {
         for (const tsk of ab.tasks) {
-          if (this.pers.ON > 0 && tsk.value <= 9 && this.pers.ON >= Math.floor(tsk.value) + 1) {
+          if (this.pers.ON > 0 && tsk.value <= 9 && this.pers.ON >= 1) {
             if (tsk.value >= 1 && tsk.statesDescr[Math.floor(tsk.value)] == tsk.statesDescr[Math.floor(tsk.value + 1)]) {
               tsk.IsNextLvlSame = true;
             }
@@ -1241,9 +1245,6 @@ export class PersService {
 
       if (tsk.value < 1) {
         tsk.date = new Date();
-      }
-
-      if (tsk.value == 0) {
         tsk.order = 0;
         tsk.states.forEach(st => {
           st.order = 0;
@@ -1449,7 +1450,7 @@ export class PersService {
 
   private getTaskChangesExp(task: Task) {
     let chVal = this.baseTaskPoints * this.getWeekKoef(task.requrense, true, task.tskWeekDays);
-    const chValFinaly = chVal * Math.floor((task.value * (task.value + 1) / 2.0));
+    const chValFinaly = chVal * Math.floor(task.value);
     return chValFinaly;
   }
 
@@ -1586,14 +1587,13 @@ export class PersService {
     let curV = 0;
     this.pers.characteristics.forEach(cha => {
       cha.abilities.forEach(ab => {
-        curV += (ab.value * (ab.value + 1.0)) / 2.0;
+        curV += ab.value;
       });
     });
 
-    const onPerLevel = (totalAbilities * 55.0) / 100.0;
-    const onPerLevelCeil = Math.ceil(onPerLevel);
+    const onPerLevel = (totalAbilities * 10.0) / 100.0;
     // Очки навыков
-    this.pers.ONPerLevel = onPerLevelCeil;
+    this.pers.ONPerLevel = Math.ceil(onPerLevel);
     let persLevel = 0;
     let exp: number = 0;
     let startExp = 0;
@@ -1601,7 +1601,8 @@ export class PersService {
 
     for (let i = 1; i < Pers.maxLevel; i++) {
       startExp = exp;
-      exp += i * onPerLevelCeil + (i * 0.05) * onPerLevelCeil;
+      const ceilOn = Math.ceil(i * onPerLevel);
+      exp += Math.ceil((ceilOn * (1 + i * 0.05)) * 10.0) / 10.0;
       nextExp = exp;
 
       if (exp > this.pers.exp) {
