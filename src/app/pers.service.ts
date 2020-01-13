@@ -830,11 +830,6 @@ export class PersService {
           tsk.plusToNames = [];
           tsk.plusToNames.push(new plusToName(cha.name, cha.id, '/characteristic'));
 
-          let exp = this.getTaskChangesExp(tsk) * 10.0;
-          exp = Math.floor(exp);
-
-          tsk.plusToNames.unshift(new plusToName('+' + exp + ' exp', null, null));
-
           if (tsk.descr) {
             tsk.plusToNames.push(new plusToName(tsk.descr, '', ''));
           }
@@ -1357,6 +1352,11 @@ export class PersService {
           if (ab.value >= 1) {
             ab.tasks.forEach(tsk => {
               if (this.checkTask(tsk)) {
+                // Для показа опыта за задачу
+                let exp = this.getTaskChangesExp(tsk) * 10.0;
+                exp = Math.floor(exp);
+                tsk.plusToNames.unshift(new plusToName('+' + exp + ' exp', null, null));
+
                 if (tsk.isSumStates && tsk.states.length > 0) {
                   tsk.states.forEach(st => {
                     if (st.isActive && !st.isDone) {
@@ -1450,7 +1450,9 @@ export class PersService {
 
   private getTaskChangesExp(task: Task) {
     let chVal = this.baseTaskPoints * this.getWeekKoef(task.requrense, true, task.tskWeekDays);
-    const chValFinaly = chVal * Math.floor(task.value);
+    let chValFinaly = chVal * Math.floor(task.value);
+    chValFinaly = Math.ceil(chValFinaly * 10.0) / 10.0;
+    debugger;
     return chValFinaly;
   }
 
