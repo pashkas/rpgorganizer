@@ -226,12 +226,14 @@
             </a>
           </div>
           <div class="btn-group btn-group-sm" role="group" aria-label="Действия">
+            
+            <button class="icon-small" (click)="addStateToTask(st)" mat-icon-button>
+              <img src="assets/icons/edit.png" class="img-fluid">
+            </button>
 
             <button class="icon-small" (click)="delState(st.id)" mat-icon-button>
               <img src="assets/icons/del.png" class="img-fluid">
             </button>
-
-
 
             <button class="icon-small" mat-icon-button cdkDragHandle>
               <img src="assets/icons/right.png" class="img-fluid">

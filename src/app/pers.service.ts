@@ -1240,9 +1240,9 @@ export class PersService {
 
       if (tsk.value < 1) {
         tsk.date = new Date();
-        tsk.order = 0;
+        tsk.order = -1;
         tsk.states.forEach(st => {
-          st.order = 0;
+          st.order = -1;
         });
         isOpenForEdit = true;
       }
@@ -1604,7 +1604,7 @@ export class PersService {
     for (let i = 1; i < Pers.maxLevel; i++) {
       startExp = exp;
       const ceilOn = Math.ceil(i * onPerLevel);
-      exp += Math.ceil((ceilOn * (1 + i * 0.05)) * 10.0) / 10.0;
+      exp += Math.ceil((ceilOn * (1 + (i-1) * 0.05)) * 10.0) / 10.0;
       nextExp = exp;
 
       if (exp > this.pers.exp) {

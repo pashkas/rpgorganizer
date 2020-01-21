@@ -30,25 +30,37 @@ export class TaskDetailComponent implements OnInit {
   /**
    * Добавить состояние к задаче.
    */
-  addStateToTask() {
+  addStateToTask(st) {
+    let isEdit;
     this.srv.isDialogOpen = true;
+
+    if (st) {
+      isEdit = true;
+    } else {
+      isEdit = false;
+    }
+
     const dialogRef = this.dialog.open(AddItemDialogComponent, {
       panelClass: 'my-dialog',
-      data: { header: this.tsk.requrense == 'нет' ? 'Добавить подзадачу' : 'Добавить состояние', text: '' },
+      data: { header: this.tsk.requrense == 'нет' ? 'Добавить подзадачу' : 'Добавить состояние', text: isEdit ? st.name : '' },
       backdropClass: 'backdrop'
     });
 
     dialogRef.afterClosed()
-      .subscribe(name => {
-        if (name) {
-          let state = new taskState();
-          state.img = this.srv.GetRndEnamy(this.tsk);
-          state.name = name;
-          this.tsk.states.push(state);
+      .subscribe(stt => {
+        if (stt) {
+          if (!isEdit) {
+            let state = new taskState();
+            state.img = this.srv.GetRndEnamy(this.tsk);
+            state.name = stt;
+            this.tsk.states.push(state);
 
-          this.tsk.states = this.tsk.states.sort((a, b) => {
-            return a.isDone === b.isDone ? 0 : b.isDone ? -1 : 1;
-          });
+            this.tsk.states = this.tsk.states.sort((a, b) => {
+              return a.isDone === b.isDone ? 0 : b.isDone ? -1 : 1;
+            });
+          } else {
+            st.name = stt;
+          }
         }
         this.srv.isDialogOpen = false;
       });
