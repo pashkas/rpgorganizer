@@ -209,7 +209,7 @@ export class PerschangesService {
         backdropClass: 'backdrop'
       });
 
-      await sleep(4000);
+      await sleep(5000);
 
       dialogRef.close();
       if (abToEdit != null) {
@@ -223,7 +223,7 @@ export class PerschangesService {
         backdropClass: 'backdrop'
       });
 
-      await sleep(4000);
+      await sleep(5000);
 
       dialogRefLvlUp.close();
 
@@ -333,11 +333,11 @@ export class PerschangesService {
   }
 
   private getCongrantMsg() {
-    return Pers.Inspirations[Math.floor(Math.random() * Pers.Inspirations.length)] + ', ' + this.afterPers.name + '!';
+    return Pers.Inspirations[Math.floor(Math.random() * Pers.Inspirations.length)] + '!';//+ ', ' + this.afterPers.name + '!';
   }
 
   private getFailMsg() {
-    return Pers.Abuses[Math.floor(Math.random() * Pers.Abuses.length)] + ', ' + this.afterPers.name + '!';
+    return Pers.Abuses[Math.floor(Math.random() * Pers.Abuses.length)] + '!'; //+ ', ' + this.afterPers.name + '!';
   }
 
   private tskStatesProgress(tsk: Task, chType: string, changesMap: any, isCheckActive: boolean) {

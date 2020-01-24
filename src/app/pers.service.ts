@@ -98,16 +98,31 @@ export class PersService {
   }
 
   GetRndEnamy(tsk: Task): string {
-    let lvl = tsk.value * 10.0;//this.pers.level;
-    if (tsk.requrense == 'нет') {
-      if (this.pers.storyProgress) {
-        lvl = this.pers.storyProgress;
-      } else {
-        lvl = 0;
-      }
+    // let lvl = tsk.value * 10.0;//this.pers.level;
+    // if (tsk.requrense == 'нет') {
+    //   if (this.pers.storyProgress) {
+    //     lvl = this.pers.storyProgress;
+    //   } else {
+    //     lvl = 0;
+    //   }
+    // }
+
+    let lvl = (this.pers.level / 100.0) * 5.0;
+    let floor = Math.floor(lvl);
+    let left = lvl - floor;
+
+    let mnstrLvl = floor;
+
+    let rnd = Math.random();
+    if (rnd <= left) {
+      mnstrLvl++;
+    }
+    if (mnstrLvl > 5) {
+      mnstrLvl = 5;
     }
 
-    if (lvl >= 100) {
+
+    if (mnstrLvl == 5) {
       if (this.pers.Monsters5Queue == null || this.pers.Monsters5Queue == undefined) {
         this.pers.Monsters5Queue = 0;
       }
@@ -122,7 +137,7 @@ export class PersService {
 
       return path;
     }
-    if (lvl >= 80) {
+    if (mnstrLvl == 4) {
       if (this.pers.Monsters4Queue == null || this.pers.Monsters4Queue == undefined) {
         this.pers.Monsters4Queue = 0;
       }
@@ -137,7 +152,7 @@ export class PersService {
 
       return path;
     }
-    if (lvl >= 60) {
+    if (mnstrLvl == 3) {
       if (this.pers.Monsters3Queue == null || this.pers.Monsters3Queue == undefined) {
         this.pers.Monsters3Queue = 0;
       }
@@ -152,7 +167,7 @@ export class PersService {
 
       return path;
     }
-    if (lvl >= 40) {
+    if (mnstrLvl == 2) {
       if (this.pers.Monsters2Queue == null || this.pers.Monsters2Queue == undefined) {
         this.pers.Monsters2Queue = 0;
       }
@@ -167,7 +182,7 @@ export class PersService {
 
       return path;
     }
-    if (lvl >= 20) {
+    if (mnstrLvl == 1) {
       if (this.pers.Monsters1Queue == null || this.pers.Monsters1Queue == undefined) {
         this.pers.Monsters1Queue = 0;
       }
@@ -196,29 +211,6 @@ export class PersService {
     tsk.imageLvl = '0';
 
     return path;
-
-    // let lvl = tsk.value * 10.0;//this.pers.level;
-    // if (tsk.requrense == 'нет') {
-    //   lvl = this.pers.level;
-    // }
-
-    // if (lvl >= 90) {
-    //   return Pers.Enamies5[Math.floor(Math.random() * Pers.Enamies5.length)].image;
-    // }
-    // if (lvl >= 80) {
-    //   return Pers.Enamies4[Math.floor(Math.random() * Pers.Enamies4.length)].image;
-    // }
-    // if (lvl >= 60) {
-    //   return Pers.Enamies3[Math.floor(Math.random() * Pers.Enamies3.length)].image;
-    // }
-    // if (lvl >= 40) {
-    //   return Pers.Enamies2[Math.floor(Math.random() * Pers.Enamies2.length)].image;
-    // }
-    // if (lvl >= 20) {
-    //   return Pers.Enamies1[Math.floor(Math.random() * Pers.Enamies1.length)].image;
-    // }
-
-    // return Pers.Enamies0[Math.floor(Math.random() * Pers.Enamies0.length)].image;
   }
 
   /**
@@ -1452,7 +1444,7 @@ export class PersService {
     let chVal = this.baseTaskPoints * this.getWeekKoef(task.requrense, true, task.tskWeekDays);
     let chValFinaly = chVal * Math.floor(task.value);
     chValFinaly = Math.ceil(chValFinaly * 10.0) / 10.0;
-    debugger;
+
     return chValFinaly;
   }
 
@@ -1604,7 +1596,7 @@ export class PersService {
     for (let i = 1; i < Pers.maxLevel; i++) {
       startExp = exp;
       const ceilOn = Math.ceil(i * onPerLevel);
-      exp += Math.ceil((ceilOn * (1 + (i-1) * 0.05)) * 10.0) / 10.0;
+      exp += Math.ceil((ceilOn * (1 + (i - 1) * 0.05)) * 10.0) / 10.0;
       nextExp = exp;
 
       if (exp > this.pers.exp) {

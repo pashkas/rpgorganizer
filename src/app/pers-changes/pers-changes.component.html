@@ -7,11 +7,11 @@
             <img src="assets/icons/diamond.png" class="img-fluid"
                 [ngStyle]="{'object-fit': 'contain', 'height':'1.5em'}">
         </div>
-        <img *ngIf="isGood && !this.changes[0].img" class="img-fluid" style='height: 85px' src="assets/img/good.png"
+        <img *ngIf="isGood && !this.changes[0].img" class="img-fluid" style='height: 100px' src="assets/img/good.png"
             [ngStyle]="{'object-fit': 'contain'}">
-        <img *ngIf="!isGood && !this.changes[0].img" class="img-fluid" style='height: 85px' src="assets/img/bad.png"
+        <img *ngIf="!isGood && !this.changes[0].img" class="img-fluid" style='height: 100px' src="assets/img/bad.png"
             [ngStyle]="{'object-fit': 'contain'}">
-        <img *ngIf="changes[0]?.img" class="img-fluid" style='height: 85px' src="{{changes[0]?.img}}"
+        <img *ngIf="changes[0]?.img" class="img-fluid" style='height: 100px' src="{{changes[0]?.img}}"
             [ngStyle]="{'object-fit': 'contain'}">
 
         <div *ngIf="this.abPoints != null" class=" m-2">
