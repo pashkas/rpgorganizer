@@ -314,7 +314,7 @@ export class PersService {
       || requrense === "через 3 дня") {
       return true;
     }
-
+    
     let weekDay = tDate.getDay();
 
     if (requrense === "будни") {
@@ -344,7 +344,7 @@ export class PersService {
           return weekDays.includes('пт');
         case 6:
           return weekDays.includes('сб');
-        case 7:
+        case 0:
           return weekDays.includes('вс');
 
         default:
@@ -375,7 +375,7 @@ export class PersService {
         return true;
       }
     } else if (requrense === "не воскресенье") {
-      if (weekDay != 7) {
+      if (weekDay != 0) {
         return true;
       }
     }
