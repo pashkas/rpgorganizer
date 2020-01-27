@@ -163,12 +163,12 @@ export class PerschangesService {
         }
       }
       // Ранг
-      else if (changesMap[n].type == 'rang') {
-        if (changesMap[n].after > changesMap[n].before) {
-        }
-        else if (changesMap[n].after > changesMap[n].before) {
-        }
-      }
+      // else if (changesMap[n].type == 'rang') {
+      //   if (changesMap[n].after > changesMap[n].before) {
+      //   }
+      //   else if (changesMap[n].after > changesMap[n].before) {
+      //   }
+      // }
     });
 
     function sleep(ms) {

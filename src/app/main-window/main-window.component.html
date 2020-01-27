@@ -110,7 +110,8 @@
       </div>
       <p [ngStyle]="{'font-size': 'small'}"
         class="align-self-center justify-content-center d-flex position-absolute w-100">
-        {{srv.pers.name}} ({{srv.pers.rang.name | lowercase}}), уровень
+        <!-- {{srv.pers.name}} ({{srv.pers.rang.name | lowercase}}) -->
+        , уровень
         {{srv.pers.level}}:{{' '+(srv.pers.exp * 10.0 | number : '1.0-0')+'/'+(srv.pers.nextExp * 10.0 | number : '1.0-0')}}
       </p>
     </div>
