@@ -25,12 +25,12 @@ export class PersService {
   baseTaskPoints: number = 1.0;
   isDialogOpen: boolean = false;
   isGlobalTaskView: boolean;
-  mn0Count: number = 183;
-  mn1Count: number = 108;
-  mn2Count: number = 211;
-  mn3Count: number = 235;
-  mn4Count: number = 330;
-  mn5Count: number = 156;
+  mn0Count: number = 273;
+  mn1Count: number = 207;
+  mn2Count: number = 496;
+  mn3Count: number = 769;
+  mn4Count: number = 677;
+  mn5Count: number = 255;
   pers: Pers;
   selTabPersList: number = 0;
   // Пользователь
@@ -130,8 +130,8 @@ export class PersService {
         this.pers.Monsters5Queue = 0;
       }
 
-      let path = this.getImgPath(this.pers.Monsters5Queue, 5);
       this.pers.Monsters5Queue++;
+      let path = this.getImgPath(this.pers.Monsters5Queue, 5);
 
       tsk.imageLvl = '5';
 
@@ -145,8 +145,8 @@ export class PersService {
         this.pers.Monsters4Queue = 0;
       }
 
-      let path = this.getImgPath(this.pers.Monsters4Queue, 4);
       this.pers.Monsters4Queue++;
+      let path = this.getImgPath(this.pers.Monsters4Queue, 4);
 
       tsk.imageLvl = '4';
 
@@ -160,8 +160,8 @@ export class PersService {
         this.pers.Monsters3Queue = 0;
       }
 
-      let path = this.getImgPath(this.pers.Monsters3Queue, 3);
       this.pers.Monsters3Queue++;
+      let path = this.getImgPath(this.pers.Monsters3Queue, 3);
 
       tsk.imageLvl = '3';
 
@@ -175,8 +175,8 @@ export class PersService {
         this.pers.Monsters2Queue = 0;
       }
 
-      let path = this.getImgPath(this.pers.Monsters2Queue, 2);
       this.pers.Monsters2Queue++;
+      let path = this.getImgPath(this.pers.Monsters2Queue, 2);
 
       tsk.imageLvl = '2';
 
@@ -190,8 +190,8 @@ export class PersService {
         this.pers.Monsters1Queue = 0;
       }
 
-      let path = this.getImgPath(this.pers.Monsters1Queue, 1);
       this.pers.Monsters1Queue++;
+      let path = this.getImgPath(this.pers.Monsters1Queue, 1);
 
       tsk.imageLvl = '1';
 
@@ -205,8 +205,8 @@ export class PersService {
       this.pers.Monsters0Queue = 0;
     }
 
-    let path = this.getImgPath(this.pers.Monsters0Queue, 0);
     this.pers.Monsters0Queue++;
+    let path = this.getImgPath(this.pers.Monsters0Queue, 0);
 
     tsk.imageLvl = '0';
 
