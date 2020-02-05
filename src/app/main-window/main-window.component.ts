@@ -8,6 +8,8 @@ import { takeUntil, take } from 'rxjs/operators';
 import { ImgCacheService } from 'ng-imgcache';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop'
 import { Ability } from 'src/Models/Ability';
+import { MatDialog } from '@angular/material';
+import { LevelUpMsgComponent } from '../level-up-msg/level-up-msg.component';
 
 @Component({
   selector: 'app-main-window',
@@ -20,7 +22,14 @@ export class MainWindowComponent implements OnInit {
   isSort: boolean = false;
   lastGlobalBeforeSort: boolean;
 
-  constructor(private route: ActivatedRoute, public srv: PersService) {
+  constructor(private route: ActivatedRoute, public srv: PersService, public dialog: MatDialog) {
+  }
+
+  tmp(){
+    let dialogRefLvlUp = this.dialog.open(LevelUpMsgComponent, {
+      panelClass: 'my-good',
+      backdropClass: 'backdrop'
+    });
   }
 
   onLongPress(e) {
@@ -260,6 +269,8 @@ export class MainWindowComponent implements OnInit {
   setIndex(i: number) {
     this.srv.setCurInd(i);
   }
+
+  
 
   setSort() {
     if (this.isSort) {

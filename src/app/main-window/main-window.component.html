@@ -122,6 +122,10 @@
     </button>
     <!-- Кнопки -->
     <div fxLayout="row" fxLayoutAlign="end center" fxLayoutGap="0.3em" class="w-100 h-100 px-2">
+      
+      <!-- <button (click)="tmp()">
+        tmp
+      </button> -->
 
       <button [autofocus]="false" [ngClass]="{'disabled': isSort}" (click)="firstOrGlobal()" mat-icon-button>
         <img *ngIf="this.srv.isGlobalTaskView" src="assets/icons/right.png" class="img-fluid"

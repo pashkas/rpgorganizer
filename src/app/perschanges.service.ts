@@ -223,7 +223,7 @@ export class PerschangesService {
         backdropClass: 'backdrop'
       });
 
-      await sleep(5000);
+      await sleep(6000);
 
       dialogRefLvlUp.close();
 
