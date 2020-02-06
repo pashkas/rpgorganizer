@@ -1241,10 +1241,10 @@ export class PersService {
 
       tsk.value += 1;
 
-      tsk.image = this.GetRndEnamy(tsk);
-      tsk.states.forEach(st => {
-        st.img = this.GetRndEnamy(tsk);
-      });
+      // tsk.image = this.GetRndEnamy(tsk);
+      // tsk.states.forEach(st => {
+      //   st.img = this.GetRndEnamy(tsk);
+      // });
     }
 
     this.savePers(true, 'plus');
