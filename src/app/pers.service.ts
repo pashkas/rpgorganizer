@@ -25,11 +25,11 @@ export class PersService {
   baseTaskPoints: number = 1.0;
   isDialogOpen: boolean = false;
   isGlobalTaskView: boolean;
-  mn0Count: number = 275;
-  mn1Count: number = 231;
-  mn2Count: number = 526;
-  mn3Count: number = 815;
-  mn4Count: number = 714;
+  mn0Count: number = 326;
+  mn1Count: number = 283;
+  mn2Count: number = 537;
+  mn3Count: number = 862;
+  mn4Count: number = 739;
   mn5Count: number = 259;
   pers: Pers;
   selTabPersList: number = 0;
@@ -1267,15 +1267,15 @@ export class PersService {
 
     let revType = '';
 
-    if (rand < Pers.commonRevSet.cumulative) {
+    if (rand <= Pers.commonRevSet.cumulative) {
       revType = Pers.commonRevSet.name;
-    } else if (rand < Pers.uncommonRevSet.cumulative) {
+    } else if (rand <= Pers.uncommonRevSet.cumulative) {
       revType = Pers.uncommonRevSet.name;
-    } else if (rand < Pers.rareRevSet.cumulative) {
+    } else if (rand <= Pers.rareRevSet.cumulative) {
       revType = Pers.rareRevSet.name;
-    } else if (rand < Pers.epicRevSet.cumulative) {
+    } else if (rand <= Pers.epicRevSet.cumulative) {
       revType = Pers.epicRevSet.name;
-    } else if (rand < Pers.legendaryRevSet.cumulative) {
+    } else if (rand <= Pers.legendaryRevSet.cumulative) {
       revType = Pers.legendaryRevSet.name;
     } else {
       return;

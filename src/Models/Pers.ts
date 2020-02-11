@@ -28,11 +28,11 @@ export class Pers {
         "ХРЕНЬ", "МАЗАФАКА", "Ну вот...", "Минус", "Капец", "Чудовищно", "Ужасно", "Пипец"
     ];
 
-    static commonRevSet: revSetting = { name: 'Обычный', probability: 100, cumulative: 9.526315789};
-    static uncommonRevSet: revSetting = { name: 'Необычный', probability: 50, cumulative: 14.78947368};
-    static rareRevSet: revSetting = { name: 'Редкий', probability: 100, cumulative: 17.42105263};
-    static epicRevSet: revSetting = { name: 'Эпический', probability: 100, cumulative: 18.47368421};
-    static legendaryRevSet: revSetting = { name: 'Легендарный', probability: 100, cumulative: 19};
+    static commonRevSet: revSetting = { name: 'Обычный', probability: 100, cumulative: 14};
+    static uncommonRevSet: revSetting = { name: 'Необычный', probability: 50, cumulative: 19};
+    static rareRevSet: revSetting = { name: 'Редкий', probability: 100, cumulative: 20.66666667};
+    static epicRevSet: revSetting = { name: 'Эпический', probability: 100, cumulative: 21.22222222};
+    static legendaryRevSet: revSetting = { name: 'Легендарный', probability: 100, cumulative: 21.40740741};
 
     Monsters0Queue: number;
     Monsters1Queue: number;
