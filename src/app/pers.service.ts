@@ -121,7 +121,6 @@ export class PersService {
       mnstrLvl = 5;
     }
 
-
     if (mnstrLvl == 5) {
       if (this.pers.Monsters5Queue == null || this.pers.Monsters5Queue == undefined) {
         this.pers.Monsters5Queue = 0;
@@ -314,7 +313,7 @@ export class PersService {
       || requrense === "через 3 дня") {
       return true;
     }
-    
+
     let weekDay = tDate.getDay();
 
     if (requrense === "будни") {
@@ -929,14 +928,34 @@ export class PersService {
 
     this.pers.rangProgress = (cur / tot) * 100;
 
+    this.setAbUpVis();
+
     // Сортировка характеристик
     this.pers.characteristics
       = this.pers.characteristics.sort((a, b) => {
-        const aVal = Math.floor(a.value);
-        const bVal = Math.floor(b.value);
+        let aHasSameLvl = 0;
+        if (a.HasSameAbLvl) {
+          aHasSameLvl = 1;
+        }
+        let bHasSameLvl = 0;
+        if (b.HasSameAbLvl) {
+          bHasSameLvl = 1;
+        }
 
-        if (aVal != bVal) {
-          return -(a.value - b.value);
+        if (this.pers.IsAbUp) {
+          // Если есть с такой же сложностью навыка
+          if (aHasSameLvl != bHasSameLvl) {
+            return -(aHasSameLvl - bHasSameLvl);
+          }
+          // По значению по возрастанию
+          if (a.value != b.value) {
+            return (a.value - b.value);
+          }
+        } else {
+          // По значению по убыванию
+          if (a.value != b.value) {
+            return -(a.value - b.value);
+          }
         }
 
         return 0;
@@ -944,8 +963,29 @@ export class PersService {
     // Сортировка навыков
     this.pers.characteristics.forEach(cha => {
       cha.abilities = cha.abilities.sort((a, b) => {
-        if (a.value != b.value) {
-          return -(a.value - b.value);
+        let aHasSameLvl = 0;
+        if (a.HasSameAbLvl) {
+          aHasSameLvl = 1;
+        }
+        let bHasSameLvl = 0;
+        if (b.HasSameAbLvl) {
+          bHasSameLvl = 1;
+        }
+
+        if (this.pers.IsAbUp) {
+          // Если есть с такой же сложностью навыка
+          if (aHasSameLvl != bHasSameLvl) {
+            return -(aHasSameLvl - bHasSameLvl);
+          }
+          // По значению по возрастанию
+          if (a.value != b.value) {
+            return (a.value - b.value);
+          }
+        } else {
+          // По значению по убыванию
+          if (a.value != b.value) {
+            return -(a.value - b.value);
+          }
         }
 
         return 0;
@@ -960,8 +1000,6 @@ export class PersService {
 
     this.setCurPersTask();
 
-    this.setAbUpVis();
-
     this.db.collection('pers').doc(this.pers.id)
       .set(JSON.parse(JSON.stringify(this.pers)));
   }
@@ -970,18 +1008,25 @@ export class PersService {
    * Задаем видимости для прокачки навыков.
    */
   setAbUpVis() {
+    this.pers.IsAbUp = false;
+
     for (const ch of this.pers.characteristics) {
+      ch.HasSameAbLvl = false;
       for (const ab of ch.abilities) {
+        ab.HasSameAbLvl = false;
         for (const tsk of ab.tasks) {
           if (this.pers.ON > 0 && tsk.value <= 9 && this.pers.ON >= 1) {
             if (tsk.value >= 1 && tsk.statesDescr[Math.floor(tsk.value)] == tsk.statesDescr[Math.floor(tsk.value + 1)]) {
               tsk.IsNextLvlSame = true;
+              ch.HasSameAbLvl = false;
+              ab.HasSameAbLvl = true;
             }
             else {
               tsk.IsNextLvlSame = false;
             }
 
             tsk.mayUp = true;
+            this.pers.IsAbUp = true;
           } else {
             tsk.IsNextLvlSame = false;
             tsk.mayUp = false;

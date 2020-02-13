@@ -32,7 +32,8 @@ export class Ability {
     image: string = "";
     name: string;
     progressValue: number = 0;
-    rang: Rangse = { val: 0, name: "0", img:""  };
+    rang: Rangse = { val: 0, name: "0", img: "" };
     tasks: Task[] = [];
     value: number = 0;
+    HasSameAbLvl: boolean;
 }
