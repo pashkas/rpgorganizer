@@ -1504,6 +1504,7 @@ export class PersService {
 
     stT.id = st.id;
     stT.image = st.image;
+    stT.imageLvl = st.imageLvl;
     stT.parrentTask = tsk.id;
     stT.lastNotDone = tsk.lastNotDone;
     stT.plusToNames = [...tsk.plusToNames];
