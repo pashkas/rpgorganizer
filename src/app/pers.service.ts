@@ -1020,7 +1020,7 @@ export class PersService {
           if (this.pers.ON > 0 && tsk.value <= 9 && this.pers.ON >= 1) {
             if (tsk.value >= 1 && tsk.statesDescr[Math.floor(tsk.value)] == tsk.statesDescr[Math.floor(tsk.value + 1)]) {
               tsk.IsNextLvlSame = true;
-              ch.HasSameAbLvl = false;
+              ch.HasSameAbLvl = true;
               ab.HasSameAbLvl = true;
             }
             else {
