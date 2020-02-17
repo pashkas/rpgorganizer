@@ -1,3 +1,4 @@
 {
-    "typewriterScrollMode.enable": true
+    "typewriterScrollMode.enable": true,
+    "explorer.compactFolders": false
 }

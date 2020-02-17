@@ -3,7 +3,7 @@ import { Time } from '@angular/common';
 import { Rangse } from './Rangse';
 import { Pers } from './Pers';
 import { plusToName } from './plusToName';
-export class Task {
+export class Task implements IImg {
     static maxValue: number = 10;
     static requrenses: string[] = [
         "будни",
@@ -167,7 +167,7 @@ export class Task {
     }
 }
 
-export class taskState {
+export class taskState implements IImg {
     abRang: Rangse;
     id: any = uuid();
     name: string;
@@ -178,4 +178,11 @@ export class taskState {
     startLvl: number = 999;
     order: number = -1;
     img: string;
+    image: string;
+    imageLvl: string = '0';
+}
+
+export interface IImg {
+    image: string;
+    imageLvl: string;
 }

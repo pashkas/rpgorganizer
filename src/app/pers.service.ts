@@ -5,7 +5,7 @@ import { BehaviorSubject, Subject, Observable } from 'rxjs';
 import { FirebaseUserModel } from 'src/Models/User';
 import { Characteristic } from 'src/Models/Characteristic';
 import { Ability } from 'src/Models/Ability';
-import { Task, taskState } from 'src/Models/Task';
+import { Task, taskState, IImg } from 'src/Models/Task';
 import { first, take, takeUntil, share, map, filter } from 'rxjs/operators';
 import { Qwest } from 'src/Models/Qwest';
 import { Reward } from 'src/Models/Reward';
@@ -97,7 +97,7 @@ export class PersService {
     this.savePers(true);
   }
 
-  GetRndEnamy(tsk: Task): string {
+  GetRndEnamy(tsk: IImg): string {
     // let lvl = tsk.value * 10.0;//this.pers.level;
     // if (tsk.requrense == 'нет') {
     //   if (this.pers.storyProgress) {
@@ -106,7 +106,6 @@ export class PersService {
     //     lvl = 0;
     //   }
     // }
-
     let lvl = (this.pers.level / 100.0) * 5.0;
     let floor = Math.floor(lvl);
     let left = lvl - floor;
@@ -125,7 +124,7 @@ export class PersService {
       if (this.pers.Monsters5Queue == null || this.pers.Monsters5Queue == undefined) {
         this.pers.Monsters5Queue = 0;
       }
-      if (this.pers.Monsters5Queue > this.mn5Count) {
+      if (this.pers.Monsters5Queue >= this.mn5Count) {
         this.pers.Monsters5Queue = 0;
       }
 
@@ -133,14 +132,15 @@ export class PersService {
       let path = this.getImgPath(this.pers.Monsters5Queue, 5);
 
       tsk.imageLvl = '5';
+      tsk.image = path;
 
-      return path;
+      return;
     }
     if (mnstrLvl == 4) {
       if (this.pers.Monsters4Queue == null || this.pers.Monsters4Queue == undefined) {
         this.pers.Monsters4Queue = 0;
       }
-      if (this.pers.Monsters4Queue > this.mn4Count) {
+      if (this.pers.Monsters4Queue >= this.mn4Count) {
         this.pers.Monsters4Queue = 0;
       }
 
@@ -148,14 +148,15 @@ export class PersService {
       let path = this.getImgPath(this.pers.Monsters4Queue, 4);
 
       tsk.imageLvl = '4';
+      tsk.image = path;
 
-      return path;
+      return;
     }
     if (mnstrLvl == 3) {
       if (this.pers.Monsters3Queue == null || this.pers.Monsters3Queue == undefined) {
         this.pers.Monsters3Queue = 0;
       }
-      if (this.pers.Monsters3Queue > this.mn3Count) {
+      if (this.pers.Monsters3Queue >= this.mn3Count) {
         this.pers.Monsters3Queue = 0;
       }
 
@@ -163,14 +164,15 @@ export class PersService {
       let path = this.getImgPath(this.pers.Monsters3Queue, 3);
 
       tsk.imageLvl = '3';
+      tsk.image = path;
 
-      return path;
+      return;
     }
     if (mnstrLvl == 2) {
       if (this.pers.Monsters2Queue == null || this.pers.Monsters2Queue == undefined) {
         this.pers.Monsters2Queue = 0;
       }
-      if (this.pers.Monsters2Queue > this.mn2Count) {
+      if (this.pers.Monsters2Queue >= this.mn2Count) {
         this.pers.Monsters2Queue = 0;
       }
 
@@ -178,14 +180,15 @@ export class PersService {
       let path = this.getImgPath(this.pers.Monsters2Queue, 2);
 
       tsk.imageLvl = '2';
+      tsk.image = path;
 
-      return path;
+      return;
     }
     if (mnstrLvl == 1) {
       if (this.pers.Monsters1Queue == null || this.pers.Monsters1Queue == undefined) {
         this.pers.Monsters1Queue = 0;
       }
-      if (this.pers.Monsters1Queue > this.mn1Count) {
+      if (this.pers.Monsters1Queue >= this.mn1Count) {
         this.pers.Monsters1Queue = 0;
       }
 
@@ -193,14 +196,15 @@ export class PersService {
       let path = this.getImgPath(this.pers.Monsters1Queue, 1);
 
       tsk.imageLvl = '1';
+      tsk.image = path;
 
-      return path;
+      return;
     }
 
     if (this.pers.Monsters0Queue == null || this.pers.Monsters0Queue == undefined) {
       this.pers.Monsters0Queue = 0;
     }
-    if (this.pers.Monsters0Queue > this.mn0Count) {
+    if (this.pers.Monsters0Queue >= this.mn0Count) {
       this.pers.Monsters0Queue = 0;
     }
 
@@ -208,8 +212,9 @@ export class PersService {
     let path = this.getImgPath(this.pers.Monsters0Queue, 0);
 
     tsk.imageLvl = '0';
+    tsk.image = path;
 
-    return path;
+    return;
   }
 
   /**
@@ -262,10 +267,7 @@ export class PersService {
     var tsk = new Task();
     tsk.name = newTsk;
 
-    tsk.image = this.GetRndEnamy(tsk);
-    tsk.states.forEach(st => {
-      st.img = this.GetRndEnamy(tsk);
-    });
+    this.GetRndEnamy(tsk);
 
     abil.tasks.push(tsk);
   }
@@ -279,7 +281,7 @@ export class PersService {
     var tsk = new Task();
     tsk.name = newTsk;
 
-    tsk.image = this.GetRndEnamy(tsk);
+    this.GetRndEnamy(tsk);
 
     tsk.requrense = "нет";
     qwest.tasks.push(tsk);
@@ -768,9 +770,9 @@ export class PersService {
     this.pers.characteristics.forEach(ch => {
       ch.abilities.forEach(ab => {
         ab.tasks.forEach(tsk => {
-          tsk.image = this.GetRndEnamy(tsk);
+          this.GetRndEnamy(tsk);
           tsk.states.forEach(st => {
-            st.img = this.GetRndEnamy(tsk);
+            this.GetRndEnamy(st);
           });
         });
       });
@@ -778,7 +780,7 @@ export class PersService {
 
     this.pers.qwests.forEach(qw => {
       qw.tasks.forEach(tsk => {
-        tsk.image = this.GetRndEnamy(tsk);
+        this.GetRndEnamy(tsk);
       });
     });
 
@@ -1185,11 +1187,6 @@ export class PersService {
 
     ({ task, abil } = this.findTaskAnAb(id, task, abil));
     if (task) {
-      // this.setTaskOrder(task, false, false);
-      // if (task.lastNotDone) {
-      //   task.order = 999;
-      // }
-
       // Следующая дата
       this.setTaskNextDate(task, false);
       this.setStatesNotDone(task);
@@ -1201,11 +1198,6 @@ export class PersService {
       }
 
       task.lastNotDone = true;
-
-      task.image = this.GetRndEnamy(task);
-      task.states.forEach(st => {
-        st.img = this.GetRndEnamy(task);
-      });
 
       this.setCurInd(0);
       this.savePers(true, 'minus');
@@ -1235,15 +1227,9 @@ export class PersService {
       // Плюсуем значение
       this.pers.exp += this.getTaskChangesExp(task);
 
-      task.image = this.GetRndEnamy(task);
-      task.states.forEach(st => {
-        st.img = this.GetRndEnamy(task);
-      });
-
       task.lastNotDone = false;
       this.setCurInd(0);
       this.savePers(true, 'plus');
-      //this.inspirationToastShow();
 
       return 'навык';
     }
@@ -1262,7 +1248,6 @@ export class PersService {
 
     if (task) {
       task.isDone = true;
-      //this.setTaskOrder(task, true, false);
       this.savePers(true, 'plus');
 
       return 'квест';
@@ -1513,13 +1498,12 @@ export class PersService {
     stT.requrense = tsk.requrense;
 
     //stT.image = tsk.image;
-    if (!st.img) {
-      st.img = this.GetRndEnamy(tsk);
+    if (!st.image) {
+      this.GetRndEnamy(st);
     }
-    stT.image = st.img;
-    stT.imageLvl = tsk.imageLvl;
 
     stT.id = st.id;
+    stT.image = st.image;
     stT.parrentTask = tsk.id;
     stT.lastNotDone = tsk.lastNotDone;
     stT.plusToNames = [...tsk.plusToNames];

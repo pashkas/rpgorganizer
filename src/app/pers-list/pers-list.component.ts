@@ -203,7 +203,10 @@ export class PersListComponent implements OnInit {
           ab.tasks.forEach(tsk => {
             tsk.value = 0;
             tsk.date = new Date();
-            tsk.image = this.srv.GetRndEnamy(tsk);
+            this.srv.GetRndEnamy(tsk);
+            tsk.states.forEach(st => {
+              this.srv.GetRndEnamy(st);
+            });
             tsk.lastNotDone = false;
             this.srv.setStatesNotDone(tsk);
             // tsk.order = 999;

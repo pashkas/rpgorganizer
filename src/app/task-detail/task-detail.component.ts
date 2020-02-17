@@ -51,7 +51,7 @@ export class TaskDetailComponent implements OnInit {
         if (stt) {
           if (!isEdit) {
             let state = new taskState();
-            state.img = this.srv.GetRndEnamy(this.tsk);
+            state.image = this.srv.GetRndEnamy(state);
             state.name = stt;
             this.tsk.states.push(state);
 

@@ -68,7 +68,8 @@
       (swipeup)="done(this.srv.pers.currentTask)" (swipedown)="fail(this.srv.pers.currentTask)"
       (swiperight)="onSwipeLeft($event)" (swipeleft)="onSwipeRight($event)"
       class="rounded element img-fluid pt-1 pb-0 px-1 mh-100 w-100" [ngStyle]="{'object-fit': 'contain'}"
-      src="{{'assets/img/'+ this.srv.pers.currentTask.imageLvl + '/' + this.srv.pers.currentTask.image + '.jpg'}}">
+      src="{{'assets/img/'+ this.srv.pers.currentTask.imageLvl + '/' + this.srv.pers.currentTask.image + '.jpg'}}"
+      (error)="onImgErr()">
     </div>
 
     <div fxLayout="column" fxLayoutAlign="center center" class="w-100 h-100 py-2 px-2" [ngStyle]="{'height': '3em'}">
@@ -82,6 +83,7 @@
               [{{getDateString(this.srv.pers.currentTask.date)}}!]
             </ng-container>
             {{this.srv.pers.currentTask.tittle}}
+            <!-- {{this.srv.pers.currentTask.imageLvl + '/' + this.srv.pers.currentTask.image}} -->
           </ng-container>
         </h4>
       </a>

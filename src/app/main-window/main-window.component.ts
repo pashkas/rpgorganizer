@@ -25,7 +25,7 @@ export class MainWindowComponent implements OnInit {
   constructor(private route: ActivatedRoute, public srv: PersService, public dialog: MatDialog) {
   }
 
-  tmp(){
+  tmp() {
     let dialogRefLvlUp = this.dialog.open(LevelUpMsgComponent, {
       panelClass: 'my-good',
       backdropClass: 'backdrop'
@@ -45,10 +45,51 @@ export class MainWindowComponent implements OnInit {
     this.srv.reImages();
   }
 
-  autoFalse() {
-    for (const tsk of this.srv.pers.tasks) {
-      this.srv.taskMinus(tsk.id, true);
+  changeEnamyImageForItem(id){
+
+    // Ищем в задачах
+    for (const ch of this.srv.pers.characteristics) {
+      for (const ab of ch.abilities) {
+        for (const tsk of ab.tasks) {
+          if (tsk.id == id) {
+            this.srv.GetRndEnamy(tsk);
+    
+            return;
+          }
+          for (let st of tsk.states) {
+            if (st.id == id) {
+             this.srv.GetRndEnamy(st);
+              
+             return;
+            }
+          }
+        }
+      }
     }
+
+    // Ищем в квестах
+    for (let qw of this.srv.pers.qwests) {
+      for (let tsk of qw.tasks) {
+        if (tsk.id == id) {
+          this.srv.GetRndEnamy(tsk);
+  
+          return;
+        }
+        for (let st of tsk.states) {
+          if (st.id == id) {
+           this.srv.GetRndEnamy(st);
+            
+           return;
+          }
+        }
+      }
+    }
+  }
+
+  onImgErr() {
+    let id = this.srv.pers.currentTask.id;
+    this.changeEnamyImageForItem(id);
+    this.srv.savePers(false);
   }
 
   checkDate(date: Date) {
@@ -62,7 +103,24 @@ export class MainWindowComponent implements OnInit {
     return false;
   }
 
+  fail(t: Task) {
+    this.changeEnamyImageForItem(t.id);
+
+    this.srv.changesBefore();
+
+    if (t.parrentTask) {
+      this.srv.taskMinus(t.parrentTask);
+    }
+    else {
+      this.srv.taskMinus(t.id);
+    }
+
+    this.srv.changesAfter(false);
+  }
+
   done(t: Task) {
+    this.changeEnamyImageForItem(t.id);
+
     this.srv.changesBefore();
 
     if (t.parrentTask) {
@@ -89,7 +147,7 @@ export class MainWindowComponent implements OnInit {
           this.srv.taskPlus(t.parrentTask);
         }
       }
-      // Логика для задач
+      // Логика для подзадач
       else {
         for (const qw of this.srv.pers.qwests) {
           for (const tsk of qw.tasks) {
@@ -113,19 +171,6 @@ export class MainWindowComponent implements OnInit {
 
   drop(event: CdkDragDrop<string[]>) {
     moveItemInArray(this.srv.pers.tasks, event.previousIndex, event.currentIndex);
-  }
-
-  fail(t: Task) {
-    this.srv.changesBefore();
-
-    if (t.parrentTask) {
-      this.srv.taskMinus(t.parrentTask);
-    }
-    else {
-      this.srv.taskMinus(t.id);
-    }
-
-    this.srv.changesAfter(false);
   }
 
   onSwipeLeft(ev) {
@@ -270,7 +315,7 @@ export class MainWindowComponent implements OnInit {
     this.srv.setCurInd(i);
   }
 
-  
+
 
   setSort() {
     if (this.isSort) {
