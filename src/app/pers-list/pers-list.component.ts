@@ -25,7 +25,6 @@ export class PersListComponent implements OnInit {
   GameSettings = Pers.GameSettings;
   chaArea: string = "";
   isEditMode: boolean = false;
-
   selAb: Ability;
   selCha: Characteristic;
 

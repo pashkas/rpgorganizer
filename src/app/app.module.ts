@@ -1,5 +1,5 @@
 import { BrowserModule, HammerGestureConfig, HAMMER_GESTURE_CONFIG } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
+import { NgModule, LOCALE_ID } from '@angular/core';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -61,6 +61,19 @@ import { ServiceWorkerModule } from '@angular/service-worker';
 import { AddItemDialogComponent } from './add-item-dialog/add-item-dialog.component';
 import { AddOrEditRevardComponent } from './add-or-edit-revard/add-or-edit-revard.component';
 import { RarecolPipe } from './rarecol.pipe';
+import { DiaryComponent } from './diary/diary.component';
+import { DiaryShowComponent } from './diary/diary-show/diary-show.component';
+import { DiaryEditParamsComponent } from './diary/diary-edit-params/diary-edit-params.component';
+
+import { registerLocaleData } from '@angular/common';
+import localeRu from '@angular/common/locales/ru';
+import { EditDiaryParamsComponent } from './diary/edit-diary-params/edit-diary-params.component';
+import {MatSliderModule} from '@angular/material/slider';
+import { GestureConfig } from '@angular/material';
+import { ChartsModule } from 'ng2-charts';
+import { ParamsChartComponent } from './diary/params-chart/params-chart.component';
+
+registerLocaleData(localeRu, 'ru');
 
 export class MyHammerConfig extends HammerGestureConfig {
   overrides = <any>{
@@ -90,9 +103,16 @@ export class MyHammerConfig extends HammerGestureConfig {
     LevelUpMsgComponent,
     AddItemDialogComponent,
     AddOrEditRevardComponent,
-    RarecolPipe
+    RarecolPipe,
+    DiaryComponent,
+    DiaryShowComponent,
+    DiaryEditParamsComponent,
+    EditDiaryParamsComponent,
+    ParamsChartComponent
   ],
   imports: [
+    ChartsModule,
+    MatSliderModule,
     CountoModule,
     MatCardModule,
     MatSnackBarModule,
@@ -134,17 +154,23 @@ export class MyHammerConfig extends HammerGestureConfig {
     ),
     ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production })
   ],
-  providers: [{ provide: OWL_DATE_TIME_LOCALE, useValue: 'ru' }, {
-    provide: HAMMER_GESTURE_CONFIG,
-    useClass: MyHammerConfig,
-  }],
+  providers: [
+    { provide: OWL_DATE_TIME_LOCALE, useValue: 'ru' },
+    {
+      provide: HAMMER_GESTURE_CONFIG,
+      useClass: GestureConfig,
+    },
+    { provide: LOCALE_ID, useValue: 'ru' }
+  ],
   bootstrap: [AppComponent],
   entryComponents:
     [
       PersChangesComponent,
       LevelUpMsgComponent,
       AddItemDialogComponent,
-      AddOrEditRevardComponent
+      AddOrEditRevardComponent,
+      EditDiaryParamsComponent,
+      DiaryEditParamsComponent
     ]
 })
 export class AppModule {

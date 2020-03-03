@@ -1,0 +1,3 @@
+<app-diary-edit-params *ngIf="isEditMode"></app-diary-edit-params>
+<app-diary-show *ngIf="!isEditMode" [Diary]="Diary" (onChanged)="onDiaryChanged($event)">
+</app-diary-show>

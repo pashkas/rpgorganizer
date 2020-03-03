@@ -1,0 +1,9 @@
+<div style="display: block;">
+    <canvas baseChart
+    [datasets]="chartData"
+    [labels]="chartLabels"
+    [options]="chartOptions"
+    [chartType]="'line'"
+    (chartClick)="chartClicked($event)">
+  </canvas>
+</div>

@@ -1,0 +1,23 @@
+<h1 mat-dialog-title class="text-center">Настройка параметров</h1>
+<div mat-dialog-content>
+    <button mat-button (click)="addOrEditParam()">+</button>
+    <div *ngFor="let d of DiaryParams">
+        <div fxLayout="row" fxLayoutAlign="space-between center">
+            <div>
+                {{d.name}}
+            </div>
+            <div class="btn-group btn-group-sm" role="group" aria-label="Действия">
+                <button class="icon-small" (click)="addOrEditParam(d)" mat-icon-button>
+                    <img src="assets/icons/edit.png" class="img-fluid">
+                </button>
+                <button class="icon-small" (click)="delParam(d)" mat-icon-button>
+                    <img src="assets/icons/del.png" class="img-fluid">
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<div mat-dialog-actions [align]="'end'">
+    <button mat-button mat-dialog-close>Отмена</button>
+    <button mat-button (click)="save()">Ok</button>
+</div>

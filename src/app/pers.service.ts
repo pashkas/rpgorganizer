@@ -14,6 +14,8 @@ import { Rangse } from 'src/Models/Rangse';
 import { Router } from '@angular/router';
 import { PerschangesService } from './perschanges.service';
 import { EnamiesService } from './enamies.service';
+import { Diary } from 'src/Models/Diary';
+import * as moment from 'moment';
 
 @Injectable({
   providedIn: 'root'
@@ -1343,6 +1345,47 @@ export class PersService {
     if (!prs.qwests) {
       prs.qwests = [];
     }
+
+    //prs.Diary = [];
+    if (!prs.Diary) {
+      prs.Diary = [];
+    }
+
+    let lastDate: moment.Moment = null;
+    let nowDate: moment.Moment = moment().startOf('day');
+    if (prs.Diary.length > 0) {
+      let first_element = prs.Diary[0];
+      lastDate = moment(first_element.date);
+    }
+
+    if (lastDate == null) {
+      // Добавляем новый
+      prs.Diary.unshift(new Diary(moment().startOf('day').toDate(), []));
+    }
+    else {
+      if (lastDate) {
+        let first_element = prs.Diary[0];
+        if (lastDate.isBefore(nowDate)) {
+          while (true) {
+            lastDate.add(1, 'day');
+            let d = new Diary(lastDate.toDate(), [...first_element.params]);
+            prs.Diary.unshift(d);
+
+            if (lastDate.isSameOrAfter(nowDate)) {
+              break;
+            }
+          }
+        }
+      }
+    }
+
+    // Не больше 28 дней
+    if (prs.Diary.length > 28) {
+      prs.Diary.splice(28);
+    }
+
+    // Создаем новый день если такого не было.
+
   }
 
   private filterRevs(revType: any) {

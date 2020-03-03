@@ -5,8 +5,11 @@ import { Enamy } from './Enamy';
 import { Reward } from './Reward';
 import { Qwest } from './Qwest';
 import { revSetting } from './revSetting';
+import { Diary } from './Diary';
 
 export class Pers {
+
+    Diary: Diary[] = [];
 
     /**
      * Очки навыков.

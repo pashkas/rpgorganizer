@@ -1,0 +1,33 @@
+<!-- График! -->
+<app-params-chart [chartLabels]="chartLabels" [chartData]="chartData" (onClick)="chartClick($event)" (onLegendClick)="legendClick($event)"></app-params-chart>
+<a class="text-primary" (click)="editParams()">Параметры</a>
+
+<ng-container *ngFor="let d of this.Diary">
+    <mat-card>
+        <mat-card-header>
+            <mat-card-title>
+                <button mat-icon-button (click)="editDiaryItem(d)">
+                    <img src="assets/icons/edit.png" class="img-fluid">
+                </button>
+                {{d.date|date }}
+            </mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+            <div>
+                <b>Параметры: </b>
+                <span *ngFor="let p of d.params">
+                    {{p.name+': '+p.val+'; '}}
+                </span>
+            </div>
+            <div>
+                <b>Сделано: </b>
+                <span>{{d.done}}</span>
+            </div>
+            <div>
+                <b>Не сделано: </b>
+                <span>{{d.notDone}}</span>
+            </div>
+        </mat-card-content>
+       
+    </mat-card>
+</ng-container>

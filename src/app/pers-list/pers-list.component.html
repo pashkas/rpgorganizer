@@ -5,7 +5,7 @@
       <img src="assets/icons/left.png" class="img-fluid" [ngStyle]="{'object-fit': 'contain', 'height':'2.5em'}">
     </button>
     <!-- Редактировать -->
-    <button mat-icon-button (click)="saveData()">
+    <button mat-icon-button (click)="saveData()" *ngIf="this.srv.selTabPersList!=3">
       <img *ngIf="!isEditMode" src="assets/icons/edit.png" class="img-fluid"
         [ngStyle]="{'object-fit': 'contain', 'height':'3em'}">
       <img *ngIf="isEditMode" src="assets/icons/create.png" class="img-fluid"
@@ -333,6 +333,11 @@
           <br>
         </div>
       </div>
+    </mat-tab>
+
+    <mat-tab label="📖">
+      <app-diary [isEditMode]="isEditMode">
+      </app-diary>
     </mat-tab>
   </mat-tab-group>
   <br>
