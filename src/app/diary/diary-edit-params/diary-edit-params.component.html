@@ -1,14 +1,14 @@
 <h1 mat-dialog-title class="text-center">{{d.date|date}}</h1>
 <div mat-dialog-content>
     <div>
-        <table class="w-100">
+        <table class="w-100 mt-3">
             <tbody>
-                <tr *ngFor="let p of d.params">
+                <tr *ngFor="let p of d.params; let i=index;">
                     <td class="fitwidth">
                         <i>{{p.name}}</i>
                     </td>
                     <td>
-                        <mat-slider class="w-100 py-0" [max]="10" [min]="0" [step]="1" [(ngModel)]="p.val">
+                        <mat-slider [thumbLabel]="true" class="w-100 py-0" [max]="10" [min]="0" [step]="1" [(ngModel)]="p.val">
                         </mat-slider>
                     </td>
                 </tr>

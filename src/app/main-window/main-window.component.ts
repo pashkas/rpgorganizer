@@ -10,6 +10,7 @@ import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop'
 import { Ability } from 'src/Models/Ability';
 import { MatDialog } from '@angular/material';
 import { LevelUpMsgComponent } from '../level-up-msg/level-up-msg.component';
+import { DiaryEditParamsComponent } from '../diary/diary-edit-params/diary-edit-params.component';
 
 @Component({
   selector: 'app-main-window',
@@ -25,28 +26,11 @@ export class MainWindowComponent implements OnInit {
   constructor(private route: ActivatedRoute, public srv: PersService, public dialog: MatDialog) {
   }
 
-  tmp() {
-    let dialogRefLvlUp = this.dialog.open(LevelUpMsgComponent, {
-      panelClass: 'my-good',
-      backdropClass: 'backdrop'
-    });
-  }
-
-  onLongPress(e) {
-    // e.preventDefault && e.preventDefault();
-    // e.stopPropagation && e.stopPropagation();
-    // e.cancelBubble = true;
-    // e.returnValue = false;
-
-    this.setIndex(0);
-  }
-
   ReImages() {
     this.srv.reImages();
   }
 
   changeEnamyImageForItem(id){
-
     // Ищем в задачах
     for (const ch of this.srv.pers.characteristics) {
       for (const ab of ch.abilities) {
@@ -86,12 +70,6 @@ export class MainWindowComponent implements OnInit {
     }
   }
 
-  onImgErr() {
-    let id = this.srv.pers.currentTask.id;
-    this.changeEnamyImageForItem(id);
-    this.srv.savePers(false);
-  }
-
   checkDate(date: Date) {
     let dt = new Date(date).setHours(0, 0, 0, 0);
     let now = new Date().setHours(0, 0, 0, 0);
@@ -101,21 +79,6 @@ export class MainWindowComponent implements OnInit {
     }
 
     return false;
-  }
-
-  fail(t: Task) {
-    this.changeEnamyImageForItem(t.id);
-
-    this.srv.changesBefore();
-
-    if (t.parrentTask) {
-      this.srv.taskMinus(t.parrentTask);
-    }
-    else {
-      this.srv.taskMinus(t.id);
-    }
-
-    this.srv.changesAfter(false);
   }
 
   done(t: Task) {
@@ -173,12 +136,37 @@ export class MainWindowComponent implements OnInit {
     moveItemInArray(this.srv.pers.tasks, event.previousIndex, event.currentIndex);
   }
 
-  onSwipeLeft(ev) {
-    this.prevTask();
+  editDiaryItem() {
+    if (!this.srv.pers.Diary || this.srv.pers.Diary.length == 0) {
+      return;
+    }
+
+    this.srv.isDialogOpen = true;
+    let dialogRef = this.dialog.open(DiaryEditParamsComponent, {
+      backdropClass: 'backdrop',
+      panelClass: 'par-dialog',
+      data: this.srv.pers.Diary[0]
+    });
+
+    dialogRef.afterClosed().subscribe(n => {
+      this.srv.savePers(false);
+      this.srv.isDialogOpen = false;
+    });
   }
 
-  onSwipeRight(ev) {
-    this.nextTask();
+  fail(t: Task) {
+    this.changeEnamyImageForItem(t.id);
+
+    this.srv.changesBefore();
+
+    if (t.parrentTask) {
+      this.srv.taskMinus(t.parrentTask);
+    }
+    else {
+      this.srv.taskMinus(t.id);
+    }
+
+    this.srv.changesAfter(false);
   }
 
   firstOrGlobal() {
@@ -273,6 +261,29 @@ export class MainWindowComponent implements OnInit {
     }
   }
 
+  onImgErr() {
+    let id = this.srv.pers.currentTask.id;
+    this.changeEnamyImageForItem(id);
+    this.srv.savePers(false);
+  }
+
+  onLongPress(e) {
+    // e.preventDefault && e.preventDefault();
+    // e.stopPropagation && e.stopPropagation();
+    // e.cancelBubble = true;
+    // e.returnValue = false;
+
+    this.setIndex(0);
+  }
+
+  onSwipeLeft(ev) {
+    this.prevTask();
+  }
+
+  onSwipeRight(ev) {
+    this.nextTask();
+  }
+
   openPersList() {
     this.srv.selTabPersList = 0;
   }
@@ -315,8 +326,6 @@ export class MainWindowComponent implements OnInit {
     this.srv.setCurInd(i);
   }
 
-
-
   setSort() {
     if (this.isSort) {
       for (let index = 0; index < this.srv.pers.tasks.length; index++) {
@@ -357,6 +366,13 @@ export class MainWindowComponent implements OnInit {
     this.srv.setTaskOrder(tsk, true, true);
     this.srv.setCurInd(0);
     this.srv.savePers(false);
+  }
+
+  tmp() {
+    let dialogRefLvlUp = this.dialog.open(LevelUpMsgComponent, {
+      panelClass: 'my-good',
+      backdropClass: 'backdrop'
+    });
   }
 
   tskClick(i) {

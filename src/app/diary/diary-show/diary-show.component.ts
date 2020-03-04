@@ -31,6 +31,14 @@ export class DiaryShowComponent implements OnInit {
     }
   }
 
+  clearDiary(){
+    this.srv.pers.Diary = [];
+    this.srv.pers.Diary.unshift(new Diary(moment().startOf('day').toDate(), []));
+    this.srv.savePers(false);
+    this.onChanged.emit(true);
+    this.updateChart();
+  }
+
   editDiaryItem(d: Diary) {
     this.srv.isDialogOpen = true;
     let dialogRef = this.dialog.open(DiaryEditParamsComponent, {

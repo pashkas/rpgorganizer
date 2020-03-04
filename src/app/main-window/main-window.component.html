@@ -119,7 +119,7 @@
   <div fxLayout="row" fxLayoutAlign="space-between center" class="w-100 h-100 py-1" style="min-height: 120px;">
 
     <button class="h-100 w-100 px-1 py-0 text-left" mat-button routerLink="/pers" (click)="openPersList()">
-      <img src="{{srv.pers.image}}" class="img-fluid h-100 rounded" [ngStyle]="{'object-fit': 'contain'}">
+      <img (press)="editDiaryItem()" src="{{srv.pers.image}}" class="img-fluid h-100 rounded" [ngStyle]="{'object-fit': 'contain'}">
     </button>
     <!-- Кнопки -->
     <div fxLayout="row" fxLayoutAlign="end center" fxLayoutGap="0.3em" class="w-100 h-100 px-2">

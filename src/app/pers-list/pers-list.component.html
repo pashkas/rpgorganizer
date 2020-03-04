@@ -15,8 +15,12 @@
 </nav>
 
 <div class="container pt-2 pb-4" *ngIf="this.srv.pers">
-  <mat-tab-group mat-align-tabs="center" animationDuration="0ms" [(selectedIndex)]="this.srv.selTabPersList">
-    <mat-tab label="Перс">
+  <mat-tab-group mat-align-tabs="center" animationDuration="0ms" [(selectedIndex)]="this.srv.selTabPersList"
+  isActive="true">
+    <mat-tab>
+      <ng-template mat-tab-label>
+        <img src="assets/img/good.png" class="tabimg img-fluid">
+      </ng-template>
       <!-- Просмотр -->
       <div *ngIf="!isEditMode" class="pt-2 pb-4 w-100">
 
@@ -209,7 +213,10 @@
       </div>
     </mat-tab>
 
-    <mat-tab label="Инвентарь">
+    <mat-tab>
+      <ng-template mat-tab-label>
+        <img src="assets/icons/tresure.png" class="tabimg img-fluid">
+      </ng-template>
       <!-- Просмотр -->
       <div *ngIf="!isEditMode" class="pt-2 pb-4 w-100">
         <div class="pb-4">
@@ -278,7 +285,10 @@
       </div>
     </mat-tab>
 
-    <mat-tab label="Квесты">
+    <mat-tab>
+      <ng-template mat-tab-label>
+        <img src="assets/icons/qwests.png" class="tabimg img-fluid" style="height: 1.5em;">
+      </ng-template>
       <!-- Просмотр -->
       <div *ngIf="!isEditMode" class="pt-2 pb-4 w-100">
         <div class="pb-4">
@@ -335,7 +345,10 @@
       </div>
     </mat-tab>
 
-    <mat-tab label="📖">
+    <mat-tab *ngIf="!isEditMode">
+      <ng-template mat-tab-label>
+        <img src="assets/icons/diary.png" class="tabimg img-fluid">
+      </ng-template>
       <app-diary [isEditMode]="isEditMode">
       </app-diary>
     </mat-tab>

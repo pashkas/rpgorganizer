@@ -1,6 +1,11 @@
 <!-- График! -->
-<app-params-chart [chartLabels]="chartLabels" [chartData]="chartData" (onClick)="chartClick($event)" (onLegendClick)="legendClick($event)"></app-params-chart>
-<a class="text-primary" (click)="editParams()">Параметры</a>
+<app-params-chart [chartLabels]="chartLabels" [chartData]="chartData" (onClick)="chartClick($event)"
+    (onLegendClick)="legendClick($event)"></app-params-chart>
+
+<div fxLayout="row" fxLayoutAlign="space-between center">
+    <a class="text-primary" (click)="editParams()">Параметры</a>
+    <a class="text-primary" (click)="clearDiary()">Очистить дневник</a>
+</div>
 
 <ng-container *ngFor="let d of this.Diary">
     <mat-card>
@@ -16,7 +21,10 @@
             <div>
                 <b>Параметры: </b>
                 <span *ngFor="let p of d.params">
-                    {{p.name+': '+p.val+'; '}}
+                    <span
+                        [ngClass]="{'text-success': p.state=='up', 'text-danger': p.state=='down', 'font-weight-bold': p.state=='down'}">
+                        {{p.name+': '+ p.val+'; '}}
+                    </span>
                 </span>
             </div>
             <div>
@@ -28,6 +36,6 @@
                 <span>{{d.notDone}}</span>
             </div>
         </mat-card-content>
-       
+
     </mat-card>
 </ng-container>

@@ -18,6 +18,9 @@ export class ParamsChartComponent implements OnInit {
   
   public chartOptions: ChartOptions = {
     responsive: true,
+    maintainAspectRatio: false,
+    //aspectRatio: 1.618,
+    
     scales: { xAxes: [{}], yAxes: [{ ticks: { min: 0, max: 10 } }] },
     plugins: {
       datalabels: {

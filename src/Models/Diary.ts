@@ -18,7 +18,7 @@ export class DiaryParam {
     name: string = '';
     val: number = 0;
     id: any = uuid();
-
+    order: number = 0;
     /**
      * up, down, eq - вырос или упал по сравнению с прошлым.
      */
@@ -28,7 +28,7 @@ export class DiaryParam {
 export class DicData {
     data: number[] = [];
     name: string;
-    constructor(name){
+    constructor(name) {
         this.name = name;
     }
 }

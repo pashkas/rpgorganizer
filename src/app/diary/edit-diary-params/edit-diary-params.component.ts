@@ -4,6 +4,7 @@ import { DiaryParam } from 'src/Models/Diary';
 import { MatDialog, MatDialogRef } from '@angular/material';
 import { AddItemDialogComponent } from 'src/app/add-item-dialog/add-item-dialog.component';
 import { taskState } from 'src/Models/Task';
+import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 
 @Component({
   templateUrl: './edit-diary-params.component.html',
@@ -11,13 +12,8 @@ import { taskState } from 'src/Models/Task';
 })
 export class EditDiaryParamsComponent implements OnInit {
   DiaryParams: DiaryParam[] = [];
-  constructor(private srv: PersService, private dialog: MatDialog, public dialogRef: MatDialogRef<EditDiaryParamsComponent>) { }
 
-  ngOnInit() {
-    if (this.srv.pers.Diary.length > 0) {
-      this.DiaryParams = [...this.srv.pers.Diary[0].params];
-    }
-  }
+  constructor(private srv: PersService, private dialog: MatDialog, public dialogRef: MatDialogRef<EditDiaryParamsComponent>) { }
 
   addOrEditParam(par) {
     let isEdit;
@@ -54,32 +50,52 @@ export class EditDiaryParamsComponent implements OnInit {
     this.DiaryParams = this.DiaryParams.filter(n => n.id != par.id);
   }
 
+  drop(event: CdkDragDrop<string[]>) {
+    moveItemInArray(this.DiaryParams, event.previousIndex, event.currentIndex);
+  }
+
+  ngOnInit() {
+    if (this.srv.pers.Diary.length > 0) {
+      this.DiaryParams = [...this.srv.pers.Diary[0].params];
+    }
+  }
+
   save() {
+    // Order
+    for (let i = 0; i < this.DiaryParams.length; i++) {
+      const el = this.DiaryParams[i];
+      el.order = i;
+    }
+
     // Удаление
     this.srv.pers.Diary.forEach(d => {
       d.params = d.params.filter(n => this.DiaryParams.filter(q => q.id == n.id).length > 0);
     });
 
     // Добавление, редактирование
-    for (let index = 0; index < this.DiaryParams.length; index++) {
-      const par = this.DiaryParams[index];
+    for (let i = 0; i < this.DiaryParams.length; i++) {
+      const par = this.DiaryParams[i];
 
-      for (let index = 0; index < this.srv.pers.Diary.length; index++) {
-        const d = this.srv.pers.Diary[index];
+      for (let j = 0; j < this.srv.pers.Diary.length; j++) {
+        const d = this.srv.pers.Diary[j];
         let p = d.params.filter(z => z.id == par.id);
         if (p.length == 0) {
           let dp = new DiaryParam();
           dp.name = par.name;
           dp.id = par.id;
+          dp.order = par.order;
           d.params.push(dp);
         }
         else {
-          if (p[0].name != par.name) {
-            p[0].name = par.name;
-          }
+          p[0].name = par.name;
+          p[0].order = par.order;
         }
+
+        d.params = d.params.sort((a,b)=>a.order-b.order);
       }
     }
+
+
 
     this.srv.savePers(false);
     this.dialogRef.close();

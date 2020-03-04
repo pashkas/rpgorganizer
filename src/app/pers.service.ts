@@ -14,7 +14,7 @@ import { Rangse } from 'src/Models/Rangse';
 import { Router } from '@angular/router';
 import { PerschangesService } from './perschanges.service';
 import { EnamiesService } from './enamies.service';
-import { Diary } from 'src/Models/Diary';
+import { Diary, DiaryParam } from 'src/Models/Diary';
 import * as moment from 'moment';
 
 @Injectable({
@@ -1004,6 +1004,36 @@ export class PersService {
 
     this.setCurPersTask();
 
+    // Анализ дневника
+    let prevD: DiaryParam[] = null;
+
+    if (this.pers.Diary.length > 0) {
+      for (let i = this.pers.Diary.length - 1; i >= 0; i--) {
+        let el = this.pers.Diary[i].params;
+        el.forEach(p => {
+          if (prevD == null) {
+            p.state = 'eq';
+          }
+          else {
+            let prevP = prevD.find(n => n.id == p.id);
+            if (prevP) {
+              if (p.val > prevP.val) {
+                p.state = 'up';
+              }
+              else if (p.val < prevP.val) {
+                p.state = 'down';
+              }
+              else {
+                p.state = 'eq';
+              }
+            }
+          }
+        });
+
+        prevD = el;
+      }
+    }
+
     this.db.collection('pers').doc(this.pers.id)
       .set(JSON.parse(JSON.stringify(this.pers)));
   }
@@ -1189,6 +1219,8 @@ export class PersService {
 
     ({ task, abil } = this.findTaskAnAb(id, task, abil));
     if (task) {
+      this.addToDiary(task, true);
+
       // Следующая дата
       this.setTaskNextDate(task, false);
       this.setStatesNotDone(task);
@@ -1222,6 +1254,8 @@ export class PersService {
 
     ({ task, abil } = this.findTaskAnAb(id, task, abil));
     if (task) {
+      this.addToDiary(task, true);
+
       // Следующая дата
       this.setTaskNextDate(task, true);
       this.setStatesNotDone(task);
@@ -1253,6 +1287,25 @@ export class PersService {
       this.savePers(true, 'plus');
 
       return 'квест';
+    }
+  }
+
+  /**
+   * Добавить запись в дневник.
+   * @param task Задача
+   * @param isDone Выполнена?
+   */
+  addToDiary(task: Task, isDone: boolean) {
+    let tDate: moment.Moment = moment(task.date).startOf('day');
+    let diary = this.pers.Diary.find(n => moment(n.date).startOf('day').isSame(tDate));
+    if (diary) {
+      let fullName = task.name + ' ' + task.curLvlDescr2;
+      if (isDone) {
+        diary.done = diary.done + fullName +'; '
+      }
+      else{
+        diary.notDone = diary.done + fullName +'; '
+      }
     }
   }
 
@@ -1368,7 +1421,8 @@ export class PersService {
         if (lastDate.isBefore(nowDate)) {
           while (true) {
             lastDate.add(1, 'day');
-            let d = new Diary(lastDate.toDate(), [...first_element.params]);
+
+            let d = new Diary(lastDate.toDate(), JSON.parse(JSON.stringify(first_element.params)));
             prs.Diary.unshift(d);
 
             if (lastDate.isSameOrAfter(nowDate)) {
