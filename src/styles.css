@@ -115,6 +115,9 @@ button:focus {
     width: 80vw !important;
 }
 
+.mat-tab-label-active {
+    opacity: 1 !important;
+}
 
 /* .par-dialog .mat-dialog-container{
     position: absolute;

@@ -1,5 +1,5 @@
 <!-- График! -->
-<app-params-chart [chartLabels]="chartLabels" [chartData]="chartData" (onClick)="chartClick($event)"
+<app-params-chart *ngIf="chartData.length>0" [chartLabels]="chartLabels" [chartData]="chartData" (onClick)="chartClick($event)"
     (onLegendClick)="legendClick($event)"></app-params-chart>
 
 <div fxLayout="row" fxLayoutAlign="space-between center">
@@ -27,11 +27,15 @@
                     </span>
                 </span>
             </div>
-            <div>
+            <div *ngIf="d.notes">
+                <b>Заметки: </b>
+                <span>{{d.notes}}</span>
+            </div>
+            <div *ngIf="d.done">
                 <b>Сделано: </b>
                 <span>{{d.done}}</span>
             </div>
-            <div>
+            <div *ngIf="d.notDone">
                 <b>Не сделано: </b>
                 <span>{{d.notDone}}</span>
             </div>

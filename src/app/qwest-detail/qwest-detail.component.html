@@ -91,7 +91,7 @@
       <!-- Задачи -->
       <ul class="list-group p-0">
         <li *ngFor="let tsk of qwest.tasks" class="list-group-item px-0 py-1 border-0">
-          <a class="align-self-center w-100" [routerLink]="['/task', tsk.id, false]">
+          <a class="align-self-center w-100" [routerLink]="['/pers/task', tsk.id, false]">
             <div class="d-flex">
               <div class="flex-grow-1 text-center align-self-baseline">
                 <ng-container *ngIf="tsk.isDone; else elseTemplate">

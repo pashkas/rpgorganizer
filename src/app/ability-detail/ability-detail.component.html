@@ -79,11 +79,10 @@
     </div>
     <!-- Добавить задачу -->
     <div class="form-row">
-      <button (click)="addTsk.show();" mat-stroked-button class="w-100">
+      <!-- <button (click)="addTsk.show();" mat-stroked-button class="w-100">
         <i class="fas fa-plus"></i>
-      </button>
-      <!-- Модальное окно - добавление монстра -->
-      <div mdbModal #addTsk="mdbModal" class="modal fade" role="dialog" aria-hidden="true"
+      </button> -->
+      <!-- <div mdbModal #addTsk="mdbModal" class="modal fade" role="dialog" aria-hidden="true"
         aria-labelledby="myBasicModalLabel">
         <div class="modal-dialog" role="document">
           <div class="modal-content">
@@ -102,11 +101,10 @@
             <div class="modal-footer">
               <button aria-label="Close" (click)="addTsk.hide()" mat-button>Отмена</button>
               <button (click)="addTsk.hide(); addTask();" mat-button color="accent">ОК</button>
-              <!-- routerLink="./" fragment="tsks" -->
             </div>
           </div>
         </div>
-      </div>
+      </div> -->
     </div>
     <!-- Задачи -->
     <ul id="tsks" class="list-group" *ngIf="abil.tasks.length>0">

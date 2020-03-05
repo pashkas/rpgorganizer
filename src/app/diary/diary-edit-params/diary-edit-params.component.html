@@ -16,6 +16,10 @@
         </table>
     </div>
     <mat-form-field>
+        <mat-label>Заметки</mat-label>
+        <textarea matInput matTextareaAutosize [(ngModel)]="d.notes"></textarea>
+    </mat-form-field>
+    <mat-form-field>
         <mat-label>Сделано</mat-label>
         <textarea matInput matTextareaAutosize [(ngModel)]="d.done"></textarea>
     </mat-form-field>

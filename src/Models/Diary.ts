@@ -4,6 +4,7 @@ export class Diary {
     date: Date = new Date();
     done: string = '';
     notDone: string = '';
+    notes: string = '';
     params: DiaryParam[] = [];
 
     constructor(date: Date, params: DiaryParam[]) {

@@ -823,7 +823,7 @@ export class PersService {
 
         ab.tasks.forEach(tsk => {
           tsk.plusToNames = [];
-          tsk.plusToNames.push(new plusToName(cha.name, cha.id, '/characteristic'));
+          tsk.plusToNames.push(new plusToName(cha.name, cha.id, '/pers/characteristic'));
 
           if (tsk.descr) {
             tsk.plusToNames.push(new plusToName(tsk.descr, '', ''));
@@ -888,7 +888,7 @@ export class PersService {
         tsk.plusToNames = [];
         tsk.tittle = tsk.name;
         tsk.plusName = qw.name;
-        tsk.plusToNames.push(new plusToName(qw.name, qw.id, '/qwest'));
+        tsk.plusToNames.push(new plusToName(qw.name, qw.id, '/pers/qwest'));
         if (tsk.descr) {
           tsk.plusToNames.push(new plusToName(tsk.descr, '', ''));
         }
@@ -1179,11 +1179,11 @@ export class PersService {
     if (Pers.GameSettings.isNoAbilities) {
       let tsk = ab.tasks[0];
       if (tsk) {
-        this.router.navigate(['/task', tsk.id, false]);
+        this.router.navigate(['/pers/task', tsk.id, false]);
       }
     }
     else {
-      this.router.navigate(['/ability', ab.id]);
+      this.router.navigate(['/pers/ability', ab.id]);
     }
   }
 
