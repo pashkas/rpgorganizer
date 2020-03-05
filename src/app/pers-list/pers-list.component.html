@@ -215,6 +215,73 @@
 
     <mat-tab>
       <ng-template mat-tab-label>
+        <img src="assets/icons/qwests.png" class="tabimg img-fluid" style="height: 1.5em;">
+      </ng-template>
+      <!-- Просмотр -->
+      <div *ngIf="!isEditMode" class="pt-2 pb-4 w-100">
+        <div class="pb-4">
+          <!-- Квесты -->
+          <ng-container *ngIf="this.srv.pers.qwests?.length > 0">
+
+            <ul class="list-group py-0 px-0">
+              <li *ngFor="let qwest of this.srv.pers.qwests" class="list-group-item px-0 py-1 border-0">
+
+                <div fxLayout="row" fxLayoutAlign="space-between center">
+
+                  <a [routerLink]="['/pers/qwest', qwest.id]">
+                    <h6>{{qwest.name}}</h6>
+                  </a>
+                  <a [routerLink]="['/pers/qwest', qwest.id]">
+                    <h6 *ngIf="qwest.progressValue < 100">{{qwest.tasksDone}}/{{qwest.tasks.length}}</h6>
+                  </a>
+                  <img *ngIf="qwest.progressValue >= 100" (click)="doneQwest(qwest)" src="assets/icons/star.png"
+                    class="img-fluid" [ngStyle]="{'object-fit': 'contain', 'height':'1.5em'}">
+                </div>
+
+                <mat-progress-bar class="myprogr" color="accent" mode="determinate" value="{{qwest.progressValue}}">
+                </mat-progress-bar>
+              </li>
+            </ul>
+            <br>
+          </ng-container>
+        </div>
+      </div>
+      <!-- Редактирование -->
+      <div *ngIf="isEditMode" class="pt-2 pb-4">
+        <div class="pb-4">
+          <!-- Квесты -->
+          <div fxLayout="row" fxLayoutAlign="space-between center">
+            <h5>Квесты:</h5>
+            <!-- Добавление квеста -->
+            <button class="icon-small" mat-icon-button (click)="addNewQwest()">
+              <img src="assets/icons/create.png" class="img-fluid">
+            </button>
+          </div>
+          <!-- Список квестов -->
+          <mat-list>
+            <div mat-list-item *ngFor="let qwest of this.srv.pers.qwests; let i = index">
+              <div class="d-flex align-items-center">
+                <div class="flex-grow-1 align-self-center">
+                  {{qwest.name}}
+                </div>
+                <div class="d-flex">
+                  <!-- Удалить -->
+                  <div class="btn-group btn-group-sm" role="group" aria-label="Действия">
+                    <button class="icon-small" (click)="delQwest(qwest.id)" mat-icon-button>
+                      <img src="assets/icons/del.png" class="img-fluid">
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </mat-list>
+          <br>
+        </div>
+      </div>
+    </mat-tab>
+
+    <mat-tab>
+      <ng-template mat-tab-label>
         <img src="assets/icons/tresure.png" class="tabimg img-fluid">
       </ng-template>
       <!-- Просмотр -->
@@ -280,73 +347,6 @@
           </mat-list>
           <!-- <small class="pt-1" *ngIf="this.srv.pers.totalRewardProbability"><i>Вероятность награды:
               {{this.srv.pers.totalRewardProbability}}%</i></small> -->
-          <br>
-        </div>
-      </div>
-    </mat-tab>
-
-    <mat-tab>
-      <ng-template mat-tab-label>
-        <img src="assets/icons/qwests.png" class="tabimg img-fluid" style="height: 1.5em;">
-      </ng-template>
-      <!-- Просмотр -->
-      <div *ngIf="!isEditMode" class="pt-2 pb-4 w-100">
-        <div class="pb-4">
-          <!-- Квесты -->
-          <ng-container *ngIf="this.srv.pers.qwests?.length > 0">
-
-            <ul class="list-group py-0 px-0">
-              <li *ngFor="let qwest of this.srv.pers.qwests" class="list-group-item px-0 py-1 border-0">
-
-                <div fxLayout="row" fxLayoutAlign="space-between center">
-
-                  <a [routerLink]="['/pers/qwest', qwest.id]">
-                    <h6>{{qwest.name}}</h6>
-                  </a>
-                  <a [routerLink]="['/pers/qwest', qwest.id]">
-                    <h6 *ngIf="qwest.progressValue < 100">{{qwest.tasksDone}}/{{qwest.tasks.length}}</h6>
-                  </a>
-                  <img *ngIf="qwest.progressValue >= 100" (click)="doneQwest(qwest)" src="assets/icons/star.png"
-                    class="img-fluid" [ngStyle]="{'object-fit': 'contain', 'height':'1.5em'}">
-                </div>
-
-                <mat-progress-bar class="myprogr" color="accent" mode="determinate" value="{{qwest.progressValue}}">
-                </mat-progress-bar>
-              </li>
-            </ul>
-            <br>
-          </ng-container>
-        </div>
-      </div>
-      <!-- Редактирование -->
-      <div *ngIf="isEditMode" class="pt-2 pb-4">
-        <div class="pb-4">
-          <!-- Квесты -->
-          <div fxLayout="row" fxLayoutAlign="space-between center">
-            <h5>Квесты:</h5>
-            <!-- Добавление квеста -->
-            <button class="icon-small" mat-icon-button (click)="addNewQwest()">
-              <img src="assets/icons/create.png" class="img-fluid">
-            </button>
-          </div>
-          <!-- Список квестов -->
-          <mat-list>
-            <div mat-list-item *ngFor="let qwest of this.srv.pers.qwests; let i = index">
-              <div class="d-flex align-items-center">
-                <div class="flex-grow-1 align-self-center">
-                  {{qwest.name}}
-                </div>
-                <div class="d-flex">
-                  <!-- Удалить -->
-                  <div class="btn-group btn-group-sm" role="group" aria-label="Действия">
-                    <button class="icon-small" (click)="delQwest(qwest.id)" mat-icon-button>
-                      <img src="assets/icons/del.png" class="img-fluid">
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </mat-list>
           <br>
         </div>
       </div>
