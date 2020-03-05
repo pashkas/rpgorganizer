@@ -22,7 +22,7 @@
                 <b>Параметры: </b>
                 <span *ngFor="let p of d.params">
                     <span
-                        [ngClass]="{'text-success': p.state=='up', 'text-danger': p.state=='down', 'font-weight-bold': p.state=='down'}">
+                        [ngClass]="{'text-success': p.state=='up', 'text-danger': p.state=='down', 'font-weight-bold': p.state=='down' || p.state=='up'}">
                         {{p.name+': '+ p.val+'; '}}
                     </span>
                 </span>

@@ -1,10 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Pers } from 'src/Models/Pers';
-import { MatSnackBar } from '@angular/material/snack-bar';
 import { PersChangesComponent } from './pers-changes/pers-changes.component';
 import { MatDialog } from '@angular/material/dialog';
 import { Ability } from 'src/Models/Ability';
-import { PersService } from './pers.service';
 import { Router } from '@angular/router';
 import { Task } from 'src/Models/Task';
 import { ChangesModel, persExpChanges } from 'src/Models/ChangesModel';
@@ -18,7 +16,7 @@ export class PerschangesService {
   afterPers: Pers;
   beforePers: Pers;
 
-  constructor(private _snackBar: MatSnackBar, public dialog: MatDialog, private router: Router) { }
+  constructor( public dialog: MatDialog, private router: Router) { }
 
   getClone(pers: Pers): Pers {
     return JSON.parse(JSON.stringify(pers));

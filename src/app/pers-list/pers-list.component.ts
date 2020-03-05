@@ -10,6 +10,7 @@ import { Ability } from 'src/Models/Ability';
 import { MatDialog } from '@angular/material';
 import { AddItemDialogComponent } from '../add-item-dialog/add-item-dialog.component';
 import { AddOrEditRevardComponent } from '../add-or-edit-revard/add-or-edit-revard.component';
+import { Qwest } from 'src/Models/Qwest';
 
 @Component({
   selector: 'app-pers-list',
@@ -157,6 +158,16 @@ export class PersListComponent implements OnInit {
 
   delTask(ab: Ability, id: string) {
     this.srv.delTask(ab, id);
+  }
+
+  /**
+   * Завершить квест.
+   * @param qw Квест.
+   */
+  doneQwest(qw: Qwest) {
+    this.srv.changesBefore();
+    this.srv.DoneQwest(qw);
+    this.srv.changesAfter(true);
   }
 
   getDateString(dt: Date) {

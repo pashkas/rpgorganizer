@@ -112,7 +112,7 @@ button:focus {
 } */
 
 .par-dialog .mat-dialog-container{
-    width: 80vw !important;
+    width: 100% !important;
 }
 
 .mat-tab-label-active {

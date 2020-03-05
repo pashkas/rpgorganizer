@@ -9,12 +9,9 @@ import { environment } from '../environments/environment';
 import { MainWindowComponent } from './main-window/main-window.component';
 import { LoginComponent } from './login/login.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { MDBBootstrapModule } from 'angular-bootstrap-md';
 import { AutofocusDirective } from './autofocus.directive';
 import { HttpClientModule } from '@angular/common/http';
 import { SelectOnClickDirective } from './select-on-click.directive';
-import { MatSnackBarModule } from '@angular/material/snack-bar';
-import { CountoModule } from 'angular2-counto';
 import { LevelUpMsgComponent } from './level-up-msg/level-up-msg.component';
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { registerLocaleData } from '@angular/common';
@@ -37,9 +34,6 @@ registerLocaleData(localeRu, 'ru');
   ],
   imports: [
     SharedModule,
-    CountoModule,
-    MatSnackBarModule,
-    MDBBootstrapModule.forRoot(),
     BrowserModule,
     BrowserAnimationsModule,
     AngularFireModule.initializeApp(environment.firebase),
