@@ -1,1 +1,9 @@
-<p>req-show works!</p>
+<ng-container *ngIf='this.notDoneReqs.length>0'>
+    <br>
+    <div class="text-center">
+        <span *ngFor="let r of notDoneReqs" class="text-danger">
+            {{r.elName + ' ≥ ' + r.elVal + '; '}}
+        </span>
+    </div>
+    <br>
+</ng-container>

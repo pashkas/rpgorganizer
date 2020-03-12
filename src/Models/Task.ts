@@ -199,4 +199,5 @@ export class Reqvirement {
     elId: any;
     elVal: number;
     elName: string;
+    isDone: boolean = false;
 }

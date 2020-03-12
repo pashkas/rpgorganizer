@@ -23,7 +23,7 @@ export class ReqEditComponent implements OnInit {
     this.srv.isDialogOpen = true;
     let dialogRef = this.dialog.open(ReqAddComponent, {
       backdropClass: 'backdrop',
-      panelClass: 'par-dialog',
+      // panelClass: 'par-dialog',
     });
 
     dialogRef.afterClosed().subscribe(n => {

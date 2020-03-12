@@ -10,16 +10,11 @@
     <div fxFlex="initial">
         ≥
     </div>
-    <mat-form-field fxFlex="30">
-        <mat-label>Значение</mat-label>
-        <mat-select [(ngModel)]="selVal">
-            <mat-option *ngFor="let v of abVals" [value]="v">
-                {{v}}
-            </mat-option>
-        </mat-select>
-    </mat-form-field>
+
+    <mat-slider fxFlex="30" [thumbLabel]="true" class="w-100 pt-2" [max]="10" [min]="1" [step]="1" [(ngModel)]="selVal">
+    </mat-slider>
 </div>
 <div mat-dialog-actions [align]="'end'">
     <button mat-button mat-dialog-close>Отмена</button>
-    <button mat-button [mat-dialog-close]="{name:selReq?.elName, elId:selReq?.elId, elVal: selVal}">Ok</button>
+    <button mat-button [mat-dialog-close]="{elName:selReq?.elName, elId:selReq?.elId, elVal: selVal}">Ok</button>
 </div>

@@ -563,7 +563,7 @@ export class PersService {
     // Задачи навыков
     this.pers.characteristics.forEach(cha => {
       cha.abilities.forEach(ab => {
-        if (ab.value >= 1 || ab.isOpen) {
+        if ((ab.value >= 1 || ab.isOpen) && !ab.isNotDoneReqvirements) {
           ab.tasks.forEach(tsk => {
             if (tsk.states.length > 0 && tsk.isSumStates) {
               tsk.states.forEach(st => {
@@ -876,6 +876,16 @@ export class PersService {
    * Записать персонажа в БД.
    */
   savePers(isShowNotif: boolean, plusOrMinus?): any {
+
+    let allAbsDic: Map<string, Task> = new Map<string, Task>();
+    for (const ch of this.pers.characteristics) {
+      for (const ab of ch.abilities) {
+        for (const t of ab.tasks) {
+          allAbsDic.set(t.id, t);
+        }
+      }
+    }
+
     let totalAbils: number = 0;
 
     this.pers.dateLastUse = new Date();
@@ -901,8 +911,9 @@ export class PersService {
         }
 
         ab.tasks.forEach(tsk => {
+          tsk.plusToNames = [];
+
           if (!this.pers.isNoAbs) {
-            tsk.plusToNames = [];
             tsk.plusToNames.push(new plusToName(cha.name, cha.id, '/pers/characteristic'));
           }
 
@@ -1015,7 +1026,7 @@ export class PersService {
 
     this.pers.rangProgress = (cur / tot) * 100;
 
-    this.setAbUpVis();
+    this.setAbUpVis(allAbsDic);
 
     // Сортировка характеристик
     this.pers.characteristics
@@ -1096,6 +1107,12 @@ export class PersService {
 
   abSorter(): (a: Ability, b: Ability) => number {
     return (a, b) => {
+
+      // По требованиям
+      if (a.isNotDoneReqvirements != b.isNotDoneReqvirements) {
+        return (+a.isNotDoneReqvirements - +b.isNotDoneReqvirements);
+      }
+
       let aHasSameLvl = 0;
       if (a.HasSameAbLvl) {
         aHasSameLvl = 1;
@@ -1136,7 +1153,7 @@ export class PersService {
   /**
    * Задаем видимости для прокачки навыков.
    */
-  setAbUpVis() {
+  setAbUpVis(allAbsDic: Map<string, Task>) {
     this.pers.IsAbUp = false;
     this.pers.HasSameAbLvl = false;
 
@@ -1144,23 +1161,36 @@ export class PersService {
       ch.HasSameAbLvl = false;
       for (const ab of ch.abilities) {
         ab.HasSameAbLvl = false;
+        ab.isNotDoneReqvirements = false;
         for (const tsk of ab.tasks) {
-          if (this.pers.ON > 0 && tsk.value <= 9 && this.pers.ON >= 1) {
-            if ((tsk.value >= 1 || ab.isOpen) && tsk.statesDescr[Math.floor(tsk.value)] == tsk.statesDescr[Math.floor(tsk.value + 1)]) {
-              tsk.IsNextLvlSame = true;
-              ch.HasSameAbLvl = true;
-              ab.HasSameAbLvl = true;
-              this.pers.HasSameAbLvl = true;
-            }
-            else {
-              tsk.IsNextLvlSame = false;
-            }
+          // Требования
+          tsk.reqvirements = tsk.reqvirements.filter(n => allAbsDic.has(n.elId));
+          tsk.reqvirements.forEach(q => q.elName = allAbsDic.get(q.elId).name);
+          tsk.reqvirements.forEach(q => q.isDone = allAbsDic.get(q.elId).value >= q.elVal);
 
-            tsk.mayUp = true;
-            this.pers.IsAbUp = true;
-          } else {
+          if (tsk.reqvirements.some(n => allAbsDic.get(n.elId).value < n.elVal)) {
             tsk.IsNextLvlSame = false;
             tsk.mayUp = false;
+            ab.isNotDoneReqvirements = true;
+          }
+          else {
+            if (this.pers.ON > 0 && tsk.value <= 9 && this.pers.ON >= 1) {
+              if ((tsk.value >= 1 || ab.isOpen) && tsk.statesDescr[Math.floor(tsk.value)] == tsk.statesDescr[Math.floor(tsk.value + 1)]) {
+                tsk.IsNextLvlSame = true;
+                ch.HasSameAbLvl = true;
+                ab.HasSameAbLvl = true;
+                this.pers.HasSameAbLvl = true;
+              }
+              else {
+                tsk.IsNextLvlSame = false;
+              }
+
+              tsk.mayUp = true;
+              this.pers.IsAbUp = true;
+            } else {
+              tsk.IsNextLvlSame = false;
+              tsk.mayUp = false;
+            }
           }
         }
       }
@@ -1570,7 +1600,7 @@ export class PersService {
     if (!this.pers.sellectedView || this.pers.sellectedView === "навыки") {
       this.pers.characteristics.forEach(cha => {
         cha.abilities.forEach(ab => {
-          if (ab.value >= 1 || ab.isOpen) {
+          if ((ab.value >= 1 || ab.isOpen) && !ab.isNotDoneReqvirements) {
             ab.tasks.forEach(tsk => {
               if (this.checkTask(tsk)) {
                 // Для показа опыта за задачу

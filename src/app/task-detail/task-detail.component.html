@@ -41,7 +41,7 @@
         {{tsk.requrense}}
       </div>
     </div>
-    
+
     <!-- Описание -->
     <div class="text-center pt-2" *ngIf="tsk.descr">
       <!-- <label class="active">Описание</label> -->
@@ -50,8 +50,8 @@
       </i>
     </div>
 
-   
-    
+    <app-req-show *ngIf="tskAbility" [reqvirements]="tsk.reqvirements"></app-req-show>
+
     <!-- Действия -->
     <div fxLayout="row" fxLayoutAlign="space-between center" *ngIf="tsk.requrense != 'нет' && tsk.mayUp"
       class="py-2 text-center">
@@ -88,7 +88,7 @@
     <!-- <div class="form-row" *ngIf="tsk.states.length>0">
       <h5>Состояния</h5>
     </div> -->
-    
+
     <ng-container *ngIf="!tskAbility && tsk.states.length>0">
       <mat-list (cdkDropListDropped)="drop($event)" cdkDropList id="states" *ngIf="tsk.states.length > 0">
         <div mat-list-item *ngFor="let st of tsk.states; let i = index">
@@ -115,7 +115,7 @@
     <!-- <div class="text-center px-0 py-1 border-0">
       {{tsk.curLvlDescr}}
     </div> -->
-    <!-- <app-req-show *ngIf="tskAbility" [reqvirements]="tsk.reqvirements"></app-req-show> -->
+    
   </form>
   <br>
   <br>
@@ -191,7 +191,6 @@
         </span> -->
       </div>
     </ng-container>
-    <!-- <app-req-edit *ngIf="tskAbility" [reqvirements]="tsk.reqvirements" (reqvirementsChange)="tsk.reqvirements=$event"></app-req-edit> -->
     <!-- Состояния -->
     <!-- <h5>Состояния:</h5> -->
     <div fxLayout="row" fxLayoutAlign="space-between center">
@@ -206,16 +205,6 @@
       </button>
 
     </div>
-    <!-- Состояния -->
-    <!-- <ng-container *ngIf="tsk.aimTimer==0 && tsk.aimCounter==0">
-        <div class="d-flex" *ngFor="let st of tsk.states; let i = index">
-          <label class="align-self-center m-1"><b>{{st.abRang.name}}</b></label>
-          <div class="flex-grow-1 align-self-center m-1">
-            <input [(ngModel)]="st.name" name="stName{{i}}" type="text" class="form-control">
-          </div>
-        </div>
-      </ng-container> -->
-
     <mat-list (cdkDropListDropped)="drop($event)" cdkDropList id="states" *ngIf="tsk.states.length > 0">
       <div mat-list-item cdkDrag *ngFor="let st of tsk.states; let i = index">
         <div class="d-flex">
@@ -232,7 +221,7 @@
             </a>
           </div>
           <div class="btn-group btn-group-sm" role="group" aria-label="Действия">
-            
+
             <button class="icon-small" (click)="addStateToTask(st)" mat-icon-button>
               <img src="assets/icons/edit.png" class="img-fluid">
             </button>
@@ -248,6 +237,8 @@
         </div>
       </div>
     </mat-list>
+
+    <app-req-edit *ngIf="tskAbility" [reqvirements]="tsk.reqvirements" (reqvirementsChange)="tsk.reqvirements=$event"></app-req-edit>
 
   </form>
   <br>

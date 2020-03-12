@@ -37,4 +37,5 @@ export class Ability {
     value: number = 0;
     HasSameAbLvl: boolean;
     isOpen: boolean = false;
+    isNotDoneReqvirements: boolean = false;
 }

@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy, Input } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, Input, SimpleChanges } from '@angular/core';
 import { Reqvirement } from 'src/Models/Task';
 
 @Component({
@@ -9,6 +9,14 @@ import { Reqvirement } from 'src/Models/Task';
 })
 export class ReqShowComponent implements OnInit {
   @Input() reqvirements: Reqvirement[];
+  notDoneReqs: Reqvirement[];
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes.reqvirements) {
+      this.notDoneReqs = changes.reqvirements.currentValue.filter(n=>!n.isDone);
+    }
+  }
+
   constructor() { }
 
   ngOnInit() {
