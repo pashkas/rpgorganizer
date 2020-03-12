@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Pers } from 'src/Models/Pers';
-import { Task, taskState } from 'src/Models/Task';
+import { Task, taskState, Reqvirement } from 'src/Models/Task';
 import { ActivatedRoute, Router } from '@angular/router';
 import { PersService } from '../pers.service';
 import { Location } from '@angular/common';
@@ -51,6 +51,8 @@ export class TaskDetailComponent implements OnInit {
         if (stt) {
           if (!isEdit) {
             let state = new taskState();
+            state.value = this.tsk.value;
+            state.requrense = this.tsk.requrense;
             state.image = this.srv.GetRndEnamy(state);
             state.name = stt;
             this.tsk.states.push(state);
@@ -177,6 +179,10 @@ export class TaskDetailComponent implements OnInit {
 
     if (!this.tsk.tskWeekDays) {
       this.tsk.tskWeekDays = [...Task.weekDays];
+    }
+
+    if (!this.tsk.reqvirements) {
+      this.tsk.reqvirements = [];
     }
   }
 

@@ -4,6 +4,8 @@ import { Rangse } from './Rangse';
 import { Pers } from './Pers';
 import { plusToName } from './plusToName';
 export class Task implements IImg {
+    reqvirements: Reqvirement[] = [];
+
     static maxValue: number = 10;
     static requrenses: string[] = [
         "будни",
@@ -26,7 +28,7 @@ export class Task implements IImg {
         "вс",
     ];
 
-    tskWeekDays: string[] = [];
+    tskWeekDays: string[] = [...Task.weekDays];
 
     aimCounter: number = 0;
     aimTimer: number = 0;
@@ -180,9 +182,21 @@ export class taskState implements IImg {
     img: string;
     image: string;
     imageLvl: string = '0';
+
+    value: number;
+    requrense: string;
 }
 
 export interface IImg {
     image: string;
     imageLvl: string;
+    value: number;
+    requrense: string;
+}
+
+export class Reqvirement {
+    id: any = uuid();
+    elId: any;
+    elVal: number;
+    elName: string;
 }

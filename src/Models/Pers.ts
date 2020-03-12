@@ -33,9 +33,11 @@ export class Pers {
 
     static commonRevSet: revSetting = { name: 'Обычный', probability: 100, cumulative: 9.290322581 };
     static uncommonRevSet: revSetting = { name: 'Необычный', probability: 50, cumulative: 13.93548387 };
-    static rareRevSet: revSetting = { name: 'Редкий', probability: 100, cumulative: 16.25806452};
+    static rareRevSet: revSetting = { name: 'Редкий', probability: 100, cumulative: 16.25806452 };
     static epicRevSet: revSetting = { name: 'Эпический', probability: 100, cumulative: 17.41935484 };
     static legendaryRevSet: revSetting = { name: 'Легендарный', probability: 100, cumulative: 18 };
+
+    isNoAbs: Boolean = false;
 
     Monsters0Queue: number;
     Monsters1Queue: number;
@@ -45,6 +47,7 @@ export class Pers {
     Monsters5Queue: number;
 
     IsAbUp: boolean;
+    HasSameAbLvl: boolean;
 
     static GameSettings = {
         /**

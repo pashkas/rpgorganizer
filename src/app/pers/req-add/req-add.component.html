@@ -1,0 +1,25 @@
+<div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="20px">
+    <mat-form-field fxFlex>
+        <mat-label>Навык</mat-label>
+        <mat-select [(ngModel)]="selReq">
+            <mat-option *ngFor="let a of abs" [value]="a">
+                {{a.elName}}
+            </mat-option>
+        </mat-select>
+    </mat-form-field>
+    <div fxFlex="initial">
+        ≥
+    </div>
+    <mat-form-field fxFlex="30">
+        <mat-label>Значение</mat-label>
+        <mat-select [(ngModel)]="selVal">
+            <mat-option *ngFor="let v of abVals" [value]="v">
+                {{v}}
+            </mat-option>
+        </mat-select>
+    </mat-form-field>
+</div>
+<div mat-dialog-actions [align]="'end'">
+    <button mat-button mat-dialog-close>Отмена</button>
+    <button mat-button [mat-dialog-close]="{name:selReq?.elName, elId:selReq?.elId, elVal: selVal}">Ok</button>
+</div>

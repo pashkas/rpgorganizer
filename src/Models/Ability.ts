@@ -36,4 +36,5 @@ export class Ability {
     tasks: Task[] = [];
     value: number = 0;
     HasSameAbLvl: boolean;
+    isOpen: boolean = false;
 }

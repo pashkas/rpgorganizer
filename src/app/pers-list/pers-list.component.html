@@ -59,9 +59,48 @@
           <div class="md-form" *ngIf="this.srv.pers.story">
             <i>{{this.srv.pers.story}}</i>
           </div>
+         
+          <!-- Только навыки -->
+          <ng-container *ngIf="this.allAbs.length > 0 && this.srv.pers.isNoAbs">
+            <!-- <app-diary [isFromMain]="true">
+            </app-diary> -->
+
+            <div class="d-flex flex-column w-100">
+              <div>
+                <ul class="list-group py-0">
+                  <li *ngFor="let ab of this.allAbs" class="list-group-item py-0 mt-1 mb-0 pr-0 pl-0 border-0">
+                    <div class="d-flex align-items-baseline w-100">
+                      <div class="w-100 d-flex text-primary">
+                        <!-- [routerLink]="['/ability', ab.id]" -->
+                        <a (click)="showAbility(ab)"
+                          [ngClass]="{'text-success' : ab.tasks[0]?.mayUp && ab.tasks[0]?.IsNextLvlSame}"
+                          class="flex-grow-1 text-left align-self-baseline">
+                          {{ab.name + ' '}}<i><small>{{ab.tasks[0]?.curLvlDescr2}}</small></i>
+                        </a>
+                        <div fxLayout="row" fxLayoutAlign="space-around" class="text-right align-self-baseline">
+                          <a class="pl-2" (click)="showAbility(ab)" *ngIf="ab.isOpen"
+                            [ngClass]="{'text-success' : ab.tasks[0]?.mayUp && ab.tasks[0]?.IsNextLvlSame}">
+                            {{ab.rang.name}}
+                          </a>
+                          <a class="ml-1 px-1" *ngIf="ab.tasks[0]?.mayUp" (click)="upAbil(ab)">
+                            <img src="assets/icons/up.png" class="img-fluid"
+                              [ngStyle]="{'object-fit': 'contain', 'height':'1.5em'}">
+                          </a>
+                        </div>
+                      </div>
+                    </div>
+                    <mat-progress-bar class="myprogr" color="accent" mode="determinate"
+                      value="{{ab.progressValue}}">
+                    </mat-progress-bar>
+                  </li>
+                </ul>
+              </div>
+            </div>
+           
+          </ng-container>
 
           <!-- Атрибуты -->
-          <ng-container *ngIf="this.srv.pers.characteristics?.length > 0">
+          <ng-container *ngIf="this.srv.pers.characteristics?.length > 0 && !this.srv.pers.isNoAbs">
             <!-- <h5>Атрибуты:</h5> -->
             <!-- Характеристики -->
             <ul class="list-group py-0">
@@ -94,7 +133,7 @@
                               {{ab.name + ' '}}<i><small>{{ab.tasks[0]?.curLvlDescr2}}</small></i>
                             </a>
                             <div fxLayout="row" fxLayoutAlign="space-around" class="text-right align-self-baseline">
-                              <a class="pl-2" (click)="showAbility(ab)"
+                              <a class="pl-2" (click)="showAbility(ab)" *ngIf="ab.isOpen"
                                 [ngClass]="{'text-success' : ab.tasks[0]?.mayUp && ab.tasks[0]?.IsNextLvlSame}">
                                 {{ab.rang.name}}
                               </a>
@@ -141,52 +180,83 @@
             <input matInput autocomplete="off" placeholder="История" [(ngModel)]="this.srv.pers.story"
               name="this.srv.pers.story">
           </mat-form-field>
-          <div fxLayout="row" fxLayoutAlign="space-between center">
-            <h5>Атрбуты:</h5>
-            <button class="icon-small" mat-icon-button (click)="addCharact()">
-              <img src="assets/icons/create.png" class="img-fluid">
-            </button>
-          </div>
-          <mat-list>
-            <div mat-list-item *ngFor="let item of this.srv.pers.characteristics; let i = index" class="p-0">
-              <div class="d-flex flex-column">
-                <!-- Характеристика -->
+
+          <!-- Только навыки -->
+          <ng-container *ngIf="this.srv.pers.isNoAbs">
+            <div fxLayout="row" fxLayoutAlign="space-between center">
+              <h5>Навыки:</h5>
+              <button class="icon-small" mat-icon-button (click)="addOnlyAb()">
+                <img src="assets/icons/create.png" class="img-fluid">
+              </button>
+            </div>
+            <mat-list *ngIf="allAbs.length>0" class="p-0">
+              <div mat-list-item *ngFor="let ab of allAbs">
                 <div class="d-flex align-items-center">
-                  <div class="flex-grow-1 align-self-center ">
-                    <b>{{item.name}}</b>
+                  <div class="flex-grow-1 align-self-center">
+                    <i>{{ab.name}}</i>
                   </div>
                   <div class="btn-group btn-group-sm" role="group" aria-label="Действия">
-                    <!-- Добавить навык -->
-                    <button class="icon-small" id="cha{{i}}" (click)="addAbil(item?.id); selCha=item;" mat-icon-button>
-                      <img src="assets/icons/create.png" class="img-fluid">
-                    </button>
                     <!-- Удалить -->
-                    <button class="icon-small" (click)="delCharact(item.id)" mat-icon-button>
-                      <img src="assets/icons/del.png" class="img-fluid">
-                    </button>
+                    <div class="btn-group btn-group-sm" role="group" aria-label="Действия">
+                      <button class="icon-small" (click)="delAbil(ab.id)" mat-icon-button>
+                        <img src="assets/icons/del.png" class="img-fluid">
+                      </button>
+                    </div>
                   </div>
                 </div>
-                <!-- Навыки -->
-                <mat-list *ngIf="item.abilities.length>0" class="p-0">
-                  <div mat-list-item *ngFor="let ab of item.abilities">
-                    <div class="d-flex align-items-center">
-                      <div class="flex-grow-1 align-self-center">
-                        <i>{{ab.name}}</i>
-                      </div>
-                      <div class="btn-group btn-group-sm" role="group" aria-label="Действия">
-                        <!-- Удалить -->
+              </div>
+            </mat-list>
+          </ng-container>
+          <!-- Атрибуты -->
+          <ng-container *ngIf="!this.srv.pers.isNoAbs">
+            <div fxLayout="row" fxLayoutAlign="space-between center">
+              <h5>Атрбуты:</h5>
+              <button class="icon-small" mat-icon-button (click)="addCharact()">
+                <img src="assets/icons/create.png" class="img-fluid">
+              </button>
+            </div>
+            <mat-list>
+              <div mat-list-item *ngFor="let item of this.srv.pers.characteristics; let i = index" class="p-0">
+                <div class="d-flex flex-column">
+                  <!-- Характеристика -->
+                  <div class="d-flex align-items-center">
+                    <div class="flex-grow-1 align-self-center ">
+                      <b>{{item.name}}</b>
+                    </div>
+                    <div class="btn-group btn-group-sm" role="group" aria-label="Действия">
+                      <!-- Добавить навык -->
+                      <button class="icon-small" id="cha{{i}}" (click)="addAbil(item?.id); selCha=item;"
+                        mat-icon-button>
+                        <img src="assets/icons/create.png" class="img-fluid">
+                      </button>
+                      <!-- Удалить -->
+                      <button class="icon-small" (click)="delCharact(item.id)" mat-icon-button>
+                        <img src="assets/icons/del.png" class="img-fluid">
+                      </button>
+                    </div>
+                  </div>
+                  <!-- Навыки -->
+                  <mat-list *ngIf="item.abilities.length>0" class="p-0">
+                    <div mat-list-item *ngFor="let ab of item.abilities">
+                      <div class="d-flex align-items-center">
+                        <div class="flex-grow-1 align-self-center">
+                          <i>{{ab.name}}</i>
+                        </div>
                         <div class="btn-group btn-group-sm" role="group" aria-label="Действия">
-                          <button class="icon-small" (click)="delAbil(ab.id)" mat-icon-button>
-                            <img src="assets/icons/del.png" class="img-fluid">
-                          </button>
+                          <!-- Удалить -->
+                          <div class="btn-group btn-group-sm" role="group" aria-label="Действия">
+                            <button class="icon-small" (click)="delAbil(ab.id)" mat-icon-button>
+                              <img src="assets/icons/del.png" class="img-fluid">
+                            </button>
+                          </div>
                         </div>
                       </div>
                     </div>
-                  </div>
-                </mat-list>
+                  </mat-list>
+                </div>
               </div>
-            </div>
-          </mat-list>
+            </mat-list>
+          </ng-container>
           <br>
           <ng-container *ngIf="false">
             <div fxLayout="row" class="my-1" fxLayoutAlign="space-between center" fxLayoutGap="4px"
@@ -204,6 +274,11 @@
             </div>
           </ng-container>
 
+          <mat-slide-toggle class="example-margin" [(ngModel)]="this.srv.pers.isNoAbs">
+            Без характеристик
+          </mat-slide-toggle>
+
+          <br>
           <button mat-stroked-button color="accent" class="w-100 mt-2" (click)="resp()">
             Респаун
           </button>

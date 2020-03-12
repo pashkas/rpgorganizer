@@ -2,44 +2,46 @@
 <app-params-chart *ngIf="chartData.length>0" [chartLabels]="chartLabels" [chartData]="chartData" (onClick)="chartClick($event)"
     (onLegendClick)="legendClick($event)"></app-params-chart>
 
-<div fxLayout="row" fxLayoutAlign="space-between center">
+<div fxLayout="row" fxLayoutAlign="space-between center" *ngIf="!isFromMain">
     <a class="text-primary" (click)="editParams()">Параметры</a>
     <a class="text-primary" (click)="clearDiary()">Очистить дневник</a>
 </div>
 
-<ng-container *ngFor="let d of this.Diary">
-    <mat-card>
-        <mat-card-header>
-            <mat-card-title>
-                <button mat-icon-button (click)="editDiaryItem(d)">
-                    <img src="assets/icons/edit.png" class="img-fluid">
-                </button>
-                {{d.date|date }}
-            </mat-card-title>
-        </mat-card-header>
-        <mat-card-content>
-            <div>
-                <b>Параметры: </b>
-                <span *ngFor="let p of d.params">
-                    <span
-                        [ngClass]="{'text-success': p.state=='up', 'text-danger': p.state=='down', 'font-weight-bold': p.state=='down' || p.state=='up'}">
-                        {{p.name+': '+ p.val+'; '}}
+<ng-container *ngIf="!isFromMain">
+    <ng-container *ngFor="let d of this.Diary">
+        <mat-card>
+            <mat-card-header>
+                <mat-card-title>
+                    <button mat-icon-button (click)="editDiaryItem(d)">
+                        <img src="assets/icons/edit.png" class="img-fluid">
+                    </button>
+                    {{d.date|date }}
+                </mat-card-title>
+            </mat-card-header>
+            <mat-card-content>
+                <div>
+                    <b>Параметры: </b>
+                    <span *ngFor="let p of d.params">
+                        <span
+                            [ngClass]="{'text-success': p.state=='up', 'text-danger': p.state=='down', 'font-weight-bold': p.state=='down' || p.state=='up'}">
+                            {{p.name+': '+ p.val+'; '}}
+                        </span>
                     </span>
-                </span>
-            </div>
-            <div *ngIf="d.notes">
-                <b>Заметки: </b>
-                <span>{{d.notes}}</span>
-            </div>
-            <div *ngIf="d.done">
-                <b>Сделано: </b>
-                <span>{{d.done}}</span>
-            </div>
-            <div *ngIf="d.notDone">
-                <b>Не сделано: </b>
-                <span>{{d.notDone}}</span>
-            </div>
-        </mat-card-content>
-
-    </mat-card>
+                </div>
+                <div *ngIf="d.notes">
+                    <b>Заметки: </b>
+                    <span>{{d.notes}}</span>
+                </div>
+                <div *ngIf="d.done">
+                    <b>Сделано: </b>
+                    <span>{{d.done}}</span>
+                </div>
+                <div *ngIf="d.notDone">
+                    <b>Не сделано: </b>
+                    <span>{{d.notDone}}</span>
+                </div>
+            </mat-card-content>
+    
+        </mat-card>
+    </ng-container>
 </ng-container>

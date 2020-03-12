@@ -20,6 +20,7 @@ export class DiaryShowComponent implements OnInit {
   chartData: ChartDataSets[] = [];
   chartLabels: Label[] = [];
   hiddenIndex: number = null;
+  @Input() isFromMain: boolean;
   @Output() onChanged = new EventEmitter<boolean>();
 
   constructor(public dialog: MatDialog, private srv: PersService, private overlay: Overlay) { }
@@ -31,10 +32,8 @@ export class DiaryShowComponent implements OnInit {
     }
   }
 
-  clearDiary(){
-    this.srv.pers.Diary = [];
-    this.srv.pers.Diary.unshift(new Diary(moment().startOf('day').toDate(), []));
-    this.srv.savePers(false);
+  clearDiary() {
+    this.srv.clearDiary();
     this.onChanged.emit(true);
     this.updateChart();
   }
@@ -113,7 +112,7 @@ export class DiaryShowComponent implements OnInit {
       });
     });
 
-    let getHidden = (i:number): boolean => {
+    let getHidden = (i: number): boolean => {
       if (this.hiddenIndex == null) {
         return false;
       }

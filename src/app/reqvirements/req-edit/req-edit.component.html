@@ -1,0 +1,17 @@
+<div fxLayout="row" fxLayoutAlign="space-between center">
+    <h5>Требования:</h5>
+    <button class="icon-small" (click)="addReq();" mat-icon-button>
+        <img src="assets/icons/create.png" class="img-fluid">
+    </button>
+</div>
+<mat-list *ngIf="reqvirements?.length>0">
+    <div fxLayout="row" fxLayoutAlign="space-between center" mat-list-item *ngFor="let r of reqvirements">
+        <div>
+            {{r.id}}
+        </div>
+        <button class="icon-small" mat-icon-button (click)="delReq(r.id)">
+            <img src="assets/icons/del.png" class="img-fluid">
+        </button>
+    </div>
+</mat-list>
+<br>

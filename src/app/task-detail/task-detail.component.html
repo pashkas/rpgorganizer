@@ -41,6 +41,7 @@
         {{tsk.requrense}}
       </div>
     </div>
+    
     <!-- Описание -->
     <div class="text-center pt-2" *ngIf="tsk.descr">
       <!-- <label class="active">Описание</label> -->
@@ -49,6 +50,8 @@
       </i>
     </div>
 
+   
+    
     <!-- Действия -->
     <div fxLayout="row" fxLayoutAlign="space-between center" *ngIf="tsk.requrense != 'нет' && tsk.mayUp"
       class="py-2 text-center">
@@ -85,6 +88,7 @@
     <!-- <div class="form-row" *ngIf="tsk.states.length>0">
       <h5>Состояния</h5>
     </div> -->
+    
     <ng-container *ngIf="!tskAbility && tsk.states.length>0">
       <mat-list (cdkDropListDropped)="drop($event)" cdkDropList id="states" *ngIf="tsk.states.length > 0">
         <div mat-list-item *ngFor="let st of tsk.states; let i = index">
@@ -104,13 +108,14 @@
       </mat-list>
     </ng-container>
     <ng-container *ngFor="let st of tsk.statesDescr; let i = index;">
-      <div class="text-center px-0 py-1 border-0" [ngClass]="{'bg-success': i==tsk.value}">
+      <div class="text-center px-0 py-1 border-0" [ngClass]="{'bg-success': i==tsk.value && tskAbility.isOpen}">
         <b>{{i}}<ng-container *ngIf="st">: </ng-container></b>{{st}}
       </div>
     </ng-container>
     <!-- <div class="text-center px-0 py-1 border-0">
       {{tsk.curLvlDescr}}
     </div> -->
+    <!-- <app-req-show *ngIf="tskAbility" [reqvirements]="tsk.reqvirements"></app-req-show> -->
   </form>
   <br>
   <br>
@@ -186,6 +191,7 @@
         </span> -->
       </div>
     </ng-container>
+    <!-- <app-req-edit *ngIf="tskAbility" [reqvirements]="tsk.reqvirements" (reqvirementsChange)="tsk.reqvirements=$event"></app-req-edit> -->
     <!-- Состояния -->
     <!-- <h5>Состояния:</h5> -->
     <div fxLayout="row" fxLayoutAlign="space-between center">

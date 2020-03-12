@@ -16,7 +16,7 @@ export class PerschangesService {
   afterPers: Pers;
   beforePers: Pers;
 
-  constructor( public dialog: MatDialog, private router: Router) { }
+  constructor(public dialog: MatDialog, private router: Router) { }
 
   getClone(pers: Pers): Pers {
     return JSON.parse(JSON.stringify(pers));
@@ -103,14 +103,17 @@ export class PerschangesService {
       }
       // Навыки
       else if (changesMap[n].type == 'abil') {
+        if (changesMap[n].abIsOpenBefore != changesMap[n].abIsOpenAfter) {
+          changes.push(
+            new ChangesModel(changesMap[n].name + ' открыт!', 'abil', changesMap[n].before, changesMap[n].after, 0, Ability.maxValue, changesMap[n].img)
+          );
+
+          abToEdit = n;
+        }
         if (changesMap[n].after != changesMap[n].before) {
           changes.push(
             new ChangesModel(changesMap[n].name, 'abil', changesMap[n].before, changesMap[n].after, 0, Ability.maxValue, changesMap[n].img)
           );
-
-          if (changesMap[n].after == 1) {
-            abToEdit = n;
-          }
         }
         // Прогрес в стейтах
         else if (changesMap[n].tskProgrBefore != changesMap[n].tskProgrAfter
@@ -274,11 +277,16 @@ export class PerschangesService {
           }
 
           changesMap[tsk.id][chType] = Math.floor(tsk.value);
+          if (chType == 'before') {
+            changesMap[tsk.id]['abIsOpenBefore'] = ab.isOpen;
+          }
+          else {
+            changesMap[tsk.id]['abIsOpenAfter'] = ab.isOpen;
+          }
 
           if (tsk.isSumStates) {
             this.tskStatesProgress(tsk, chType, changesMap, true);
           }
-
         });
       });
     });
@@ -368,4 +376,6 @@ export class changesItem {
   tskProgrBefore;
   tskProgrTotal;
   type;
+  abIsOpenBefore;
+  abIsOpenAfter;
 }

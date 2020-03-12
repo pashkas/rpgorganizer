@@ -10,6 +10,7 @@ import { Diary } from 'src/Models/Diary';
 export class DiaryComponent implements OnInit {
 
   @Input() isEditMode: boolean;
+  @Input() isFromMain:boolean;
   Diary: Diary[] = [];
 
   constructor(private srv: PersService) { }

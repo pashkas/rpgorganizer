@@ -21,6 +21,7 @@ export class PersListComponent implements OnInit {
   private unsubscribe$ = new Subject();
 
   GameSettings = Pers.GameSettings;
+  allAbs: Ability[] = [];
   chaArea: string = "";
   isEditMode: boolean = false;
   selAb: Ability;
@@ -43,6 +44,7 @@ export class PersListComponent implements OnInit {
       .subscribe(name => {
         if (name) {
           this.srv.addAbil(charactId, name);
+          this.getAllAbs();
         }
         this.srv.isDialogOpen = false;
       });
@@ -130,6 +132,7 @@ export class PersListComponent implements OnInit {
    */
   delAbil(id: string) {
     this.srv.delAbil(id);
+    this.getAllAbs();
   }
 
   /**
@@ -198,6 +201,34 @@ export class PersListComponent implements OnInit {
     if (id) {
       this.srv.selTabPersList = 0;
     }
+
+    this.getAllAbs();
+  }
+
+  private getAllAbs() {
+    let allAbs: Ability[] = [];
+    if (this.srv.pers.isNoAbs) {
+      for (const ch of this.srv.pers.characteristics) {
+        allAbs = allAbs.concat(ch.abilities);
+      }
+    }
+
+    allAbs = allAbs.sort(this.srv.abSorter());
+
+    this.allAbs = allAbs;
+  }
+
+  addOnlyAb() {
+    let firstCharact: Characteristic;
+    if (this.srv.pers.characteristics.length > 0) {
+      firstCharact = this.srv.pers.characteristics[0];
+    }
+    else {
+      this.srv.addCharact('');
+      firstCharact = this.srv.pers.characteristics[0];
+    }
+
+    this.addAbil(firstCharact.id);
   }
 
   /**
@@ -207,6 +238,7 @@ export class PersListComponent implements OnInit {
     if (window.confirm('Вы уверены?')) {
       this.srv.pers.characteristics.forEach(cha => {
         cha.abilities.forEach(ab => {
+          ab.isOpen = false;
           ab.tasks.forEach(tsk => {
             tsk.value = 0;
             tsk.date = new Date();
@@ -216,7 +248,6 @@ export class PersListComponent implements OnInit {
             });
             tsk.lastNotDone = false;
             this.srv.setStatesNotDone(tsk);
-            // tsk.order = 999;
           });
         });
       });
@@ -224,9 +255,9 @@ export class PersListComponent implements OnInit {
       this.srv.pers.exp = 0;
       this.srv.pers.level = 0;
       this.srv.pers.inventory = [];
-      //this.srv.pers.qwests = [];
 
-      this.srv.savePers(false);
+      this.srv.clearDiary(); // там тоже перс сохраняется...
+      //this.srv.savePers(false);
     }
   }
 
@@ -241,6 +272,8 @@ export class PersListComponent implements OnInit {
     else {
       this.isEditMode = true;
     }
+
+    this.getAllAbs();
   }
 
   showAbility(ab: Ability) {

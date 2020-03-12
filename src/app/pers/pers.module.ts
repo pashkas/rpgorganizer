@@ -25,9 +25,17 @@ import { AbupcolPipe } from '../abupcol.pipe';
 import { EditDiaryParamsComponent } from '../diary/edit-diary-params/edit-diary-params.component';
 import { EnamiesComponent } from '../enamies/enamies.component';
 import { SvgIconComponent } from '../svg-icon/svg-icon.component';
+import { ReqvirementsComponent } from '../reqvirements/reqvirements.component';
+import { ReqShowComponent } from '../reqvirements/req-show/req-show.component';
+import { ReqEditComponent } from '../reqvirements/req-edit/req-edit.component';
+import { ReqAddComponent } from './req-add/req-add.component';
+import {MatSlideToggleModule} from '@angular/material/slide-toggle';
 
 @NgModule({
   declarations: [
+    ReqvirementsComponent,
+    ReqShowComponent,
+    ReqEditComponent,
     DiaryShowComponent,
     PersListComponent,
     RarecolPipe,
@@ -42,9 +50,11 @@ import { SvgIconComponent } from '../svg-icon/svg-icon.component';
     AbupcolPipe,
     EditDiaryParamsComponent,
     EnamiesComponent,
-    SvgIconComponent
+    SvgIconComponent,
+    ReqAddComponent
   ],
   imports: [
+    MatSlideToggleModule,
     SharedModule,
     MatSelectModule,
     MatCardModule,
@@ -61,7 +71,8 @@ import { SvgIconComponent } from '../svg-icon/svg-icon.component';
     [
       AddItemDialogComponent,
       AddOrEditRevardComponent,
-      EditDiaryParamsComponent
+      EditDiaryParamsComponent,
+      ReqAddComponent
     ],
   providers: [{ provide: OWL_DATE_TIME_LOCALE, useValue: 'ru' },]
 })

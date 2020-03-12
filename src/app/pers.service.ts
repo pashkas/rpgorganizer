@@ -100,27 +100,23 @@ export class PersService {
   }
 
   GetRndEnamy(tsk: IImg): string {
-    // let lvl = tsk.value * 10.0;//this.pers.level;
-    // if (tsk.requrense == 'нет') {
-    //   if (this.pers.storyProgress) {
-    //     lvl = this.pers.storyProgress;
-    //   } else {
-    //     lvl = 0;
-    //   }
-    // }
-    let lvl = (this.pers.level / 100.0) * 5.0;
+    let lvl = tsk.value / 2.0;
+    if (tsk.requrense == 'нет') {
+      lvl = (this.pers.level / 100.0) * 5.0;
+    }
+    //let lvl = (this.pers.level / 100.0) * 5.0;
     let floor = Math.floor(lvl);
-    let left = lvl - floor;
+    // let left = lvl - floor;
 
     let mnstrLvl = floor;
 
-    let rnd = Math.random();
-    if (rnd <= left) {
-      mnstrLvl++;
-    }
-    if (mnstrLvl > 5) {
-      mnstrLvl = 5;
-    }
+    // let rnd = Math.random();
+    // if (rnd <= left) {
+    //   mnstrLvl++;
+    // }
+    // if (mnstrLvl > 5) {
+    //   mnstrLvl = 5;
+    // }
 
     tsk.imageLvl = '' + mnstrLvl;
     tsk.image = this.getImgPathRandome(mnstrLvl);
@@ -265,6 +261,25 @@ export class PersService {
   }
 
   /**
+   * Добавить запись в дневник.
+   * @param task Задача
+   * @param isDone Выполнена?
+   */
+  addToDiary(task: Task, isDone: boolean) {
+    let tDate: moment.Moment = moment(task.date).startOf('day');
+    let diary = this.pers.Diary.find(n => moment(n.date).startOf('day').isSame(tDate));
+    if (diary) {
+      let fullName = task.name + ' ' + task.curLvlDescr2;
+      if (isDone) {
+        diary.done = diary.done + fullName + '; '
+      }
+      else {
+        diary.notDone = diary.done + fullName + '; '
+      }
+    }
+  }
+
+  /**
    * Добавить новую задачу к навыку
    * @param abil Навык.
    * @param newTsk Название задачи.
@@ -286,10 +301,10 @@ export class PersService {
   addTskToQwest(qwest: Qwest, newTsk: string): any {
     var tsk = new Task();
     tsk.name = newTsk;
+    tsk.requrense = "нет";
 
     this.GetRndEnamy(tsk);
 
-    tsk.requrense = "нет";
     qwest.tasks.push(tsk);
 
     this.sortQwestTasks(qwest);
@@ -410,6 +425,18 @@ export class PersService {
     if (now.valueOf() >= date.valueOf()) {
       return true;
     }
+  }
+
+  clearDiary() {
+    let params = [];
+
+    if (this.pers.Diary.length > 0) {
+      params = JSON.parse(JSON.stringify(this.pers.Diary[0].params));
+    }
+
+    this.pers.Diary = [];
+    this.pers.Diary.unshift(new Diary(moment().startOf('day').toDate(), params));
+    this.savePers(false);
   }
 
   // checkTaskStates(tsk: Task) {
@@ -536,7 +563,7 @@ export class PersService {
     // Задачи навыков
     this.pers.characteristics.forEach(cha => {
       cha.abilities.forEach(ab => {
-        if (ab.value >= 1) {
+        if (ab.value >= 1 || ab.isOpen) {
           ab.tasks.forEach(tsk => {
             if (tsk.states.length > 0 && tsk.isSumStates) {
               tsk.states.forEach(st => {
@@ -634,12 +661,6 @@ export class PersService {
     return result;
   }
 
-  randomInteger(min: number, max: number): number {
-    // случайное число от min до (max+1)
-    let rand = min + Math.random() * (max + 1 - min);
-    return Math.floor(rand);
-  }
-
   /**
    * Получить персонажа.
    */
@@ -701,7 +722,8 @@ export class PersService {
     let result: number[] = [];
 
     for (let i = 0; i <= Task.maxValue; i++) {
-      let progr = i / Task.maxValue;
+      let progr = (i + 1) / (Task.maxValue + 1);
+
       result.push(Math.ceil(progr * aim));
     }
 
@@ -816,6 +838,12 @@ export class PersService {
     this.unsubscribe$.complete();
   }
 
+  randomInteger(min: number, max: number): number {
+    // случайное число от min до (max+1)
+    let rand = min + Math.random() * (max + 1 - min);
+    return Math.floor(rand);
+  }
+
   /**
    * Обновление всех картинок монстров.
    */
@@ -873,8 +901,10 @@ export class PersService {
         }
 
         ab.tasks.forEach(tsk => {
-          tsk.plusToNames = [];
-          tsk.plusToNames.push(new plusToName(cha.name, cha.id, '/pers/characteristic'));
+          if (!this.pers.isNoAbs) {
+            tsk.plusToNames = [];
+            tsk.plusToNames.push(new plusToName(cha.name, cha.id, '/pers/characteristic'));
+          }
 
           if (tsk.descr) {
             tsk.plusToNames.push(new plusToName(tsk.descr, '', ''));
@@ -916,8 +946,10 @@ export class PersService {
       let max = Characteristic.maxValue;
       let left = max - start;
 
-      this.setChaValueAndProgress(abCur, abMax, cha, start, left);
-      this.setChaRang(cha);
+      if (!this.pers.isNoAbs) {
+        this.setChaValueAndProgress(abCur, abMax, cha, start, left);
+        this.setChaRang(cha);
+      }
 
       // Награды
       // Общая вероятность награды
@@ -1004,7 +1036,7 @@ export class PersService {
           }
           // По значению по возрастанию
           if (a.value != b.value) {
-            return (a.value - b.value);
+            return -(a.value - b.value);
           }
         } else {
           // По значению по убыванию
@@ -1017,34 +1049,7 @@ export class PersService {
       });
     // Сортировка навыков
     this.pers.characteristics.forEach(cha => {
-      cha.abilities = cha.abilities.sort((a, b) => {
-        let aHasSameLvl = 0;
-        if (a.HasSameAbLvl) {
-          aHasSameLvl = 1;
-        }
-        let bHasSameLvl = 0;
-        if (b.HasSameAbLvl) {
-          bHasSameLvl = 1;
-        }
-
-        if (this.pers.IsAbUp) {
-          // Если есть с такой же сложностью навыка
-          if (aHasSameLvl != bHasSameLvl) {
-            return -(aHasSameLvl - bHasSameLvl);
-          }
-          // По значению по возрастанию
-          if (a.value != b.value) {
-            return (a.value - b.value);
-          }
-        } else {
-          // По значению по убыванию
-          if (a.value != b.value) {
-            return -(a.value - b.value);
-          }
-        }
-
-        return 0;
-      });
+      cha.abilities = cha.abilities.sort(this.abSorter());
     });
 
     let tasks: Task[] = this.getPersTasks();
@@ -1089,11 +1094,51 @@ export class PersService {
       .set(JSON.parse(JSON.stringify(this.pers)));
   }
 
+  abSorter(): (a: Ability, b: Ability) => number {
+    return (a, b) => {
+      let aHasSameLvl = 0;
+      if (a.HasSameAbLvl) {
+        aHasSameLvl = 1;
+      }
+      let bHasSameLvl = 0;
+      if (b.HasSameAbLvl) {
+        bHasSameLvl = 1;
+      }
+      if (this.pers.IsAbUp) {
+        // Если есть с такой же сложностью навыка
+        if (aHasSameLvl != bHasSameLvl) {
+          return -(aHasSameLvl - bHasSameLvl);
+        }
+
+        // По возможности открытия
+        let aIsMax = a.value > 9;
+        let bIsMax = b.value > 9;
+
+        if (aIsMax != bIsMax) {
+          return (+aIsMax - +bIsMax);
+        }
+      }
+
+      // По открытости
+      if (a.isOpen != b.isOpen) {
+        return -(+a.isOpen - +b.isOpen);
+      }
+
+      // По значению
+      if (a.value != b.value) {
+        return -(a.value - b.value);
+      }
+
+      return a.name.localeCompare(b.name);
+    };
+  }
+
   /**
    * Задаем видимости для прокачки навыков.
    */
   setAbUpVis() {
     this.pers.IsAbUp = false;
+    this.pers.HasSameAbLvl = false;
 
     for (const ch of this.pers.characteristics) {
       ch.HasSameAbLvl = false;
@@ -1101,10 +1146,11 @@ export class PersService {
         ab.HasSameAbLvl = false;
         for (const tsk of ab.tasks) {
           if (this.pers.ON > 0 && tsk.value <= 9 && this.pers.ON >= 1) {
-            if (tsk.value >= 1 && tsk.statesDescr[Math.floor(tsk.value)] == tsk.statesDescr[Math.floor(tsk.value + 1)]) {
+            if ((tsk.value >= 1 || ab.isOpen) && tsk.statesDescr[Math.floor(tsk.value)] == tsk.statesDescr[Math.floor(tsk.value + 1)]) {
               tsk.IsNextLvlSame = true;
               ch.HasSameAbLvl = true;
               ab.HasSameAbLvl = true;
+              this.pers.HasSameAbLvl = true;
             }
             else {
               tsk.IsNextLvlSame = false;
@@ -1115,6 +1161,18 @@ export class PersService {
           } else {
             tsk.IsNextLvlSame = false;
             tsk.mayUp = false;
+          }
+        }
+      }
+    }
+
+    if (this.pers.HasSameAbLvl) {
+      for (const ch of this.pers.characteristics) {
+        for (const ab of ch.abilities) {
+          for (const tsk of ab.tasks) {
+            if (!tsk.IsNextLvlSame) {
+              tsk.mayUp = false;
+            }
           }
         }
       }
@@ -1341,32 +1399,13 @@ export class PersService {
     }
   }
 
-  /**
-   * Добавить запись в дневник.
-   * @param task Задача
-   * @param isDone Выполнена?
-   */
-  addToDiary(task: Task, isDone: boolean) {
-    let tDate: moment.Moment = moment(task.date).startOf('day');
-    let diary = this.pers.Diary.find(n => moment(n.date).startOf('day').isSame(tDate));
-    if (diary) {
-      let fullName = task.name + ' ' + task.curLvlDescr2;
-      if (isDone) {
-        diary.done = diary.done + fullName + '; '
-      }
-      else {
-        diary.notDone = diary.done + fullName + '; '
-      }
-    }
-  }
-
   upAbility(ab: Ability) {
     let isOpenForEdit = false;
 
     for (let i = 0; i < ab.tasks.length; i++) {
       const tsk: Task = ab.tasks[i];
 
-      if (tsk.value < 1) {
+      if (!ab.isOpen) {
         tsk.date = new Date();
         tsk.order = -1;
         tsk.states.forEach(st => {
@@ -1374,21 +1413,34 @@ export class PersService {
         });
         isOpenForEdit = true;
       }
+      else {
+        tsk.value += 1;
+      }
 
-      tsk.value += 1;
+      tsk.image = this.GetRndEnamy(tsk);
+      tsk.states.forEach(st => {
+        st.img = this.GetRndEnamy(tsk);
+      });
 
-      // tsk.image = this.GetRndEnamy(tsk);
-      // tsk.states.forEach(st => {
-      //   st.img = this.GetRndEnamy(tsk);
-      // });
+      if (tsk.value >= 1 && !tsk.isSumStates && tsk.states.length > 0) {
+        let nms: number[] = this.getSet(tsk, tsk.states.length);
+        let index = nms[Math.floor(tsk.value)] - 1;
+        let prevIdx = nms[Math.floor(tsk.value - 1)] - 1;
+
+        tsk.states[index].order = tsk.states[prevIdx].order;
+      }
+    }
+
+    if (!ab.isOpen) {
+      ab.isOpen = true;
     }
 
     this.savePers(true, 'plus');
 
     // Переходим в настройку навыка, если это первый уровень
-    // if (isOpenForEdit) {
-    //   this.showAbility(ab);
-    // }
+    if (isOpenForEdit) {
+      this.showAbility(ab);
+    }
   }
 
   /**
@@ -1490,7 +1542,6 @@ export class PersService {
     }
 
     // Создаем новый день если такого не было.
-
   }
 
   private filterRevs(revType: any) {
@@ -1519,7 +1570,7 @@ export class PersService {
     if (!this.pers.sellectedView || this.pers.sellectedView === "навыки") {
       this.pers.characteristics.forEach(cha => {
         cha.abilities.forEach(ab => {
-          if (ab.value >= 1) {
+          if (ab.value >= 1 || ab.isOpen) {
             ab.tasks.forEach(tsk => {
               if (this.checkTask(tsk)) {
                 // Для показа опыта за задачу
@@ -1620,7 +1671,7 @@ export class PersService {
 
   private getTaskChangesExp(task: Task) {
     let chVal = this.baseTaskPoints * this.getWeekKoef(task.requrense, true, task.tskWeekDays);
-    let chValFinaly = chVal * Math.floor(task.value);
+    let chValFinaly = chVal * Math.floor(task.value + 1);
     chValFinaly = Math.ceil(chValFinaly * 10.0) / 10.0;
 
     return chValFinaly;
@@ -1643,6 +1694,8 @@ export class PersService {
     stT.name = stT.tittle;
     stT.order = st.order;
     stT.date = tsk.date;
+    stT.requrense = tsk.requrense;
+    stT.value = tsk.value;
     stT.requrense = tsk.requrense;
 
     //stT.image = tsk.image;
@@ -1759,11 +1812,14 @@ export class PersService {
     let curV = 0;
     this.pers.characteristics.forEach(cha => {
       cha.abilities.forEach(ab => {
+        if (ab.isOpen) {
+          curV++;
+        }
         curV += ab.value;
       });
     });
 
-    const onPerLevel = (totalAbilities * 10.0) / 100.0;
+    const onPerLevel = (totalAbilities * 11.0) / 100.0;
     // Очки навыков
     this.pers.ONPerLevel = Math.ceil(onPerLevel);
     let persLevel = 0;
