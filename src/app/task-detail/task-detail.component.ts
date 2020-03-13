@@ -10,6 +10,8 @@ import { Ability } from 'src/Models/Ability';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { MatDialog } from '@angular/material';
 import { AddItemDialogComponent } from '../add-item-dialog/add-item-dialog.component';
+import { Characteristic } from 'src/Models/Characteristic';
+import { ChangeCharactComponent } from '../pers/change-charact/change-charact.component';
 
 @Component({
   selector: 'app-task-detail',
@@ -24,6 +26,7 @@ export class TaskDetailComponent implements OnInit {
   tsk: Task;
   tskAbility: Ability;
   weekDays: string[] = Task.weekDays;
+  tskCharact: Characteristic;
 
   constructor(private location: Location, private route: ActivatedRoute, public srv: PersService, private router: Router, public dialog: MatDialog) { }
 
@@ -119,6 +122,10 @@ export class TaskDetailComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.findTask();
+  }
+
+  findTask() {
     if (!this.srv.pers) {
       this.router.navigate(['/main']);
     }
@@ -150,6 +157,11 @@ export class TaskDetailComponent implements OnInit {
             if (tsk.id === id) {
               this.tsk = tsk;
               this.tskAbility = ab;
+
+              if (!this.srv.pers.isNoAbs) {
+                this.tskCharact = cha;
+              }
+
               isFind = true;
 
               break;
@@ -184,6 +196,40 @@ export class TaskDetailComponent implements OnInit {
     if (!this.tsk.reqvirements) {
       this.tsk.reqvirements = [];
     }
+  }
+
+  changeCharact() {
+    if (!this.tskAbility || !this.tskCharact) {
+      return;
+    }
+
+    this.srv.isDialogOpen = true;
+    const dialogRef = this.dialog.open(ChangeCharactComponent, {
+      data: { characteristic: this.tskCharact, allCharacts: this.srv.pers.characteristics.sort((a, b) => a.name.localeCompare(b.name)) },
+      backdropClass: 'backdrop'
+    });
+
+    dialogRef.afterClosed()
+      .subscribe(n => {
+        if (n) {
+          if (n.id != this.tskCharact.id) {
+            debugger;
+            for (const ch of this.srv.pers.characteristics) {
+              if (ch.id == n.id) {
+                ch.abilities.push(this.tskAbility);
+
+                break;
+              }
+            }
+
+            // Перемещаем
+            this.tskCharact.abilities = this.tskCharact.abilities.filter(n => n.id !== this.tskAbility.id);
+
+            this.findTask();
+          }
+        }
+        this.srv.isDialogOpen = false;
+      });
   }
 
   onTskDateChange(ev) {

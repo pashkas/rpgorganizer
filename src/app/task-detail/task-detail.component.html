@@ -21,7 +21,8 @@
     <div *ngIf="tskAbility && tskAbility?.image" fxLayout="row" fxLayoutAlign="center center" class="p-2">
       <img src="{{tskAbility.image}}" class="img-fluid" [ngStyle]="{'object-fit': 'contain', 'height': '25vh'}">
     </div>
-    <h4 class="text-center">{{tsk.name}}
+    <h4 class="text-center">
+      {{tsk.name}}
     </h4>
     <div abil="progress" *ngIf="tskAbility" [ngStyle]="{'height': '3px'}">
       <div class="progress-bar" [style.width]="tskAbility.progressValue + '%'"
@@ -31,15 +32,18 @@
     <br *ngIf="tskAbility">
     <hr *ngIf="!tskAbility">
     <!-- Дата и время, повтор -->
-    <div xLayout="row" fxLayoutAlign="space-evenly center" class="form-row" *ngIf="tskAbility">
+    <div xLayout="row" fxLayoutAlign="space-around center" class="form-row" *ngIf="tskAbility">
       <div>
         <!-- <label class="active">Дата</label> -->
         {{getDateString(tsk)}}
+        <ng-container *ngIf="tskAbility">
+          ({{tsk.requrense}})
+        </ng-container>
       </div>
-      <div *ngIf="tskAbility">
-        <!-- <label class="active">Повтор</label> -->
-        {{tsk.requrense}}
-      </div>
+
+      <ng-container *ngIf="tskCharact">
+        <a [routerLink]="['/pers/characteristic', tskCharact.id]">{{tskCharact.name}}</a>
+      </ng-container>
     </div>
 
     <!-- Описание -->
@@ -115,7 +119,7 @@
     <!-- <div class="text-center px-0 py-1 border-0">
       {{tsk.curLvlDescr}}
     </div> -->
-    
+
   </form>
   <br>
   <br>
@@ -124,13 +128,19 @@
 <div class="container pt-2 pb-4" *ngIf="this.srv.pers && tsk && isEditMode">
   <form class="pb-4">
     <!-- Название -->
-    <mat-form-field>
-      <input matInput autocomplete="off" placeholder="Название" [(ngModel)]="tsk.name" name="tsk.name">
-    </mat-form-field>
+    <div fxLayout="row" xLayoutAlign="none center" fxLayoutGap='15px'>
+      <mat-form-field>
+        <input matInput autocomplete="off" placeholder="Название" [(ngModel)]="tsk.name" name="tsk.name">
+      </mat-form-field>
+      <mat-form-field *ngIf="tskCharact">
+        <input class="pointer" (click)="changeCharact()" matInput readonly placeholder="Характеристика" name="tsk.charact" value="{{tskCharact.name}}">
+      </mat-form-field>
+    </div>
     <mat-form-field *ngIf="tskAbility">
       <input matInput autocomplete="off" placeholder="Изображение" [(ngModel)]="tskAbility.image"
         name="tskAbility.image">
     </mat-form-field>
+
     <!-- Дата, повторение -->
     <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="8px">
       <mat-form-field>
@@ -238,7 +248,8 @@
       </div>
     </mat-list>
 
-    <app-req-edit *ngIf="tskAbility" [reqvirements]="tsk.reqvirements" (reqvirementsChange)="tsk.reqvirements=$event"></app-req-edit>
+    <app-req-edit *ngIf="tskAbility" [reqvirements]="tsk.reqvirements" (reqvirementsChange)="tsk.reqvirements=$event">
+    </app-req-edit>
 
   </form>
   <br>

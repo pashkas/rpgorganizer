@@ -30,6 +30,7 @@ import { ReqShowComponent } from '../reqvirements/req-show/req-show.component';
 import { ReqEditComponent } from '../reqvirements/req-edit/req-edit.component';
 import { ReqAddComponent } from './req-add/req-add.component';
 import {MatSlideToggleModule} from '@angular/material/slide-toggle';
+import { ChangeCharactComponent } from './change-charact/change-charact.component';
 
 @NgModule({
   declarations: [
@@ -51,7 +52,8 @@ import {MatSlideToggleModule} from '@angular/material/slide-toggle';
     EditDiaryParamsComponent,
     EnamiesComponent,
     SvgIconComponent,
-    ReqAddComponent
+    ReqAddComponent,
+    ChangeCharactComponent
   ],
   imports: [
     MatSlideToggleModule,
@@ -72,7 +74,8 @@ import {MatSlideToggleModule} from '@angular/material/slide-toggle';
       AddItemDialogComponent,
       AddOrEditRevardComponent,
       EditDiaryParamsComponent,
-      ReqAddComponent
+      ReqAddComponent,
+      ChangeCharactComponent
     ],
   providers: [{ provide: OWL_DATE_TIME_LOCALE, useValue: 'ru' },]
 })

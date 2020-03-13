@@ -724,8 +724,48 @@ export class PersService {
     for (let i = 0; i <= Task.maxValue; i++) {
       let progr = (i + 1) / (Task.maxValue + 1);
 
-      result.push(Math.ceil(progr * aim));
+      let val = Math.floor(progr * aim);
+      if (val < 1) {
+        val = 1;
+      }
+
+      result.push(val);
     }
+
+    // let max = aim;
+    // let step = Math.floor(aim / (Task.maxValue + 1));
+    // if (step < 1) {
+    //   step = 1;
+    // }
+    // let left = max % step;
+    // max = max - left;
+
+    // // Основное..
+    // for (let i = Task.maxValue; i >= 0; i--) {
+    //   result.unshift(max);
+
+    //   max -= step;
+
+    //   if (max < step) {
+    //     max = step;
+    //   }
+    // }
+
+    // // Остатки..
+    // for (let i = 0; i < result.length; i++) {
+    //   let v = i + 1;
+    //   if (v > left) {
+    //     v = left;
+    //   }
+
+    //   result[i] += v;
+    // }
+
+    // for (let i = 0; i <= Task.maxValue; i++) {
+    //   let progr = (i + 1) / (Task.maxValue + 1);
+
+    //   result.push(Math.ceil(progr * aim));
+    // }
 
     // let max = aim;
 
