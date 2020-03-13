@@ -8,11 +8,12 @@ import { MindMapOptionsComponent } from './mind-map-options/mind-map-options.com
 import {MatSidenavModule} from '@angular/material/sidenav';
 import { MatListModule } from '@angular/material/list';
 import { SharedModule } from '../shared/shared.module';
+import { MmoptComponent } from './mmopt/mmopt.component';
 
 
 
 @NgModule({
-  declarations: [MindMapComponent, MindMapOptionsComponent],
+  declarations: [MindMapComponent, MindMapOptionsComponent, MmoptComponent],
   imports: [
     CommonModule,
     MindMapRoutingModule,

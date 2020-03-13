@@ -7,6 +7,8 @@ import { MindMapOptionsComponent } from './mind-map-options/mind-map-options.com
 import { MatBottomSheet, MatDialog } from '@angular/material';
 import { AddItemDialogComponent } from '../add-item-dialog/add-item-dialog.component';
 import { taskState } from 'src/Models/Task';
+import { Router } from '@angular/router';
+import { Location } from '@angular/common';
 
 @Component({
   selector: 'app-mind-map',
@@ -24,97 +26,112 @@ export class MindMapComponent implements OnInit {
       links: this.links
     }]
   };
+  id: any;
+  idx: any;
+  item: mapDicItem;
 
-  constructor(private srv: PersService, private _bottomSheet: MatBottomSheet, public dialog: MatDialog) { }
+  constructor(public srv: PersService, private location: Location, private _bottomSheet: MatBottomSheet, public dialog: MatDialog, private router: Router) { }
+
+  goBack(){
+    this.location.back();
+  }
 
   ngOnInit() {
+    if (!this.srv.pers) {
+      this.router.navigate(['/main']);
+    }
+
     this.udateGraph();
   }
 
-  onChartEvent(event: any, type: string) {
-    const id = event.data.id;
-    let idx = event.dataIndex;
+  contextmenu = false;
 
-    let item = this.dic.get(id);
+  choose(n){
+    this.contextmenu = false;
 
-    let ref = this._bottomSheet.open(MindMapOptionsComponent);
+    if (n == 'открыть') {
+      switch (this.item.type) {
+        case 't':
+          this.srv.openTask(this.id);
+          break;
+        case 'ch':
+          this.srv.openCharact(this.id);
+          break;
 
-    ref.afterDismissed().subscribe(n => {
-      if (n == 'открыть') {
-        switch (item.type) {
-          case 't':
-            this.srv.openTask(id);
-            break;
-          case 'ch':
-            this.srv.openCharact(id);
-            break;
+        case 'pers':
+          this.srv.openPers();
+          break;
 
-          case 'pers':
-            this.srv.openPers();
-            break;
-
-          default:
-            break;
-        }
+        default:
+          break;
       }
-      else if (n == 'удалить') {
-        switch (item.type) {
-          case 't':
-            this.srv.delAbil(item.el.id);
-            break;
-          case 'ch':
-            this.srv.DeleteCharact(id);
-            break;
-        }
-
-        this.srv.savePers(false);
-        this.udateGraph();
+    }
+    else if (n == 'удалить') {
+      switch (this.item.type) {
+        case 't':
+          this.srv.delAbil(this.item.el.id);
+          break;
+        case 'ch':
+          this.srv.DeleteCharact(this.id);
+          break;
       }
-      else if ((n == 'добавить')) {
 
-        this.srv.isDialogOpen = true;
-        const dialogRef = this.dialog.open(AddItemDialogComponent, {
-          panelClass: 'my-dialog',
-          data: { header: 'Добавить', text: '' },
-          backdropClass: 'backdrop'
+      this.srv.savePers(false);
+      this.udateGraph();
+    }
+    else if ((n == 'добавить')) {
+
+      this.srv.isDialogOpen = true;
+      const dialogRef = this.dialog.open(AddItemDialogComponent, {
+        panelClass: 'my-dialog',
+        data: { header: 'Добавить', text: '' },
+        backdropClass: 'backdrop'
+      });
+
+      dialogRef.afterClosed()
+        .subscribe(name => {
+          if (name) {
+            switch (this.item.type) {
+              case 'pers':
+                this.srv.addCharact(name);
+                break;
+              case 'ch':
+                this.srv.addAbil(this.id, name);
+                break;
+              case 't':
+                this.item.el.tasks[0].isSumStates = true;
+                let state = new taskState();
+                state.value = this.item.el.tasks[0].value;
+                state.requrense = this.item.el.tasks[0].requrense;
+                state.image = this.srv.GetRndEnamy(state);
+                state.name = name;
+                this.item.el.tasks[0].states.push(state);
+                break;
+            }
+
+            this.srv.savePers(false);
+            this.udateGraph();
+          }
+          this.srv.isDialogOpen = false;
         });
 
-        dialogRef.afterClosed()
-          .subscribe(name => {
-            if (name) {
-              switch (item.type) {
-                case 'pers':
-                  this.srv.addCharact(name);
-                  break;
-                case 'ch':
-                  this.srv.addAbil(id, name);
-                  break;
-                case 't':
-                  item.el.tasks[0].isSumStates = true;
-                  let state = new taskState();
-                  state.value = item.el.tasks[0].value;
-                  state.requrense = item.el.tasks[0].requrense;
-                  state.image = this.srv.GetRndEnamy(state);
-                  state.name = name;
-                  item.el.tasks[0].states.push(state);
-                  break;
-              }
 
-              this.srv.savePers(false);
-              this.udateGraph();
-            }
-            this.srv.isDialogOpen = false;
-          });
+    }
+  }
 
 
-      }
-    });
+  onChartEvent(event: any, type: string) {
+
+    this.id = event.data.id;
+    this.idx = event.dataIndex;
+    this.item = this.dic.get(this.id);
+    this.contextmenu = true;
   }
 
   private getChart(): EChartOption<EChartOption.Series> {
     return {
       title: {
-        text: 'Карта персонажа'
+        
       },
       tooltip: {},
       animationDurationUpdate: 1000,
