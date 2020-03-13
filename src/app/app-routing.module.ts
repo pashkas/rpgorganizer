@@ -15,6 +15,7 @@ const routes: Routes = [
   { path: 'pers/:isFirst', loadChildren: () => import('./pers/pers.module').then(m => m.PersModule) },
   { path: 'pers', loadChildren: () => import('./pers/pers.module').then(m => m.PersModule) },
   { path: 'turnirtable', component: TurnirTableComponent },
+  { path: 'mind-map', loadChildren: () => import('./mind-map/mind-map.module').then(m => m.MindMapModule) },
 
 ];
 

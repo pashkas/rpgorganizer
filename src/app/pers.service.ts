@@ -219,6 +219,50 @@ export class PersService {
     // return;
   }
 
+  abSorter(): (a: Ability, b: Ability) => number {
+    return (a, b) => {
+      // По требованиям
+      if (a.isNotDoneReqvirements != b.isNotDoneReqvirements) {
+        return (+a.isNotDoneReqvirements - +b.isNotDoneReqvirements);
+      }
+
+      let aHasSameLvl = 0;
+      if (a.HasSameAbLvl) {
+        aHasSameLvl = 1;
+      }
+      let bHasSameLvl = 0;
+      if (b.HasSameAbLvl) {
+        bHasSameLvl = 1;
+      }
+      if (this.pers.IsAbUp) {
+        // Если есть с такой же сложностью навыка
+        if (aHasSameLvl != bHasSameLvl) {
+          return -(aHasSameLvl - bHasSameLvl);
+        }
+
+        // По возможности открытия
+        let aIsMax = a.value > 9;
+        let bIsMax = b.value > 9;
+
+        if (aIsMax != bIsMax) {
+          return (+aIsMax - +bIsMax);
+        }
+      }
+
+      // По открытости
+      if (a.isOpen != b.isOpen) {
+        return -(+a.isOpen - +b.isOpen);
+      }
+
+      // По значению
+      if (a.value != b.value) {
+        return -(a.value - b.value);
+      }
+
+      return a.name.localeCompare(b.name);
+    };
+  }
+
   /**
    * Добавить навык.
    * @param charactId Идентификатор характеристики.
@@ -878,6 +922,18 @@ export class PersService {
     this.unsubscribe$.complete();
   }
 
+  openCharact(id: any) {
+    this.router.navigate(['/pers/characteristic', id]);
+  }
+
+  openPers() {
+    this.router.navigate(['/pers']);
+  }
+
+  openTask(id: any) {
+    this.router.navigate(['/pers/task', id, false]);
+  }
+
   randomInteger(min: number, max: number): number {
     // случайное число от min до (max+1)
     let rand = min + Math.random() * (max + 1 - min);
@@ -916,7 +972,6 @@ export class PersService {
    * Записать персонажа в БД.
    */
   savePers(isShowNotif: boolean, plusOrMinus?): any {
-
     let allAbsDic: Map<string, Task> = new Map<string, Task>();
     for (const ch of this.pers.characteristics) {
       for (const ab of ch.abilities) {
@@ -1143,51 +1198,6 @@ export class PersService {
 
     this.db.collection('pers').doc(this.pers.id)
       .set(JSON.parse(JSON.stringify(this.pers)));
-  }
-
-  abSorter(): (a: Ability, b: Ability) => number {
-    return (a, b) => {
-
-      // По требованиям
-      if (a.isNotDoneReqvirements != b.isNotDoneReqvirements) {
-        return (+a.isNotDoneReqvirements - +b.isNotDoneReqvirements);
-      }
-
-      let aHasSameLvl = 0;
-      if (a.HasSameAbLvl) {
-        aHasSameLvl = 1;
-      }
-      let bHasSameLvl = 0;
-      if (b.HasSameAbLvl) {
-        bHasSameLvl = 1;
-      }
-      if (this.pers.IsAbUp) {
-        // Если есть с такой же сложностью навыка
-        if (aHasSameLvl != bHasSameLvl) {
-          return -(aHasSameLvl - bHasSameLvl);
-        }
-
-        // По возможности открытия
-        let aIsMax = a.value > 9;
-        let bIsMax = b.value > 9;
-
-        if (aIsMax != bIsMax) {
-          return (+aIsMax - +bIsMax);
-        }
-      }
-
-      // По открытости
-      if (a.isOpen != b.isOpen) {
-        return -(+a.isOpen - +b.isOpen);
-      }
-
-      // По значению
-      if (a.value != b.value) {
-        return -(a.value - b.value);
-      }
-
-      return a.name.localeCompare(b.name);
-    };
   }
 
   /**

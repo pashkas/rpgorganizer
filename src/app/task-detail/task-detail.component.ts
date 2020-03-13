@@ -213,7 +213,6 @@ export class TaskDetailComponent implements OnInit {
       .subscribe(n => {
         if (n) {
           if (n.id != this.tskCharact.id) {
-            debugger;
             for (const ch of this.srv.pers.characteristics) {
               if (ch.id == n.id) {
                 ch.abilities.push(this.tskAbility);

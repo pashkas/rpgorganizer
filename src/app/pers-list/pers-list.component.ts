@@ -183,8 +183,8 @@ export class PersListComponent implements OnInit {
   }
 
   goBack() {
-    //this.location.back();
-    this.router.navigate(['/main']);
+    this.location.back();
+    //this.router.navigate(['/main']);
   }
 
   ngOnDestroy(): void {

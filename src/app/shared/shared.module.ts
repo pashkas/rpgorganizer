@@ -10,12 +10,14 @@ import { DragDropModule } from '@angular/cdk/drag-drop';
 import { FlexLayoutModule } from "@angular/flex-layout";
 import { PersChangesComponent } from '../pers-changes/pers-changes.component';
 import { PersChangesItemComponent } from '../pers-changes-item/pers-changes-item.component';
+import { AddItemDialogComponent } from '../add-item-dialog/add-item-dialog.component';
 
 @NgModule({
   declarations: [
     DiaryEditParamsComponent,
     PersChangesComponent,
     PersChangesItemComponent,
+    AddItemDialogComponent,
   ],
   imports: [
     CommonModule,
@@ -33,6 +35,7 @@ import { PersChangesItemComponent } from '../pers-changes-item/pers-changes-item
     [
       DiaryEditParamsComponent,
       PersChangesComponent,
+      AddItemDialogComponent,
     ],
   exports: [
     DiaryEditParamsComponent,
@@ -47,6 +50,7 @@ import { PersChangesItemComponent } from '../pers-changes-item/pers-changes-item
     DragDropModule,
     FlexLayoutModule,
     PersChangesComponent,
+    AddItemDialogComponent,
   ]
 })
 export class SharedModule { }

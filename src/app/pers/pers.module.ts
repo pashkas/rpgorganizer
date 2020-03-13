@@ -16,7 +16,6 @@ import { CharacteristicDetailsComponent } from '../characteristic-details/charac
 import { AbilityDetailComponent } from '../ability-detail/ability-detail.component';
 import { TaskDetailComponent } from '../task-detail/task-detail.component';
 import { QwestDetailComponent } from '../qwest-detail/qwest-detail.component';
-import { AddItemDialogComponent } from '../add-item-dialog/add-item-dialog.component';
 import { AddOrEditRevardComponent } from '../add-or-edit-revard/add-or-edit-revard.component';
 import { OwlDateTimeModule, OwlNativeDateTimeModule } from 'ng-pick-datetime';
 import { OWL_DATE_TIME_LOCALE } from 'ng-pick-datetime';
@@ -46,7 +45,7 @@ import { ChangeCharactComponent } from './change-charact/change-charact.componen
     AbilityDetailComponent,
     TaskDetailComponent,
     QwestDetailComponent,
-    AddItemDialogComponent,
+
     AddOrEditRevardComponent,
     AbupcolPipe,
     EditDiaryParamsComponent,
@@ -71,7 +70,7 @@ import { ChangeCharactComponent } from './change-charact/change-charact.componen
   ],
   entryComponents:
     [
-      AddItemDialogComponent,
+      
       AddOrEditRevardComponent,
       EditDiaryParamsComponent,
       ReqAddComponent,
