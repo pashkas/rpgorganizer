@@ -9,6 +9,7 @@ import { AddItemDialogComponent } from '../add-item-dialog/add-item-dialog.compo
 import { taskState } from 'src/Models/Task';
 import { Router } from '@angular/router';
 import { Location } from '@angular/common';
+import { Characteristic } from 'src/Models/Characteristic';
 
 @Component({
   selector: 'app-mind-map',
@@ -32,7 +33,7 @@ export class MindMapComponent implements OnInit {
 
   constructor(public srv: PersService, private location: Location, private _bottomSheet: MatBottomSheet, public dialog: MatDialog, private router: Router) { }
 
-  goBack(){
+  goBack() {
     this.location.back();
   }
 
@@ -46,7 +47,7 @@ export class MindMapComponent implements OnInit {
 
   contextmenu = false;
 
-  choose(n){
+  choose(n) {
     this.contextmenu = false;
 
     if (n == 'открыть') {
@@ -93,7 +94,22 @@ export class MindMapComponent implements OnInit {
           if (name) {
             switch (this.item.type) {
               case 'pers':
-                this.srv.addCharact(name);
+                // Навык напрямую
+                if (this.srv.pers.isNoAbs) {
+                  let firstCharact: Characteristic;
+                  if (this.srv.pers.characteristics.length > 0) {
+                    firstCharact = this.srv.pers.characteristics[0];
+                  }
+                  // Навык к характеристике
+                  else {
+                    this.srv.addCharact('');
+                    firstCharact = this.srv.pers.characteristics[0];
+                  }
+                  this.srv.addAbil(firstCharact.id, name);
+                }
+                else {
+                  this.srv.addCharact(name);
+                }
                 break;
               case 'ch':
                 this.srv.addAbil(this.id, name);
@@ -131,20 +147,21 @@ export class MindMapComponent implements OnInit {
   private getChart(): EChartOption<EChartOption.Series> {
     return {
       title: {
-        
+
       },
-      tooltip: {},
-      animationDurationUpdate: 1000,
+      tooltip: { show: false },
+      animationDurationUpdate: 1500,
       animationEasingUpdate: 'quinticInOut',
       series: [
         {
           type: 'graph',
           layout: 'force',//'force', 'circular'
           force: {
-            repulsion: 500,
-            // edgeLength: 40
+            repulsion: 350,
+            edgeLength: 40
           },
           roam: true,
+          //focusNodeAdjacency: true,
           symbol: 'circle',
           label: {
             normal: {
@@ -152,7 +169,7 @@ export class MindMapComponent implements OnInit {
               color: 'black'
             }
           },
-          edgeSymbol: ['none', 'none'],
+          edgeSymbol: ['none', 'arrow'],
         }
       ]
     };
@@ -169,26 +186,28 @@ export class MindMapComponent implements OnInit {
     this.date.push(new mindMapItem('pers', this.srv.pers.name, 100, 'LawnGreen'));
     // Характеристики
     for (const ch of this.srv.pers.characteristics) {
-      this.dic.set(ch.id, new mapDicItem('ch', ch.name, idx, ch));
-      idx++;
-      this.date.push(new mindMapItem(ch.id, ch.name, 60, 'GreenYellow'));
-      this.links.push(new mindMapLink(this.dic.get('pers').index, this.dic.get(ch.id).index));
+      if (!this.srv.pers.isNoAbs) {
+        this.dic.set(ch.id, new mapDicItem('ch', ch.name, idx, ch));
+        idx++;
+        this.date.push(new mindMapItem(ch.id, ch.name, 80, 'LemonChiffon'));
+        this.links.push(new mindMapLink(this.dic.get('pers').index, this.dic.get(ch.id).index));
+      }
       // Навыки
       for (const ab of ch.abilities) {
         // SumStates
         for (const t of ab.tasks) {
           this.dic.set(t.id, new mapDicItem('t', t.name, idx, ab));
-          this.date.push(new mindMapItem(t.id, t.name, 40, 'LemonChiffon'));
+          this.date.push(new mindMapItem(t.id, t.name, 25, 'transparent'));
           idx++;
-          this.links.push(new mindMapLink(this.dic.get(ch.id).index, this.dic.get(t.id).index));
-          if (t.isSumStates) {
-            for (const st of t.states) {
-              this.dic.set(st.id, new mapDicItem('st', st.name, idx, t));
-              idx++;
-              this.date.push(new mindMapItem(st.id, st.name, 15, 'LemonChiffon'));
-              this.links.push(new mindMapLink(this.dic.get(t.id).index, this.dic.get(st.id).index));
-            }
-          }
+          this.links.push(new mindMapLink(!this.srv.pers.isNoAbs ? this.dic.get(ch.id).index : this.dic.get('pers').index, this.dic.get(t.id).index));
+          // if (t.isSumStates) {
+          //   for (const st of t.states) {
+          //     this.dic.set(st.id, new mapDicItem('st', st.name, idx, t));
+          //     idx++;
+          //     this.date.push(new mindMapItem(st.id, st.name, 25, 'white'));
+          //     this.links.push(new mindMapLink(this.dic.get(t.id).index, this.dic.get(st.id).index));
+          //   }
+          // }
         }
       }
     }
@@ -199,7 +218,7 @@ export class MindMapComponent implements OnInit {
           for (const r of t.reqvirements) {
             const source = this.dic.get(t.id).index;
             const target = this.dic.get(r.elId).index;
-            this.links.push(new mindMapLink(source, target));
+            this.links.push(new mindMapLink(target, source));
           }
         }
       }

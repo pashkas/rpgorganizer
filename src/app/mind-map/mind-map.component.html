@@ -10,16 +10,19 @@
 
     </div>
 </nav>
-<nav *ngIf="this.contextmenu" class="fixed-top">
+<nav *ngIf="this.contextmenu" class="fixed-bottom">
     <div fxLayout="row" fxLayoutAlign="space-between center" class="p-2">
         <ng-container>
-            <button mat-flat-button color="accent" class="pointer" (click)="choose('открыть')">
+            <button mat-flat-button [disabled]="item?.type=='st'" color="accent" class="pointer"
+                (click)="choose('открыть')">
                 Открыть
             </button>
-            <button mat-flat-button color="accent" class="pointer" (click)="choose('добавить')">
+            <button mat-flat-button [disabled]="item?.type=='st' || item?.type=='t'" color="accent" class="pointer"
+                (click)="choose('добавить')">
                 Добавить
             </button>
-            <button mat-flat-button color="accent" class="pointer" (click)="choose('удалить')">
+            <button mat-flat-button [disabled]="item?.type=='pers'" color="accent" class="pointer"
+                (click)="choose('удалить')">
                 Удалить
             </button>
             <button mat-flat-button color="accent" class="pointer" (click)="choose('')">

@@ -207,10 +207,8 @@ export class PersListComponent implements OnInit {
 
   private getAllAbs() {
     let allAbs: Ability[] = [];
-    if (this.srv.pers.isNoAbs) {
-      for (const ch of this.srv.pers.characteristics) {
-        allAbs = allAbs.concat(ch.abilities);
-      }
+    for (const ch of this.srv.pers.characteristics) {
+      allAbs = allAbs.concat(ch.abilities);
     }
 
     allAbs = allAbs.sort(this.srv.abSorter());
