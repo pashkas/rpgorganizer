@@ -132,10 +132,11 @@
       <mat-form-field>
         <input matInput autocomplete="off" placeholder="Название" [(ngModel)]="tsk.name" name="tsk.name">
       </mat-form-field>
-      <mat-form-field *ngIf="tskCharact">
-        <input class="pointer" (click)="changeCharact()" matInput readonly placeholder="Характеристика" name="tsk.charact" value="{{tskCharact.name}}">
-      </mat-form-field>
+     
     </div>
+    <mat-form-field *ngIf="tskCharact">
+      <input class="pointer" (click)="changeCharact()" matInput readonly placeholder="Характеристика" name="tsk.charact" value="{{tskCharact.name}}">
+    </mat-form-field>
     <mat-form-field *ngIf="tskAbility">
       <input matInput autocomplete="off" placeholder="Изображение" [(ngModel)]="tskAbility.image"
         name="tskAbility.image">

@@ -148,7 +148,7 @@
                       </li>
                     </ul>
                   </div>
-                </div>  
+                </div>
               </li>
             </ul>
           </ng-container>
@@ -275,9 +275,16 @@
             </div>
           </ng-container>
 
-          <mat-slide-toggle class="example-margin" [(ngModel)]="this.srv.pers.isNoAbs">
-            Без характеристик
-          </mat-slide-toggle>
+          <div>
+            <mat-slide-toggle class="example-margin" [(ngModel)]="this.srv.pers.isNoAbs">
+              Без характеристик
+            </mat-slide-toggle>
+          </div>
+          <div>
+            <mat-slide-toggle class="example-margin" [(ngModel)]="this.srv.pers.isNoDiary">
+              Без дневника
+            </mat-slide-toggle>
+          </div>
 
           <br>
           <button mat-stroked-button color="accent" class="w-100 mt-2" (click)="resp()">
@@ -428,7 +435,7 @@
       </div>
     </mat-tab>
 
-    <mat-tab *ngIf="!isEditMode">
+    <mat-tab *ngIf="!isEditMode && !this.srv.pers.isNoDiary">
       <ng-template mat-tab-label>
         <img src="assets/icons/diary.png" class="tabimg img-fluid">
       </ng-template>

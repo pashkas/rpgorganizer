@@ -38,6 +38,7 @@ export class Pers {
     static legendaryRevSet: revSetting = { name: 'Легендарный', probability: 100, cumulative: 18 };
 
     isNoAbs: Boolean = false;
+    isNoDiary: Boolean = false;
 
     Monsters0Queue: number;
     Monsters1Queue: number;

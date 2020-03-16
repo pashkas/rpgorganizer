@@ -158,9 +158,12 @@ export class MindMapComponent implements OnInit {
           layout: 'force',//'force', 'circular'
           force: {
             repulsion: 350,
-            edgeLength: 40
+            edgeLength: 50,
+            gravity: 0.15
           },
           roam: true,
+          nodeScaleRatio: 0.025,
+          //draggable: true,
           //focusNodeAdjacency: true,
           symbol: 'circle',
           label: {

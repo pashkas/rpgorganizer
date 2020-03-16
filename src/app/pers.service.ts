@@ -972,6 +972,7 @@ export class PersService {
    * Записать персонажа в БД.
    */
   savePers(isShowNotif: boolean, plusOrMinus?): any {
+    debugger;
     let allAbsDic: Map<string, Task> = new Map<string, Task>();
     for (const ch of this.pers.characteristics) {
       for (const ab of ch.abilities) {
@@ -1214,6 +1215,9 @@ export class PersService {
         ab.isNotDoneReqvirements = false;
         for (const tsk of ab.tasks) {
           // Требования
+          if (!tsk.reqvirements) {
+            tsk.reqvirements = [];
+          }
           tsk.reqvirements = tsk.reqvirements.filter(n => allAbsDic.has(n.elId));
           tsk.reqvirements.forEach(q => q.elName = allAbsDic.get(q.elId).name);
           tsk.reqvirements.forEach(q => q.isDone = allAbsDic.get(q.elId).value >= q.elVal);
