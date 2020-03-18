@@ -150,19 +150,19 @@ export class MindMapComponent implements OnInit {
 
       },
       tooltip: { show: false },
-      animationDurationUpdate: 1500,
+      animationDurationUpdate: 1000,
       animationEasingUpdate: 'quinticInOut',
       series: [
         {
           type: 'graph',
           layout: 'force',//'force', 'circular'
           force: {
-            repulsion: 350,
-            edgeLength: 50,
-            gravity: 0.15
+            repulsion: 300,
+            //edgeLength: 40,
+            gravity: 0.25
           },
           roam: true,
-          nodeScaleRatio: 0.025,
+          nodeScaleRatio: 0.001,
           //draggable: true,
           //focusNodeAdjacency: true,
           symbol: 'circle',
@@ -186,13 +186,13 @@ export class MindMapComponent implements OnInit {
     let idx = 0;
     this.dic.set('pers', new mapDicItem('pers', this.srv.pers.name, idx, null));
     idx++;
-    this.date.push(new mindMapItem('pers', this.srv.pers.name, 100, 'LawnGreen'));
+    this.date.push(new mindMapItem('pers', this.srv.pers.name, 50, 'LawnGreen'));
     // Характеристики
     for (const ch of this.srv.pers.characteristics) {
       if (!this.srv.pers.isNoAbs) {
         this.dic.set(ch.id, new mapDicItem('ch', ch.name, idx, ch));
         idx++;
-        this.date.push(new mindMapItem(ch.id, ch.name, 80, 'LemonChiffon'));
+        this.date.push(new mindMapItem(ch.id, ch.name, 35, 'LemonChiffon'));
         this.links.push(new mindMapLink(this.dic.get('pers').index, this.dic.get(ch.id).index));
       }
       // Навыки

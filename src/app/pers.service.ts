@@ -768,10 +768,7 @@ export class PersService {
     for (let i = 0; i <= Task.maxValue; i++) {
       let progr = (i + 1) / (Task.maxValue + 1);
 
-      let val = Math.floor(progr * aim);
-      if (val < 1) {
-        val = 1;
-      }
+      let val = Math.ceil(progr * (aim));
 
       result.push(val);
     }
@@ -972,7 +969,6 @@ export class PersService {
    * Записать персонажа в БД.
    */
   savePers(isShowNotif: boolean, plusOrMinus?): any {
-    debugger;
     let allAbsDic: Map<string, Task> = new Map<string, Task>();
     for (const ch of this.pers.characteristics) {
       for (const ab of ch.abilities) {
