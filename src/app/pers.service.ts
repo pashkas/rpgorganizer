@@ -100,15 +100,62 @@ export class PersService {
   }
 
   GetRndEnamy(tsk: IImg): string {
-    let lvl = tsk.value / 2.0;
-    if (tsk.requrense == 'нет') {
-      lvl = (this.pers.level / 100.0) * 5.0;
-    }
-    //let lvl = (this.pers.level / 100.0) * 5.0;
-    let floor = Math.floor(lvl);
-    // let left = lvl - floor;
+    // let lvl;
+    // if (tsk.requrense == 'нет') {
+    //   lvl = (this.pers.level / 100.0) * 5.0;
+    // }
+    // else {
+    //   // 0-1
+    //   if (tsk.value <= 1) {
+    //     lvl = 0;
+    //   }
+    //   // 2-3
+    //   else if (tsk.value <= 3) {
+    //     lvl = 1;
+    //   }
+    //   // 4-5
+    //   else if (tsk.value <= 5) {
+    //     lvl = 2;
+    //   }
+    //   // 6-8
+    //   else if (tsk.value <= 8) {
+    //     lvl = 3;
+    //   }
+    //   // 9
+    //   else if (tsk.value <= 9) {
+    //     lvl = 4;
+    //   }
+    //   // 10
+    //   else {
+    //     lvl = 5;
+    //   }
+    // }
+    // //let lvl = (this.pers.level / 100.0) * 5.0;
+    // let floor = Math.floor(lvl);
+    // // let left = lvl - floor;
 
-    let mnstrLvl = floor;
+    //let mnstrLvl = floor;
+
+    let mnstrLvl = 0;
+
+    if (this.pers.level <= 10) {
+      mnstrLvl = 0;
+    }
+    else if (this.pers.level <= 20) {
+      mnstrLvl = 1;
+    }
+    else if (this.pers.level <= 30) {
+      mnstrLvl = 2;
+    }
+    else if (this.pers.level <= 60) {
+      mnstrLvl = 3;
+    }
+    else if (this.pers.level <= 90) {
+      mnstrLvl = 4;
+    }
+    else {
+      mnstrLvl = 5;
+    }
 
     // let rnd = Math.random();
     // if (rnd <= left) {
@@ -1497,9 +1544,10 @@ export class PersService {
         tsk.value += 1;
       }
 
-      tsk.image = this.GetRndEnamy(tsk);
+      this.GetRndEnamy(tsk);
       tsk.states.forEach(st => {
-        st.img = this.GetRndEnamy(tsk);
+        st.value = tsk.value;
+        this.GetRndEnamy(tsk);
       });
 
       if (tsk.value >= 1 && !tsk.isSumStates && tsk.states.length > 0) {
@@ -1776,6 +1824,7 @@ export class PersService {
     stT.date = tsk.date;
     stT.requrense = tsk.requrense;
     stT.value = tsk.value;
+    stT.imageLvl = tsk.imageLvl;
     stT.requrense = tsk.requrense;
 
     //stT.image = tsk.image;

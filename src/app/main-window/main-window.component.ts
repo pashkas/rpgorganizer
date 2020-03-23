@@ -261,11 +261,11 @@ export class MainWindowComponent implements OnInit {
     }
   }
 
-  onImgErr() {
-    let id = this.srv.pers.currentTask.id;
-    this.changeEnamyImageForItem(id);
-    this.srv.savePers(false);
-  }
+  // onImgErr() {
+  //   let id = this.srv.pers.currentTask.id;
+  //   this.changeEnamyImageForItem(id);
+  //   this.srv.savePers(false);
+  // }
 
   onLongPress(e) {
     // e.preventDefault && e.preventDefault();
