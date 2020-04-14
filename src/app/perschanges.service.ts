@@ -103,13 +103,13 @@ export class PerschangesService {
       }
       // Навыки
       else if (changesMap[n].type == 'abil') {
-        if (changesMap[n].abIsOpenBefore != changesMap[n].abIsOpenAfter) {
-          changes.push(
-            new ChangesModel(changesMap[n].name + ' открыт!', 'abil', changesMap[n].before, changesMap[n].after, 0, Ability.maxValue, changesMap[n].img)
-          );
+        // if (changesMap[n].abIsOpenBefore != changesMap[n].abIsOpenAfter) {
+        //   changes.push(
+        //     new ChangesModel(changesMap[n].name + ' открыт!', 'abil', changesMap[n].before, changesMap[n].after, 0, Ability.maxValue, changesMap[n].img)
+        //   );
 
-          abToEdit = n;
-        }
+        //   abToEdit = n;
+        // }
         if (changesMap[n].after != changesMap[n].before) {
           changes.push(
             new ChangesModel(changesMap[n].name, 'abil', changesMap[n].before, changesMap[n].after, 0, Ability.maxValue, changesMap[n].img)
@@ -210,7 +210,7 @@ export class PerschangesService {
         backdropClass: 'backdrop'
       });
 
-      await sleep(5000);
+      await sleep(4000);
 
       dialogRef.close();
       if (abToEdit != null) {

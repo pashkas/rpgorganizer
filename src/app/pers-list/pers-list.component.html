@@ -77,7 +77,7 @@
                           {{ab.name + ' '}}<i><small>{{ab.tasks[0]?.curLvlDescr2}}</small></i>
                         </a>
                         <div fxLayout="row" fxLayoutAlign="space-around" class="text-right align-self-baseline">
-                          <a class="pl-2" (click)="showAbility(ab)" *ngIf="ab.isOpen" [ngClass]="{'text-success' : ab.tasks[0]?.mayUp && ab.tasks[0]?.IsNextLvlSame&& !ab.isNotDoneReqvirements,
+                          <a class="pl-2" (click)="showAbility(ab)" [ngClass]="{'text-success' : ab.tasks[0]?.mayUp && ab.tasks[0]?.IsNextLvlSame&& !ab.isNotDoneReqvirements,
                             'text-danger': ab.isNotDoneReqvirements}">
                             {{ab.rang.name}}
                           </a>
@@ -131,7 +131,7 @@
                               {{ab.name + ' '}}<i><small>{{ab.tasks[0]?.curLvlDescr2}}</small></i>
                             </a>
                             <div fxLayout="row" fxLayoutAlign="space-around" class="text-right align-self-baseline">
-                              <a class="pl-2" (click)="showAbility(ab)" *ngIf="ab.isOpen" [ngClass]="{'text-success' : ab.tasks[0]?.mayUp && ab.tasks[0]?.IsNextLvlSame && !ab.isNotDoneReqvirements,
+                              <a class="pl-2" (click)="showAbility(ab)" [ngClass]="{'text-success' : ab.tasks[0]?.mayUp && ab.tasks[0]?.IsNextLvlSame && !ab.isNotDoneReqvirements,
                                 'text-danger': ab.isNotDoneReqvirements}">
                                 {{ab.rang.name}}
                               </a>

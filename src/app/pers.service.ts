@@ -297,9 +297,9 @@ export class PersService {
       }
 
       // По открытости
-      if (a.isOpen != b.isOpen) {
-        return -(+a.isOpen - +b.isOpen);
-      }
+      // if (a.isOpen != b.isOpen) {
+      //   return -(+a.isOpen - +b.isOpen);
+      // }
 
       // По значению
       if (a.value != b.value) {
@@ -654,7 +654,8 @@ export class PersService {
     // Задачи навыков
     this.pers.characteristics.forEach(cha => {
       cha.abilities.forEach(ab => {
-        if ((ab.value >= 1 || ab.isOpen) && !ab.isNotDoneReqvirements) {
+        // || ab.isOpen
+        if ((ab.value >= 1 ) && !ab.isNotDoneReqvirements) {
           ab.tasks.forEach(tsk => {
             if (tsk.states.length > 0 && tsk.isSumStates) {
               tsk.states.forEach(st => {
@@ -813,7 +814,7 @@ export class PersService {
     let result: number[] = [];
 
     for (let i = 0; i <= Task.maxValue; i++) {
-      let progr = (i + 1) / (Task.maxValue + 1);
+      let progr = (i) / (Task.maxValue);
 
       let val = Math.ceil(progr * (aim));
 
@@ -1272,7 +1273,8 @@ export class PersService {
           }
           else {
             if (this.pers.ON > 0 && tsk.value <= 9 && this.pers.ON >= 1) {
-              if ((tsk.value >= 1 || ab.isOpen) && tsk.statesDescr[Math.floor(tsk.value)] == tsk.statesDescr[Math.floor(tsk.value + 1)]) {
+              // || ab.isOpen
+              if ((tsk.value >= 1 ) && tsk.statesDescr[Math.floor(tsk.value)] == tsk.statesDescr[Math.floor(tsk.value + 1)]) {
                 tsk.IsNextLvlSame = true;
                 ch.HasSameAbLvl = true;
                 ab.HasSameAbLvl = true;
@@ -1532,7 +1534,7 @@ export class PersService {
     for (let i = 0; i < ab.tasks.length; i++) {
       const tsk: Task = ab.tasks[i];
 
-      if (!ab.isOpen) {
+      if (tsk.value < 1) {
         tsk.date = new Date();
         tsk.order = -1;
         tsk.states.forEach(st => {
@@ -1540,9 +1542,17 @@ export class PersService {
         });
         isOpenForEdit = true;
       }
-      else {
+      // if (!ab.isOpen) {
+      //   tsk.date = new Date();
+      //   tsk.order = -1;
+      //   tsk.states.forEach(st => {
+      //     st.order = -1;
+      //   });
+      //   isOpenForEdit = true;
+      // }
+      //else {
         tsk.value += 1;
-      }
+      //}
 
       this.GetRndEnamy(tsk);
       tsk.states.forEach(st => {
@@ -1698,7 +1708,8 @@ export class PersService {
     if (!this.pers.sellectedView || this.pers.sellectedView === "навыки") {
       this.pers.characteristics.forEach(cha => {
         cha.abilities.forEach(ab => {
-          if ((ab.value >= 1 || ab.isOpen) && !ab.isNotDoneReqvirements) {
+          // || ab.isOpen
+          if ((ab.value >= 1 ) && !ab.isNotDoneReqvirements) {
             ab.tasks.forEach(tsk => {
               if (this.checkTask(tsk)) {
                 // Для показа опыта за задачу
@@ -1799,7 +1810,7 @@ export class PersService {
 
   private getTaskChangesExp(task: Task) {
     let chVal = this.baseTaskPoints * this.getWeekKoef(task.requrense, true, task.tskWeekDays);
-    let chValFinaly = chVal * Math.floor(task.value + 1);
+    let chValFinaly = chVal * Math.floor(task.value);
     chValFinaly = Math.ceil(chValFinaly * 10.0) / 10.0;
 
     return chValFinaly;
@@ -1941,14 +1952,14 @@ export class PersService {
     let curV = 0;
     this.pers.characteristics.forEach(cha => {
       cha.abilities.forEach(ab => {
-        if (ab.isOpen) {
-          curV++;
-        }
+        // if (ab.isOpen) {
+        //   curV++;
+        // }
         curV += ab.value;
       });
     });
 
-    const onPerLevel = (totalAbilities * 11.0) / 100.0;
+    const onPerLevel = (totalAbilities * 10.0) / 100.0;
     // Очки навыков
     this.pers.ONPerLevel = Math.ceil(onPerLevel);
     let persLevel = 0;
