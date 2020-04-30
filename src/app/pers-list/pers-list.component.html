@@ -123,7 +123,8 @@
                     <ul class="list-group py-0" *ngIf="item.abilities.length>0">
                       <li *ngFor="let ab of item.abilities" class="list-group-item py-0 mt-1 mb-0 pr-0 pl-0 border-0">
                         <div class="d-flex align-items-baseline w-100">
-                          <div class="w-100 d-flex text-primary">
+                          <div class="w-100 d-flex" [ngClass]="{'text-primary': !ab.isNotChanged
+                        }">
                             <!-- [routerLink]="['/ability', ab.id]" -->
                             <a (click)="showAbility(ab)" [ngClass]="{'text-success' : ab.tasks[0]?.mayUp && ab.tasks[0]?.IsNextLvlSame && !ab.isNotDoneReqvirements,
                             'text-danger': ab.isNotDoneReqvirements}"
@@ -275,6 +276,16 @@
             </div>
           </ng-container>
 
+          <div>
+            <mat-slide-toggle class="example-margin" [(ngModel)]="this.srv.pers.isOneLevOneCrist">
+              Один уровень - один кристалл
+            </mat-slide-toggle>
+          </div>
+          <div>
+            <mat-slide-toggle class="example-margin" [(ngModel)]="this.srv.pers.isEra">
+              Эра Водолея
+            </mat-slide-toggle>
+          </div>
           <div>
             <mat-slide-toggle class="example-margin" [(ngModel)]="this.srv.pers.isNoAbs">
               Без характеристик

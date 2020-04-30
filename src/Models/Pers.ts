@@ -37,8 +37,25 @@ export class Pers {
     static epicRevSet: revSetting = { name: 'Эпический', probability: 100, cumulative: 17.41935484 };
     static legendaryRevSet: revSetting = { name: 'Легендарный', probability: 100, cumulative: 18 };
 
+    /**
+     * Без навыков - только характеристики.
+     */
     isNoAbs: Boolean = false;
+
+    /**
+     * Без дневника.
+     */
     isNoDiary: Boolean = false;
+
+    /**
+     * Один уровень - один кристалл.
+     */
+    isOneLevOneCrist = false;
+
+    /**
+     * Все как в эре водолея.
+     */
+    isEra = false;
 
     Monsters0Queue: number;
     Monsters1Queue: number;

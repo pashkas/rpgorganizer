@@ -655,7 +655,7 @@ export class PersService {
     this.pers.characteristics.forEach(cha => {
       cha.abilities.forEach(ab => {
         // || ab.isOpen
-        if ((ab.value >= 1 ) && !ab.isNotDoneReqvirements) {
+        if ((ab.value >= 1) && !ab.isNotDoneReqvirements) {
           ab.tasks.forEach(tsk => {
             if (tsk.states.length > 0 && tsk.isSumStates) {
               tsk.states.forEach(st => {
@@ -910,7 +910,7 @@ export class PersService {
    * @param requrense Повтор задачи.
    */
   getWeekKoef(requrense: string, isPlus: boolean, weekDays: string[]): number {
-    let base = 7.0;
+    let base = 5.0;
 
     if (requrense === 'будни') {
       return base / 5.0;
@@ -919,7 +919,7 @@ export class PersService {
       return base / 2.0;
     }
     if (requrense === 'ежедневно') {
-      return base / 7.0;
+      return base / 5.0;
     }
     if (requrense === 'пн,ср,пт') {
       return base / 3.0;
@@ -931,10 +931,10 @@ export class PersService {
       return base / 4.0;
     }
     if (requrense === 'не суббота') {
-      return base / 6.0;
+      return base / 5.0;
     }
     if (requrense === 'не воскресенье') {
-      return base / 6.0;
+      return base / 5.0;
     }
     if (requrense === 'дни недели') {
       return base / weekDays.length;
@@ -1256,8 +1256,20 @@ export class PersService {
       ch.HasSameAbLvl = false;
       for (const ab of ch.abilities) {
         ab.HasSameAbLvl = false;
+        ab.isNotChanged = false;
         ab.isNotDoneReqvirements = false;
         for (const tsk of ab.tasks) {
+          // Что навык настроен
+          if (
+            tsk.value < 1
+            && tsk.requrense == 'будни'
+            && tsk.aimCounter == 0
+            && tsk.aimTimer == 0
+            && tsk.states.length == 0
+          ) {
+            ab.isNotChanged = true;
+          }
+
           // Требования
           if (!tsk.reqvirements) {
             tsk.reqvirements = [];
@@ -1272,23 +1284,27 @@ export class PersService {
             ab.isNotDoneReqvirements = true;
           }
           else {
-            if (this.pers.ON > 0 && tsk.value <= 9 && this.pers.ON >= 1) {
-              // || ab.isOpen
-              if ((tsk.value >= 1 ) && tsk.statesDescr[Math.floor(tsk.value)] == tsk.statesDescr[Math.floor(tsk.value + 1)]) {
-                tsk.IsNextLvlSame = true;
-                ch.HasSameAbLvl = true;
-                ab.HasSameAbLvl = true;
-                this.pers.HasSameAbLvl = true;
-              }
-              else {
-                tsk.IsNextLvlSame = false;
-              }
+            let cost = 1;
 
+            if (this.pers.isEra) {
+              cost = tsk.value + 1;
+            }
+
+            if ((tsk.value >= 1) && tsk.statesDescr[Math.floor(tsk.value)] == tsk.statesDescr[Math.floor(tsk.value + 1)]) {
+              tsk.IsNextLvlSame = true;
+              ch.HasSameAbLvl = true;
+              ab.HasSameAbLvl = true;
+              this.pers.HasSameAbLvl = true;
+            }
+            else {
+              tsk.IsNextLvlSame = false;
+            }
+
+            if (this.pers.ON > 0 && tsk.value <= 9 && this.pers.ON >= cost) {
               tsk.mayUp = true;
               this.pers.IsAbUp = true;
             } else {
               tsk.IsNextLvlSame = false;
-              tsk.mayUp = false;
             }
           }
         }
@@ -1551,7 +1567,7 @@ export class PersService {
       //   isOpenForEdit = true;
       // }
       //else {
-        tsk.value += 1;
+      tsk.value += 1;
       //}
 
       this.GetRndEnamy(tsk);
@@ -1560,12 +1576,18 @@ export class PersService {
         this.GetRndEnamy(tsk);
       });
 
-      if (tsk.value >= 1 && !tsk.isSumStates && tsk.states.length > 0) {
-        let nms: number[] = this.getSet(tsk, tsk.states.length);
-        let index = nms[Math.floor(tsk.value)] - 1;
-        let prevIdx = nms[Math.floor(tsk.value - 1)] - 1;
+      if (tsk.value >= 2 && !tsk.isSumStates && tsk.states.length > 0) {
+        try {
+          let nms: number[] = this.getSet(tsk, tsk.states.length);
+          let index = nms[Math.floor(tsk.value)] - 1;
+          let prevIdx = nms[Math.floor(tsk.value - 1)] - 1;
 
-        tsk.states[index].order = tsk.states[prevIdx].order;
+          if (prevIdx >= 0) {
+            tsk.states[index].order = tsk.states[prevIdx].order;
+          }
+        } catch (error) {
+
+        }
       }
     }
 
@@ -1576,9 +1598,9 @@ export class PersService {
     this.savePers(true, 'plus');
 
     // Переходим в настройку навыка, если это первый уровень
-    if (isOpenForEdit) {
-      this.showAbility(ab);
-    }
+    // if (isOpenForEdit) {
+    //   this.showAbility(ab);
+    // }
   }
 
   /**
@@ -1709,7 +1731,7 @@ export class PersService {
       this.pers.characteristics.forEach(cha => {
         cha.abilities.forEach(ab => {
           // || ab.isOpen
-          if ((ab.value >= 1 ) && !ab.isNotDoneReqvirements) {
+          if ((ab.value >= 1) && !ab.isNotDoneReqvirements) {
             ab.tasks.forEach(tsk => {
               if (this.checkTask(tsk)) {
                 // Для показа опыта за задачу
@@ -1810,7 +1832,14 @@ export class PersService {
 
   private getTaskChangesExp(task: Task) {
     let chVal = this.baseTaskPoints * this.getWeekKoef(task.requrense, true, task.tskWeekDays);
-    let chValFinaly = chVal * Math.floor(task.value);
+
+    let taskStreang = task.value;
+    if (this.pers.isEra) {
+      taskStreang = (task.value * (task.value + 1)) / 2.0;
+    }
+
+    let chValFinaly = chVal * Math.floor(taskStreang);
+
     chValFinaly = Math.ceil(chValFinaly * 10.0) / 10.0;
 
     return chValFinaly;
@@ -1952,29 +1981,51 @@ export class PersService {
     let curV = 0;
     this.pers.characteristics.forEach(cha => {
       cha.abilities.forEach(ab => {
-        // if (ab.isOpen) {
-        //   curV++;
-        // }
-        curV += ab.value;
+        if (this.pers.isEra) {
+          curV += (ab.value * (ab.value + 1)) / 2;
+        }
+        else {
+          curV += ab.value;
+        }
       });
     });
 
-    const onPerLevel = (totalAbilities * 10.0) / 100.0;
+    let onPerLevel = (totalAbilities * 10.0) / 100.0;
+    if (this.pers.isOneLevOneCrist) {
+      onPerLevel = 1;
+    }
+    if (this.pers.isEra) {
+      onPerLevel = 5;
+    }
+
     // Очки навыков
     this.pers.ONPerLevel = Math.ceil(onPerLevel);
     let persLevel = 0;
     let exp: number = 0;
     let startExp = 0;
     let nextExp = 0;
+    let startON = 0;
 
     for (let i = 1; i < Pers.maxLevel; i++) {
       startExp = exp;
-      const ceilOn = Math.ceil(i * onPerLevel);
-      exp += Math.ceil((ceilOn * (1 + (i - 1) * 0.05)) * 10.0) / 10.0;
+      const ceilOn = Math.ceil(i * onPerLevel) + startON;
+
+      let noLinear = (1 + (i - 1) * 0.05);
+
+      if (this.pers.isOneLevOneCrist) {
+        noLinear = 1;
+      }
+      if (this.pers.isEra) {
+        noLinear = 1;
+      }
+
+      exp += Math.ceil((ceilOn * noLinear) * 10.0) / 10.0;
+
       nextExp = exp;
 
       if (exp > this.pers.exp) {
         persLevel = i - 1;
+
         break;
       }
     }
@@ -1991,7 +2042,7 @@ export class PersService {
 
     this.pers.progressValue = progr * 100.0;
 
-    let ons = Math.ceil(((this.pers.level + 1) * onPerLevel) - curV);
+    let ons = Math.ceil(((this.pers.level + 1) * onPerLevel) - curV) + startON;
 
     if (ons < 0) {
       ons = 0;
