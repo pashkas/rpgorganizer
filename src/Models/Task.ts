@@ -67,6 +67,8 @@ export class Task implements IImg {
     imageLvl: string = '0';
     IsNextLvlSame: boolean;
     mayUp: boolean;
+    cost: number;
+    nextUp: number;
 
     /**
      * Получить формулу для роста/понижения значения задачи.

@@ -1287,8 +1287,30 @@ export class PersService {
             let cost = 1;
 
             if (this.pers.isEra) {
-              cost = tsk.value + 1;
+              //cost = tsk.value + 1;
+              cost = 0;
+
+              let cur = tsk.value;
+              let next = tsk.value;
+
+              while (true) {
+                next++;
+                let prev = next - 1;
+
+                if (prev != tsk.value && tsk.statesDescr[prev] != tsk.statesDescr[next]) {
+                  break;
+                }
+                if (next > 10) {
+                  break;
+                }
+
+                cost += next;
+              }
+
+              tsk.nextUp = next-1;
             }
+
+            tsk.cost = cost;
 
             if ((tsk.value >= 1) && tsk.statesDescr[Math.floor(tsk.value)] == tsk.statesDescr[Math.floor(tsk.value + 1)]) {
               tsk.IsNextLvlSame = true;
@@ -1567,8 +1589,14 @@ export class PersService {
       //   isOpenForEdit = true;
       // }
       //else {
-      tsk.value += 1;
       //}
+
+      if (!this.pers.isEra) {
+        tsk.value += 1;
+      }
+      else {
+        tsk.value = tsk.nextUp;
+      }
 
       this.GetRndEnamy(tsk);
       tsk.states.forEach(st => {
@@ -1995,7 +2023,9 @@ export class PersService {
       onPerLevel = 1;
     }
     if (this.pers.isEra) {
-      onPerLevel = 5;
+      // onPerLevel = 5;
+      onPerLevel = (totalAbilities * 55.0) / 100.0;
+      //onPerLevel=100;
     }
 
     // Очки навыков
@@ -2016,7 +2046,8 @@ export class PersService {
         noLinear = 1;
       }
       if (this.pers.isEra) {
-        noLinear = 1;
+        //noLinear = 1;
+        noLinear = onPerLevel / 5.0;
       }
 
       exp += Math.ceil((ceilOn * noLinear) * 10.0) / 10.0;

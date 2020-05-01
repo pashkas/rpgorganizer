@@ -30,6 +30,7 @@ import { ReqEditComponent } from '../reqvirements/req-edit/req-edit.component';
 import { ReqAddComponent } from './req-add/req-add.component';
 import {MatSlideToggleModule} from '@angular/material/slide-toggle';
 import { ChangeCharactComponent } from './change-charact/change-charact.component';
+import {MatBadgeModule} from '@angular/material/badge';
 
 @NgModule({
   declarations: [
@@ -55,6 +56,7 @@ import { ChangeCharactComponent } from './change-charact/change-charact.componen
     ChangeCharactComponent
   ],
   imports: [
+    MatBadgeModule,
     MatSlideToggleModule,
     SharedModule,
     MatSelectModule,
