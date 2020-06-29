@@ -31,11 +31,11 @@ export class Pers {
         "ХРЕНЬ", "МАЗАФАКА", "Ну вот...", "Минус", "Капец", "Чудовищно", "Ужасно", "Пипец"
     ];
 
-    static commonRevSet: revSetting = { name: 'Обычный', probability: 100, cumulative: 9.290322581 };
-    static uncommonRevSet: revSetting = { name: 'Необычный', probability: 50, cumulative: 13.93548387 };
-    static rareRevSet: revSetting = { name: 'Редкий', probability: 100, cumulative: 16.25806452 };
-    static epicRevSet: revSetting = { name: 'Эпический', probability: 100, cumulative: 17.41935484 };
-    static legendaryRevSet: revSetting = { name: 'Легендарный', probability: 100, cumulative: 18 };
+    static commonRevSet: revSetting = { name: 'Обычный', probability: 100, cumulative: 6 };
+    static uncommonRevSet: revSetting = { name: 'Необычный', probability: 100, cumulative: 10 };
+    static rareRevSet: revSetting = { name: 'Редкий', probability: 100, cumulative: 12 };
+    static epicRevSet: revSetting = { name: 'Эпический', probability: 100, cumulative: 13 };
+    static legendaryRevSet: revSetting = { name: 'Легендарный', probability: 100, cumulative: 13.5 };
 
     /**
      * Без навыков - только характеристики.
@@ -56,6 +56,16 @@ export class Pers {
      * Все как в эре водолея.
      */
     isEra = false;
+
+    /**
+     * Макc 5 уровень аттрибутов.
+     */
+    isMax5 = false;
+
+    /**
+     * Максимальный уровень аттрибутов.
+     */
+    maxAttrLevel: number = 10;
 
     Monsters0Queue: number;
     Monsters1Queue: number;

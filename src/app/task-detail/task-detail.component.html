@@ -18,9 +18,9 @@
 <div class="container pt-2 pb-4" *ngIf="this.srv.pers && tsk && !isEditMode">
   <form class="pb-4">
     <hr *ngIf="!tskAbility">
-    <div *ngIf="tskAbility && tskAbility?.image" fxLayout="row" fxLayoutAlign="center center" class="p-2">
+    <!-- <div *ngIf="tskAbility && tskAbility?.image" fxLayout="row" fxLayoutAlign="center center" class="p-2">
       <img src="{{tskAbility.image}}" class="img-fluid" [ngStyle]="{'object-fit': 'contain', 'height': '25vh'}">
-    </div>
+    </div> -->
     <h4 class="text-center">
       {{tsk.name}}
     </h4>
@@ -54,7 +54,7 @@
       </i>
     </div>
 
-    <app-req-show *ngIf="tskAbility" [reqvirements]="tsk.reqvirements"></app-req-show>
+    <!-- <app-req-show *ngIf="tskAbility" [reqvirements]="tsk.reqvirements"></app-req-show> -->
 
     <!-- Действия -->
     <div fxLayout="row" fxLayoutAlign="space-between center" *ngIf="tsk.requrense != 'нет' && tsk.mayUp"
@@ -249,8 +249,8 @@
       </div>
     </mat-list>
 
-    <app-req-edit *ngIf="tskAbility" [reqvirements]="tsk.reqvirements" (reqvirementsChange)="tsk.reqvirements=$event">
-    </app-req-edit>
+    <!-- <app-req-edit *ngIf="tskAbility" [reqvirements]="tsk.reqvirements" (reqvirementsChange)="tsk.reqvirements=$event">
+    </app-req-edit> -->
 
   </form>
   <br>

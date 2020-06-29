@@ -97,7 +97,7 @@ export class PerschangesService {
       else if (changesMap[n].type == 'cha') {
         if (changesMap[n].after != changesMap[n].before) {
           changes.push(
-            new ChangesModel(changesMap[n].name, 'cha', changesMap[n].before, changesMap[n].after, 0, Characteristic.maxValue, changesMap[n].img)
+            new ChangesModel(changesMap[n].name, 'cha', changesMap[n].before, changesMap[n].after, 0, this.afterPers.maxAttrLevel, changesMap[n].img)
           );
         }
       }
@@ -112,7 +112,7 @@ export class PerschangesService {
         // }
         if (changesMap[n].after != changesMap[n].before) {
           changes.push(
-            new ChangesModel(changesMap[n].name, 'abil', changesMap[n].before, changesMap[n].after, 0, Ability.maxValue, changesMap[n].img)
+            new ChangesModel(changesMap[n].name, 'abil', changesMap[n].before, changesMap[n].after, 0, this.afterPers.maxAttrLevel, changesMap[n].img)
           );
         }
         // Прогрес в стейтах
@@ -210,7 +210,7 @@ export class PerschangesService {
         backdropClass: 'backdrop'
       });
 
-      await sleep(4000);
+      await sleep(3000);
 
       dialogRef.close();
       if (abToEdit != null) {
@@ -224,7 +224,7 @@ export class PerschangesService {
         backdropClass: 'backdrop'
       });
 
-      await sleep(6000);
+      await sleep(5000);
 
       dialogRefLvlUp.close();
 

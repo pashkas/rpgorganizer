@@ -138,19 +138,19 @@ export class PersService {
 
     let mnstrLvl = 0;
 
-    if (this.pers.level <= 10) {
+    if (this.pers.level < 10) {
       mnstrLvl = 0;
     }
-    else if (this.pers.level <= 20) {
+    else if (this.pers.level < 20) {
       mnstrLvl = 1;
     }
-    else if (this.pers.level <= 30) {
+    else if (this.pers.level < 30) {
       mnstrLvl = 2;
     }
-    else if (this.pers.level <= 60) {
+    else if (this.pers.level < 60) {
       mnstrLvl = 3;
     }
-    else if (this.pers.level <= 90) {
+    else if (this.pers.level < 90) {
       mnstrLvl = 4;
     }
     else {
@@ -813,8 +813,8 @@ export class PersService {
   getSet(tsk: Task, aim: number): number[] {
     let result: number[] = [];
 
-    for (let i = 0; i <= Task.maxValue; i++) {
-      let progr = (i) / (Task.maxValue);
+    for (let i = 0; i <= this.pers.maxAttrLevel; i++) {
+      let progr = (i) / (this.pers.maxAttrLevel);
 
       let val = Math.ceil(progr * (aim));
 
@@ -896,7 +896,7 @@ export class PersService {
   }
 
   getTskValForState(value: number, maxValue: number) {
-    let progres = (Math.floor(value)) / (+Task.maxValue);
+    let progres = (Math.floor(value)) / (+this.pers.maxAttrLevel);
     let ret = Math.floor(progres * maxValue);
     if (ret < 1) {
       ret = 1;
@@ -1017,6 +1017,14 @@ export class PersService {
    * Записать персонажа в БД.
    */
   savePers(isShowNotif: boolean, plusOrMinus?): any {
+    debugger;
+    if (this.pers.isMax5) {
+      this.pers.maxAttrLevel = 5;
+    }
+    else {
+      this.pers.maxAttrLevel = 10;
+    }
+
     let allAbsDic: Map<string, Task> = new Map<string, Task>();
     for (const ch of this.pers.characteristics) {
       for (const ab of ch.abilities) {
@@ -1047,7 +1055,7 @@ export class PersService {
         // Если задач нет - все равно учитываем
         if (ab.tasks.length == 0) {
           skillCur += 0;
-          skillMax += Task.maxValue;
+          skillMax += this.pers.maxAttrLevel;
         }
 
         ab.tasks.forEach(tsk => {
@@ -1063,8 +1071,8 @@ export class PersService {
           this.setTaskValueAndProgress(tsk);
           this.setTaskTittle(tsk);
           this.CheckSetTaskDate(tsk);
-          tskMax += Task.maxValue;
-          tskCur += tsk.value <= Task.maxValue ? tsk.value : Task.maxValue;
+          tskMax += this.pers.maxAttrLevel;
+          tskCur += tsk.value <= this.pers.maxAttrLevel ? tsk.value : this.pers.maxAttrLevel;
 
           let koef = tsk.isHard ? 2.0 : 1.0;
 
@@ -1075,14 +1083,14 @@ export class PersService {
             skillCur += tsk.value * koef;
           }
 
-          skillMax += Task.maxValue * koef;
+          skillMax += this.pers.maxAttrLevel * koef;
         });
 
         this.setAbValueAndProgress(ab, tskCur, tskMax);
         this.setAbRang(ab);
 
-        abMax += Ability.maxValue;
-        abMaxTotal += Ability.maxValue;
+        abMax += this.pers.maxAttrLevel;
+        abMaxTotal += this.pers.maxAttrLevel;
         if (Pers.GameSettings.isTesExp) {
           abCur += Math.floor(ab.value);
           abCurTotal += Math.floor(ab.value);
@@ -1094,7 +1102,7 @@ export class PersService {
       });
 
       let start = cha.startRang.val;
-      let max = Characteristic.maxValue;
+      let max = this.pers.maxAttrLevel;
       let left = max - start;
 
       if (!this.pers.isNoAbs) {
@@ -1107,7 +1115,7 @@ export class PersService {
       this.countToatalRewProb();
       this.countRewProbCumulative();
 
-      chaMax += Characteristic.maxValue - start;
+      chaMax += this.pers.maxAttrLevel - start;
       chaCur += cha.value - start;
     });
 
@@ -1286,7 +1294,7 @@ export class PersService {
           else {
             let cost = 1;
 
-            if (this.pers.isEra) {
+            if (true) {
               //cost = tsk.value + 1;
               cost = 0;
 
@@ -1295,7 +1303,9 @@ export class PersService {
 
               while (true) {
                 next++;
-                let prev = next - 1;
+                let prev;
+
+                prev = next - 1;
 
                 if (prev != tsk.value && tsk.statesDescr[prev] != tsk.statesDescr[next]) {
                   break;
@@ -1304,10 +1314,16 @@ export class PersService {
                   break;
                 }
 
-                cost += next;
+                if (this.pers.isEra) {
+                  cost += next;
+                }
+                else {
+                  cost += 1;
+                }
+
               }
 
-              tsk.nextUp = next-1;
+              tsk.nextUp = next - 1;
             }
 
             tsk.cost = cost;
@@ -1322,11 +1338,16 @@ export class PersService {
               tsk.IsNextLvlSame = false;
             }
 
-            if (this.pers.ON > 0 && tsk.value <= 9 && this.pers.ON >= cost) {
+            if (!this.pers.isEra) {
+              cost = 1;
+            }
+
+            if (this.pers.ON > 0 && tsk.value <= this.pers.maxAttrLevel - 1 && this.pers.ON >= cost) {
               tsk.mayUp = true;
               this.pers.IsAbUp = true;
             } else {
               tsk.IsNextLvlSame = false;
+              tsk.mayUp = false;
             }
           }
         }
@@ -1580,16 +1601,14 @@ export class PersService {
         });
         isOpenForEdit = true;
       }
-      // if (!ab.isOpen) {
-      //   tsk.date = new Date();
-      //   tsk.order = -1;
-      //   tsk.states.forEach(st => {
-      //     st.order = -1;
-      //   });
-      //   isOpenForEdit = true;
-      // }
-      //else {
-      //}
+      if (!ab.isOpen) {
+        tsk.date = new Date();
+        tsk.order = -1;
+        tsk.states.forEach(st => {
+          st.order = -1;
+        });
+        isOpenForEdit = true;
+      }
 
       if (!this.pers.isEra) {
         tsk.value += 1;
@@ -1626,9 +1645,9 @@ export class PersService {
     this.savePers(true, 'plus');
 
     // Переходим в настройку навыка, если это первый уровень
-    // if (isOpenForEdit) {
-    //   this.showAbility(ab);
-    // }
+    if (isOpenForEdit) {
+      this.showAbility(ab);
+    }
   }
 
   /**
@@ -1936,11 +1955,11 @@ export class PersService {
       if (tskProgr > 1) {
         tskProgr = 1;
       }
-      ab.value = Ability.maxValue * (tskProgr);
+      ab.value = this.pers.maxAttrLevel * (tskProgr);
     }
 
-    if (ab.value > Ability.maxValue) {
-      ab.value = Ability.maxValue;
+    if (ab.value > this.pers.maxAttrLevel) {
+      ab.value = this.pers.maxAttrLevel;
     }
 
     if (ab.value < 0) {
@@ -1951,7 +1970,7 @@ export class PersService {
     let abCellValue = Math.floor(ab.value);
     // let abProgress = ab.value - abCellValue;
     // ab.progressValue = abProgress * 100;
-    ab.progressValue = (abCellValue / Ability.maxValue) * 100;
+    ab.progressValue = (abCellValue / this.pers.maxAttrLevel) * 100;
   }
 
   private setChaRang(cha: Characteristic) {
@@ -1973,8 +1992,8 @@ export class PersService {
     }
 
     cha.value = start + (left * progr);
-    if (cha.value > Characteristic.maxValue) {
-      cha.value = Characteristic.maxValue;
+    if (cha.value > this.pers.maxAttrLevel) {
+      cha.value = this.pers.maxAttrLevel;
     }
     if (cha.value < 0) {
       cha.value = 0;
@@ -1983,7 +2002,7 @@ export class PersService {
     let chaCellValue = Math.floor(cha.value);
     // let chaProgress = (cha.value - chaCellValue) / 1.0;
     // cha.progressValue = chaProgress * 100;
-    cha.progressValue = (chaCellValue / Characteristic.maxValue) * 100;
+    cha.progressValue = (chaCellValue / this.pers.maxAttrLevel) * 100;
   }
 
   private setCurPersTask() {
@@ -2018,14 +2037,25 @@ export class PersService {
       });
     });
 
-    let onPerLevel = (totalAbilities * 10.0) / 100.0;
+    let onPerLevel;
+
+    if (this.pers.isMax5) {
+      onPerLevel = (totalAbilities * 5.0) / 100.0;
+    }
+    else {
+      onPerLevel = (totalAbilities * 10.0) / 100.0;
+    }
     if (this.pers.isOneLevOneCrist) {
       onPerLevel = 1;
     }
+
     if (this.pers.isEra) {
-      // onPerLevel = 5;
-      onPerLevel = (totalAbilities * 55.0) / 100.0;
-      //onPerLevel=100;
+      if (this.pers.isMax5) {
+        onPerLevel = (totalAbilities * 15.0) / 100.0;
+      }
+      else {
+        onPerLevel = (totalAbilities * 55.0) / 100.0;
+      }
     }
 
     // Очки навыков
@@ -2047,7 +2077,8 @@ export class PersService {
       }
       if (this.pers.isEra) {
         //noLinear = 1;
-        noLinear = onPerLevel / 5.0;
+        //noLinear = onPerLevel / 5.0;
+        noLinear = 2;
       }
 
       exp += Math.ceil((ceilOn * noLinear) * 10.0) / 10.0;
@@ -2235,7 +2266,7 @@ export class PersService {
     else {
       tsk.statesDescr = [];
 
-      for (let i = 0; i <= Task.maxValue; i++) {
+      for (let i = 0; i <= this.pers.maxAttrLevel; i++) {
         tsk.statesDescr.push('');
       }
 
@@ -2251,14 +2282,14 @@ export class PersService {
   }
 
   private setTaskValueAndProgress(tsk: Task) {
-    if (tsk.value > Task.maxValue + 0.99) {
-      tsk.value = Task.maxValue + 0.99;
+    if (tsk.value > this.pers.maxAttrLevel + 0.99) {
+      tsk.value = this.pers.maxAttrLevel + 0.99;
     }
     if (tsk.value < 0) {
       tsk.value = 0;
     }
     // Прогресс задачи
-    let tskProgress = tsk.value / Task.maxValue;
+    let tskProgress = tsk.value / this.pers.maxAttrLevel;
     if (tskProgress > 1) {
       tskProgress = 1;
     }

@@ -64,11 +64,10 @@
     <!-- (error)="ReImages()" -->
     <div class="container">
       <img (press)="onLongPress($event)" (contextmenu)="$event.preventDefault()"
-      (swipeup)="done(this.srv.pers.currentTask)" (swipedown)="fail(this.srv.pers.currentTask)"
-      (swiperight)="onSwipeLeft($event)" (swipeleft)="onSwipeRight($event)"
-      class="rounded element img-fluid pt-1 pb-0 px-1 mh-100 w-100" [ngStyle]="{'object-fit': 'contain'}"
-      src="{{'assets/img/'+ this.srv.pers.currentTask.imageLvl + '/' + this.srv.pers.currentTask.image + '.jpg'}}"
-      >
+        (swipeup)="done(this.srv.pers.currentTask)" (swipedown)="fail(this.srv.pers.currentTask)"
+        (swiperight)="onSwipeLeft($event)" (swipeleft)="onSwipeRight($event)"
+        class="rounded element img-fluid pt-1 pb-0 px-1 mh-100 w-100" [ngStyle]="{'object-fit': 'contain'}"
+        src="{{'assets/img/'+ this.srv.pers.currentTask.imageLvl + '/' + this.srv.pers.currentTask.image + '.jpg'}}">
     </div>
     <!-- (error)="onImgErr()" -->
 
@@ -88,7 +87,8 @@
         </h4>
       </a>
 
-      <small class="text-center" *ngIf="this.srv.pers.currentTask.plusToNames&&this.srv.pers.currentTask.plusToNames.length>0;">
+      <small class="text-center"
+        *ngIf="this.srv.pers.currentTask.plusToNames&&this.srv.pers.currentTask.plusToNames.length>0;">
         <ng-container *ngFor="let pl of this.srv.pers.currentTask.plusToNames; let i=index;">
           <ng-container *ngIf="i>0"> | </ng-container>
           <ng-container *ngIf="pl.linkName; else elseTemplate">
@@ -113,18 +113,21 @@
       <p [ngStyle]="{'font-size': 'small'}"
         class="align-self-center justify-content-center d-flex position-absolute w-100">
         <!-- {{srv.pers.name}} ({{srv.pers.rang.name | lowercase}}) -->
-        {{srv.pers.name+', уровень ' + srv.pers.level+''}}:{{' '+(srv.pers.exp * 10.0 | number : '1.0-0')+'/'+(srv.pers.nextExp * 10.0 | number : '1.0-0')}}
+        <!-- {{srv.pers.name+', уровень ' + srv.pers.level+''}}:{{' '+(srv.pers.exp * 10.0 | number : '1.0-0')+'/'+(srv.pers.nextExp * 10.0 | number : '1.0-0')}} -->
+        {{srv.pers.name+', уровень ' + srv.pers.level+''}}:{{' '+((srv.pers.exp - srv.pers.prevExp) * 10.0 | number : '1.0-0')+'/'+((srv.pers.nextExp- srv.pers.prevExp) * 10.0 | number : '1.0-0')}}
       </p>
     </div>
   </div>
   <div fxLayout="row" fxLayoutAlign="space-between center" class="w-100 h-100 py-1" style="min-height: 120px;">
 
-    <button (press)="editDiaryItem()" (contextmenu)="$event.preventDefault()" class="h-100 w-100 px-1 py-0 text-left" mat-button routerLink="/pers" (click)="openPersList()">
-      <img (contextmenu)="$event.preventDefault()" src="{{srv.pers.image}}" class="img-fluid h-100 rounded" [ngStyle]="{'object-fit': 'contain'}">
+    <button (press)="editDiaryItem()" (contextmenu)="$event.preventDefault()" class="h-100 w-100 px-1 py-0 text-left"
+      mat-button routerLink="/pers" (click)="openPersList()">
+      <img (contextmenu)="$event.preventDefault()" src="{{srv.pers.image}}" class="img-fluid h-100 rounded"
+        [ngStyle]="{'object-fit': 'contain'}">
     </button>
     <!-- Кнопки -->
     <div fxLayout="row" fxLayoutAlign="end center" fxLayoutGap="0.3em" class="w-100 h-100 px-2">
-      
+
       <!-- <button (click)="tmp()">
         tmp
       </button> -->
