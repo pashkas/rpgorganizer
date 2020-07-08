@@ -63,6 +63,11 @@ export class Pers {
     isMax5 = false;
 
     /**
+     * The Elder Scrolls Mode
+     */
+    isTES = false;
+
+    /**
      * Максимальный уровень аттрибутов.
      */
     maxAttrLevel: number = 10;

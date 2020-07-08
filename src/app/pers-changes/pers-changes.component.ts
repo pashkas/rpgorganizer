@@ -3,6 +3,7 @@ import { MAT_SNACK_BAR_DATA } from '@angular/material/snack-bar';
 import { MAT_DIALOG_DATA } from '@angular/material';
 import { ChangesModel } from 'src/Models/ChangesModel';
 import { AnimationBuilder, style, animate } from '@angular/animations';
+import { PersService } from '../pers.service';
 
 @Component({
   selector: 'app-pers-changes',
@@ -18,7 +19,7 @@ export class PersChangesComponent implements OnInit {
   slidingDoorValue: string = 'out';
   abPoints: any;
 
-  constructor(@Inject(MAT_DIALOG_DATA) public data: any) {
+  constructor(@Inject(MAT_DIALOG_DATA) public data: any, private srv: PersService) {
     this.headText = data.headText;
     this.changes = data.changes;
     this.changes.forEach(element => {
@@ -26,6 +27,9 @@ export class PersChangesComponent implements OnInit {
     });
     this.isGood = data.isGood;
     this.abPoints = data.abPoints;
+    if (this.srv.pers.isTES) {
+      this.abPoints = null;
+    }
   }
 
   ngOnInit() {

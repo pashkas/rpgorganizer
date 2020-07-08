@@ -57,8 +57,8 @@
     <!-- <app-req-show *ngIf="tskAbility" [reqvirements]="tsk.reqvirements"></app-req-show> -->
 
     <!-- Действия -->
-    <div fxLayout="row" fxLayoutAlign="space-between center" *ngIf="tsk.requrense != 'нет' && tsk.mayUp"
-      class="py-2 text-center">
+    <div fxLayout="row" fxLayoutAlign="space-between center"
+      *ngIf="tsk.requrense != 'нет' && tsk.mayUp && !this.srv.pers.isTES" class="py-2 text-center">
       <span style="visibility: hidden;">
         <img src="assets/icons/diamond.png" class="img-fluid" [ngStyle]="{'object-fit': 'contain', 'height':'1.5em'}">
         <span>
@@ -112,7 +112,8 @@
       </mat-list>
     </ng-container>
     <ng-container *ngFor="let st of tsk.statesDescr; let i = index;">
-      <div class="text-center px-0 py-1 border-0" [ngClass]="{'bg-success': i==tsk.value && tskAbility.isOpen}">
+      <div *ngIf="i!=0||!this.srv.pers.isTES" class="text-center px-0 py-1 border-0"
+        [ngClass]="{'bg-success': i==tsk.roundVal && tskAbility.isOpen}">
         <b>{{i}}<ng-container *ngIf="st">: </ng-container></b>{{st}}
       </div>
     </ng-container>
@@ -132,10 +133,11 @@
       <mat-form-field>
         <input matInput autocomplete="off" placeholder="Название" [(ngModel)]="tsk.name" name="tsk.name">
       </mat-form-field>
-     
+
     </div>
     <mat-form-field *ngIf="tskCharact">
-      <input class="pointer" (click)="changeCharact()" matInput readonly placeholder="Характеристика" name="tsk.charact" value="{{tskCharact.name}}">
+      <input class="pointer" (click)="changeCharact()" matInput readonly placeholder="Характеристика" name="tsk.charact"
+        value="{{tskCharact.name}}">
     </mat-form-field>
     <mat-form-field *ngIf="tskAbility">
       <input matInput autocomplete="off" placeholder="Изображение" [(ngModel)]="tskAbility.image"

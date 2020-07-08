@@ -69,6 +69,8 @@ export class Task implements IImg {
     mayUp: boolean;
     cost: number;
     nextUp: number;
+    tesValue: number;
+    roundVal: number;
 
     /**
      * Получить формулу для роста/понижения значения задачи.

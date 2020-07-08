@@ -73,7 +73,6 @@ export class CharacteristicDetailsComponent implements OnInit {
       rng.img = '';
       rng.name = '' + index;
       this.rangse.push(rng);
-
     }
 
 

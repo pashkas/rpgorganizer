@@ -111,8 +111,13 @@ export class PerschangesService {
         //   abToEdit = n;
         // }
         if (changesMap[n].after != changesMap[n].before) {
+          let mod = 0;
+          if (this.afterPers.isTES) {
+            mod = -1;
+          }
+
           changes.push(
-            new ChangesModel(changesMap[n].name, 'abil', changesMap[n].before, changesMap[n].after, 0, this.afterPers.maxAttrLevel, changesMap[n].img)
+            new ChangesModel(changesMap[n].name, 'abil', changesMap[n].before + mod, changesMap[n].after + mod, 0, this.afterPers.maxAttrLevel + mod, changesMap[n].img)
           );
         }
         // Прогрес в стейтах
@@ -228,7 +233,9 @@ export class PerschangesService {
 
       dialogRefLvlUp.close();
 
-      this.router.navigate(['/pers', true]);
+      if (!this.afterPers.isTES) {
+        this.router.navigate(['/pers', true]);
+      }
     }
   }
 
