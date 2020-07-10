@@ -19,7 +19,7 @@ export class PersChangesComponent implements OnInit {
   slidingDoorValue: string = 'out';
   abPoints: any;
 
-  constructor(@Inject(MAT_DIALOG_DATA) public data: any, private srv: PersService) {
+  constructor(@Inject(MAT_DIALOG_DATA) public data: any) {
     this.headText = data.headText;
     this.changes = data.changes;
     this.changes.forEach(element => {
@@ -27,7 +27,7 @@ export class PersChangesComponent implements OnInit {
     });
     this.isGood = data.isGood;
     this.abPoints = data.abPoints;
-    if (this.srv.pers.isTES) {
+    if (data.isTES) {
       this.abPoints = null;
     }
   }

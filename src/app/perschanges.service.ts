@@ -210,7 +210,8 @@ export class PerschangesService {
           headText: head,
           changes: [changes[index]],
           isGood: isGood,
-          abPoints: abPoints
+          abPoints: abPoints,
+          isTES: this.afterPers.isTES
         },
         backdropClass: 'backdrop'
       });

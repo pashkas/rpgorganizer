@@ -68,6 +68,9 @@ export class CharacteristicDetailsComponent implements OnInit {
   ngOnInit() {
     this.rangse = [];
     for (let index = 0; index <= this.srv.pers.maxAttrLevel; index++) {
+      if (this.srv.pers.isTES && index == 0) {
+        continue;
+      }
       let rng = new Rangse();
       rng.val = index;
       rng.img = '';

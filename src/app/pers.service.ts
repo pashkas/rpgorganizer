@@ -273,26 +273,28 @@ export class PersService {
         return (+a.isNotDoneReqvirements - +b.isNotDoneReqvirements);
       }
 
-      let aHasSameLvl = 0;
-      if (a.HasSameAbLvl) {
-        aHasSameLvl = 1;
-      }
-      let bHasSameLvl = 0;
-      if (b.HasSameAbLvl) {
-        bHasSameLvl = 1;
-      }
-      if (this.pers.IsAbUp) {
-        // Если есть с такой же сложностью навыка
-        if (aHasSameLvl != bHasSameLvl) {
-          return -(aHasSameLvl - bHasSameLvl);
+      if (!this.pers.isTES) {
+        let aHasSameLvl = 0;
+        if (a.HasSameAbLvl) {
+          aHasSameLvl = 1;
         }
+        let bHasSameLvl = 0;
+        if (b.HasSameAbLvl) {
+          bHasSameLvl = 1;
+        }
+        if (this.pers.IsAbUp) {
+          // Если есть с такой же сложностью навыка
+          if (aHasSameLvl != bHasSameLvl) {
+            return -(aHasSameLvl - bHasSameLvl);
+          }
 
-        // По возможности открытия
-        let aIsMax = a.value > 9;
-        let bIsMax = b.value > 9;
+          // По возможности открытия
+          let aIsMax = a.value > 9;
+          let bIsMax = b.value > 9;
 
-        if (aIsMax != bIsMax) {
-          return (+aIsMax - +bIsMax);
+          if (aIsMax != bIsMax) {
+            return (+aIsMax - +bIsMax);
+          }
         }
       }
 
@@ -1045,22 +1047,36 @@ export class PersService {
     let skillMax = 0;
 
     this.pers.characteristics.forEach(cha => {
+      if (this.pers.isTES && cha.startRang.val == 0) {
+        let rng = new Rangse();
+        rng.val = 1;
+        rng.img = '';
+        rng.name = '' + 1;
+        cha.startRang = rng;
+      }
       let abMax = 0, abCur = 0;
-      let taskTesCur = 0;
+
       cha.abilities.forEach(ab => {
         let tskMax = 0;
         let tskCur = 0;
         totalAbils += 1;
 
+
         // Если задач нет - все равно учитываем
         if (ab.tasks.length == 0) {
           skillCur += 0;
-          skillMax += this.pers.maxAttrLevel;
+          
+          if (this.pers.isTES) {
+            skillMax += this.getMaxTes();
+          }
+          else{
+            skillMax += this.pers.maxAttrLevel;
+          }
         }
 
         let taskTes = 0;
         ab.tasks.forEach(tsk => {
-          taskTes = tsk.tesValue;
+          taskTes += tsk.tesValue;
           tsk.plusToNames = [];
           if (this.pers.isTES) {
             if (tsk.value < 1) {
@@ -1093,17 +1109,16 @@ export class PersService {
 
           tskMax += this.pers.maxAttrLevel;
           tskCur += tsk.value;
-          taskTesCur += tsk.tesValue;
 
           let koef = tsk.isHard ? 2.0 : 1.0;
 
           if (this.pers.isTES) {
             let tesVal = tsk.tesValue;
-            if (tesVal > this.pers.maxAttrLevel) {
-              tesVal = this.pers.maxAttrLevel;
+            if (tesVal > this.getMaxTes()) {
+              tesVal = this.getMaxTes();
             }
             skillCur += tesVal * koef;
-            skillMax += this.pers.maxAttrLevel * koef;
+            skillMax += this.getMaxTes() * koef;
           }
           else {
             if (Pers.GameSettings.isTesExp) {
@@ -1118,19 +1133,24 @@ export class PersService {
           tsk.roundVal = Math.floor(tsk.value);
         });
 
-
         this.setAbValueAndProgress(ab, tskCur, tskMax, taskTes);
         this.setAbRang(ab);
 
-        abMax += this.pers.maxAttrLevel;
-        abMaxTotal += this.pers.maxAttrLevel;
-        if (Pers.GameSettings.isTesExp) {
-          abCur += Math.floor(ab.value);
-          abCurTotal += Math.floor(ab.value);
+        if (this.pers.isTES) {
+          abCur += taskTes;
+          abMax += this.getMaxTes();
         }
         else {
-          abCur += ab.value;
-          abCurTotal += ab.value;
+          abMax += this.pers.maxAttrLevel;
+          abMaxTotal += this.pers.maxAttrLevel;
+          if (Pers.GameSettings.isTesExp) {
+            abCur += Math.floor(ab.value);
+            abCurTotal += Math.floor(ab.value);
+          }
+          else {
+            abCur += ab.value;
+            abCurTotal += ab.value;
+          }
         }
       });
 
@@ -1138,10 +1158,7 @@ export class PersService {
       let max = this.pers.maxAttrLevel;
       let left = max - start;
 
-      if (!this.pers.isNoAbs) { 
-        if (this.pers.isTES) {
-          abCur = taskTesCur;
-        }
+      if (!this.pers.isNoAbs) {
         this.setChaValueAndProgress(abCur, abMax, cha, start, left);
         this.setChaRang(cha);
       }
@@ -1305,7 +1322,7 @@ export class PersService {
         for (const tsk of ab.tasks) {
           // Что навык настроен
           if (
-            tsk.value < 1
+            tsk.value < 1 || (tsk.value <= 1 && this.pers.isTES)
             && tsk.requrense == 'будни'
             && tsk.aimCounter == 0
             && tsk.aimTimer == 0
@@ -1563,7 +1580,7 @@ export class PersService {
         this.changeTes(task, false);
       }
       else {
-        this.pers.exp -= this.getTaskChangesExp(task);
+        this.pers.exp -= this.getTaskChangesExp(task, false);
         if (this.pers.exp < 0) {
           this.pers.exp = 0;
         }
@@ -1603,7 +1620,7 @@ export class PersService {
         this.changeTes(task, true);
       }
       else {
-        this.pers.exp += this.getTaskChangesExp(task);
+        this.pers.exp += this.getTaskChangesExp(task, true);
       }
 
       task.lastNotDone = false;
@@ -1633,9 +1650,12 @@ export class PersService {
     }
   }
   changeTes(task: Task, isUp: boolean) {
-    let change = this.getTaskChangesExp(task);
+    let change = this.getTaskChangesExp(task, isUp);
     if (isUp) {
       task.tesValue += change;
+      if (task.tesValue > this.getMaxTes()) {
+        task.tesValue = this.getMaxTes();
+      }
     }
     else {
       task.tesValue -= change;
@@ -1643,6 +1663,10 @@ export class PersService {
         task.tesValue = 0;
       }
     }
+  }
+
+  private getMaxTes() {
+    return this.pers.maxAttrLevel - 0.01;
   }
 
   upAbility(ab: Ability) {
@@ -1852,7 +1876,7 @@ export class PersService {
               if (this.checkTask(tsk)) {
                 // Для показа опыта за задачу
                 if (!this.pers.isTES) {
-                  let exp = this.getTaskChangesExp(tsk) * 10.0;
+                  let exp = this.getTaskChangesExp(tsk, true) * 10.0;
                   exp = Math.floor(exp);
                   tsk.plusToNames.unshift(new plusToName('+' + exp + ' exp', null, null));
                 }
@@ -1948,8 +1972,9 @@ export class PersService {
     return revsOfType;
   }
 
-  private getTaskChangesExp(task: Task) {
-    let chVal = this.baseTaskPoints * this.getWeekKoef(task.requrense, true, task.tskWeekDays);
+  private getTaskChangesExp(task: Task, isPlus: boolean) {
+    const koef = this.getWeekKoef(task.requrense, isPlus, task.tskWeekDays);
+    let chVal = this.baseTaskPoints * koef;
 
     if (task.tesValue == null || task.tesValue == undefined) {
       task.tesValue = 0;
@@ -1958,12 +1983,39 @@ export class PersService {
     if (this.pers.isEra) {
       taskStreang = (task.value * (task.value + 1)) / 2.0;
     }
-    if (this.pers.isTES) {
-      taskStreang = 1 / ((1 + task.tesValue) * 2);
-    }
 
+    // Расчет для ТЕС
     if (this.pers.isTES) {
-      return chVal * taskStreang;
+      let change = 0;
+      let tesVal = task.tesValue;
+
+      while (true) {
+        debugger;
+        let ch: number = 0;
+        if (chVal >= 1) {
+          ch = 1;
+        }
+        else {
+          ch = chVal;
+        }
+
+        change += ch * this.getTesChangeKoef(tesVal);
+
+        if (isPlus) {
+          tesVal += change;
+        }
+        else {
+          tesVal -= change;
+        }
+
+        chVal -= ch;
+
+        if (chVal <= 0 || tesVal <= 0) {
+          break;
+        }
+      }
+
+      return change;
     }
 
     let chValFinaly = chVal * Math.floor(taskStreang);
@@ -1971,6 +2023,10 @@ export class PersService {
     chValFinaly = Math.ceil(chValFinaly * 10.0) / 10.0;
 
     return chValFinaly;
+  }
+
+  private getTesChangeKoef(tesVal: number): number {
+    return 1 / ((1 + tesVal) * 2);
   }
 
   private getTskFromState(tsk: Task, st: taskState, isAll: boolean) {
