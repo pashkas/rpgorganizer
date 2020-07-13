@@ -238,6 +238,7 @@ export class PersListComponent implements OnInit {
         cha.abilities.forEach(ab => {
           ab.isOpen = false;
           ab.tasks.forEach(tsk => {
+            this.srv.GetRndEnamy(tsk);
             tsk.value = 0;
             tsk.tesValue = 0;
             tsk.date = new Date();

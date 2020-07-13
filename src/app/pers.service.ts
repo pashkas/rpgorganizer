@@ -1065,11 +1065,11 @@ export class PersService {
         // Если задач нет - все равно учитываем
         if (ab.tasks.length == 0) {
           skillCur += 0;
-          
+
           if (this.pers.isTES) {
             skillMax += this.getMaxTes();
           }
-          else{
+          else {
             skillMax += this.pers.maxAttrLevel;
           }
         }
@@ -1156,6 +1156,9 @@ export class PersService {
 
       let start = cha.startRang.val;
       let max = this.pers.maxAttrLevel;
+      if (this.pers.isTES) {
+        max = 1 + this.getMaxTes();
+      }
       let left = max - start;
 
       if (!this.pers.isNoAbs) {
@@ -1412,7 +1415,9 @@ export class PersService {
         for (const ab of ch.abilities) {
           for (const tsk of ab.tasks) {
             if (!tsk.IsNextLvlSame) {
-              tsk.mayUp = false;
+              if (!this.pers.isEqLvlUp) {
+                tsk.mayUp = false;
+              }
             }
           }
         }
@@ -1981,7 +1986,7 @@ export class PersService {
     }
     let taskStreang = task.value;
     if (this.pers.isEra) {
-      taskStreang = (task.value * (task.value + 1)) / 2.0;
+      taskStreang = (task.value * (task.value + 1)) / 1.618;
     }
 
     // Расчет для ТЕС
@@ -2136,9 +2141,17 @@ export class PersService {
     }
 
     cha.value = start + (left * progr);
-    if (cha.value > this.pers.maxAttrLevel) {
-      cha.value = this.pers.maxAttrLevel;
+    if (this.pers.isTES) {
+      if (cha.value > 1 + this.getMaxTes()) {
+        cha.value = 1 + this.getMaxTes();
+      }
     }
+    else {
+      if (cha.value > this.pers.maxAttrLevel) {
+        cha.value = this.pers.maxAttrLevel;
+      }
+    }
+
     if (cha.value < 0) {
       cha.value = 0;
     }
@@ -2222,7 +2235,7 @@ export class PersService {
     let nextExp = 0;
     let startON = 0;
 
-    for (let i = 1; i < Pers.maxLevel; i++) {
+    for (let i = 1; i <= Pers.maxLevel + 1; i++) {
       startExp = exp;
 
       if (this.pers.isTES) {
