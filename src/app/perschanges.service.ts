@@ -129,7 +129,7 @@ export class PerschangesService {
         }
       }
       // Опыт
-      else if (changesMap[n].type == 'exp') {
+      else if (changesMap[n].type == 'exp' && this.afterPers.isNoExpShow != true) {
         if (changesMap[n].after != changesMap[n].before) {
           let expChanges = new ChangesModel('Опыт', 'exp', changesMap[n].before * 10, changesMap[n].after * 10, this.afterPers.prevExp * 10, this.afterPers.nextExp * 10, changesMap[n].img);
 

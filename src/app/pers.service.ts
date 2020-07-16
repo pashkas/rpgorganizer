@@ -661,7 +661,7 @@ export class PersService {
           ab.tasks.forEach(tsk => {
             if (tsk.states.length > 0 && tsk.isSumStates) {
               tsk.states.forEach(st => {
-                if (st.isActive) {
+                if (st.isActive || tsk.isSumStates) {
                   let t = this.getTskFromState(tsk, st, true);
                   tasks.push(t);
                 }
@@ -1325,7 +1325,7 @@ export class PersService {
         for (const tsk of ab.tasks) {
           // Что навык настроен
           if (
-            tsk.value < 1 || (tsk.value <= 1 && this.pers.isTES)
+            (tsk.value < 1 || (tsk.value <= 1 && this.pers.isTES))
             && tsk.requrense == 'будни'
             && tsk.aimCounter == 0
             && tsk.aimTimer == 0
@@ -1986,7 +1986,7 @@ export class PersService {
     }
     let taskStreang = task.value;
     if (this.pers.isEra) {
-      taskStreang = (task.value * (task.value + 1)) / 1.618;
+      taskStreang = (task.value * (task.value + 1)) / 2;
     }
 
     // Расчет для ТЕС
@@ -1995,7 +1995,6 @@ export class PersService {
       let tesVal = task.tesValue;
 
       while (true) {
-        debugger;
         let ch: number = 0;
         if (chVal >= 1) {
           ch = 1;
@@ -2031,7 +2030,7 @@ export class PersService {
   }
 
   private getTesChangeKoef(tesVal: number): number {
-    return 1 / ((1 + tesVal) * 2);
+    return 1 / ((1 + tesVal) * 1.618);
   }
 
   private getTskFromState(tsk: Task, st: taskState, isAll: boolean) {
@@ -2244,7 +2243,7 @@ export class PersService {
       else {
         const ceilOn = Math.ceil(i * onPerLevel) + startON;
 
-        let noLinear = (1 + (i - 1) * 0.05);
+        let noLinear = (1 + (i - 3) * 0.05); // ук уровень с которого
 
         if (this.pers.isOneLevOneCrist) {
           noLinear = 1;
@@ -2356,28 +2355,8 @@ export class PersService {
     tsk.curStateDescrInd = 0;
 
     if (tsk.aimTimer != 0 || tsk.aimCounter != 0 || tsk.states.length > 0) {
-      // Счетчик
-      if (tsk.aimCounter != 0) {
-        //plusState = ' ' + this.getTskValForState(tsk.value, tsk.aimCounter) + '✓';
-        let nms: number[] = this.getSet(tsk, tsk.aimCounter);
-
-        for (let i = 0; i < nms.length; i++) {
-          const el = nms[i];
-          tsk.statesDescr.push(el + '✓');
-        }
-      }
-      // Таймер
-      else if (tsk.aimTimer != 0) {
-        //plusState = ' ' + this.getTskValForState(tsk.value, tsk.aimTimer) + '⧖';
-        let nms: number[] = this.getSet(tsk, tsk.aimTimer);
-
-        for (let i = 0; i < nms.length; i++) {
-          const el = nms[i];
-          tsk.statesDescr.push(el + '⧖');
-        }
-      }
       // Состояния
-      else if (tsk.states.length > 0) {
+      if (tsk.states.length > 0) {
         let nms: number[] = this.getSet(tsk, tsk.states.length);
 
         for (let i = 0; i < nms.length; i++) {
@@ -2418,8 +2397,42 @@ export class PersService {
           }
         }
       }
+      // Таймер
+      if (tsk.aimTimer != 0) {
+        //plusState = ' ' + this.getTskValForState(tsk.value, tsk.aimTimer) + '⧖';
+        let nms: number[] = this.getSet(tsk, tsk.aimTimer);
+
+        for (let i = 0; i < nms.length; i++) {
+          const el = nms[i];
+          if (tsk.statesDescr[i] != undefined) {
+            tsk.statesDescr[i] += ' ' + el + '⧖';
+          }
+          else {
+            tsk.statesDescr.push(el + '⧖');
+          }
+        }
+      }
+      // Счетчик
+      if (tsk.aimCounter != 0) {
+        //plusState = ' ' + this.getTskValForState(tsk.value, tsk.aimCounter) + '✓';
+        let nms: number[] = this.getSet(tsk, tsk.aimCounter);
+
+        for (let i = 0; i < nms.length; i++) {
+          const el = nms[i];
+          if (tsk.statesDescr[i] != undefined) {
+            tsk.statesDescr[i] += ' ' + el + '✓';
+          }
+          else {
+            tsk.statesDescr.push(el + '✓');
+          }
+        }
+      }
+
+
 
       let plusState = tsk.statesDescr[Math.floor(tsk.value)];
+      let plusStateMax = tsk.statesDescr[this.pers.maxAttrLevel];
+      tsk.plusStateMax = plusStateMax;
 
       if (plusState) {
         if (tsk.states.length > 0 && !tsk.isSumStates) {

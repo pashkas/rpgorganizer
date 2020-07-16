@@ -9,7 +9,7 @@ import { TurnirTableComponent } from './turnir-table/turnir-table.component';
 
 
 const routes: Routes = [
-  { path: '', redirectTo: 'login', pathMatch: 'full' },
+  { path: '', redirectTo: 'login', pathMatch: 'full', resolve: { data: UserResolver } },
   { path: 'login', component: LoginComponent, canActivate: [AuthGuard] },
   { path: 'main', component: MainWindowComponent, resolve: { data: UserResolver } },
   { path: 'pers/:isFirst', loadChildren: () => import('./pers/pers.module').then(m => m.PersModule) },

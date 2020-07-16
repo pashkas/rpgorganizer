@@ -71,6 +71,7 @@ export class Task implements IImg {
     nextUp: number = 0;
     tesValue: number = 0;
     roundVal: number = 0;
+    plusStateMax: string;
 
     /**
      * Получить формулу для роста/понижения значения задачи.

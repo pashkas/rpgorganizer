@@ -19,6 +19,7 @@ import localeRu from '@angular/common/locales/ru';
 import { GestureConfig } from '@angular/material';
 import { SharedModule } from './shared/shared.module';
 import { TurnirTableComponent } from './turnir-table/turnir-table.component';
+import { ArrSortDialogComponent } from './arr-sort-dialog/arr-sort-dialog.component';
 
 registerLocaleData(localeRu, 'ru');
 
@@ -31,6 +32,7 @@ registerLocaleData(localeRu, 'ru');
     SelectOnClickDirective,
     LevelUpMsgComponent,
     TurnirTableComponent,
+    ArrSortDialogComponent,
   ],
   imports: [
     SharedModule,
@@ -54,6 +56,7 @@ registerLocaleData(localeRu, 'ru');
   entryComponents:
     [
       LevelUpMsgComponent,
+      ArrSortDialogComponent
     ]
 })
 export class AppModule {

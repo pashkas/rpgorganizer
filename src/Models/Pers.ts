@@ -68,6 +68,11 @@ export class Pers {
     isTES = false;
 
     /**
+     * Не показывать диалог изменения опыта.
+     */
+    isNoExpShow = false;
+
+    /**
      * Можно прокачивать одинаковые уровни.
      */
     isEqLvlUp = false;

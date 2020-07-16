@@ -97,8 +97,8 @@
                         </div>
                       </div>
                     </div>
-                    <mat-progress-bar class="myprogr" color="accent" mode="determinate" value="{{ab.progressValue}}">
-                    </mat-progress-bar>
+                    <!-- <mat-progress-bar class="myprogr" color="accent" mode="determinate" value="{{ab.progressValue}}">
+                    </mat-progress-bar> -->
                   </li>
                 </ul>
               </div>
@@ -124,9 +124,9 @@
                     </div>
                   </div>
                 </a>
-                <mat-progress-bar *ngIf="true" class="myprogr" color="accent" mode="determinate"
+                <!-- <mat-progress-bar *ngIf="true" class="myprogr" color="accent" mode="determinate"
                   value="{{item.progressValue}}">
-                </mat-progress-bar>
+                </mat-progress-bar> -->
                 <div class="d-flex flex-column w-100">
                   <div>
                     <ul class="list-group py-0" *ngIf="item.abilities.length>0">
@@ -138,7 +138,9 @@
                             <a (click)="showAbility(ab)" [ngClass]="{'text-success' : ab.tasks[0]?.mayUp && ab.tasks[0]?.IsNextLvlSame && !ab.isNotDoneReqvirements,
                             'text-danger': ab.isNotDoneReqvirements}"
                               class="flex-grow-1 text-left align-self-baseline">
-                              {{ab.name + ' '}}<i><small>{{ab.tasks[0]?.curLvlDescr2}}</small></i>
+                              {{ab.name + ' '}}
+                              <i><small>{{ab.tasks[0]?.curLvlDescr2}}</small></i>
+                              <!-- <i *ngIf="ab.tasks[0]?.plusStateMax"><small>{{'->' + ab.tasks[0]?.plusStateMax}}</small></i> -->
                             </a>
                             <div fxLayout="row" fxLayoutAlign="space-around" class="text-right align-self-baseline">
                               <a class="pl-2" (click)="showAbility(ab)" [ngClass]="{'text-success' : ab.tasks[0]?.mayUp && ab.tasks[0]?.IsNextLvlSame && !ab.isNotDoneReqvirements,
@@ -164,15 +166,12 @@
                                   </a>
                                 </ng-template>
                               </ng-container>
-
-
-
                             </div>
                           </div>
                         </div>
-                        <mat-progress-bar class="myprogr" color="accent" mode="determinate"
+                        <!-- <mat-progress-bar class="myprogr" color="accent" mode="determinate"
                           value="{{ab.progressValue}}">
-                        </mat-progress-bar>
+                        </mat-progress-bar> -->
                       </li>
                     </ul>
                   </div>
@@ -311,6 +310,11 @@
           <div>
             <mat-slide-toggle class="example-margin" [(ngModel)]="this.srv.pers.isEqLvlUp">
               Можно прокачивать одинаковые уровни
+            </mat-slide-toggle>
+          </div>
+          <div>
+            <mat-slide-toggle class="example-margin" [(ngModel)]="this.srv.pers.isNoExpShow">
+              Не показывать диалог опыта
             </mat-slide-toggle>
           </div>
           <div>

@@ -14,6 +14,7 @@
 
   <!-- Задачи -->
   <ng-container *ngIf="this.srv.isGlobalTaskView">
+
     <mat-list (cdkDropListDropped)="drop($event)" cdkDropList class="list-group  py-2 h-100 w-100 overflow-auto">
       <!-- <button class="btn btn-default" (click)="autoFalse()"
         *ngIf="srv.pers?.tasks.length>0 && srv.pers?.tasks[0].requrense != 'нет' && checkDate(srv.pers?.tasks[0].date)">
@@ -55,6 +56,11 @@
           </div>
         </div>
       </ng-container>
+      <div class="text-right" *ngIf="isSort">
+        <button mat-flat-button color="accent" (click)="smartSort()">
+          <i class="fa fa-lg fa-expand-arrows-alt"></i>
+        </button>
+      </div>
     </mat-list>
     <div></div>
   </ng-container>
@@ -165,3 +171,4 @@
     </div>
   </div>
 </div>
+<div id="overlay" [ngClass]="{ovsuccess: isSucessShown, ovfail: isFailShown}"></div>
