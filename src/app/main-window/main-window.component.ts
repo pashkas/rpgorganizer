@@ -203,7 +203,7 @@ export class MainWindowComponent implements OnInit {
   }
 
   delay() {
-    return new Promise(resolve => setTimeout(resolve, 333));
+    return new Promise(resolve => setTimeout(resolve, 400));
   }
 
   async done(t: Task) {

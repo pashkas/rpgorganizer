@@ -62,7 +62,7 @@ export class PerschangesService {
           );
           isDoneQwest = true;
         }
-        else if (changesMap[n].after > changesMap[n].before) {
+        else if (changesMap[n].after > changesMap[n].before  && this.afterPers.isNoExpShow != true) {
           changes.push(
             new ChangesModel(changesMap[n].name, 'qwest', changesMap[n].before, changesMap[n].after, 0, changesMap[n].total, changesMap[n].img)
           );
@@ -122,7 +122,7 @@ export class PerschangesService {
         }
         // Прогрес в стейтах
         else if (changesMap[n].tskProgrBefore != changesMap[n].tskProgrAfter
-          && changesMap[n].tskProgrAfter != 0) {
+          && changesMap[n].tskProgrAfter != 0  && this.afterPers.isNoExpShow != true) {
           changes.push(
             new ChangesModel(changesMap[n].name, 'state', changesMap[n].tskProgrBefore, changesMap[n].tskProgrAfter, 0, changesMap[n].tskProgrTotal, changesMap[n].img)
           );
