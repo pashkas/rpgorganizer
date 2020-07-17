@@ -22,11 +22,13 @@ import { ArrSortDialogComponent } from '../arr-sort-dialog/arr-sort-dialog.compo
 export class MainWindowComponent implements OnInit {
   private unsubscribe$ = new Subject();
 
-  isSort: boolean = false;
-  lastGlobalBeforeSort: boolean;
-
-  isSucessShown = false;
   isFailShown = false;
+  isFailShownOv = false;
+  isSort: boolean = false;
+  isSucessShown = false;
+  isSucessShownOv=false;
+  lastGlobalBeforeSort: boolean;
+  qwickSortVals: sortArr[] = [];
 
   constructor(private route: ActivatedRoute, public srv: PersService, public dialog: MatDialog) {
   }
@@ -34,122 +36,6 @@ export class MainWindowComponent implements OnInit {
   ReImages() {
     this.srv.reImages();
   }
-
-  qwickSortVals: sortArr[] = [];
-
-  async smartSort() {
-    const tLength = this.srv.pers.tasks.length;
-    this.qwickSortVals = [];
-
-    this.srv.pers.tasks = await this.quickSort2(this.srv.pers.tasks);
-  }
-
-  async quickSort2(arr: Task[]) {
-    if (arr.length < 2) return arr;
-    let min = 1;
-    let max = arr.length - 1;
-    let rand = Math.floor((min + max) / 2);
-    let pivot = arr[rand];
-    const left = [];
-    const right = [];
-    arr.splice(arr.indexOf(pivot), 1);
-    arr = [pivot].concat(arr);
-
-    for (let i = 1; i < arr.length; i++) {
-      //if (pivot > arr[i]) {
-      let res = await this.compareTask(i, 0, arr);
-      if (res == true) {
-        left.push(arr[i]);
-      } else {
-        right.push(arr[i]);
-      }
-    }
-
-    let leftArr = await this.quickSort2(left);
-    let rightArr = await this.quickSort2(right);
-
-    return Promise.resolve(leftArr.concat(pivot, rightArr));
-  }
-
-  async openDialog(aName, bName): Promise<boolean> {
-    let aval = this.getNameVal(aName);
-    let bval = this.getNameVal(bName);
-
-    if (aval != -1 && bval != -1) {
-      if (aval < bval) {
-        return Promise.resolve(true);
-      }
-      if (aval > bval) {
-        return Promise.resolve(false);
-      }
-    }
-
-
-    const dialogRef = this.dialog.open(ArrSortDialogComponent, {
-      data: { aName: aName, bName: bName },
-      width: '800px'
-    });
-
-    return dialogRef.afterClosed()
-      .toPromise() // here you have a Promise instead an Observable
-      .then(result => {
-        return Promise.resolve(result); // will return a Promise here
-      });
-  }
-  getNameVal(aName: string): number {
-    const lower = aName.toLocaleLowerCase();
-    if (lower.match(/(утро|завтрак|утром|утра)/)) {
-      return 1;
-    }
-    if (lower.match(/(день|днем|обед)/)) {
-      return 2;
-    }
-    if (lower.match(/(вечер|вечером|ужин|сном)/)) {
-      return 3;
-    }
-
-    return -1
-  }
-
-  async compareTask(a: number, b: number, tasks: Task[]): Promise<boolean> {
-    const aTask = tasks[a];
-    const bTask = tasks[b];
-
-    let aName = aTask.name;
-    let bName = bTask.name;
-
-    let qVal = this.qwickSortVals.find(n => n.first == aTask.id && n.second == bTask.id);
-    if (qVal == undefined) {
-      if (aName == bName) {
-        this.qwickSortVals.push(new sortArr(aTask.id, bTask.id, 0));
-        this.qwickSortVals.push(new sortArr(bTask.id, aTask.id, 0));
-      }
-      else {
-        let result = await this.openDialog(aName, bName);
-
-        if (result == true) {
-          this.qwickSortVals.push(new sortArr(aTask.id, bTask.id, -1));
-          this.qwickSortVals.push(new sortArr(bTask.id, aTask.id, 1));
-        }
-        else {
-          this.qwickSortVals.push(new sortArr(aTask.id, bTask.id, 1));
-          this.qwickSortVals.push(new sortArr(bTask.id, aTask.id, -1));
-        }
-      }
-    }
-    else {
-    }
-
-    qVal = this.qwickSortVals.find(n => n.first == aTask.id && n.second == bTask.id);
-
-    if (qVal.val == -1) {
-      return true;
-    }
-
-    return false;
-  }
-
-
 
   changeEnamyImageForItem(id) {
     // Ищем в задачах
@@ -202,17 +88,50 @@ export class MainWindowComponent implements OnInit {
     return false;
   }
 
-  delay() {
-    return new Promise(resolve => setTimeout(resolve, 400));
+  async compareTask(a: number, b: number, tasks: Task[]): Promise<boolean> {
+    const aTask = tasks[a];
+    const bTask = tasks[b];
+
+    let aName = aTask.name;
+    let bName = bTask.name;
+
+    let qVal = this.qwickSortVals.find(n => n.first == aTask.id && n.second == bTask.id);
+    if (qVal == undefined) {
+      if (aName == bName) {
+        this.qwickSortVals.push(new sortArr(aTask.id, bTask.id, 0));
+        this.qwickSortVals.push(new sortArr(bTask.id, aTask.id, 0));
+      }
+      else {
+        let result = await this.openDialog(aName, bName);
+
+        if (result == true) {
+          this.qwickSortVals.push(new sortArr(aTask.id, bTask.id, -1));
+          this.qwickSortVals.push(new sortArr(bTask.id, aTask.id, 1));
+        }
+        else {
+          this.qwickSortVals.push(new sortArr(aTask.id, bTask.id, 1));
+          this.qwickSortVals.push(new sortArr(bTask.id, aTask.id, -1));
+        }
+      }
+    }
+    else {
+    }
+
+    qVal = this.qwickSortVals.find(n => n.first == aTask.id && n.second == bTask.id);
+
+    if (qVal.val == -1) {
+      return true;
+    }
+
+    return false;
+  }
+
+  delay(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
   }
 
   async done(t: Task) {
-
-    if (this.srv.pers.isNoExpShow) {
-      this.isSucessShown = true;
-      await this.delay();
-      this.isSucessShown = false;
-    }
+    await this.animate(true);
 
     this.changeEnamyImageForItem(t.id);
 
@@ -260,10 +179,6 @@ export class MainWindowComponent implements OnInit {
     else {
       this.srv.taskPlus(t.id);
     }
-    if (this.srv.pers.isNoExpShow) {
-      await this.delay();
-      await this.delay();
-    }
     this.srv.changesAfter(true);
   }
 
@@ -290,12 +205,7 @@ export class MainWindowComponent implements OnInit {
   }
 
   async fail(t: Task) {
-    if (this.srv.pers.isNoExpShow) {
-      this.isFailShown = true;
-      await this.delay();
-      this.isFailShown = false;
-      await this.delay();
-    }
+    await this.animate(false);
 
     this.changeEnamyImageForItem(t.id);
 
@@ -308,10 +218,6 @@ export class MainWindowComponent implements OnInit {
       this.srv.taskMinus(t.id);
     }
 
-    if (this.srv.pers.isNoExpShow) {
-      await this.delay();
-      await this.delay();
-    }
     this.srv.changesAfter(false);
   }
 
@@ -382,6 +288,21 @@ export class MainWindowComponent implements OnInit {
     }
   }
 
+  getNameVal(aName: string): number {
+    const lower = aName.toLocaleLowerCase();
+    if (lower.match(/(утро|завтрак|утром|утра)/)) {
+      return 1;
+    }
+    if (lower.match(/(день|днем|обед)/)) {
+      return 2;
+    }
+    if (lower.match(/(вечер|вечером|ужин|сном)/)) {
+      return 3;
+    }
+
+    return -1
+  }
+
   nextTask() {
     let i = this.srv.pers.currentTaskIndex + 1;
     if (i >= this.srv.pers.tasks.length) {
@@ -412,7 +333,6 @@ export class MainWindowComponent implements OnInit {
   //   this.changeEnamyImageForItem(id);
   //   this.srv.savePers(false);
   // }
-
   onLongPress(e) {
     // e.preventDefault && e.preventDefault();
     // e.stopPropagation && e.stopPropagation();
@@ -430,6 +350,31 @@ export class MainWindowComponent implements OnInit {
     this.nextTask();
   }
 
+  async openDialog(aName, bName): Promise<boolean> {
+    let aval = this.getNameVal(aName);
+    let bval = this.getNameVal(bName);
+
+    if (aval != -1 && bval != -1) {
+      if (aval < bval) {
+        return Promise.resolve(true);
+      }
+      if (aval > bval) {
+        return Promise.resolve(false);
+      }
+    }
+
+    const dialogRef = this.dialog.open(ArrSortDialogComponent, {
+      data: { aName: aName, bName: bName },
+      width: '800px'
+    });
+
+    return dialogRef.afterClosed()
+      .toPromise() // here you have a Promise instead an Observable
+      .then(result => {
+        return Promise.resolve(result); // will return a Promise here
+      });
+  }
+
   openPersList() {
     this.srv.selTabPersList = 0;
   }
@@ -440,6 +385,33 @@ export class MainWindowComponent implements OnInit {
       i = this.srv.pers.tasks.length - 1;
     }
     this.setIndex(i);
+  }
+
+  async quickSort2(arr: Task[]) {
+    if (arr.length < 2) return arr;
+    let min = 1;
+    let max = arr.length - 1;
+    let rand = Math.floor((min + max) / 2);
+    let pivot = arr[rand];
+    const left = [];
+    const right = [];
+    arr.splice(arr.indexOf(pivot), 1);
+    arr = [pivot].concat(arr);
+
+    for (let i = 1; i < arr.length; i++) {
+      //if (pivot > arr[i]) {
+      let res = await this.compareTask(i, 0, arr);
+      if (res == true) {
+        left.push(arr[i]);
+      } else {
+        right.push(arr[i]);
+      }
+    }
+
+    let leftArr = await this.quickSort2(left);
+    let rightArr = await this.quickSort2(right);
+
+    return Promise.resolve(leftArr.concat(pivot, rightArr));
   }
 
   setGlobalTaskView(b: boolean) {
@@ -508,6 +480,13 @@ export class MainWindowComponent implements OnInit {
     }
   }
 
+  async smartSort() {
+    const tLength = this.srv.pers.tasks.length;
+    this.qwickSortVals = [];
+
+    this.srv.pers.tasks = await this.quickSort2(this.srv.pers.tasks);
+  }
+
   taskToEnd(tsk: Task) {
     this.srv.setTaskOrder(tsk, true, true);
     this.srv.setCurInd(0);
@@ -525,6 +504,25 @@ export class MainWindowComponent implements OnInit {
     if (!this.isSort) {
       this.setIndex(i);
       this.setGlobalTaskView(false);
+    }
+  }
+
+  async animate(isDone: boolean) {
+    if (isDone) {
+      this.isSucessShownOv = true;
+      await this.delay(250);
+      this.isSucessShownOv = false;
+      this.isSucessShown = true;
+      await this.delay(1000);
+      this.isSucessShown = false;
+    }
+    else{
+      this.isFailShownOv = true;
+      await this.delay(250);
+      this.isFailShownOv = false;
+      this.isFailShown = true;
+      await this.delay(1000);
+      this.isFailShown = false;
     }
   }
 }
