@@ -47,7 +47,7 @@ export class PerschangesService {
       if (changesMap[n].type == 'tsk') {
         // Прогрес в стейтах
         if (changesMap[n].tskProgrBefore != changesMap[n].tskProgrAfter
-          && changesMap[n].tskProgrAfter != 0) {
+          && changesMap[n].tskProgrAfter != 0 && !this.afterPers.isNoExpShow) {
           changes.push(
             new ChangesModel(changesMap[n].name, 'subtask', changesMap[n].tskProgrBefore, changesMap[n].tskProgrAfter, 0, changesMap[n].tskProgrTotal, changesMap[n].img)
           );
@@ -62,10 +62,16 @@ export class PerschangesService {
           );
           isDoneQwest = true;
         }
-        else if (changesMap[n].after > changesMap[n].before  && this.afterPers.isNoExpShow != true) {
+        else if (changesMap[n].after > changesMap[n].before && this.afterPers.isNoExpShow != true) {
           changes.push(
             new ChangesModel(changesMap[n].name, 'qwest', changesMap[n].before, changesMap[n].after, 0, changesMap[n].total, changesMap[n].img)
           );
+        }
+        else if (changesMap[n].after > changesMap[n].before && changesMap[n].after == changesMap[n].total) {
+          changes.push(
+            new ChangesModel('"' + changesMap[n].name + '" задания выполнены!', 'qwest', changesMap[n].after, changesMap[n].after, 0, changesMap[n].total, changesMap[n].img)
+          );
+          isDoneQwest = true;
         }
       }
       // Награды
@@ -122,7 +128,7 @@ export class PerschangesService {
         }
         // Прогрес в стейтах
         else if (changesMap[n].tskProgrBefore != changesMap[n].tskProgrAfter
-          && changesMap[n].tskProgrAfter != 0  && this.afterPers.isNoExpShow != true) {
+          && changesMap[n].tskProgrAfter != 0 && this.afterPers.isNoExpShow != true) {
           changes.push(
             new ChangesModel(changesMap[n].name, 'state', changesMap[n].tskProgrBefore, changesMap[n].tskProgrAfter, 0, changesMap[n].tskProgrTotal, changesMap[n].img)
           );

@@ -73,7 +73,7 @@ export class QwestDetailComponent implements OnInit {
     const dialogRef = this.dialog.open(AddItemDialogComponent, {
       panelClass: 'my-dialog',
       data: { header: 'Добавить миссию', text: '' },
-      
+
       backdropClass: 'backdrop'
     });
 
@@ -149,6 +149,28 @@ export class QwestDetailComponent implements OnInit {
         break;
       }
     }
+  }
+
+  setExp(i: number) {
+    let exp = (this.srv.pers.nextExp - this.srv.pers.prevExp) * 10.0;
+    let expChange = 0;
+
+    switch (i) {
+      case 1:
+        expChange = exp * 0.25;
+        break;
+      case 2:
+        expChange = exp * 0.5;
+        break;
+      case 3:
+        expChange = exp * 1;
+        break;
+
+      default:
+        break;
+    }
+
+    this.qwest.exp = Math.ceil(expChange);
   }
 
   /**

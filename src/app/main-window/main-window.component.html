@@ -27,7 +27,7 @@
             <div class="flex-grow-1 text-center">
               <div class="pointer">
                 <ng-container *ngIf="t.requrense != 'нет' && checkDate(t.date)" class="bg-danger">
-                  [{{getDateString(t.date)}}!]
+                  [{{getDateString(t.date)}}]
                 </ng-container>
                 <ng-container *ngIf="t.requrense != 'нет'; else elseTemplate">
                   {{t.tittle}}
@@ -85,7 +85,7 @@
             <ng-container
               *ngIf="this.srv.pers.currentTask.requrense != 'нет' && checkDate(this.srv.pers.currentTask.date)"
               class="bg-danger">
-              [{{getDateString(this.srv.pers.currentTask.date)}}!]
+              [{{getDateString(this.srv.pers.currentTask.date)}}]
             </ng-container>
             {{this.srv.pers.currentTask.tittle}}
             <!-- {{this.srv.pers.currentTask.imageLvl + '/' + this.srv.pers.currentTask.image}} -->

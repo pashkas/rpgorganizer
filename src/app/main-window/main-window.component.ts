@@ -13,6 +13,7 @@ import { LevelUpMsgComponent } from '../level-up-msg/level-up-msg.component';
 import { DiaryEditParamsComponent } from '../diary/diary-edit-params/diary-edit-params.component';
 import { sortArr } from 'src/Models/sortArr';
 import { ArrSortDialogComponent } from '../arr-sort-dialog/arr-sort-dialog.component';
+import * as moment from 'moment';
 
 @Component({
   selector: 'app-main-window',
@@ -26,7 +27,7 @@ export class MainWindowComponent implements OnInit {
   isFailShownOv = false;
   isSort: boolean = false;
   isSucessShown = false;
-  isSucessShownOv=false;
+  isSucessShownOv = false;
   lastGlobalBeforeSort: boolean;
   qwickSortVals: sortArr[] = [];
 
@@ -240,6 +241,16 @@ export class MainWindowComponent implements OnInit {
       return "";
     }
     let date = new Date(dt);
+
+    let dateTask = moment(dt);
+    let yesteday = moment(new Date()).add(-1, 'd');
+    if (dateTask.isSame(yesteday, 'date')) {
+      return 'Вчера';
+    }
+    if (dateTask.isSame(yesteday.add(-1, 'day'), 'date')) {
+      return 'Позавчера';
+    }
+
     return date.toLocaleDateString([], { day: 'numeric', month: 'numeric' }); // + ' | ' + date.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
   }
 
@@ -474,9 +485,12 @@ export class MainWindowComponent implements OnInit {
   setView() {
     if (this.srv.pers.sellectedView === 'квесты') {
       this.srv.setView('навыки');
+      this.srv.pers.currentQwestId = null;
+      this.srv.isGlobalTaskView = false;
     }
     else {
       this.srv.setView('квесты');
+      this.srv.isGlobalTaskView = true;
     }
   }
 
@@ -504,6 +518,9 @@ export class MainWindowComponent implements OnInit {
     if (!this.isSort) {
       this.setIndex(i);
       this.setGlobalTaskView(false);
+      if (this.srv.pers.sellectedView == 'квесты') {
+        if (this.srv.pers.currentTask.plusToNames.length > 0) { this.srv.pers.currentQwestId = this.srv.pers.currentTask.plusToNames[0].linkId; }
+      }
     }
   }
 
@@ -516,7 +533,7 @@ export class MainWindowComponent implements OnInit {
       await this.delay(1000);
       this.isSucessShown = false;
     }
-    else{
+    else {
       this.isFailShownOv = true;
       await this.delay(250);
       this.isFailShownOv = false;

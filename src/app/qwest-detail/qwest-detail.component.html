@@ -131,11 +131,14 @@
     </mat-form-field>
 
     <!-- Опыт -->
-    <mat-form-field class="w-100">
-      <input matInput autocomplete="off" placeholder="Опыт" [(ngModel)]="qwest.exp" name="exp">
-    </mat-form-field>
-
-
+    <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="8px">
+      <mat-form-field class="w-100">
+        <input matInput autocomplete="off" placeholder="Опыт" [(ngModel)]="qwest.exp" name="exp">
+      </mat-form-field>
+      <button mat-button color="primary" (click)="setExp(1)">Мало</button>
+      <button mat-button color="primary" (click)="setExp(2)">Средне</button>
+      <button mat-button color="primary" (click)="setExp(3)">Много</button>
+    </div>
 
     <!-- Задачи -->
     <div fxLayout="row" fxLayoutAlign="space-between center">

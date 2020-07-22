@@ -32,9 +32,8 @@
     <br *ngIf="tskAbility">
     <hr *ngIf="!tskAbility">
     <!-- Дата и время, повтор -->
-    <div xLayout="row" fxLayoutAlign="space-around center" class="form-row" *ngIf="tskAbility">
+    <div fxLayout="row" fxLayoutAlign="space-around center" class="form-row" *ngIf="tskAbility">
       <div>
-        <!-- <label class="active">Дата</label> -->
         {{getDateString(tsk)}}
         <ng-container *ngIf="tskAbility">
           ({{tsk.requrense}})

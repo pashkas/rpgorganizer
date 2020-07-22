@@ -661,7 +661,7 @@ export class PersService {
           ab.tasks.forEach(tsk => {
             if (tsk.states.length > 0 && tsk.isSumStates) {
               tsk.states.forEach(st => {
-                if (st.isActive || tsk.isSumStates) {
+                if (st.isActive || (tsk.isSumStates && this.pers.isTES)) {
                   let t = this.getTskFromState(tsk, st, true);
                   tasks.push(t);
                 }
@@ -795,6 +795,8 @@ export class PersService {
 
             this.savePers(false);
           }
+
+          this.setView('навыки');
         }
         // Если перса пока что не было
         else if (data === undefined && usr.id != undefined) {
@@ -1639,10 +1641,10 @@ export class PersService {
       const qw = this.pers.qwests[index];
       qw.tasks.forEach(tsk => {
         if (tsk.id === id) {
-          task = tsk;
           this.pers.currentQwestId = qw.id;
-
           this.pers.qwests.unshift(this.pers.qwests.splice(index, 1)[0]);
+
+          task = tsk;
         }
       });
     }
@@ -1933,14 +1935,18 @@ export class PersService {
               if (subTasks.length > 0) {
                 let stT = this.getTskFromState(tsk, subTasks[0], false);
                 tasks.push(stT);
+                if (qw.id === this.pers.currentQwestId) {
+                  this.setCurInd(tasks.indexOf(stT));
+                }
               }
               else {
                 tasks.push(tsk);
+                if (qw.id === this.pers.currentQwestId) {
+                  this.setCurInd(tasks.indexOf(tsk));
+                }
               }
 
-              if (qw.id === this.pers.currentQwestId) {
-                this.setCurInd(tasks.indexOf(tsk));
-              }
+              
             }
             break;
           }
@@ -2036,8 +2042,8 @@ export class PersService {
   private getTskFromState(tsk: Task, st: taskState, isAll: boolean) {
     let stT = new Task();
     let stateProgr;
-    stT.tittle = tsk.name + ': ' + st.name;
-    //stT.tittle = st.name;
+    //stT.tittle = tsk.name + ': ' + st.name;
+    stT.tittle = st.name;
 
     if (!isAll) {
       let all = tsk.states.filter(n => n.isActive).length;
@@ -2436,7 +2442,8 @@ export class PersService {
 
       if (plusState) {
         if (tsk.states.length > 0 && !tsk.isSumStates) {
-          tsk.tittle = tsk.name + ': ' + plusState;
+          // tsk.tittle = tsk.name + ': ' + plusState;
+          tsk.tittle = plusState;
         }
         else {
           tsk.tittle = tsk.name + ' ' + plusState;

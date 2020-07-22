@@ -430,7 +430,7 @@
           <!-- Инвентарь -->
           <div style="padding-left: 10px;" fxFlexFill fxLayoutAlign="center center" fxLayout="row wrap"
             fxLayoutGap="10px grid">
-            <div fxFlex="33" *ngFor="let rev of this.srv.pers.inventory">
+            <div fxFlex="33" class="border" *ngFor="let rev of this.srv.pers.inventory" [ngStyle]="{'border-color': rev.rare | rarecol}" style="border-width: 6px!important;">
               <div style="cursor: pointer;" (click)="useRevard(rev)" fxLayout="column"
                 fxLayoutAlign="space-around center">
                 <img src="{{rev.image}}" class="img-fluid rounded"
