@@ -14,6 +14,8 @@ import { DiaryEditParamsComponent } from '../diary/diary-edit-params/diary-edit-
 import { sortArr } from 'src/Models/sortArr';
 import { ArrSortDialogComponent } from '../arr-sort-dialog/arr-sort-dialog.component';
 import * as moment from 'moment';
+import { AddItemDialogComponent } from '../add-item-dialog/add-item-dialog.component';
+import { TskTimeValDialogComponent } from '../tsk-time-val-dialog/tsk-time-val-dialog.component';
 
 @Component({
   selector: 'app-main-window',
@@ -93,8 +95,8 @@ export class MainWindowComponent implements OnInit {
     const aTask = tasks[a];
     const bTask = tasks[b];
 
-    let aName = aTask.name;
-    let bName = bTask.name;
+    let aName = aTask.tittle;
+    let bName = bTask.tittle;
 
     let qVal = this.qwickSortVals.find(n => n.first == aTask.id && n.second == bTask.id);
     if (qVal == undefined) {
@@ -103,7 +105,7 @@ export class MainWindowComponent implements OnInit {
         this.qwickSortVals.push(new sortArr(bTask.id, aTask.id, 0));
       }
       else {
-        let result = await this.openDialog(aName, bName);
+        let result = await this.openDialog(aTask, bTask);
 
         if (result == true) {
           this.qwickSortVals.push(new sortArr(aTask.id, bTask.id, -1));
@@ -223,17 +225,22 @@ export class MainWindowComponent implements OnInit {
   }
 
   firstOrGlobal() {
-    if (this.srv.isGlobalTaskView) {
-      this.focusFirst();
+    if (this.srv.isGlobalTaskView == true) {
+      this.focusFocus();
     }
     else {
       this.setGlobalTaskView(true);
     }
   }
 
-  focusFirst() {
+  focusFocus() {
     this.setGlobalTaskView(false);
-    this.srv.setCurInd(0);
+    if (this.srv.pers.currentTaskIndex) {
+      this.srv.setCurInd(this.srv.pers.currentTaskIndex);
+    }
+    else {
+      this.srv.setCurInd(0);
+    }
   }
 
   getDateString(dt: Date) {
@@ -307,8 +314,11 @@ export class MainWindowComponent implements OnInit {
     if (lower.match(/(день|днем|обед)/)) {
       return 2;
     }
-    if (lower.match(/(вечер|вечером|ужин|сном)/)) {
+    if (lower.match(/(вечер|вечером|ужин)/)) {
       return 3;
+    }
+    if (lower.match(/(сном)/)) {
+      return 4;
     }
 
     return -1
@@ -319,7 +329,7 @@ export class MainWindowComponent implements OnInit {
     if (i >= this.srv.pers.tasks.length) {
       i = 0;
     }
-    this.setIndex(i);
+    this.srv.setCurInd(i);
   }
 
   ngOnDestroy(): void {
@@ -350,7 +360,7 @@ export class MainWindowComponent implements OnInit {
     // e.cancelBubble = true;
     // e.returnValue = false;
 
-    this.setIndex(0);
+    this.srv.setCurInd(0);
   }
 
   onSwipeLeft(ev) {
@@ -361,9 +371,32 @@ export class MainWindowComponent implements OnInit {
     this.nextTask();
   }
 
-  async openDialog(aName, bName): Promise<boolean> {
-    let aval = this.getNameVal(aName);
-    let bval = this.getNameVal(bName);
+  async setTime(tsk: Task): Promise<number> {
+    let aval = this.getNameVal(tsk.tittle);
+
+    if (aval != -1) {
+      return Promise.resolve(aval);
+    }
+
+    if (!tsk.timeVal) {
+      tsk.timeVal = -1;
+    }
+
+    const dialogRef = this.dialog.open(TskTimeValDialogComponent, {
+      data: { name: tsk.tittle, timeVal: tsk.timeVal },
+      width: '800px'
+    });
+
+    return dialogRef.afterClosed()
+      .toPromise() // here you have a Promise instead an Observable
+      .then(result => {
+        return Promise.resolve(result); // will return a Promise here
+      });
+  }
+
+  async openDialog(aTask: Task, bTask: Task): Promise<boolean> {
+    let aval = aTask.timeVal;
+    let bval = bTask.timeVal;
 
     if (aval != -1 && bval != -1) {
       if (aval < bval) {
@@ -375,7 +408,7 @@ export class MainWindowComponent implements OnInit {
     }
 
     const dialogRef = this.dialog.open(ArrSortDialogComponent, {
-      data: { aName: aName, bName: bName },
+      data: { aName: aTask.tittle, bName: bTask.tittle },
       width: '800px'
     });
 
@@ -395,7 +428,130 @@ export class MainWindowComponent implements OnInit {
     if (i < 0) {
       i = this.srv.pers.tasks.length - 1;
     }
-    this.setIndex(i);
+    this.srv.setCurInd(i);
+  }
+
+  setGlobalTaskView(b: boolean) {
+    this.srv.saveGlobalTaskViewState(b);
+  }
+
+  /**
+   * Задаем ордер для "подзадачи" из статусов.
+   * @param tskId 
+   * @param stateId 
+   * @param idx 
+   */
+  setIndForState(tskId: string, stateId: any, idx: number) {
+    // Находим задачу
+    let task: Task;
+    let abil: Ability;
+    ({ task, abil } = this.srv.findTaskAnAb(tskId, task, abil));
+
+    if (task) {
+      for (let i = 0; i < task.states.length; i++) {
+        const st = task.states[i];
+        if (st.id === stateId) {
+          task.states[i].order = idx;
+        }
+      }
+    }
+  }
+
+  addToQwest() {
+    let qwest = this.srv.pers.qwests.find(n => n.id == this.srv.pers.currentQwestId)
+
+    if (qwest) {
+      const dialogRef = this.dialog.open(AddItemDialogComponent, {
+        panelClass: 'my-dialog',
+        data: { header: 'Добавить миссию', text: '' },
+
+        backdropClass: 'backdrop'
+      });
+
+      dialogRef.afterClosed()
+        .subscribe(name => {
+          if (name) {
+            this.srv.addTskToQwest(qwest, name);
+            this.srv.pers.tasks = qwest.tasks.filter(n => !n.isDone);
+          }
+        });
+    }
+  }
+
+  setSort() {
+    if (this.isSort) {
+      if (this.srv.pers.sellectedView === 'квесты') {
+        let qwest = this.srv.pers.qwests.find(n => n.id == this.srv.pers.currentQwestId)
+        if (qwest) {
+          for (let index = 0; index < this.srv.pers.tasks.length; index++) {
+            this.srv.pers.tasks[index].order = index;
+          }
+          qwest.tasks.sort((a, b) => a.order - b.order);
+        }
+      }
+      else {
+        for (let index = 0; index < this.srv.pers.tasks.length; index++) {
+          if (this.srv.pers.tasks[index].parrentTask) {
+            this.setIndForState(this.srv.pers.tasks[index].parrentTask, this.srv.pers.tasks[index].id, index);
+          }
+          else {
+            this.srv.pers.tasks[index].order = index;
+          }
+        }
+      }
+
+      this.srv.savePers(false);
+      this.setGlobalTaskView(this.lastGlobalBeforeSort);
+    }
+    else {
+      this.lastGlobalBeforeSort = this.srv.isGlobalTaskView;
+      this.setGlobalTaskView(true);
+      if (this.srv.pers.sellectedView === 'квесты') {
+        let qwest = this.srv.pers.qwests.find(n => n.id == this.srv.pers.currentQwestId)
+        if (qwest) {
+          this.srv.pers.tasks = qwest.tasks.filter(n => !n.isDone);
+        }
+        else {
+          this.srv.pers.tasks = [];
+        }
+      }
+      else {
+        this.srv.getAllAbTasks();
+      }
+    }
+
+    this.isSort = !this.isSort;
+  }
+
+  /**
+   * Задать вид - задачи, квесты.
+   * @param name Название вида.
+   */
+  setView() {
+    if (this.srv.pers.sellectedView === 'квесты') {
+      this.srv.setView('навыки');
+      this.srv.pers.currentQwestId = null;
+      this.srv.isGlobalTaskView = false;
+    }
+    else {
+      this.srv.setView('квесты');
+      this.srv.isGlobalTaskView = true;
+    }
+  }
+
+  async smartSort() {
+    const tLength = this.srv.pers.tasks.length;
+    this.qwickSortVals = [];
+
+    await this.setTaskTime(this.srv.pers.tasks);
+    this.srv.pers.tasks = await this.quickSort2(this.srv.pers.tasks);
+  }
+
+  async setTaskTime(arr: Task[]) {
+    for (let i = 0; i < arr.length; i++) {
+      const tsk = arr[i];
+      tsk.timeVal = await this.setTime(tsk);
+    }
   }
 
   async quickSort2(arr: Task[]) {
@@ -425,82 +581,6 @@ export class MainWindowComponent implements OnInit {
     return Promise.resolve(leftArr.concat(pivot, rightArr));
   }
 
-  setGlobalTaskView(b: boolean) {
-    this.srv.saveGlobalTaskViewState(b);
-  }
-
-  /**
-   * Задаем ордер для "подзадачи" из статусов.
-   * @param tskId 
-   * @param stateId 
-   * @param idx 
-   */
-  setIndForState(tskId: string, stateId: any, idx: number) {
-    // Находим задачу
-    let task: Task;
-    let abil: Ability;
-    ({ task, abil } = this.srv.findTaskAnAb(tskId, task, abil));
-
-    if (task) {
-      for (let i = 0; i < task.states.length; i++) {
-        const st = task.states[i];
-        if (st.id === stateId) {
-          task.states[i].order = idx;
-        }
-      }
-    }
-  }
-
-  setIndex(i: number) {
-    this.srv.setCurInd(i);
-  }
-
-  setSort() {
-    if (this.isSort) {
-      for (let index = 0; index < this.srv.pers.tasks.length; index++) {
-        if (this.srv.pers.tasks[index].parrentTask) {
-          this.setIndForState(this.srv.pers.tasks[index].parrentTask, this.srv.pers.tasks[index].id, index);
-        }
-        else {
-          this.srv.pers.tasks[index].order = index;
-        }
-      }
-
-      this.srv.savePers(false);
-      this.setGlobalTaskView(this.lastGlobalBeforeSort);
-    }
-    else {
-      this.lastGlobalBeforeSort = this.srv.isGlobalTaskView;
-      this.setGlobalTaskView(true);
-      this.srv.getAllAbTasks();
-    }
-
-    this.isSort = !this.isSort;
-  }
-
-  /**
-   * Задать вид - задачи, квесты.
-   * @param name Название вида.
-   */
-  setView() {
-    if (this.srv.pers.sellectedView === 'квесты') {
-      this.srv.setView('навыки');
-      this.srv.pers.currentQwestId = null;
-      this.srv.isGlobalTaskView = false;
-    }
-    else {
-      this.srv.setView('квесты');
-      this.srv.isGlobalTaskView = true;
-    }
-  }
-
-  async smartSort() {
-    const tLength = this.srv.pers.tasks.length;
-    this.qwickSortVals = [];
-
-    this.srv.pers.tasks = await this.quickSort2(this.srv.pers.tasks);
-  }
-
   taskToEnd(tsk: Task) {
     this.srv.setTaskOrder(tsk, true, true);
     this.srv.setCurInd(0);
@@ -516,11 +596,8 @@ export class MainWindowComponent implements OnInit {
 
   tskClick(i) {
     if (!this.isSort) {
-      this.setIndex(i);
       this.setGlobalTaskView(false);
-      if (this.srv.pers.sellectedView == 'квесты') {
-        if (this.srv.pers.currentTask.plusToNames.length > 0) { this.srv.pers.currentQwestId = this.srv.pers.currentTask.plusToNames[0].linkId; }
-      }
+      this.srv.setCurInd(i);
     }
   }
 

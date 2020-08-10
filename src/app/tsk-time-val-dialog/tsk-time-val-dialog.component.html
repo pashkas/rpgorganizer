@@ -1,0 +1,28 @@
+<h3 mat-dialog-title class="text-center">{{name}}</h3>
+<div mat-dialog-content>
+  <div class="text-center">
+    <button mat-flat-button [color]="timeVal==1 ? 'accent' : null" class="w-100 m-1" (click)="cl(1)">
+        Утро
+    </button>
+  </div>
+  <div class="text-center">
+    <button mat-flat-button [color]="timeVal==2 ? 'accent' : null" class="w-100 m-1" (click)="cl(2)">
+        День
+    </button>
+  </div>
+  <div class="text-center">
+    <button mat-flat-button [color]="timeVal==3 ? 'accent' : null" class="w-100 m-1" (click)="cl(3)">
+        Вечер
+    </button>
+  </div>
+  <div class="text-center">
+    <button mat-flat-button [color]="timeVal==4 ? 'accent' : null" class="w-100 m-1" (click)="cl(4)">
+        Перед сном
+    </button>
+  </div>
+  <div class="text-center">
+    <button mat-flat-button [color]="timeVal==5 ? 'accent' : null" class="w-100 m-1" (click)="cl(4)">
+        Весь день
+    </button>
+  </div>
+</div>

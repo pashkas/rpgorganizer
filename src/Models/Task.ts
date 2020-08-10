@@ -72,6 +72,7 @@ export class Task implements IImg {
     tesValue: number = 0;
     roundVal: number = 0;
     plusStateMax: string;
+    timeVal: number;
 
     /**
      * Получить формулу для роста/понижения значения задачи.

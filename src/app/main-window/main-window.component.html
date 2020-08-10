@@ -29,7 +29,7 @@
                 <ng-container *ngIf="t.requrense != 'нет' && checkDate(t.date)" class="bg-danger">
                   [{{getDateString(t.date)}}]
                 </ng-container>
-                <ng-container *ngIf="t.requrense != 'нет'; else elseTemplate">
+                <ng-container *ngIf="t.requrense != 'нет' || isSort; else elseTemplate">
                   {{t.tittle}}
                 </ng-container>
                 <ng-template #elseTemplate>
@@ -56,9 +56,14 @@
           </div>
         </div>
       </ng-container>
-      <div class="text-right" *ngIf="isSort">
+      <div class="text-right" *ngIf="isSort && srv.pers.sellectedView != 'квесты'">
         <button mat-flat-button color="accent" (click)="smartSort()">
           <i class="fa fa-lg fa-expand-arrows-alt"></i>
+        </button>
+      </div>
+      <div class="text-right" *ngIf="isSort && srv.pers.sellectedView == 'квесты'">
+        <button mat-flat-button color="accent" (click)="addToQwest()">
+          <i class="fa fa-lg fa-plus"></i>
         </button>
       </div>
     </mat-list>
@@ -110,27 +115,15 @@
 
   </ng-container>
 
-  <!-- Строка инфы о персонаже -->
-  <div class="border border-dark flex-grow-1 w-100" [ngStyle]="{'height': '24px'}">
-    <div class="progress h-100 position-relative" *ngIf="true">
-      <div [style.width]="srv.pers.progressValue + '%'" class="progress-bar h-100"
-        [ngStyle]="{'background-color': 'LightGreen', 'width': '50%'}">
-      </div>
-      <p [ngStyle]="{'font-size': 'small'}"
-        class="align-self-center justify-content-center d-flex position-absolute w-100">
-        <!-- {{srv.pers.name}} ({{srv.pers.rang.name | lowercase}}) -->
-        <!-- {{srv.pers.name+', уровень ' + srv.pers.level+''}}:{{' '+(srv.pers.exp * 10.0 | number : '1.0-0')+'/'+(srv.pers.nextExp * 10.0 | number : '1.0-0')}} -->
-        {{srv.pers.name+', уровень ' + srv.pers.level+''}}:{{' '+((srv.pers.exp - srv.pers.prevExp) * 10.0 | number : '1.0-0')+'/'+((srv.pers.nextExp- srv.pers.prevExp) * 10.0 | number : '1.0-0')}}
-      </p>
-    </div>
-  </div>
+  <app-progress-bar-num
+    [text]="srv.pers.name+', уровень ' + srv.pers.level+': '+((srv.pers.exp - srv.pers.prevExp) * 10.0 | number : '1.0-0')+'/'+((srv.pers.nextExp- srv.pers.prevExp) * 10.0 | number : '1.0-0')"
+    [val]="srv.pers.progressValue">
+  </app-progress-bar-num>
   <div fxLayout="row" fxLayoutAlign="space-between center" class="w-100 h-100 py-1" style="min-height: 120px;">
-
     <button (press)="editDiaryItem()" (contextmenu)="$event.preventDefault()" class="h-100 w-100 px-1 py-0 text-left"
       mat-button routerLink="/pers" (click)="openPersList()">
       <img (contextmenu)="$event.preventDefault()" src="{{srv.pers.image}}" class="img-fluid h-100 rounded"
-        [ngStyle]="{'object-fit': 'contain'}"
-        [ngClass]="{'vibrate-1': isFailShown}">
+        [ngStyle]="{'object-fit': 'contain'}" [ngClass]="{'vibrate-1': isFailShown}">
     </button>
     <!-- Кнопки -->
     <div fxLayout="row" fxLayoutAlign="end center" fxLayoutGap="0.3em" class="w-100 h-100 px-2">

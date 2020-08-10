@@ -2,8 +2,8 @@
     display: flex;
     align-content: center;
     align-items: center;
-    height: 24px;
-    background: lightgray;
+    height: 22px;
+    background: rgb(233, 232, 232);
 }
 
 .text-section {

@@ -62,8 +62,6 @@ export class PersChangesItemComponent implements OnInit {
 
       player.play();
     }
-
-
   }
 
 }

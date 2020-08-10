@@ -1,0 +1,15 @@
+<!-- <section class="example-section" *ngIf="true">
+  <mat-progress-bar [color]="'white'" [value]="val" style="height: 20px;">
+  </mat-progress-bar>
+  <div class="text-section text-center w-100"> {{text}} </div>
+</section> -->
+
+<section class="example-section">
+  <div [style.width]="val + '%'" class="progress-bar h-100"
+    [ngStyle]="{'background-color': 'LightGreen'}">
+  </div>
+  <div class="text-section text-center w-100">
+    {{text}}
+  </div>
+</section>
+

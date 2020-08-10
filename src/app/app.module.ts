@@ -16,10 +16,12 @@ import { LevelUpMsgComponent } from './level-up-msg/level-up-msg.component';
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { registerLocaleData } from '@angular/common';
 import localeRu from '@angular/common/locales/ru';
-import { GestureConfig } from '@angular/material';
+import { GestureConfig, MatProgressSpinnerModule } from '@angular/material';
 import { SharedModule } from './shared/shared.module';
 import { TurnirTableComponent } from './turnir-table/turnir-table.component';
 import { ArrSortDialogComponent } from './arr-sort-dialog/arr-sort-dialog.component';
+import { ProgressBarNumComponent } from './shared/progress-bar-num/progress-bar-num.component';
+import { TskTimeValDialogComponent } from './tsk-time-val-dialog/tsk-time-val-dialog.component';
 
 registerLocaleData(localeRu, 'ru');
 
@@ -33,8 +35,11 @@ registerLocaleData(localeRu, 'ru');
     LevelUpMsgComponent,
     TurnirTableComponent,
     ArrSortDialogComponent,
+    ProgressBarNumComponent,
+    TskTimeValDialogComponent,
   ],
   imports: [
+    MatProgressSpinnerModule,
     SharedModule,
     BrowserModule,
     BrowserAnimationsModule,
@@ -56,7 +61,8 @@ registerLocaleData(localeRu, 'ru');
   entryComponents:
     [
       LevelUpMsgComponent,
-      ArrSortDialogComponent
+      ArrSortDialogComponent,
+      TskTimeValDialogComponent
     ]
 })
 export class AppModule {
