@@ -136,26 +136,7 @@ export class PersService {
 
     //let mnstrLvl = floor;
 
-    let mnstrLvl = 0;
-
-    if (this.pers.level < 10) {
-      mnstrLvl = 0;
-    }
-    else if (this.pers.level < 20) {
-      mnstrLvl = 1;
-    }
-    else if (this.pers.level < 30) {
-      mnstrLvl = 2;
-    }
-    else if (this.pers.level < 60) {
-      mnstrLvl = 3;
-    }
-    else if (this.pers.level < 90) {
-      mnstrLvl = 4;
-    }
-    else {
-      mnstrLvl = 5;
-    }
+    let mnstrLvl =  this.getMonsterLevel(this.pers.level);
 
     // let rnd = Math.random();
     // if (rnd <= left) {
@@ -264,6 +245,27 @@ export class PersService {
     // tsk.image = path;
 
     // return;
+  }
+
+  private getMonsterLevel(prsLvl: number) {
+    if (prsLvl < 10) {
+      return 0;
+    }
+    else if (prsLvl < 20) {
+      return 1;
+    }
+    else if (prsLvl < 30) {
+      return 2;
+    }
+    else if (prsLvl < 60) {
+      return 3;
+    }
+    else if (prsLvl < 90) {
+      return 4;
+    }
+    else {
+      return 5;
+    }
   }
 
   abSorter(): (a: Ability, b: Ability) => number {
@@ -831,6 +833,130 @@ export class PersService {
       });
   }
 
+  getPersTasks() {
+    let tasks: Task[] = [];
+
+    // Задачи навыков
+    if (!this.pers.sellectedView || this.pers.sellectedView === "навыки") {
+      this.pers.characteristics.forEach(cha => {
+        cha.abilities.forEach(ab => {
+          // || ab.isOpen
+          if ((ab.value >= 1 || this.pers.isTES) && !ab.isNotDoneReqvirements) {
+            ab.tasks.forEach(tsk => {
+              if (this.checkTask(tsk)) {
+                // Для показа опыта за задачу
+                if (!this.pers.isTES) {
+                  let exp = this.getTaskChangesExp(tsk, true) * 10.0;
+                  exp = Math.floor(exp);
+                  tsk.plusToNames.unshift(new plusToName('+' + exp + ' exp', null, null));
+                }
+
+                if (tsk.isSumStates && tsk.states.length > 0) {
+                  tsk.states.forEach(st => {
+                    if (st.isActive && !st.isDone) {
+                      let stT = this.getTskFromState(tsk, st, false);
+                      tasks.push(stT);
+                    }
+                  });
+                }
+                else {
+                  tasks.push(tsk);
+                }
+              }
+            });
+          }
+
+        });
+      });
+
+      // Удаляем все задачи с датами, большими чем минимальная
+      if (tasks.length > 0) {
+        let minDate = new Date().setHours(0, 0, 0, 0);
+
+        tasks.forEach(t => {
+          let tDate = new Date(t.date).setHours(0, 0, 0, 0);
+
+          // По дате
+          if (tDate.valueOf() < minDate.valueOf()) {
+            minDate = tDate;
+          }
+        });
+
+        tasks = tasks.filter(n => {
+          return new Date(n.date).setHours(0, 0, 0, 0).valueOf() <= minDate.valueOf();
+        });
+      }
+    }
+    // Задачи квестов
+    else {
+      if (!this.pers.isGlobalView) {
+        this.getQwestTasks();
+        tasks = this.pers.tasks;
+      }
+      else{
+        this.pers.qwests.forEach(qw => {
+          for (let index = 0; index < qw.tasks.length; index++) {
+            const tsk = qw.tasks[index];
+            if (!tsk.isDone) {
+              if (this.checkTask(tsk)) {
+                const subTasks = tsk.states.filter(n => !n.isDone);
+                if (subTasks.length > 0) {
+                  let stT = this.getTskFromState(tsk, subTasks[0], false);
+                  tasks.push(stT);
+                  if (qw.id === this.pers.currentQwestId) {
+                    this.setCurInd(tasks.indexOf(stT));
+                  }
+                }
+                else {
+                  tasks.push(tsk);
+                  if (qw.id === this.pers.currentQwestId) {
+                    this.setCurInd(tasks.indexOf(tsk));
+                  }
+                }
+              }
+              break;
+            }
+          }
+        });
+      }
+    }
+
+    return tasks;
+  }
+
+  getQwestTasks(isSort = false) {
+    let qwest = this.pers.qwests.find(n => n.id == this.pers.currentQwestId);
+    if (qwest) {
+      let tasks: Task[] = [];
+      for (let i = 0; i < qwest.tasks.length; i++) {
+        const tsk = qwest.tasks[i];
+        if (!tsk.isDone) {
+          if (!isSort) {
+            if (this.checkTask(tsk)) {
+              const subTasks = tsk.states.filter(n => !n.isDone);
+              if (subTasks.length > 0) {
+                let stT = this.getTskFromState(tsk, subTasks[0], false);
+                tasks.push(stT);
+              }
+              else {
+                tasks.push(tsk);
+              }
+            }
+          }
+          else {
+            tasks.push(tsk);
+          }
+        }
+      }
+      this.pers.tasks = tasks;
+    }
+    else {
+      this.pers.tasks = [];
+    }
+
+    this.setCurInd(0);
+  }
+
   getSet(tsk: Task, aim: number): number[] {
     let result: number[] = [];
 
@@ -1032,6 +1158,7 @@ export class PersService {
 
   saveGlobalTaskViewState(b: boolean) {
     this.isGlobalTaskView = b;
+    this.pers.isGlobalView = b;
   }
 
   /**
@@ -1445,12 +1572,10 @@ export class PersService {
   setCurInd(i: number): any {
     this.pers.currentTaskIndex = i;
     this.pers.currentTask = this.pers.tasks[i];
-    
+
     if (this.pers.sellectedView == 'квесты') {
-      if (this.pers.currentTask && this.pers.currentTask.plusToNames && this.pers.currentTask.plusToNames.length > 0) 
-      { 
-        debugger;
-        this.pers.currentQwestId = this.pers.currentTask.plusToNames[0].linkId; 
+      if (this.pers.currentTask && this.pers.currentTask.plusToNames && this.pers.currentTask.plusToNames.length > 0) {
+        this.pers.currentQwestId = this.pers.currentTask.plusToNames[0].linkId;
       }
     }
   }
@@ -1565,6 +1690,46 @@ export class PersService {
     else {
       this.router.navigate(['/pers/ability', ab.id]);
     }
+  }
+
+  sortPersTasks(tasks: Task[]) {
+    this.pers.tasks = tasks.sort((a, b) => {
+      // Квесты не сортируем
+      if (a.requrense === 'нет' && b.requrense === 'нет') {
+        return 0;
+      }
+
+      // По типу
+      let aType = a.requrense === 'нет' ? 0 : 1;
+      let bType = b.requrense === 'нет' ? 0 : 1;
+
+      if (aType != bType) {
+        return -(aType - bType);
+      }
+
+      let aDate = new Date(a.date).setHours(0, 0, 0, 0);
+      let bDate = new Date(b.date).setHours(0, 0, 0, 0);
+      let aValDate = aDate.valueOf();
+      let bValDate = bDate.valueOf();
+
+      // По дате
+      if (aValDate != bValDate) {
+        return aDate.valueOf() - bDate.valueOf();
+      }
+
+      // По Order
+      if (!a.order) {
+        a.order = 0;
+      }
+      if (!b.order) {
+        b.order = 0;
+      }
+      if (a.order != b.order) {
+        return a.order - b.order;
+      }
+
+      return a.name.localeCompare(b.name);
+    });
   }
 
   sortRevards() {
@@ -1736,6 +1901,30 @@ export class PersService {
     }
   }
 
+  updateQwestTasksImages() {
+    for (const qwest of this.pers.qwests) {
+      for (const tsk of qwest.tasks) {
+        this.GetRndEnamy(tsk);
+        for (const sub of tsk.states) {
+          this.GetRndEnamy(sub);
+        }
+      }
+    }
+  }
+
+  updateAbTasksImages(){
+    for (const ch of this.pers.characteristics) {
+      for (const ab of ch.abilities) {
+        for (const tsk of ab.tasks) {
+          this.GetRndEnamy(tsk);
+          for (const st of tsk.states) {
+            this.GetRndEnamy(st);
+          }
+        }
+      }
+    }
+  }
+
   /**
    * Розыгрыш наград.
    */
@@ -1877,91 +2066,6 @@ export class PersService {
 
   private getMaxTes() {
     return this.pers.maxAttrLevel - 0.01;
-  }
-
-  private getPersTasks() {
-    let tasks: Task[] = [];
-
-    // Задачи навыков
-    if (!this.pers.sellectedView || this.pers.sellectedView === "навыки") {
-      this.pers.characteristics.forEach(cha => {
-        cha.abilities.forEach(ab => {
-          // || ab.isOpen
-          if ((ab.value >= 1 || this.pers.isTES) && !ab.isNotDoneReqvirements) {
-            ab.tasks.forEach(tsk => {
-              if (this.checkTask(tsk)) {
-                // Для показа опыта за задачу
-                if (!this.pers.isTES) {
-                  let exp = this.getTaskChangesExp(tsk, true) * 10.0;
-                  exp = Math.floor(exp);
-                  tsk.plusToNames.unshift(new plusToName('+' + exp + ' exp', null, null));
-                }
-
-                if (tsk.isSumStates && tsk.states.length > 0) {
-                  tsk.states.forEach(st => {
-                    if (st.isActive && !st.isDone) {
-                      let stT = this.getTskFromState(tsk, st, false);
-                      tasks.push(stT);
-                    }
-                  });
-                }
-                else {
-                  tasks.push(tsk);
-                }
-              }
-            });
-          }
-
-        });
-      });
-
-      // Удаляем все задачи с датами, большими чем минимальная
-      if (tasks.length > 0) {
-        let minDate = new Date().setHours(0, 0, 0, 0);
-
-        tasks.forEach(t => {
-          let tDate = new Date(t.date).setHours(0, 0, 0, 0);
-
-          // По дате
-          if (tDate.valueOf() < minDate.valueOf()) {
-            minDate = tDate;
-          }
-        });
-
-        tasks = tasks.filter(n => {
-          return new Date(n.date).setHours(0, 0, 0, 0).valueOf() <= minDate.valueOf();
-        });
-      }
-    }
-    // Задачи квестов
-    else {
-      this.pers.qwests.forEach(qw => {
-        for (let index = 0; index < qw.tasks.length; index++) {
-          const tsk = qw.tasks[index];
-          if (!tsk.isDone) {
-            if (this.checkTask(tsk)) {
-              const subTasks = tsk.states.filter(n => !n.isDone);
-              if (subTasks.length > 0) {
-                let stT = this.getTskFromState(tsk, subTasks[0], false);
-                tasks.push(stT);
-                if (qw.id === this.pers.currentQwestId) {
-                  this.setCurInd(tasks.indexOf(stT));
-                }
-              }
-              else {
-                tasks.push(tsk);
-                if (qw.id === this.pers.currentQwestId) {
-                  this.setCurInd(tasks.indexOf(tsk));
-                }
-              }
-            }
-            break;
-          }
-        }
-      });
-    }
-
-    return tasks;
   }
 
   private getRewsOfType(revType: any) {
@@ -2276,6 +2380,7 @@ export class PersService {
       }
     }
 
+    let prevPersLevel = this.pers.level;
     this.pers.level = persLevel;
     this.pers.nextExp = nextExp;
     this.pers.prevExp = startExp;
@@ -2295,6 +2400,11 @@ export class PersService {
     }
 
     this.pers.ON = ons;
+
+    if (this.getMonsterLevel(prevPersLevel) != this.getMonsterLevel(this.pers.level)) {
+      this.updateQwestTasksImages();
+      this.updateAbTasksImages();
+    }
   }
 
   private setPersRang() {
@@ -2499,46 +2609,6 @@ export class PersService {
         ((Math.floor(tsk.tesValue) + 1) - Math.floor(tsk.tesValue));
     }
     tsk.progressValue = tskProgress * 100;
-  }
-
-  private sortPersTasks(tasks: Task[]) {
-    this.pers.tasks = tasks.sort((a, b) => {
-      // Квесты не сортируем
-      if (a.requrense === 'нет' && b.requrense === 'нет') {
-        return 0;
-      }
-
-      // По типу
-      let aType = a.requrense === 'нет' ? 0 : 1;
-      let bType = b.requrense === 'нет' ? 0 : 1;
-
-      if (aType != bType) {
-        return -(aType - bType);
-      }
-
-      let aDate = new Date(a.date).setHours(0, 0, 0, 0);
-      let bDate = new Date(b.date).setHours(0, 0, 0, 0);
-      let aValDate = aDate.valueOf();
-      let bValDate = bDate.valueOf();
-
-      // По дате
-      if (aValDate != bValDate) {
-        return aDate.valueOf() - bDate.valueOf();
-      }
-
-      // По Order
-      if (!a.order) {
-        a.order = 0;
-      }
-      if (!b.order) {
-        b.order = 0;
-      }
-      if (a.order != b.order) {
-        return a.order - b.order;
-      }
-
-      return a.name.localeCompare(b.name);
-    });
   }
 
   private sortQwestTasks(qw: Qwest) {

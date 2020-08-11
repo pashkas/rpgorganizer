@@ -161,4 +161,5 @@ export class Pers {
     userId: any;
     nextExp: number;
     prevExp: number;
+    isGlobalView: boolean;
 }

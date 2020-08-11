@@ -36,6 +36,8 @@ export class MainWindowComponent implements OnInit {
   constructor(private route: ActivatedRoute, public srv: PersService, public dialog: MatDialog) {
   }
 
+  
+
   ReImages() {
     this.srv.reImages();
   }
@@ -183,6 +185,10 @@ export class MainWindowComponent implements OnInit {
       this.srv.taskPlus(t.id);
     }
     this.srv.changesAfter(true);
+
+    if (this.srv.pers.sellectedView == 'квесты') {
+      this.srv.getQwestTasks();
+    }
   }
 
   drop(event: CdkDragDrop<string[]>) {
@@ -222,14 +228,24 @@ export class MainWindowComponent implements OnInit {
     }
 
     this.srv.changesAfter(false);
+
+    if (this.srv.pers.sellectedView == 'квесты') {
+      this.srv.getQwestTasks();
+    }
   }
 
   firstOrGlobal() {
     if (this.srv.isGlobalTaskView == true) {
+      if (this.srv.pers.sellectedView == 'квесты') {
+        this.srv.getQwestTasks();
+      }
       this.focusFocus();
     }
     else {
       this.setGlobalTaskView(true);
+      this.isSort = false;
+      let tasks: Task[] = this.srv.getPersTasks();
+      this.srv.sortPersTasks(tasks);
     }
   }
 
@@ -487,6 +503,7 @@ export class MainWindowComponent implements OnInit {
             this.srv.pers.tasks[index].order = index;
           }
           qwest.tasks.sort((a, b) => a.order - b.order);
+          this.srv.getQwestTasks();
         }
       }
       else {
@@ -507,13 +524,7 @@ export class MainWindowComponent implements OnInit {
       this.lastGlobalBeforeSort = this.srv.isGlobalTaskView;
       this.setGlobalTaskView(true);
       if (this.srv.pers.sellectedView === 'квесты') {
-        let qwest = this.srv.pers.qwests.find(n => n.id == this.srv.pers.currentQwestId)
-        if (qwest) {
-          this.srv.pers.tasks = qwest.tasks.filter(n => !n.isDone);
-        }
-        else {
-          this.srv.pers.tasks = [];
-        }
+        this.srv.getQwestTasks(true);
       }
       else {
         this.srv.getAllAbTasks();
@@ -523,19 +534,21 @@ export class MainWindowComponent implements OnInit {
     this.isSort = !this.isSort;
   }
 
+
+
   /**
    * Задать вид - задачи, квесты.
    * @param name Название вида.
    */
   setView() {
     if (this.srv.pers.sellectedView === 'квесты') {
-      this.srv.setView('навыки');
+      this.setGlobalTaskView(false);
       this.srv.pers.currentQwestId = null;
-      this.srv.isGlobalTaskView = false;
+      this.srv.setView('навыки');
     }
     else {
+      this.setGlobalTaskView(true);
       this.srv.setView('квесты');
-      this.srv.isGlobalTaskView = true;
     }
   }
 
@@ -598,6 +611,9 @@ export class MainWindowComponent implements OnInit {
     if (!this.isSort) {
       this.setGlobalTaskView(false);
       this.srv.setCurInd(i);
+      if (this.srv.pers.sellectedView == 'квесты') {
+        this.srv.getQwestTasks();
+      }
     }
   }
 

@@ -132,7 +132,7 @@
         tmp
       </button> -->
 
-      <button [autofocus]="false" [ngClass]="{'disabled': isSort}" (click)="firstOrGlobal()" mat-icon-button>
+      <button [autofocus]="false" (click)="firstOrGlobal()" mat-icon-button>
         <img *ngIf="this.srv.isGlobalTaskView" src="assets/icons/right.png" class="img-fluid"
           [ngStyle]="{'object-fit': 'contain', 'height':'3em'}">
         <img src="assets/icons/left.png" *ngIf="!this.srv.isGlobalTaskView" class="img-fluid"
@@ -146,7 +146,8 @@
           <img *ngIf="srv.pers.sellectedView!='квесты'" src="assets/icons/qwests.png" class="img-fluid"
             [ngStyle]="{'object-fit': 'contain', 'height':'2.5em'}">
         </button>
-        <button (click)="setSort()" mat-icon-button>
+        <button (click)="setSort()" mat-icon-button
+          [ngClass]="{'disabled': this.srv.isGlobalTaskView && this.srv.pers.sellectedView=='квесты' && !this.isSort}">
           <img src="assets/icons/edit.png" class="img-fluid" [ngStyle]="{'object-fit': 'contain', 'height':'3em'}">
         </button>
       </div>

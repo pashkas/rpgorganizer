@@ -252,6 +252,9 @@ export class PersListComponent implements OnInit {
         });
       });
 
+      // Обновление картинок квестов
+      this.srv.updateQwestTasksImages();
+
       this.srv.pers.exp = 0;
       this.srv.pers.level = 0;
       this.srv.pers.inventory = [];
