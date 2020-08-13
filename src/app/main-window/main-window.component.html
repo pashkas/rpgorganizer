@@ -1,4 +1,4 @@
-<div class="grid-container" *ngIf="srv.pers">
+<div class="grid-container" *ngIf="srv.pers && !srv?.pers?.isRest">
   <!-- Если пусто -->
   <div *ngIf="!this.srv.pers.currentTask && !this.srv.isGlobalTaskView" fxLayout="row" fxLayoutAlign="center center">
     <h3 class="text-center" *ngIf="this.srv.pers.exp<=1">
@@ -167,3 +167,4 @@
   </div>
 </div>
 <div id="overlay" [ngClass]="{ovsuccess: isSucessShownOv, ovfail: isFailShownOv}"></div>
+<app-rest *ngIf="srv.pers && srv?.pers?.isRest"></app-rest>

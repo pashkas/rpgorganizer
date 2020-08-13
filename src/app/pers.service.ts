@@ -21,6 +21,20 @@ import * as moment from 'moment';
   providedIn: 'root'
 })
 export class PersService {
+  returnToAdventure() {
+    this.pers.isRest = false;
+    for (const ch of this.pers.characteristics) {
+      for (const ab of ch.abilities) {
+        for (const tsk of ab.tasks) {
+          let tskDate: moment.Moment = moment(tsk.date);
+          if (tskDate.isBefore(moment(new Date()), 'd')) {
+            tsk.date = new Date();
+          }
+        }
+      }
+    }
+    this.savePers(false);
+  }
   // Персонаж
   private unsubscribe$ = new Subject();
 
@@ -100,7 +114,7 @@ export class PersService {
   }
 
   GetRndEnamy(tsk: IImg): string {
-    let mnstrLvl =  this.getMonsterLevel(this.pers.level);
+    let mnstrLvl = this.getMonsterLevel(this.pers.level);
 
     tsk.imageLvl = '' + mnstrLvl;
     tsk.image = this.getImgPathRandome(mnstrLvl);
@@ -754,7 +768,7 @@ export class PersService {
         this.getQwestTasks();
         tasks = this.pers.tasks;
       }
-      else{
+      else {
         this.pers.qwests.forEach(qw => {
           for (let index = 0; index < qw.tasks.length; index++) {
             const tsk = qw.tasks[index];
@@ -1791,7 +1805,7 @@ export class PersService {
     }
   }
 
-  updateAbTasksImages(){
+  updateAbTasksImages() {
     for (const ch of this.pers.characteristics) {
       for (const ab of ch.abilities) {
         for (const tsk of ab.tasks) {

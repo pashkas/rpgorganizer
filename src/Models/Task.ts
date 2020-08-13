@@ -18,15 +18,16 @@ export class Task implements IImg {
         "нет",
     ];
 
-    static weekDays: string[] = [
-        "пн",
-        "вт",
-        "ср",
-        "чт",
-        "пт",
-        "сб",
-        "вс",
-    ];
+    static weekDays: string[] = [];
+    // [
+    //     "пн",
+    //     "вт",
+    //     "ср",
+    //     "чт",
+    //     "пт",
+    //     "сб",
+    //     "вс",
+    // ];
 
     tskWeekDays: string[] = [...Task.weekDays];
 

@@ -70,6 +70,12 @@ export class PersListComponent implements OnInit {
       });
   }
 
+  rest(){
+    this.srv.pers.isRest = true;
+    this.srv.savePers(false);
+    this.router.navigate(['/main']);
+  }
+
   /**
    * Создание нового квеста.
    */

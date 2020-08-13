@@ -23,6 +23,7 @@ import { ArrSortDialogComponent } from './arr-sort-dialog/arr-sort-dialog.compon
 import { ProgressBarNumComponent } from './shared/progress-bar-num/progress-bar-num.component';
 import { TskTimeValDialogComponent } from './tsk-time-val-dialog/tsk-time-val-dialog.component';
 import { ImageComponentComponent } from './image-component/image-component.component';
+import { RestComponent } from './rest/rest.component';
 
 registerLocaleData(localeRu, 'ru');
 
@@ -38,6 +39,7 @@ registerLocaleData(localeRu, 'ru');
     ArrSortDialogComponent,
     ProgressBarNumComponent,
     TskTimeValDialogComponent,
+    RestComponent,
   ],
   imports: [
     MatProgressSpinnerModule,

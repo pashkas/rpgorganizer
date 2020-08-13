@@ -162,4 +162,8 @@ export class Pers {
     nextExp: number;
     prevExp: number;
     isGlobalView: boolean;
+    /**
+     * Отдых в таверне.
+     */
+    isRest:boolean = false;
 }
