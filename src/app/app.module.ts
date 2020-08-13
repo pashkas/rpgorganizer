@@ -22,6 +22,7 @@ import { TurnirTableComponent } from './turnir-table/turnir-table.component';
 import { ArrSortDialogComponent } from './arr-sort-dialog/arr-sort-dialog.component';
 import { ProgressBarNumComponent } from './shared/progress-bar-num/progress-bar-num.component';
 import { TskTimeValDialogComponent } from './tsk-time-val-dialog/tsk-time-val-dialog.component';
+import { ImageComponentComponent } from './image-component/image-component.component';
 
 registerLocaleData(localeRu, 'ru');
 

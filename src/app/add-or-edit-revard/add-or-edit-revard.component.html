@@ -1,20 +1,20 @@
 <h1 mat-dialog-title class="text-center">{{data.header}}</h1>
 <div mat-dialog-content>
     <div fxLayout="column" fxLayoutAlign="space-around center">
-        <div class="text-center p-1" *ngIf="data.rev.image">
+        <!-- <div class="text-center p-1" *ngIf="data.rev.image">
             <img src="{{data.rev.image}}" class="img-fluid rounded"
                 [ngStyle]="{'object-fit': 'contain', 'height': '100px'}">
-        </div>
-
+        </div> -->
+        <app-image-component [(data)]="data.rev.image" [isCanEdit]="true"></app-image-component>
         <div fxFill fxLayoutGap='15px'>
             <mat-form-field fxFlex>
                 <input cdkFocusInitial matInput [(ngModel)]="data.rev.name" autocomplete="off" placeholder="Название"
                     name="data.rev.name">
             </mat-form-field>
-            <mat-form-field fxFlex="30">
+            <!-- <mat-form-field fxFlex="30">
                 <input matInput [(ngModel)]="data.rev.image" autocomplete="off" placeholder="Изображение"
                     name="data.rev.image">
-            </mat-form-field>
+            </mat-form-field> -->
         </div>
 
         <mat-form-field *ngIf="!data.isArt">

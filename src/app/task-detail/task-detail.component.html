@@ -17,10 +17,8 @@
 <!-- Просмотр -->
 <div class="container pt-2 pb-4" *ngIf="this.srv.pers && tsk && !isEditMode">
   <form class="pb-4">
-    <hr *ngIf="!tskAbility">
-    <!-- <div *ngIf="tskAbility && tskAbility?.image" fxLayout="row" fxLayoutAlign="center center" class="p-2">
-      <img src="{{tskAbility.image}}" class="img-fluid" [ngStyle]="{'object-fit': 'contain', 'height': '25vh'}">
-    </div> -->
+    <app-image-component *ngIf="tskAbility && tskAbility?.image" [(data)]="tskAbility.image" ></app-image-component>
+    <app-image-component *ngIf="!tskAbility" [data]="'assets/img/'+ tsk.imageLvl + '/'+tsk.image+'.jpg'"></app-image-component>
     <h4 class="text-center">
       {{tsk.name}}
     </h4>
@@ -30,7 +28,6 @@
       </div>
     </div>
     <br *ngIf="tskAbility">
-    <hr *ngIf="!tskAbility">
     <!-- Дата и время, повтор -->
     <div fxLayout="row" fxLayoutAlign="space-around center" class="form-row" *ngIf="tskAbility">
       <div>
@@ -127,6 +124,9 @@
 <!-- Режим редактирования -->
 <div class="container pt-2 pb-4" *ngIf="this.srv.pers && tsk && isEditMode">
   <form class="pb-4">
+    <app-image-component *ngIf="tskAbility && tskAbility?.image" [(data)]="tskAbility.image" 
+    [isCanEdit]="true"></app-image-component>
+    <app-image-component *ngIf="!tskAbility" [data]="'assets/img/'+ tsk.imageLvl + '/'+tsk.image+'.jpg'"></app-image-component>
     <!-- Название -->
     <div fxLayout="row" xLayoutAlign="none center" fxLayoutGap='15px'>
       <mat-form-field>
@@ -138,10 +138,7 @@
       <input class="pointer" (click)="changeCharact()" matInput readonly placeholder="Характеристика" name="tsk.charact"
         value="{{tskCharact.name}}">
     </mat-form-field>
-    <mat-form-field *ngIf="tskAbility">
-      <input matInput autocomplete="off" placeholder="Изображение" [(ngModel)]="tskAbility.image"
-        name="tskAbility.image">
-    </mat-form-field>
+    
 
     <!-- Дата, повторение -->
     <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="8px">

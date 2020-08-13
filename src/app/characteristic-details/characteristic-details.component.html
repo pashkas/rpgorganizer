@@ -20,9 +20,7 @@
 <div class="container pt-2 pb-4" *ngIf="this.srv.pers && charact && !isEditMode">
   <form class="pb-4">
     <!-- Картинка -->
-    <div *ngIf="charact.image" fxLayout="row" fxLayoutAlign="center center" class="p-2">
-      <img src="{{charact.image}}" class="img-fluid" [ngStyle]="{'object-fit': 'contain', 'height': '25vh'}">
-    </div>
+    <app-image-component [(data)]="charact.image"></app-image-component>
     <h4 class="text-center">{{charact.name}} ({{charact.rang.name}})</h4>
     <mat-progress-bar class="myprogr" color="accent" mode="determinate" value="{{charact.progressValue}}">
     </mat-progress-bar>
@@ -60,14 +58,10 @@
     <!-- <div class="md-form text-center" *ngIf="charact.image">
       <img src="{{charact.image}}" class="img-fluid" [ngStyle]="{'object-fit': 'contain', 'height': '25vh'}">
     </div> -->
+    <app-image-component [(data)]="charact.image" [isCanEdit]="true"></app-image-component>
     <!-- Название -->
     <mat-form-field class="w-100">
       <input matInput autocomplete="off" placeholder="Название" [(ngModel)]="charact.name" name="charact.name">
-    </mat-form-field>
-
-    <!-- Изображение -->
-    <mat-form-field class="w-100">
-      <input matInput autocomplete="off" placeholder="Изображение" [(ngModel)]="charact.image" name="charact.image">
     </mat-form-field>
 
     <!-- Начальное значение -->

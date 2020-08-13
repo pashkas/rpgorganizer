@@ -4,7 +4,7 @@ import { Reward } from './Reward';
 export class Qwest {
     id: any = uuid();
     name: string = "";
-    image: string = "";
+    image: string = "assets/icons/defQwest.png";
     descr: string = "";
     rewards: Reward[] = [];
     tasksDone: number = 0;

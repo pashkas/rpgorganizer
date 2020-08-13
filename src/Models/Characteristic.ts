@@ -31,7 +31,7 @@ export class Characteristic {
     abilities: Ability[] = [];
     descr: string;
     id: any = uuid();
-    image: string = "";
+    image: string = "assets/icons/defCha.png";
     name: string;
     progressValue: number = 0;
     rang: Rangse = { val: 0, name: "0", img: "" };

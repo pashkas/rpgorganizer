@@ -11,6 +11,7 @@ import { FlexLayoutModule } from "@angular/flex-layout";
 import { PersChangesComponent } from '../pers-changes/pers-changes.component';
 import { PersChangesItemComponent } from '../pers-changes-item/pers-changes-item.component';
 import { AddItemDialogComponent } from '../add-item-dialog/add-item-dialog.component';
+import { ImageComponentComponent } from '../image-component/image-component.component';
 
 @NgModule({
   declarations: [

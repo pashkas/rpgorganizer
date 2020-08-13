@@ -31,6 +31,7 @@ import { ReqAddComponent } from './req-add/req-add.component';
 import {MatSlideToggleModule} from '@angular/material/slide-toggle';
 import { ChangeCharactComponent } from './change-charact/change-charact.component';
 import {MatBadgeModule} from '@angular/material/badge';
+import { ImageComponentComponent } from '../image-component/image-component.component';
 
 @NgModule({
   declarations: [
@@ -53,7 +54,8 @@ import {MatBadgeModule} from '@angular/material/badge';
     EnamiesComponent,
     SvgIconComponent,
     ReqAddComponent,
-    ChangeCharactComponent
+    ChangeCharactComponent,
+    ImageComponentComponent,
   ],
   imports: [
     MatBadgeModule,

@@ -19,9 +19,7 @@
 <div class="container pt-2 pb-4" *ngIf="this.srv.pers && qwest && !isEditMode">
   <div class="pb-4">
     <!-- Картинка -->
-    <div *ngIf="qwest.image" fxLayout="row" fxLayoutAlign="center center" class="p-2">
-      <img src="{{qwest.image}}" class="img-fluid" [ngStyle]="{'object-fit': 'contain', 'height': '25vh'}">
-    </div>
+    <app-image-component [(data)]="qwest.image"></app-image-component>
 
     <h4 class="text-center">{{qwest.name}}</h4>
     <mat-progress-bar *ngIf="true" class="myprogr" color="accent" mode="determinate" value="{{qwest.progressValue}}">
@@ -115,14 +113,12 @@
 <!-- Редактирование -->
 <div class="container pt-2 pb-4" *ngIf="this.srv.pers && qwest && isEditMode">
   <div class="pb-4">
+    <!-- Изображение -->
+    <app-image-component [(data)]="qwest.image" [isCanEdit]="true"></app-image-component>
+
     <!-- Название -->
     <mat-form-field class="w-100">
       <input matInput autocomplete="off" placeholder="Название" [(ngModel)]="qwest.name" name="qwest.name">
-    </mat-form-field>
-
-    <!-- Изображение -->
-    <mat-form-field class="w-100">
-      <input matInput autocomplete="off" placeholder="Изображение" [(ngModel)]="qwest.image" name="qwImg">
     </mat-form-field>
 
     <!-- Описание -->

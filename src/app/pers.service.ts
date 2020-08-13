@@ -27,12 +27,12 @@ export class PersService {
   baseTaskPoints: number = 1.0;
   isDialogOpen: boolean = false;
   isGlobalTaskView: boolean;
-  mn0Count: number = 326;
-  mn1Count: number = 283;
-  mn2Count: number = 537;
-  mn3Count: number = 862;
-  mn4Count: number = 739;
-  mn5Count: number = 259;
+  mn0Count: number = 309;
+  mn1Count: number = 270;
+  mn2Count: number = 576;
+  mn3Count: number = 844;
+  mn4Count: number = 743;
+  mn5Count: number = 275;
   pers: Pers;
   selTabPersList: number = 0;
   // Пользователь
@@ -100,151 +100,12 @@ export class PersService {
   }
 
   GetRndEnamy(tsk: IImg): string {
-    // let lvl;
-    // if (tsk.requrense == 'нет') {
-    //   lvl = (this.pers.level / 100.0) * 5.0;
-    // }
-    // else {
-    //   // 0-1
-    //   if (tsk.value <= 1) {
-    //     lvl = 0;
-    //   }
-    //   // 2-3
-    //   else if (tsk.value <= 3) {
-    //     lvl = 1;
-    //   }
-    //   // 4-5
-    //   else if (tsk.value <= 5) {
-    //     lvl = 2;
-    //   }
-    //   // 6-8
-    //   else if (tsk.value <= 8) {
-    //     lvl = 3;
-    //   }
-    //   // 9
-    //   else if (tsk.value <= 9) {
-    //     lvl = 4;
-    //   }
-    //   // 10
-    //   else {
-    //     lvl = 5;
-    //   }
-    // }
-    // //let lvl = (this.pers.level / 100.0) * 5.0;
-    // let floor = Math.floor(lvl);
-    // // let left = lvl - floor;
-
-    //let mnstrLvl = floor;
-
     let mnstrLvl =  this.getMonsterLevel(this.pers.level);
-
-    // let rnd = Math.random();
-    // if (rnd <= left) {
-    //   mnstrLvl++;
-    // }
-    // if (mnstrLvl > 5) {
-    //   mnstrLvl = 5;
-    // }
 
     tsk.imageLvl = '' + mnstrLvl;
     tsk.image = this.getImgPathRandome(mnstrLvl);
 
     return;
-    // if (mnstrLvl == 5) {
-    //   if (this.pers.Monsters5Queue == null || this.pers.Monsters5Queue == undefined) {
-    //     this.pers.Monsters5Queue = 0;
-    //   }
-    //   if (this.pers.Monsters5Queue >= this.mn5Count) {
-    //     this.pers.Monsters5Queue = 0;
-    //   }
-
-    //   this.pers.Monsters5Queue++;
-    //   let path = this.getImgPath(this.pers.Monsters5Queue, 5);
-
-    //   tsk.imageLvl = '5';
-    //   tsk.image = path;
-
-    //   return;
-    // }
-    // if (mnstrLvl == 4) {
-    //   if (this.pers.Monsters4Queue == null || this.pers.Monsters4Queue == undefined) {
-    //     this.pers.Monsters4Queue = 0;
-    //   }
-    //   if (this.pers.Monsters4Queue >= this.mn4Count) {
-    //     this.pers.Monsters4Queue = 0;
-    //   }
-
-    //   this.pers.Monsters4Queue++;
-    //   let path = this.getImgPath(this.pers.Monsters4Queue, 4);
-
-    //   tsk.imageLvl = '4';
-    //   tsk.image = path;
-
-    //   return;
-    // }
-    // if (mnstrLvl == 3) {
-    //   if (this.pers.Monsters3Queue == null || this.pers.Monsters3Queue == undefined) {
-    //     this.pers.Monsters3Queue = 0;
-    //   }
-    //   if (this.pers.Monsters3Queue >= this.mn3Count) {
-    //     this.pers.Monsters3Queue = 0;
-    //   }
-
-    //   this.pers.Monsters3Queue++;
-    //   let path = this.getImgPath(this.pers.Monsters3Queue, 3);
-
-    //   tsk.imageLvl = '3';
-    //   tsk.image = path;
-
-    //   return;
-    // }
-    // if (mnstrLvl == 2) {
-    //   if (this.pers.Monsters2Queue == null || this.pers.Monsters2Queue == undefined) {
-    //     this.pers.Monsters2Queue = 0;
-    //   }
-    //   if (this.pers.Monsters2Queue >= this.mn2Count) {
-    //     this.pers.Monsters2Queue = 0;
-    //   }
-
-    //   this.pers.Monsters2Queue++;
-    //   let path = this.getImgPath(this.pers.Monsters2Queue, 2);
-
-    //   tsk.imageLvl = '2';
-    //   tsk.image = path;
-
-    //   return;
-    // }
-    // if (mnstrLvl == 1) {
-    //   if (this.pers.Monsters1Queue == null || this.pers.Monsters1Queue == undefined) {
-    //     this.pers.Monsters1Queue = 0;
-    //   }
-    //   if (this.pers.Monsters1Queue >= this.mn1Count) {
-    //     this.pers.Monsters1Queue = 0;
-    //   }
-
-    //   this.pers.Monsters1Queue++;
-    //   let path = this.getImgPath(this.pers.Monsters1Queue, 1);
-
-    //   tsk.imageLvl = '1';
-    //   tsk.image = path;
-
-    //   return;
-    // }
-
-    // if (this.pers.Monsters0Queue == null || this.pers.Monsters0Queue == undefined) {
-    //   this.pers.Monsters0Queue = 0;
-    // }
-    // if (this.pers.Monsters0Queue >= this.mn0Count) {
-    //   this.pers.Monsters0Queue = 0;
-    // }
-
-    // this.pers.Monsters0Queue++;
-    // let path = this.getImgPath(this.pers.Monsters0Queue, 0);
-
-    // tsk.imageLvl = '0';
-    // tsk.image = path;
-
-    // return;
   }
 
   private getMonsterLevel(prsLvl: number) {
@@ -1449,6 +1310,24 @@ export class PersService {
         prevD = el;
       }
     }
+
+    // Картинки всем
+    for (const ch of this.pers.characteristics) {
+      if (!ch.image) {
+        ch.image = 'assets/icons/defCha.png';
+      }
+      for (const ab of ch.abilities) {
+        if (!ab.image) {
+          ab.image = 'assets/icons/defAbil.png';
+        }
+      }
+    }
+    for (const qw of this.pers.qwests) {
+      if (!qw.image) {
+        qw.image = 'assets/icons/defQwest.png';
+      }
+    }
+    //----------------------------
 
     this.db.collection('pers').doc(this.pers.id)
       .set(JSON.parse(JSON.stringify(this.pers)));
