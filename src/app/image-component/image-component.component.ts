@@ -2,6 +2,7 @@ import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { PersService } from '../pers.service';
 import { MatDialog } from '@angular/material';
 import { AddItemDialogComponent } from '../add-item-dialog/add-item-dialog.component';
+import { Overlay } from '@angular/cdk/overlay';
 
 @Component({
   selector: 'app-image-component',
@@ -13,7 +14,7 @@ export class ImageComponentComponent implements OnInit {
   @Output() dataChange = new EventEmitter<any>();
   @Input() isCanEdit;
 
-  constructor(private srv: PersService, public dialog: MatDialog) { }
+  constructor(private srv: PersService, public dialog: MatDialog, private overlay: Overlay) { }
 
   ngOnInit() {
   }
@@ -29,8 +30,11 @@ export class ImageComponentComponent implements OnInit {
     }
     const dialogRef = this.dialog.open(AddItemDialogComponent, {
       panelClass: 'my-big',
-      data: { header: 'Выберите изображение', text: '' },
-      backdropClass: 'backdrop'
+      data: { header: 'Выберите изображение', text: '', isGallery:true },
+      backdropClass: 'backdrop',
+      maxWidth: undefined,
+      maxHeight: undefined,
+      scrollStrategy: this.overlay.scrollStrategies.block()
     });
 
     dialogRef.afterClosed()

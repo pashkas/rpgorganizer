@@ -3,17 +3,31 @@
   <mat-form-field *ngIf="!isGallery">
     <input cdkFocusInitial matInput [(ngModel)]="data.text" autocomplete="off" placeholder="Название" name="data.text">
   </mat-form-field>
-  <div *ngIf="isGallery" fxFlexFill fxLayoutAlign="center center" fxLayout="row wrap"
+  <!-- <div *ngIf="isGallery" fxFlexFill fxLayoutAlign="center center" fxLayout="row wrap"
     fxLayoutGap="10px grid">
     <ng-container *ngFor="let gi of gallerryImages">
       <div style="cursor: pointer;" fxLayout="column" fxLayoutAlign="space-around center" (click)="chooseImg(gi)">
         <img src="{{gi}}" class="img-fluid rounded" [ngStyle]="{'object-fit': 'contain', 'height': '125px', 'width':'125px'}">
       </div>
     </ng-container>
-  </div>
+  </div> -->
+  <!-- <mat-grid-list [cols]="6" *ngIf="isGallery">
+    <mat-grid-tile *ngFor="let gi of gallerryImages">
+      <div style="cursor: pointer" class="w-100 h-100" (click)="chooseImg(gi)">
+        <img src="{{gi}}" class="img-fluid rounded w-100 h-100" [ngStyle]="{'object-fit': 'contain'}">
+      </div>
+    </mat-grid-tile>
+  </mat-grid-list> -->
+  <ngx-masonry *ngIf="isGallery">
+    <div ngxMasonryItem  *ngFor="let gi of gallerryImages" style="width: 24%;" >
+      <div style="cursor: pointer" class="w-100 h-100 m-1" (click)="chooseImg(gi)">
+        <img src="{{gi}}" class="img-fluid w-100 h-100" [ngStyle]="{'object-fit': 'contain'}">
+      </div>
+    </div>
+  </ngx-masonry>
 </div>
 <div mat-dialog-actions [align]="'end'">
-  <button mat-flat-button (click)="gallery()" color='accent'>
+  <button *ngIf="this.data.isGallery" mat-flat-button (click)="gallery()" color='accent'>
     Путь из интернета
   </button>
   <button mat-button mat-dialog-close>Отмена</button>

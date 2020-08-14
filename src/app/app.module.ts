@@ -16,7 +16,7 @@ import { LevelUpMsgComponent } from './level-up-msg/level-up-msg.component';
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { registerLocaleData } from '@angular/common';
 import localeRu from '@angular/common/locales/ru';
-import { GestureConfig, MatProgressSpinnerModule } from '@angular/material';
+import { GestureConfig, MatProgressSpinnerModule, MatGridListModule, MatGridTile } from '@angular/material';
 import { SharedModule } from './shared/shared.module';
 import { TurnirTableComponent } from './turnir-table/turnir-table.component';
 import { ArrSortDialogComponent } from './arr-sort-dialog/arr-sort-dialog.component';

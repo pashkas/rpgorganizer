@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { DiaryEditParamsComponent } from '../diary/diary-edit-params/diary-edit-params.component';
 import { MatDialogModule } from '@angular/material/dialog';
 import { FormsModule } from '@angular/forms';
-import { MatListModule, MatInputModule, MatSliderModule } from '@angular/material'
+import { MatListModule, MatInputModule, MatSliderModule, MatGridListModule, MatGridTile } from '@angular/material'
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatButtonModule } from '@angular/material/button';
 import { DragDropModule } from '@angular/cdk/drag-drop';
@@ -12,6 +12,7 @@ import { PersChangesComponent } from '../pers-changes/pers-changes.component';
 import { PersChangesItemComponent } from '../pers-changes-item/pers-changes-item.component';
 import { AddItemDialogComponent } from '../add-item-dialog/add-item-dialog.component';
 import { ImageComponentComponent } from '../image-component/image-component.component';
+import { NgxMasonryModule } from 'ngx-masonry';
 
 @NgModule({
   declarations: [
@@ -21,6 +22,8 @@ import { ImageComponentComponent } from '../image-component/image-component.comp
     AddItemDialogComponent,
   ],
   imports: [
+    NgxMasonryModule,
+    MatGridListModule,
     CommonModule,
     MatDialogModule,
     FormsModule,

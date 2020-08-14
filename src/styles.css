@@ -142,10 +142,12 @@ button:focus {
     width: calc(100% - 20px);
 }
 
-.my-big{}
+.my-big{
+}
 
 .my-big .mat-dialog-container {
-    width: 80vw !important;
+    width: 95vw;
+    max-width: 800px;
 }
 
 
