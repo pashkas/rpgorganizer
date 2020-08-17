@@ -517,8 +517,8 @@ export class MainWindowComponent implements OnInit {
         }
       }
 
-      this.srv.savePers(false);
       this.setGlobalTaskView(this.lastGlobalBeforeSort);
+      this.srv.savePers(false);
     }
     else {
       this.lastGlobalBeforeSort = this.srv.isGlobalTaskView;

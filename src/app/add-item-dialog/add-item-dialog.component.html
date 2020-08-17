@@ -18,9 +18,9 @@
       </div>
     </mat-grid-tile>
   </mat-grid-list> -->
-  <ngx-masonry *ngIf="isGallery">
-    <div ngxMasonryItem  *ngFor="let gi of gallerryImages" style="width: 24%;" >
-      <div style="cursor: pointer" class="w-100 h-100 m-1" (click)="chooseImg(gi)">
+  <ngx-masonry *ngIf="isGallery" class="row p-0">
+    <div ngxMasonryItem  *ngFor="let gi of gallerryImages" class="col-lg-3 col-4 p-0">
+      <div style="cursor: pointer" class="w-100 h-100" (click)="chooseImg(gi)">
         <img src="{{gi}}" class="img-fluid w-100 h-100" [ngStyle]="{'object-fit': 'contain'}">
       </div>
     </div>
