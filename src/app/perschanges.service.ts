@@ -35,6 +35,7 @@ export class PerschangesService {
 
     // Показать настройку навыка
     let abToEdit: any = null;
+    let qwestToEdit: any = null;
 
     // Отображать - новый уровень
     let newLevel: boolean = false;
@@ -61,6 +62,7 @@ export class PerschangesService {
             new ChangesModel('Квест завершен - ' + changesMap[n].name, 'qwest', changesMap[n].before, changesMap[n].before, 0, changesMap[n].total, changesMap[n].img)
           );
           isDoneQwest = true;
+          //qwestToEdit = n;
         }
         else if (changesMap[n].after > changesMap[n].before && this.afterPers.isNoExpShow != true) {
           changes.push(
@@ -72,6 +74,7 @@ export class PerschangesService {
             new ChangesModel('"' + changesMap[n].name + '" задания выполнены!', 'qwest', changesMap[n].after, changesMap[n].after, 0, changesMap[n].total, changesMap[n].img)
           );
           isDoneQwest = true;
+          qwestToEdit = n;
         }
       }
       // Награды
@@ -227,6 +230,9 @@ export class PerschangesService {
       dialogRef.close();
       if (abToEdit != null) {
         this.router.navigate(['/task', abToEdit, false]);
+      }
+      if (isDoneQwest && qwestToEdit != null) {
+        this.router.navigate(['pers/qwest', qwestToEdit, true]);
       }
     }
 

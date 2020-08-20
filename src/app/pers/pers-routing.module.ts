@@ -15,6 +15,7 @@ const routes: Routes = [
   { path: 'ability/:id', component: AbilityDetailComponent },
   { path: 'task/:id/:isEdit', component: TaskDetailComponent },
   { path: 'qwest/:id', component: QwestDetailComponent },
+  { path: 'qwest/:id/:fromMain', component: QwestDetailComponent },
   { path: 'turnirtable', component: AbilityDetailComponent },
 ];
 

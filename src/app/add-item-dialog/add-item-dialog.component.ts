@@ -8,9 +8,20 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
 })
 export class AddItemDialogComponent implements OnInit {
   breakpoint: number;
-  constructor(@Inject(MAT_DIALOG_DATA) public data, public dialogRef: MatDialogRef<AddItemDialogComponent>) { }
-  isGallery = false;
   gallerryImages = [];
+  isGallery = false;
+  times = [1, 2, 3, 4, 5];
+
+  constructor(@Inject(MAT_DIALOG_DATA) public data, public dialogRef: MatDialogRef<AddItemDialogComponent>) {
+   }
+
+  chooseImg(img) {
+    this.dialogRef.close(img);
+  }
+
+  gallery() {
+    this.isGallery = !this.isGallery;
+  }
 
   ngOnInit() {
     if (this.data && this.data.isGallery) {
@@ -21,13 +32,5 @@ export class AddItemDialogComponent implements OnInit {
       ss = ss.substr(ss.length - 3);
       this.gallerryImages.push('assets/img/Gallery/' + ss + '.jpg');
     }
-  }
-
-  chooseImg(img) {
-    this.dialogRef.close(img);
-  }
-
-  gallery() {
-    this.isGallery = !this.isGallery;
   }
 }

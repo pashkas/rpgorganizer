@@ -2047,7 +2047,13 @@ export class PersService {
     let stT = new Task();
     let stateProgr;
     //stT.tittle = tsk.name + ': ' + st.name;
-    stT.tittle = st.name;
+    if (tsk.isStatePlusTitle) {
+      stT.tittle = tsk.name + ': ' + st.name;
+    }
+    else{
+      stT.tittle = st.name;
+    }
+    
 
     if (!isAll) {
       let all = tsk.states.filter(n => n.isActive).length;
@@ -2064,6 +2070,7 @@ export class PersService {
     stT.value = tsk.value;
     stT.imageLvl = tsk.imageLvl;
     stT.requrense = tsk.requrense;
+    stT.timeVal = st.timeVal;
 
     //stT.image = tsk.image;
     if (!st.image) {
@@ -2450,7 +2457,12 @@ export class PersService {
       if (plusState) {
         if (tsk.states.length > 0 && !tsk.isSumStates) {
           // tsk.tittle = tsk.name + ': ' + plusState;
-          tsk.tittle = plusState;
+          if (tsk.isStatePlusTitle) {
+            tsk.tittle = tsk.name + ': ' + plusState;
+          }
+          else{
+            tsk.tittle = plusState;
+          }
         }
         else {
           tsk.tittle = tsk.name + ' ' + plusState;

@@ -36,7 +36,7 @@ export class MainWindowComponent implements OnInit {
   constructor(private route: ActivatedRoute, public srv: PersService, public dialog: MatDialog) {
   }
 
-  
+
 
   ReImages() {
     this.srv.reImages();
@@ -107,7 +107,8 @@ export class MainWindowComponent implements OnInit {
         this.qwickSortVals.push(new sortArr(bTask.id, aTask.id, 0));
       }
       else {
-        let result = await this.openDialog(aTask, bTask);
+        let result;
+        result = await this.openDialog(aTask, bTask);
 
         if (result == true) {
           this.qwickSortVals.push(new sortArr(aTask.id, bTask.id, -1));
@@ -247,6 +248,8 @@ export class MainWindowComponent implements OnInit {
       let tasks: Task[] = this.srv.getPersTasks();
       this.srv.sortPersTasks(tasks);
     }
+
+    this.isSort = false;
   }
 
   focusFocus() {
@@ -388,14 +391,18 @@ export class MainWindowComponent implements OnInit {
   }
 
   async setTime(tsk: Task): Promise<number> {
-    let aval = this.getNameVal(tsk.tittle);
+    // let aval = this.getNameVal(tsk.tittle);
 
-    if (aval != -1) {
-      return Promise.resolve(aval);
-    }
+    // if (aval != -1) {
+    //   return Promise.resolve(aval);
+    // }
 
-    if (!tsk.timeVal) {
-      tsk.timeVal = -1;
+    // if (!tsk.timeVal) {
+    //   tsk.timeVal = -1;
+    // }
+
+    if (tsk.timeVal && tsk.timeVal >= 1) {
+      return Promise.resolve(tsk.timeVal);
     }
 
     const dialogRef = this.dialog.open(TskTimeValDialogComponent, {
@@ -563,7 +570,25 @@ export class MainWindowComponent implements OnInit {
   async setTaskTime(arr: Task[]) {
     for (let i = 0; i < arr.length; i++) {
       const tsk = arr[i];
-      tsk.timeVal = await this.setTime(tsk);
+      let timeVal = await this.setTime(tsk);
+      tsk.timeVal = timeVal;
+
+      for (const ch of this.srv.pers.characteristics) {
+        for (const ab of ch.abilities) {
+          for (const t of ab.tasks) {
+            if (t.id == tsk.id) {
+              t.timeVal = timeVal;
+              break;
+            }
+            for (const st of t.states) {
+              if (st.id == tsk.id) {
+                st.timeVal = timeVal;
+                break;
+              }
+            }
+          }
+        }
+      }
     }
   }
 

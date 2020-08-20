@@ -24,6 +24,7 @@ export class QwestDetailComponent implements OnInit {
    */
   isFromDoneQwest: boolean = false;
   qwest: Qwest;
+  isFromMain: boolean;
 
   constructor(private location: Location, private route: ActivatedRoute, public srv: PersService, private router: Router, public dialog: MatDialog) { }
 
@@ -31,7 +32,6 @@ export class QwestDetailComponent implements OnInit {
  * Добавить награду.
  */
   addNewRevard(r: Reward) {
-
     let header, isEdit;
 
     if (r) {
@@ -111,7 +111,13 @@ export class QwestDetailComponent implements OnInit {
   doneQwest(qw: Qwest) {
     this.srv.changesBefore();
     this.srv.DoneQwest(qw);
-    this.router.navigate(['/pers']);
+    if (this.isFromMain) {
+      this.router.navigate(['/main']);
+    }
+    else{
+      this.router.navigate(['/pers']);
+    }
+    
     this.srv.changesAfter(true);
   }
 
@@ -142,12 +148,32 @@ export class QwestDetailComponent implements OnInit {
     }
 
     const id = this.route.snapshot.paramMap.get('id');
+    const fromMain = this.route.snapshot.paramMap.get('fromMain');
+    if (fromMain) {
+      this.isFromMain = true;
+    }
+    else{
+      this.isFromMain = false;
+    }
 
     for (const qw of this.srv.pers.qwests) {
       if (qw.id === id) {
         this.qwest = qw;
         break;
       }
+    }
+  }
+
+  /**
+  * Сохранить данные.
+  */
+  saveData() {
+    if (this.isEditMode) {
+      this.srv.savePers(false);
+      this.isEditMode = false;
+    }
+    else {
+      this.isEditMode = true;
     }
   }
 
@@ -171,19 +197,6 @@ export class QwestDetailComponent implements OnInit {
     }
 
     this.qwest.exp = Math.ceil(expChange);
-  }
-
-  /**
-  * Сохранить данные.
-  */
-  saveData() {
-    if (this.isEditMode) {
-      this.srv.savePers(false);
-      this.isEditMode = false;
-    }
-    else {
-      this.isEditMode = true;
-    }
   }
 
   /**

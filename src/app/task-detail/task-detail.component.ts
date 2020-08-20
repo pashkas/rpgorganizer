@@ -23,17 +23,18 @@ export class TaskDetailComponent implements OnInit {
 
   isEditMode: boolean = false;
   requrenses: string[] = Task.requrenses;
+  times = [1, 2, 3, 4, 5];
   tsk: Task;
   tskAbility: Ability;
-  weekDays: string[] = Task.weekDays;
   tskCharact: Characteristic;
+  weekDays: string[] = Task.weekDays;
 
   constructor(private location: Location, private route: ActivatedRoute, public srv: PersService, private router: Router, public dialog: MatDialog) { }
 
   /**
    * Добавить состояние к задаче.
    */
-  addStateToTask(st) {
+  addStateToTask(st: taskState) {
     let isEdit;
     this.srv.isDialogOpen = true;
 
@@ -43,9 +44,13 @@ export class TaskDetailComponent implements OnInit {
       isEdit = false;
     }
 
+    let header = '';
+
+    header += isEdit ? 'Редактировать' : 'Добавить';
+    header += this.tsk.requrense == 'нет' ? ' подзадачу' : ' состояние';
     const dialogRef = this.dialog.open(AddItemDialogComponent, {
       panelClass: 'my-dialog',
-      data: { header: this.tsk.requrense == 'нет' ? 'Добавить подзадачу' : 'Добавить состояние', text: isEdit ? st.name : '' },
+      data: { header: header, text: isEdit ? st.name : '', timeVal: st.timeVal },
       backdropClass: 'backdrop'
     });
 
@@ -65,6 +70,39 @@ export class TaskDetailComponent implements OnInit {
             });
           } else {
             st.name = stt;
+          }
+        }
+        this.srv.isDialogOpen = false;
+      });
+  }
+
+  changeCharact() {
+    if (!this.tskAbility || !this.tskCharact) {
+      return;
+    }
+
+    this.srv.isDialogOpen = true;
+    const dialogRef = this.dialog.open(ChangeCharactComponent, {
+      data: { characteristic: this.tskCharact, allCharacts: this.srv.pers.characteristics.sort((a, b) => a.name.localeCompare(b.name)) },
+      backdropClass: 'backdrop'
+    });
+
+    dialogRef.afterClosed()
+      .subscribe(n => {
+        if (n) {
+          if (n.id != this.tskCharact.id) {
+            for (const ch of this.srv.pers.characteristics) {
+              if (ch.id == n.id) {
+                ch.abilities.push(this.tskAbility);
+
+                break;
+              }
+            }
+
+            // Перемещаем
+            this.tskCharact.abilities = this.tskCharact.abilities.filter(n => n.id !== this.tskAbility.id);
+
+            this.findTask();
           }
         }
         this.srv.isDialogOpen = false;
@@ -94,35 +132,6 @@ export class TaskDetailComponent implements OnInit {
 
   drop(event: CdkDragDrop<string[]>) {
     moveItemInArray(this.tsk.states, event.previousIndex, event.currentIndex);
-  }
-
-  getDateString(tsk: Task) {
-    if (tsk.date === undefined || tsk.date === null) {
-      return "";
-    }
-
-    let date = new Date(tsk.date);
-
-    let dt = date.toLocaleDateString([], { day: 'numeric', month: 'numeric' });
-
-    // if (tsk.time) {
-    //   dt += ' | ' + tsk.time;
-    // }
-
-    return dt;
-  }
-
-  goBack() {
-    this.location.back();
-  }
-
-  ngOnDestroy(): void {
-    this.unsubscribe$.next();
-    this.unsubscribe$.complete();
-  }
-
-  ngOnInit() {
-    this.findTask();
   }
 
   findTask() {
@@ -198,37 +207,33 @@ export class TaskDetailComponent implements OnInit {
     }
   }
 
-  changeCharact() {
-    if (!this.tskAbility || !this.tskCharact) {
-      return;
+  getDateString(tsk: Task) {
+    if (tsk.date === undefined || tsk.date === null) {
+      return "";
     }
 
-    this.srv.isDialogOpen = true;
-    const dialogRef = this.dialog.open(ChangeCharactComponent, {
-      data: { characteristic: this.tskCharact, allCharacts: this.srv.pers.characteristics.sort((a, b) => a.name.localeCompare(b.name)) },
-      backdropClass: 'backdrop'
-    });
+    let date = new Date(tsk.date);
 
-    dialogRef.afterClosed()
-      .subscribe(n => {
-        if (n) {
-          if (n.id != this.tskCharact.id) {
-            for (const ch of this.srv.pers.characteristics) {
-              if (ch.id == n.id) {
-                ch.abilities.push(this.tskAbility);
+    let dt = date.toLocaleDateString([], { day: 'numeric', month: 'numeric' });
 
-                break;
-              }
-            }
+    // if (tsk.time) {
+    //   dt += ' | ' + tsk.time;
+    // }
 
-            // Перемещаем
-            this.tskCharact.abilities = this.tskCharact.abilities.filter(n => n.id !== this.tskAbility.id);
+    return dt;
+  }
 
-            this.findTask();
-          }
-        }
-        this.srv.isDialogOpen = false;
-      });
+  goBack() {
+    this.location.back();
+  }
+
+  ngOnDestroy(): void {
+    this.unsubscribe$.next();
+    this.unsubscribe$.complete();
+  }
+
+  ngOnInit() {
+    this.findTask();
   }
 
   onTskDateChange(ev) {

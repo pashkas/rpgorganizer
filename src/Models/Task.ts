@@ -49,6 +49,7 @@ export class Task implements IImg {
     name: string;
     plusName: string;
     plusToNames: plusToName[] = [];
+    isStatePlusTitle: boolean = true;
     progressValue: number = 0;
     requrense: string = "будни";
     states: taskState[] = [];
@@ -192,6 +193,7 @@ export class taskState implements IImg {
 
     value: number;
     requrense: string;
+    timeVal: number;
 }
 
 export interface IImg {

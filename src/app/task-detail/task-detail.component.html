@@ -17,8 +17,9 @@
 <!-- Просмотр -->
 <div class="container pt-2 pb-4" *ngIf="this.srv.pers && tsk && !isEditMode">
   <form class="pb-4">
-    <app-image-component *ngIf="tskAbility && tskAbility?.image" [(data)]="tskAbility.image" ></app-image-component>
-    <app-image-component *ngIf="!tskAbility" [data]="'assets/img/'+ tsk.imageLvl + '/'+tsk.image+'.jpg'"></app-image-component>
+    <app-image-component *ngIf="tskAbility && tskAbility?.image" [(data)]="tskAbility.image"></app-image-component>
+    <app-image-component *ngIf="!tskAbility" [data]="'assets/img/'+ tsk.imageLvl + '/'+tsk.image+'.jpg'">
+    </app-image-component>
     <h4 class="text-center">
       {{tsk.name}}
     </h4>
@@ -29,12 +30,17 @@
     </div>
     <br *ngIf="tskAbility">
     <!-- Дата и время, повтор -->
-    <div fxLayout="row" fxLayoutAlign="space-around center" class="form-row" *ngIf="tskAbility">
+    <div fxLayout="row" fxLayoutAlign="space-between center" class="form-row" *ngIf="tskAbility">
       <div>
         {{getDateString(tsk)}}
-        <ng-container *ngIf="tskAbility">
-          ({{tsk.requrense}})
-        </ng-container>
+      </div>
+
+      <ng-container>
+        {{tsk.requrense | titlecase }}
+      </ng-container>
+
+      <div>
+        {{tsk.timeVal | timeVal}}
       </div>
 
       <ng-container *ngIf="tskCharact">
@@ -124,9 +130,10 @@
 <!-- Режим редактирования -->
 <div class="container pt-2 pb-4" *ngIf="this.srv.pers && tsk && isEditMode">
   <form class="pb-4">
-    <app-image-component *ngIf="tskAbility && tskAbility?.image" [(data)]="tskAbility.image" 
-    [isCanEdit]="true"></app-image-component>
-    <app-image-component *ngIf="!tskAbility" [data]="'assets/img/'+ tsk.imageLvl + '/'+tsk.image+'.jpg'"></app-image-component>
+    <app-image-component *ngIf="tskAbility && tskAbility?.image" [(data)]="tskAbility.image" [isCanEdit]="true">
+    </app-image-component>
+    <app-image-component *ngIf="!tskAbility" [data]="'assets/img/'+ tsk.imageLvl + '/'+tsk.image+'.jpg'">
+    </app-image-component>
     <!-- Название -->
     <div fxLayout="row" xLayoutAlign="none center" fxLayoutGap='15px'>
       <mat-form-field>
@@ -138,7 +145,7 @@
       <input class="pointer" (click)="changeCharact()" matInput readonly placeholder="Характеристика" name="tsk.charact"
         value="{{tskCharact.name}}">
     </mat-form-field>
-    
+
 
     <!-- Дата, повторение -->
     <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="8px">
@@ -155,6 +162,15 @@
           <mat-select [(ngModel)]="tsk.requrense" name="tsk.requrense">
             <mat-option *ngFor="let req of requrenses" [value]="req">
               {{req}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+        <!-- Время -->
+        <mat-form-field>
+          <mat-label>Время</mat-label>
+          <mat-select [(ngModel)]="tsk.timeVal" name="tsk.timeVal">
+            <mat-option *ngFor="let req of times" [value]="req">
+              {{req|timeVal}}
             </mat-option>
           </mat-select>
         </mat-form-field>
@@ -209,16 +225,19 @@
       <ng-container *ngIf="tsk.requrense === 'нет'">
         <h5>Подзадачи:</h5>
       </ng-container>
+      <ng-container *ngIf="tsk.requrense != 'нет'">
+        <mat-slide-toggle [(ngModel)]="tsk.isStatePlusTitle" name='tsk.isStatePlusTitle'>Плюс к названию</mat-slide-toggle>
+      </ng-container>
+      
       <button class="icon-small" (click)="addStateToTask();" mat-icon-button>
         <img src="assets/icons/create.png" class="img-fluid">
       </button>
-
     </div>
     <mat-list (cdkDropListDropped)="drop($event)" cdkDropList id="states" *ngIf="tsk.states.length > 0">
       <div mat-list-item cdkDrag *ngFor="let st of tsk.states; let i = index">
         <div class="d-flex">
           <div class="flex-grow-1 align-self-center">
-            <a href="#">
+            <a class="text-primary">
               <ng-container *ngIf="tsk.requrense != 'нет' || st.isDone == false">
                 {{st.name}}
               </ng-container>

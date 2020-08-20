@@ -2,27 +2,27 @@
 <div mat-dialog-content>
   <div class="text-center">
     <button mat-flat-button [color]="timeVal==1 ? 'accent' : null" class="w-100 m-1" (click)="cl(1)">
-        Утро
+      {{ 1 | timeVal}}
     </button>
   </div>
   <div class="text-center">
     <button mat-flat-button [color]="timeVal==2 ? 'accent' : null" class="w-100 m-1" (click)="cl(2)">
-        День
+      {{ 2 | timeVal}}
     </button>
   </div>
   <div class="text-center">
     <button mat-flat-button [color]="timeVal==3 ? 'accent' : null" class="w-100 m-1" (click)="cl(3)">
-        Вечер
+      {{ 3 | timeVal}}
     </button>
   </div>
   <div class="text-center">
     <button mat-flat-button [color]="timeVal==4 ? 'accent' : null" class="w-100 m-1" (click)="cl(4)">
-        Перед сном
+      {{ 4 | timeVal}}
     </button>
   </div>
   <div class="text-center">
-    <button mat-flat-button [color]="timeVal==5 ? 'accent' : null" class="w-100 m-1" (click)="cl(4)">
-        Весь день
+    <button mat-flat-button [color]="timeVal==5 ? 'accent' : null" class="w-100 m-1" (click)="cl(5)">
+      {{ 5 | timeVal}}
     </button>
   </div>
 </div>
