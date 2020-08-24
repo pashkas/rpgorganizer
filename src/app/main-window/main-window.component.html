@@ -56,13 +56,29 @@
           </div>
         </div>
       </ng-container>
-      <div class="text-right" *ngIf="isSort && srv.pers.sellectedView != 'квесты'">
-        <button mat-flat-button color="accent" (click)="smartSort()">
-          <i class="fa fa-lg fa-expand-arrows-alt"></i>
+      <div fxLayout="row" fxLayoutAlign="end center" *ngIf="isSort && srv.pers.sellectedView != 'квесты'">
+        <button mat-icon-button color="accent" (click)="setSort()">
+          <i class="fa fa-lg fa-save"></i>
+        </button>
+        <button mat-icon-button color="accent" (click)="editCansel()">
+          <i class="fa fa-lg fa-window-close"></i>
+        </button>
+        <button mat-icon-button color="accent" (click)="setTimes()">
+          <i class="fa fa-lg fa-hourglass"></i>
+        </button>
+        <button mat-icon-button color="accent" (click)="smartSort()" style="margin-right: 12px;">
+          <i class="fa fa-lg fa-lightbulb"></i>
         </button>
       </div>
-      <div class="text-right" *ngIf="isSort && srv.pers.sellectedView == 'квесты'">
-        <button mat-flat-button color="accent" (click)="addToQwest()">
+
+      <div fxLayout="row" fxLayoutAlign="end center" *ngIf="isSort && srv.pers.sellectedView == 'квесты'">
+        <button mat-icon-button color="accent" color="accent" (click)="setSort()">
+          <i class="fa fa-lg fa-save"></i>
+        </button>
+        <button mat-icon-button color="accent" (click)="editCansel()">
+          <i class="fa fa-lg fa-window-close"></i>
+        </button>
+        <button mat-icon-button color="accent" (click)="addToQwest()" style="margin-right: 12px;">
           <i class="fa fa-lg fa-plus"></i>
         </button>
       </div>

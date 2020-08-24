@@ -75,7 +75,7 @@ export class Pers {
     /**
      * Можно прокачивать одинаковые уровни.
      */
-    isEqLvlUp = false;
+    isEqLvlUp = true;
 
     /**
      * Максимальный уровень аттрибутов.

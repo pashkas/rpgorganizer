@@ -50,7 +50,7 @@ export class TaskDetailComponent implements OnInit {
     header += this.tsk.requrense == 'нет' ? ' подзадачу' : ' состояние';
     const dialogRef = this.dialog.open(AddItemDialogComponent, {
       panelClass: 'my-dialog',
-      data: { header: header, text: isEdit ? st.name : '', timeVal: st.timeVal },
+      data: { header: header, text: isEdit ? st.name : '', timeVal: st ? st.timeVal : null },
       backdropClass: 'backdrop'
     });
 

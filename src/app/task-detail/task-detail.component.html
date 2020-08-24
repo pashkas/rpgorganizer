@@ -114,7 +114,7 @@
       </mat-list>
     </ng-container>
     <ng-container *ngFor="let st of tsk.statesDescr; let i = index;">
-      <div *ngIf="i!=0||!this.srv.pers.isTES" class="text-center px-0 py-1 border-0"
+      <div *ngIf="i!=0||this.srv.pers.isTES" class="text-center px-0 py-1 border-0"
         [ngClass]="{'bg-success': i==tsk.roundVal && tskAbility.isOpen}">
         <b>{{i}}<ng-container *ngIf="st">: </ng-container></b>{{st}}
       </div>
@@ -226,7 +226,10 @@
         <h5>Подзадачи:</h5>
       </ng-container>
       <ng-container *ngIf="tsk.requrense != 'нет'">
-        <mat-slide-toggle [(ngModel)]="tsk.isStatePlusTitle" name='tsk.isStatePlusTitle'>Плюс к названию</mat-slide-toggle>
+        <mat-slide-toggle [(ngModel)]="tsk.isStatePlusTitle" name='tsk.isStatePlusTitle'>+ название</mat-slide-toggle>
+      </ng-container>
+      <ng-container *ngIf="tsk.requrense != 'нет'">
+        <mat-slide-toggle [(ngModel)]="tsk.isStateInTitle" name='tsk.isStateInTitle'>в заголовок</mat-slide-toggle>
       </ng-container>
       
       <button class="icon-small" (click)="addStateToTask();" mat-icon-button>

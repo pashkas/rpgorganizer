@@ -50,6 +50,7 @@ export class Task implements IImg {
     plusName: string;
     plusToNames: plusToName[] = [];
     isStatePlusTitle: boolean = true;
+    isStateInTitle: boolean = false;
     progressValue: number = 0;
     requrense: string = "будни";
     states: taskState[] = [];

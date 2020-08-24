@@ -82,23 +82,23 @@ export class PerschangesService {
         if (changesMap[n].after === null || changesMap[n].after === undefined) {
           // Использован больше нет
           changes.push(
-            new ChangesModel('Использован ' + changesMap[n].name, 'inv', 1, 0, 0, 1, changesMap[n].img)
+            new ChangesModel('Использован ' + changesMap[n].name, 'inv', 0, 0, 0, 1, changesMap[n].img)
           );
         }
         else if (changesMap[n].before === null || changesMap[n].before === undefined) {
           // Получен новый
           changes.push(
-            new ChangesModel('Получен ' + changesMap[n].name, 'inv', 0, 1, 0, 1, changesMap[n].img)
+            new ChangesModel('Получен ' + changesMap[n].name, 'inv', 1, 1, 0, 1, changesMap[n].img)
           );
         }
         else if (changesMap[n].after > changesMap[n].before) {
           changes.push(
-            new ChangesModel('Получен ' + changesMap[n].name, 'inv', changesMap[n].before, changesMap[n].after, 0, changesMap[n].after, changesMap[n].img)
+            new ChangesModel('Получен ' + changesMap[n].name, 'inv', changesMap[n].after, changesMap[n].after, 0, changesMap[n].after, changesMap[n].img)
           );
         }
         else if (changesMap[n].after < changesMap[n].before) {
           changes.push(
-            new ChangesModel('Использован ' + changesMap[n].name, 'inv', changesMap[n].before, changesMap[n].after, 0, changesMap[n].before, changesMap[n].img)
+            new ChangesModel('Использован ' + changesMap[n].name, 'inv', changesMap[n].before, changesMap[n].before, 0, changesMap[n].before, changesMap[n].img)
           );
         }
       }

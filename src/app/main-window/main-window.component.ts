@@ -235,6 +235,11 @@ export class MainWindowComponent implements OnInit {
     }
   }
 
+  editCansel() {
+    this.setGlobalTaskView(false);
+    this.isSort = false;
+  }
+
   firstOrGlobal() {
     if (this.srv.isGlobalTaskView == true) {
       if (this.srv.pers.sellectedView == 'квесты') {
@@ -390,7 +395,7 @@ export class MainWindowComponent implements OnInit {
     this.nextTask();
   }
 
-  async setTime(tsk: Task): Promise<number> {
+  async setTime(tsk: Task, noOld = false): Promise<number> {
     // let aval = this.getNameVal(tsk.tittle);
 
     // if (aval != -1) {
@@ -401,8 +406,10 @@ export class MainWindowComponent implements OnInit {
     //   tsk.timeVal = -1;
     // }
 
-    if (tsk.timeVal && tsk.timeVal >= 1) {
-      return Promise.resolve(tsk.timeVal);
+    if (noOld == false) {
+      if (tsk.timeVal && tsk.timeVal >= 1) {
+        return Promise.resolve(tsk.timeVal);
+      }
     }
 
     const dialogRef = this.dialog.open(TskTimeValDialogComponent, {
@@ -556,6 +563,33 @@ export class MainWindowComponent implements OnInit {
     else {
       this.setGlobalTaskView(true);
       this.srv.setView('квесты');
+    }
+  }
+
+  async setTimes() {
+    debugger;
+    for (let i = 0; i < this.srv.pers.tasks.length; i++) {
+      let tsk = this.srv.pers.tasks[i];
+      let timeVal = await this.setTime(tsk, true);
+      tsk.timeVal = timeVal;
+
+      for (const ch of this.srv.pers.characteristics) {
+        for (const ab of ch.abilities) {
+          for (const t of ab.tasks) {
+            if (t.id == tsk.id) {
+              t.timeVal = timeVal;
+              break;
+            }
+            for (const st of t.states) {
+              if (st.id == tsk.id) {
+                st.timeVal = timeVal;
+                break;
+              }
+            }
+          }
+        }
+      }
+
     }
   }
 

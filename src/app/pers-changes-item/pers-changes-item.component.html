@@ -1,13 +1,20 @@
-<div class="border border-dark flex-grow-1 w-100" [ngStyle]="{'height': '24px'}">
-  <div class="progress h-100 position-relative">
-    <div #progress class="progress-bar h-100" [ngStyle]="{'background-color': 'Gold'}">
-    </div>
-    <div [ngStyle]="{'font-size': 'small'}"
-      class="align-self-center justify-content-center d-flex position-absolute w-100 text-dark">
-      {{item.name}}&nbsp;{{item.valChange}}
+<ng-container *ngIf="item.valFrom!=item.valTo; else elseTemplate">
+  <div class="border border-dark flex-grow-1 w-100" [ngStyle]="{'height': '24px'}">
+    <div class="progress h-100 position-relative">
+      <div #progress class="progress-bar h-100" [ngStyle]="{'background-color': 'Gold'}">
+      </div>
+      <div [ngStyle]="{'font-size': 'small'}"
+        class="align-self-center justify-content-center d-flex position-absolute w-100 text-dark">
+        {{item.name}}&nbsp;{{item.valChange}}
+      </div>
     </div>
   </div>
-</div>
+</ng-container>
+<ng-template #elseTemplate>
+  <div class="flex-grow-1 w-100">{{item.name}}&nbsp;{{item.valChange}}</div>
+</ng-template>
+
+
 
 <!-- <div class="text-center w-100">{{item.name}}&nbsp;{{item.valChange}}</div>
 <section class="example-section">
