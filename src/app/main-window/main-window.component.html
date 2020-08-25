@@ -138,7 +138,7 @@
   <div fxLayout="row" fxLayoutAlign="space-between center" class="w-100 h-100 py-1" style="min-height: 120px;">
     <button (press)="editDiaryItem()" (contextmenu)="$event.preventDefault()" class="h-100 w-100 px-1 py-0 text-left"
       mat-button routerLink="/pers" (click)="openPersList()">
-      <img (contextmenu)="$event.preventDefault()" src="{{srv.pers.image}}" class="img-fluid h-100 rounded"
+      <img [ngClass]="{'disabled': isSort}" (contextmenu)="$event.preventDefault()" src="{{srv.pers.image}}" class="img-fluid h-100 rounded"
         [ngStyle]="{'object-fit': 'contain'}" [ngClass]="{'vibrate-1': isFailShown}">
     </button>
     <!-- Кнопки -->
@@ -148,7 +148,7 @@
         tmp
       </button> -->
 
-      <button [autofocus]="false" (click)="firstOrGlobal()" mat-icon-button>
+      <button [ngClass]="{'disabled': isSort}" [autofocus]="false" (click)="firstOrGlobal()" mat-icon-button>
         <img *ngIf="this.srv.isGlobalTaskView" src="assets/icons/right.png" class="img-fluid"
           [ngStyle]="{'object-fit': 'contain', 'height':'3em'}">
         <img src="assets/icons/left.png" *ngIf="!this.srv.isGlobalTaskView" class="img-fluid"
@@ -163,7 +163,7 @@
             [ngStyle]="{'object-fit': 'contain', 'height':'2.5em'}">
         </button>
         <button (click)="setSort()" mat-icon-button
-          [ngClass]="{'disabled': this.srv.isGlobalTaskView && this.srv.pers.sellectedView=='квесты' && !this.isSort}">
+          [ngClass]="{'disabled': this.srv.isGlobalTaskView || isSort}">
           <img src="assets/icons/edit.png" class="img-fluid" [ngStyle]="{'object-fit': 'contain', 'height':'3em'}">
         </button>
       </div>

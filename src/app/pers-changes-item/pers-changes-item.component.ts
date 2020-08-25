@@ -24,6 +24,9 @@ export class PersChangesItemComponent implements OnInit {
   }
 
   setpercentage() {
+    if (this.item.valFrom == this.item.valTo) {
+      return;
+    }
 
     if (this.item.type == 'exp' && this.item.expChanges.length > 1) {
 
@@ -35,7 +38,7 @@ export class PersChangesItemComponent implements OnInit {
       let firstTime = (firstPerc / total) * 2000;
       let secondTime = (secondPerc / total) * 2000;
 
-      
+
       //1
       let factory1 = this.builder.build([
         style({ width: this.item.expChanges[0].valFrom + '%' }),

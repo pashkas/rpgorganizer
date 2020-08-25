@@ -226,10 +226,18 @@
         <h5>Подзадачи:</h5>
       </ng-container>
       <ng-container *ngIf="tsk.requrense != 'нет'">
-        <mat-slide-toggle [(ngModel)]="tsk.isStatePlusTitle" name='tsk.isStatePlusTitle'>+ название</mat-slide-toggle>
+        <span (click)="tsk.isStatePlusTitle=!tsk.isStatePlusTitle"
+          [ngClass]="{'text-dark':!tsk.isStatePlusTitle, 'badge-unchecked': !tsk.isStatePlusTitle, 'primary-color-dark': tsk.isStatePlusTitle}"
+          class="badge pointer">
+          + название
+        </span>
       </ng-container>
       <ng-container *ngIf="tsk.requrense != 'нет'">
-        <mat-slide-toggle [(ngModel)]="tsk.isStateInTitle" name='tsk.isStateInTitle'>в заголовок</mat-slide-toggle>
+        <span (click)="tsk.isStateInTitle=!tsk.isStateInTitle"
+          [ngClass]="{'text-dark':!tsk.isStateInTitle, 'badge-unchecked': !tsk.isStateInTitle, 'primary-color-dark': tsk.isStateInTitle}"
+          class="badge pointer">
+          в заголовок
+        </span>
       </ng-container>
       
       <button class="icon-small" (click)="addStateToTask();" mat-icon-button>
