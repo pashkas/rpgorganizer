@@ -10,6 +10,6 @@ import { PersService } from './pers.service';
 export class AppComponent {
   title = 'rpgorganizer';
 
-  constructor(private srv: PersService) {
+  constructor(public srv: PersService) {
   }
 }

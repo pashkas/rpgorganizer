@@ -1,0 +1,18 @@
+.grid-rest {
+    height: 100vh;
+    display: grid;
+    grid-template-columns: auto;
+    grid-template-rows: 1fr;
+    background: black;
+}
+
+.container {
+    position: relative;
+}
+
+.container .element {
+   position: absolute;
+   left: 50%;
+   top: 50%;
+   transform: translate(-50%, -50%);
+}

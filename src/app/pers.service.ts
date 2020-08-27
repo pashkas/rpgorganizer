@@ -553,7 +553,7 @@ export class PersService {
         // || ab.isOpen
         if ((ab.value >= 1 || this.pers.isTES) && !ab.isNotDoneReqvirements) {
           ab.tasks.forEach(tsk => {
-            if (tsk.states.length > 0 && tsk.isSumStates) {
+            if (tsk.states.length > 0 && tsk.isSumStates && !tsk.isStateInTitle) {
               tsk.states.forEach(st => {
                 if (st.isActive || (tsk.isSumStates && this.pers.isTES)) {
                   let t = this.getTskFromState(tsk, st, true);
@@ -654,7 +654,8 @@ export class PersService {
    */
   getPers(usr: FirebaseUserModel): any {
     this.loadPers(usr.id)
-      .pipe(takeUntil(this.unsubscribe$))
+      //.pipe(takeUntil(this.unsubscribe$))
+      .pipe(first())
       .subscribe(data => {
         // Если перс есть
         if (data != undefined) {
@@ -670,27 +671,29 @@ export class PersService {
 
           this.pers = prs;
 
-          if (this.checkNullOrUndefined(this.pers.prevOrderSeq)
-            || this.checkNullOrUndefined(this.pers.curOrderSeq)
-            || this.checkNullOrUndefined(this.pers.curEndOfListSeq)
-          ) {
-            this.pers.prevOrderSeq = 0;
-            this.pers.curOrderSeq = 0;
-            this.pers.curEndOfListSeq = 9999;
+          // if (this.checkNullOrUndefined(this.pers.prevOrderSeq)
+          //   || this.checkNullOrUndefined(this.pers.curOrderSeq)
+          //   || this.checkNullOrUndefined(this.pers.curEndOfListSeq)
+          // ) {
+          //   this.pers.prevOrderSeq = 0;
+          //   this.pers.curOrderSeq = 0;
+          //   this.pers.curEndOfListSeq = 9999;
+          // }
+
+          // // Если наступил следующий день, меняем счетчики
+          // let curDate = new Date().setHours(0, 0, 0, 0);
+          // let lastUse = new Date(this.pers.dateLastUse).setHours(0, 0, 0, 0);
+          // if (curDate.valueOf() > lastUse.valueOf()) {
+          //   this.pers.prevOrderSeq = this.pers.curOrderSeq;
+          //   this.pers.curOrderSeq = 0;
+          //   this.pers.curEndOfListSeq = 9999;
+
+          //   this.savePers(false);
+          // }
+
+          if (this.pers.sellectedView!='навыки') {
+            this.setView('навыки');
           }
-
-          // Если наступил следующий день, меняем счетчики
-          let curDate = new Date().setHours(0, 0, 0, 0);
-          let lastUse = new Date(this.pers.dateLastUse).setHours(0, 0, 0, 0);
-          if (curDate.valueOf() > lastUse.valueOf()) {
-            this.pers.prevOrderSeq = this.pers.curOrderSeq;
-            this.pers.curOrderSeq = 0;
-            this.pers.curEndOfListSeq = 9999;
-
-            this.savePers(false);
-          }
-
-          this.setView('навыки');
         }
         // Если перса пока что не было
         else if (data === undefined && usr.id != undefined) {
@@ -977,7 +980,7 @@ export class PersService {
    * @param userId Идентификатор пользователя
    */
   loadPers(userId: string) {
-    return this.db.collection<Pers>('pers').doc(userId).valueChanges().pipe(take(1), share());
+    return this.db.collection<Pers>('pers').doc(userId).valueChanges().pipe(first());
   }
 
   ngOnDestroy(): void {
