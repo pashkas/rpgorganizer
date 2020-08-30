@@ -197,6 +197,10 @@ export class MainWindowComponent implements OnInit {
   }
 
   editDiaryItem() {
+    if (this.srv.pers.isNoDiary == true) {
+      return;
+    }
+
     if (!this.srv.pers.Diary || this.srv.pers.Diary.length == 0) {
       return;
     }

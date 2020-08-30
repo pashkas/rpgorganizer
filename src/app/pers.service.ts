@@ -236,6 +236,9 @@ export class PersService {
    * @param isDone Выполнена?
    */
   addToDiary(task: Task, isDone: boolean) {
+    if (this.pers.isNoDiary) {
+      return;
+    }
     let tDate: moment.Moment = moment(task.date).startOf('day');
     let diary = this.pers.Diary.find(n => moment(n.date).startOf('day').isSame(tDate));
     if (diary) {
@@ -654,8 +657,7 @@ export class PersService {
    */
   getPers(usr: FirebaseUserModel): any {
     this.loadPers(usr.id)
-      //.pipe(takeUntil(this.unsubscribe$))
-      .pipe(first())
+      .pipe(takeUntil(this.unsubscribe$))
       .subscribe(data => {
         // Если перс есть
         if (data != undefined) {
@@ -980,7 +982,7 @@ export class PersService {
    * @param userId Идентификатор пользователя
    */
   loadPers(userId: string) {
-    return this.db.collection<Pers>('pers').doc(userId).valueChanges().pipe(first());
+    return this.db.collection<Pers>('pers').doc(userId).valueChanges().pipe(take(1), share());
   }
 
   ngOnDestroy(): void {
@@ -1303,33 +1305,38 @@ export class PersService {
     this.setCurPersTask();
 
     // Анализ дневника
-    let prevD: DiaryParam[] = null;
+    if (!this.pers.isNoDiary) {
+      let prevD: DiaryParam[] = null;
 
-    if (this.pers.Diary.length > 0) {
-      for (let i = this.pers.Diary.length - 1; i >= 0; i--) {
-        let el = this.pers.Diary[i].params;
-        el.forEach(p => {
-          if (prevD == null) {
-            p.state = 'eq';
-          }
-          else {
-            let prevP = prevD.find(n => n.id == p.id);
-            if (prevP) {
-              if (p.val > prevP.val) {
-                p.state = 'up';
-              }
-              else if (p.val < prevP.val) {
-                p.state = 'down';
-              }
-              else {
-                p.state = 'eq';
+      if (this.pers.Diary.length > 0) {
+        for (let i = this.pers.Diary.length - 1; i >= 0; i--) {
+          let el = this.pers.Diary[i].params;
+          el.forEach(p => {
+            if (prevD == null) {
+              p.state = 'eq';
+            }
+            else {
+              let prevP = prevD.find(n => n.id == p.id);
+              if (prevP) {
+                if (p.val > prevP.val) {
+                  p.state = 'up';
+                }
+                else if (p.val < prevP.val) {
+                  p.state = 'down';
+                }
+                else {
+                  p.state = 'eq';
+                }
               }
             }
-          }
-        });
-
-        prevD = el;
+          });
+  
+          prevD = el;
+        }
       }
+    }
+    else{
+      this.pers.Diary = [];
     }
 
     // Картинки всем
@@ -1903,7 +1910,9 @@ export class PersService {
       prs.qwests = [];
     }
 
-    //prs.Diary = [];
+    if (prs.isNoDiary) {
+      return;
+    }
     if (!prs.Diary) {
       prs.Diary = [];
     }

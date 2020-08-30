@@ -193,11 +193,9 @@
             </ul>
           </ng-container>
           <br>
-          <button mat-stroked-button color="primary" class="w-100 mb-2" (click)="rest()">
-            Отдохнуть у костра
-          </button>
           <h5 class="text-right">
-            <a [routerLink]="['/mind-map']" class="badge badge-primary">Карта персонажа</a>
+            <a [routerLink]="['/mind-map']" class="badge badge-success">Карта персонажа</a>
+            <a (click)="rest()" class="badge badge-primary">Отдохнуть у костра</a>
           </h5>
 
           <h5 class="text-right">

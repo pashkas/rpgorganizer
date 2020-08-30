@@ -3,7 +3,7 @@
     display: grid;
     grid-template-columns: auto;
     grid-template-rows: 1fr;
-    background: black;
+    background: white;
 }
 
 .container {
