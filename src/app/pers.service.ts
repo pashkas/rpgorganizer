@@ -696,6 +696,11 @@ export class PersService {
           if (this.pers.sellectedView!='навыки') {
             this.setView('навыки');
           }
+          else{
+            if (!moment(this.pers.dateLastUse).isSame(new Date(), 'd')) {
+              this.setView('навыки');
+            }
+          }
         }
         // Если перса пока что не было
         else if (data === undefined && usr.id != undefined) {
