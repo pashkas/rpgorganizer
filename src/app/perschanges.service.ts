@@ -137,38 +137,6 @@ export class PerschangesService {
           );
         }
       }
-      // Опыт
-      else if (changesMap[n].type == 'exp' && (this.afterPers.isNoExpShow != true || isDoneQwest == true)) {
-        if (changesMap[n].after != changesMap[n].before) {
-          let expChanges = new ChangesModel('Опыт', 'exp', changesMap[n].before * 10, changesMap[n].after * 10, this.afterPers.prevExp * 10, this.afterPers.nextExp * 10, changesMap[n].img);
-
-          let beforeExp = changesMap[n].before;
-          let afterExp = changesMap[n].after;
-
-          let prevLvl = this.beforePers.level;
-          let afterLvl = this.afterPers.level;
-
-          let eCh: persExpChanges[] = [];
-
-          if (afterLvl > prevLvl) {
-            //1
-            eCh.push(new persExpChanges(beforeExp, this.beforePers.nextExp, this.beforePers.prevExp, this.beforePers.nextExp));
-            //2
-            eCh.push(new persExpChanges(this.afterPers.prevExp, afterExp, this.afterPers.prevExp, this.afterPers.nextExp));
-          } else if (afterLvl < prevLvl) {
-            //1
-            eCh.push(new persExpChanges(beforeExp, this.beforePers.prevExp, this.beforePers.prevExp, this.beforePers.nextExp));
-            //2
-            eCh.push(new persExpChanges(this.afterPers.nextExp, afterExp, this.afterPers.prevExp, this.afterPers.nextExp));
-          } else {
-            eCh.push(new persExpChanges(beforeExp, afterExp, this.afterPers.prevExp, this.afterPers.nextExp));
-          }
-
-          expChanges.expChanges = eCh;
-
-          changes.push(expChanges);
-        }
-      }
       // Уровень
       else if (changesMap[n].type == 'lvl') {
         if (changesMap[n].after > changesMap[n].before) {
@@ -184,6 +152,49 @@ export class PerschangesService {
       //   else if (changesMap[n].after > changesMap[n].before) {
       //   }
       // }
+    });
+
+    Object.keys(changesMap).forEach(n => {
+      // Опыт
+      if (changesMap[n].type == 'exp') {
+        let isShowBySettings = this.afterPers.isNoExpShow != true || isDoneQwest == true;
+        if (isShowBySettings) {
+          if (changesMap[n].after != changesMap[n].before) {
+            let expChanges = new ChangesModel('Опыт', 'exp', changesMap[n].before * 10, changesMap[n].after * 10, this.afterPers.prevExp * 10, this.afterPers.nextExp * 10, changesMap[n].img);
+  
+            let beforeExp = changesMap[n].before;
+            let afterExp = changesMap[n].after;
+  
+            let prevLvl = this.beforePers.level;
+            let afterLvl = this.afterPers.level;
+  
+            let eCh: persExpChanges[] = [];
+  
+            if (afterLvl > prevLvl) {
+              //1
+              eCh.push(new persExpChanges(beforeExp, this.beforePers.nextExp, this.beforePers.prevExp, this.beforePers.nextExp));
+              //2
+              eCh.push(new persExpChanges(this.afterPers.prevExp, afterExp, this.afterPers.prevExp, this.afterPers.nextExp));
+            } else if (afterLvl < prevLvl) {
+              //1
+              eCh.push(new persExpChanges(beforeExp, this.beforePers.prevExp, this.beforePers.prevExp, this.beforePers.nextExp));
+              //2
+              eCh.push(new persExpChanges(this.afterPers.nextExp, afterExp, this.afterPers.prevExp, this.afterPers.nextExp));
+            } else {
+              eCh.push(new persExpChanges(beforeExp, afterExp, this.afterPers.prevExp, this.afterPers.nextExp));
+            }
+  
+            expChanges.expChanges = eCh;
+  
+            if (isDoneQwest) {
+              changes.push(expChanges);
+            }
+            else{
+              changes.unshift(expChanges);
+            }
+          }
+        }
+      }
     });
 
     function sleep(ms) {
