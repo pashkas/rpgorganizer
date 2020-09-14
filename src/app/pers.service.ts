@@ -41,12 +41,12 @@ export class PersService {
   baseTaskPoints: number = 1.0;
   isDialogOpen: boolean = false;
   isGlobalTaskView: boolean;
-  mn0Count: number = 309;
-  mn1Count: number = 270;
-  mn2Count: number = 576;
-  mn3Count: number = 844;
-  mn4Count: number = 743;
-  mn5Count: number = 275;
+  mn0Count: number = 312;
+  mn1Count: number = 286;
+  mn2Count: number = 596;
+  mn3Count: number = 877;
+  mn4Count: number = 758;
+  mn5Count: number = 283;
   pers: Pers;
   selTabPersList: number = 0;
   // Пользователь
