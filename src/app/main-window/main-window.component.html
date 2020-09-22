@@ -113,8 +113,9 @@
   <div fxLayout="row" fxLayoutAlign="space-between center" class="w-100 h-100 py-1" style="min-height: 120px;">
     <button (press)="editDiaryItem()" (contextmenu)="$event.preventDefault()" class="h-100 w-100 px-1 py-0 text-left"
       mat-button routerLink="/pers" (click)="openPersList()">
-      <img [ngClass]="{'disabled': isSort}" (contextmenu)="$event.preventDefault()" src="{{srv.pers.image}}"
-        class="img-fluid h-100 rounded" [ngStyle]="{'object-fit': 'contain'}" [ngClass]="{'vibrate-1': isFailShown}">
+      
+      <img [ngClass]="{'disabled': isSort, 'vibrate-1': isFailShown}" (contextmenu)="$event.preventDefault()" src="{{srv.pers.image}}"
+        class="img-fluid h-100 rounded" [ngStyle]="{'object-fit': 'contain'}">
     </button>
     <!-- Кнопки -->
     <div fxLayout="row" fxLayoutAlign="end center" fxLayoutGap="0.3em" class="w-100 h-100 px-2" *ngIf="isSort && srv.pers.sellectedView != 'квесты'">
