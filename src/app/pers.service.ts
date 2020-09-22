@@ -1845,7 +1845,7 @@ export class PersService {
       return;
     }
 
-    let rand = Math.random() * 100.0;
+    let rand = Math.random() * 99.0;
 
     let revType = '';
 

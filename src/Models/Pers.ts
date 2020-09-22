@@ -31,11 +31,11 @@ export class Pers {
         "ХРЕНЬ", "МАЗАФАКА", "Ну вот...", "Минус", "Капец", "Чудовищно", "Ужасно", "Пипец"
     ];
 
-    static commonRevSet: revSetting = { name: 'Обычный', probability: 100, cumulative: 2 };
-    static uncommonRevSet: revSetting = { name: 'Превосходный', probability: 100, cumulative: 3.5 };
-    static rareRevSet: revSetting = { name: 'Редкий', probability: 100, cumulative: 4.5 };
-    static epicRevSet: revSetting = { name: 'Магический', probability: 100, cumulative: 5 };
-    static legendaryRevSet: revSetting = { name: 'Легендарный', probability: 100, cumulative: 5.25 };
+    static commonRevSet: revSetting = { name: 'Обычный', probability: 100, cumulative: 2.61 };
+    static uncommonRevSet: revSetting = { name: 'Превосходный', probability: 100, cumulative: 4.42 };
+    static rareRevSet: revSetting = { name: 'Редкий', probability: 100, cumulative: 5.32 };
+    static epicRevSet: revSetting = { name: 'Магический', probability: 100, cumulative: 5.77 };
+    static legendaryRevSet: revSetting = { name: 'Легендарный', probability: 100, cumulative: 6.00 };
 
     /**
      * Без навыков - только характеристики.
