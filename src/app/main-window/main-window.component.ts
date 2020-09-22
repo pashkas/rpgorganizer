@@ -240,14 +240,18 @@ export class MainWindowComponent implements OnInit {
   }
 
   editCansel() {
-    this.setGlobalTaskView(false);
-    this.isSort = false;
+    this.setGlobalTaskView(true);
+    this.firstOrGlobal();
   }
 
   firstOrGlobal() {
     if (this.srv.isGlobalTaskView == true) {
       if (this.srv.pers.sellectedView == 'квесты') {
         this.srv.getQwestTasks();
+      }
+      else {
+        let tasks: Task[] = this.srv.getPersTasks();
+        this.srv.sortPersTasks(tasks);
       }
       this.focusFocus();
     }
