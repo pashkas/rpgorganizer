@@ -693,10 +693,10 @@ export class PersService {
           //   this.savePers(false);
           // }
 
-          if (this.pers.sellectedView!='навыки') {
+          if (this.pers.sellectedView != 'навыки') {
             this.setView('навыки');
           }
-          else{
+          else {
             if (!moment(this.pers.dateLastUse).isSame(new Date(), 'd')) {
               this.setView('навыки');
             }
@@ -805,7 +805,7 @@ export class PersService {
   getQwestTasks(isSort = false) {
     let qwest = this.pers.qwests.find(n => n.id == this.pers.currentQwestId);
     if (!qwest && this.pers.qwests.length > 0) {
-      qwest = this.pers.qwests.find(n=>n.progressValue < 100);
+      qwest = this.pers.qwests.find(n => n.progressValue < 100);
     }
     if (qwest) {
       let tasks: Task[] = [];
@@ -1335,12 +1335,12 @@ export class PersService {
               }
             }
           });
-  
+
           prevD = el;
         }
       }
     }
-    else{
+    else {
       this.pers.Diary = [];
     }
 
@@ -1707,15 +1707,15 @@ export class PersService {
    * @param id Идентификатор задачи.
    */
   taskPlus(id: string) {
-    // Разыгрываем награды
-    this.CasinoRevards();
-
     // Находим задачу
     let task: Task;
     let abil: Ability;
 
     ({ task, abil } = this.findTaskAnAb(id, task, abil));
     if (task) {
+      // Разыгрываем награды
+      this.CasinoRevards(task);
+
       this.addToDiary(task, true);
 
       // Следующая дата
@@ -1840,7 +1840,7 @@ export class PersService {
   /**
    * Розыгрыш наград.
    */
-  private CasinoRevards() {
+  private CasinoRevards(task: Task) {
     if (!this.pers.rewards || this.pers.rewards.length == 0) {
       return;
     }
@@ -1849,19 +1849,58 @@ export class PersService {
 
     let revType = '';
 
-    if (rand <= Pers.commonRevSet.cumulative) {
-      revType = Pers.commonRevSet.name;
-    } else if (rand <= Pers.uncommonRevSet.cumulative) {
-      revType = Pers.uncommonRevSet.name;
-    } else if (rand <= Pers.rareRevSet.cumulative) {
-      revType = Pers.rareRevSet.name;
-    } else if (rand <= Pers.epicRevSet.cumulative) {
-      revType = Pers.epicRevSet.name;
-    } else if (rand <= Pers.legendaryRevSet.cumulative) {
-      revType = Pers.legendaryRevSet.name;
-    } else {
+    if (rand > 3) {
       return;
     }
+
+    if (this.pers.isEra) {
+      if (task.value >= 5) {
+        revType = Pers.legendaryRevSet.name;
+      }
+      else if (task.value >= 4) {
+        revType = Pers.epicRevSet.name;
+      }
+      else if (task.value >= 3) {
+        revType = Pers.rareRevSet.name;
+      }
+      else if (task.value >= 2) {
+        revType = Pers.uncommonRevSet.name;
+      }
+      else {
+        revType = Pers.commonRevSet.name;
+      }
+    }
+    else{
+      if (task.value >= 9) {
+        revType = Pers.legendaryRevSet.name;
+      }
+      else if (task.value >= 7) {
+        revType = Pers.epicRevSet.name;
+      }
+      else if (task.value >= 5) {
+        revType = Pers.rareRevSet.name;
+      }
+      else if (task.value >= 3) {
+        revType = Pers.uncommonRevSet.name;
+      }
+      else {
+        revType = Pers.commonRevSet.name;
+      }
+    }
+
+    // if (rand <= Pers.commonRevSet.cumulative) {
+    //   revType = Pers.commonRevSet.name;
+    // } else if (rand <= Pers.uncommonRevSet.cumulative) {
+    //   revType = Pers.uncommonRevSet.name;
+    // } else if (rand <= Pers.rareRevSet.cumulative) {
+    //   revType = Pers.rareRevSet.name;
+    // } else if (rand <= Pers.epicRevSet.cumulative) {
+    //   revType = Pers.epicRevSet.name;
+    // } else if (rand <= Pers.legendaryRevSet.cumulative) {
+    //   revType = Pers.legendaryRevSet.name;
+    // } else {
+    //   return;
+    // }
 
     let revsOfType = this.getRewsOfType(revType);
 
