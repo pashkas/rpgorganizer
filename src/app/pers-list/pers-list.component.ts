@@ -261,11 +261,13 @@ export class PersListComponent implements OnInit {
       // Обновление картинок квестов
       this.srv.updateQwestTasksImages();
 
+      this.srv.pers.expKoef = 0;
       this.srv.pers.exp = 0;
       this.srv.pers.level = 0;
       this.srv.pers.inventory = [];
 
-      this.srv.clearDiary(); // там тоже перс сохраняется...
+      this.srv.clearDiary(); 
+      // там тоже перс сохраняется...
       //this.srv.savePers(false);
     }
   }

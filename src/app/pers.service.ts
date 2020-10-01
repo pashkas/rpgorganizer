@@ -21,6 +21,8 @@ import * as moment from 'moment';
   providedIn: 'root'
 })
 export class PersService {
+  expKoefMinus: number = -0.5;
+  expKoefPlus: number = +0.05;
   returnToAdventure() {
     this.pers.isRest = false;
     for (const ch of this.pers.characteristics) {
@@ -1696,6 +1698,7 @@ export class PersService {
       task.lastNotDone = true;
 
       this.setCurInd(0);
+      this.pers.expKoef += this.expKoefMinus;
       this.savePers(true, 'minus');
 
       return 'навык';
@@ -1732,6 +1735,8 @@ export class PersService {
 
       task.lastNotDone = false;
       this.setCurInd(0);
+      this.pers.expKoef += this.expKoefPlus;
+
       this.savePers(true, 'plus');
 
       return 'навык';
@@ -1870,7 +1875,7 @@ export class PersService {
         revType = Pers.commonRevSet.name;
       }
     }
-    else{
+    else {
       if (task.value >= 9) {
         revType = Pers.legendaryRevSet.name;
       }
@@ -1946,6 +1951,11 @@ export class PersService {
    * @param prs Персонаж.
    */
   private checkPersNewFields(prs: Pers) {
+
+    if (prs.expKoef == undefined || prs.expKoef == null) {
+      prs.expKoef = 0;
+    }
+
     if (!prs.image) {
       prs.image = prs.rang.img;
     }
@@ -2049,7 +2059,8 @@ export class PersService {
 
   private getTaskChangesExp(task: Task, isPlus: boolean) {
     const koef = this.getWeekKoef(task.requrense, isPlus, task.tskWeekDays);
-    let chVal = this.baseTaskPoints * koef;
+    const expKoef = this.getExpKoef(isPlus);
+    let chVal = this.baseTaskPoints * koef * expKoef;
 
     if (task.tesValue == null || task.tesValue == undefined) {
       task.tesValue = 0;
@@ -2097,6 +2108,30 @@ export class PersService {
     chValFinaly = Math.ceil(chValFinaly * 10.0) / 10.0;
 
     return chValFinaly;
+  }
+
+  getExpKoef(isPlus: boolean): number {
+    if (this.pers.isTES) {
+      return 1;
+    }
+
+    if (isPlus) {
+      if (this.pers.expKoef >= 0) {
+        if (this.pers.expKoef>5) {
+          this.pers.expKoef = 5;
+        }
+        return 1 + this.pers.expKoef;
+      }
+      else {
+        if (this.pers.expKoef < -4) {
+          this.pers.expKoef  -4;
+        }
+        return 1/(1 + Math.abs(this.pers.expKoef));
+      }
+    }
+    else {
+      return 0;
+    }
   }
 
   private getTesChangeKoef(tesVal: number): number {

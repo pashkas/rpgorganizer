@@ -8,6 +8,10 @@ import { revSetting } from './revSetting';
 import { Diary } from './Diary';
 
 export class Pers {
+    /**
+     * Количество выполненных без пропусков задач.
+     */
+    expKoef: number = 0;
 
     Diary: Diary[] = [];
 
