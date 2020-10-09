@@ -841,52 +841,37 @@ export class PersService {
   getSet(tsk: Task, aim: number): number[] {
     let result: number[] = [];
 
-    // Равномерно
-    // for (let i = 0; i <= this.pers.maxAttrLevel; i++) {
-    //   let progr = (i) / (this.pers.maxAttrLevel);
+    if (aim > this.pers.maxAttrLevel) {
+      this.getSetMaxNeatEnd(aim, result);
+    }
+    else {
+      this.getSetLinear(aim, result);
+    }
 
-    //   let val = Math.ceil(progr * (aim));
+    return result;
+  }
 
-    //   result.push(val);
-    // }
+  /**
+   * Получает равномерный набор.
+   * @param aim 
+   * @param result 
+   */
+  private getSetLinear(aim: number, result: number[]) {
+    for (let i = 0; i <= this.pers.maxAttrLevel; i++) {
+      let progr = (i) / (this.pers.maxAttrLevel);
 
-    // ???
-    // let max = aim;
-    // let step = Math.floor(aim / (Task.maxValue + 1));
-    // if (step < 1) {
-    //   step = 1;
-    // }
-    // let left = max % step;
-    // max = max - left;
+      let val = Math.ceil(progr * (aim));
 
-    // // Основное..
-    // for (let i = Task.maxValue; i >= 0; i--) {
-    //   result.unshift(max);
+      result.push(val);
+    }
+  }
 
-    //   max -= step;
-
-    //   if (max < step) {
-    //     max = step;
-    //   }
-    // }
-
-    // // Остатки..
-    // for (let i = 0; i < result.length; i++) {
-    //   let v = i + 1;
-    //   if (v > left) {
-    //     v = left;
-    //   }
-
-    //   result[i] += v;
-    // }
-
-    // for (let i = 0; i <= Task.maxValue; i++) {
-    //   let progr = (i + 1) / (Task.maxValue + 1);
-
-    //   result.push(Math.ceil(progr * aim));
-    // }
-
-    // ???
+  /**
+   * Получает набор с более плавным концом.
+   * @param aim 
+   * @param result 
+   */
+  private getSetMaxNeatEnd(aim: number, result: number[]) {
     let max = aim;
 
     let step = Math.floor(aim / Task.maxValue);
@@ -922,8 +907,6 @@ export class PersService {
     }
 
     result.unshift(0);
-
-    return result;
   }
 
   getTskValForState(value: number, maxValue: number) {
@@ -2114,12 +2097,12 @@ export class PersService {
   changeExpKoef(isPlus: boolean) {
     let changeMinus = 1;
     if (isPlus) {
-      let openAbs = this.pers.characteristics.reduce((a,b)=>{
-        return a + b.abilities.filter(n=>n.value>=1).length;
+      let openAbs = this.pers.characteristics.reduce((a, b) => {
+        return a + b.abilities.filter(n => n.value >= 1).length;
       }, 0);
-      this.pers.expKoef += (changeMinus/openAbs);
+      this.pers.expKoef += (changeMinus / openAbs);
     }
-    else{
+    else {
       this.pers.expKoef -= changeMinus;
     }
     if (this.pers.expKoef > 0) {
@@ -2133,8 +2116,7 @@ export class PersService {
     }
 
     const toRet = Math.pow(2, this.pers.expKoef);
-    debugger;
-    
+
     return toRet;
   }
 

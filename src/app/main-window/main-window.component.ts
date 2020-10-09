@@ -575,7 +575,6 @@ export class MainWindowComponent implements OnInit {
   }
 
   async setTimes() {
-    debugger;
     for (let i = 0; i < this.srv.pers.tasks.length; i++) {
       let tsk = this.srv.pers.tasks[i];
       let timeVal = await this.setTime(tsk, true);
