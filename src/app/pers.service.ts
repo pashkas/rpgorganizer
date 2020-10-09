@@ -21,7 +21,7 @@ import * as moment from 'moment';
   providedIn: 'root'
 })
 export class PersService {
-  expKoefMinus: number = -0.5;
+  expKoefMinus: number = -1.0;
   expKoefPlus: number = +0.05;
   returnToAdventure() {
     this.pers.isRest = false;
@@ -843,14 +843,16 @@ export class PersService {
   getSet(tsk: Task, aim: number): number[] {
     let result: number[] = [];
 
-    for (let i = 0; i <= this.pers.maxAttrLevel; i++) {
-      let progr = (i) / (this.pers.maxAttrLevel);
+    // Равномерно
+    // for (let i = 0; i <= this.pers.maxAttrLevel; i++) {
+    //   let progr = (i) / (this.pers.maxAttrLevel);
 
-      let val = Math.ceil(progr * (aim));
+    //   let val = Math.ceil(progr * (aim));
 
-      result.push(val);
-    }
+    //   result.push(val);
+    // }
 
+    // ???
     // let max = aim;
     // let step = Math.floor(aim / (Task.maxValue + 1));
     // if (step < 1) {
@@ -886,41 +888,42 @@ export class PersService {
     //   result.push(Math.ceil(progr * aim));
     // }
 
-    // let max = aim;
+    // ???
+    let max = aim;
 
-    // let step = Math.floor(aim / Task.maxValue);
-    // if (step < 1) {
-    //   step = 1;
-    // }
+    let step = Math.floor(aim / Task.maxValue);
+    if (step < 1) {
+      step = 1;
+    }
 
-    // let left = max - step * Task.maxValue;
-    // if (left < 0) {
-    //   left = 0;
-    // }
-    // max = max - left;
+    let left = max - step * Task.maxValue;
+    if (left < 0) {
+      left = 0;
+    }
+    max = max - left;
 
-    // // Основное..
-    // for (let i = Task.maxValue; i >= 1; i--) {
-    //   result.unshift(max);
+    // Основное..
+    for (let i = Task.maxValue; i >= 1; i--) {
+      result.unshift(max);
 
-    //   max -= step;
+      max -= step;
 
-    //   if (max < step) {
-    //     max = step;
-    //   }
-    // }
+      if (max < step) {
+        max = step;
+      }
+    }
 
-    // // Остатки..
-    // for (let i = 0; i < result.length; i++) {
-    //   let v = i + 1;
-    //   if (v > left) {
-    //     v = left;
-    //   }
+    // Остатки..
+    for (let i = 0; i < result.length; i++) {
+      let v = i + 1;
+      if (v > left) {
+        v = left;
+      }
 
-    //   result[i] += v;
-    // }
+      result[i] += v;
+    }
 
-    // result.unshift(0);
+    result.unshift(0);
 
     return result;
   }
@@ -1698,7 +1701,7 @@ export class PersService {
       task.lastNotDone = true;
 
       this.setCurInd(0);
-      this.pers.expKoef += this.expKoefMinus;
+      this.changeExpKoef(this.expKoefMinus);
       this.savePers(true, 'minus');
 
       return 'навык';
@@ -1735,7 +1738,7 @@ export class PersService {
 
       task.lastNotDone = false;
       this.setCurInd(0);
-      this.pers.expKoef += this.expKoefPlus;
+      this.changeExpKoef(this.expKoefPlus);
 
       this.savePers(true, 'plus');
 
@@ -2110,6 +2113,18 @@ export class PersService {
     return chValFinaly;
   }
 
+  changeExpKoef(v: number) {
+    this.pers.expKoef = Math.ceil((this.pers.expKoef + v) * 100) / 100;
+
+    if (this.pers.expKoef > 5) {
+      this.pers.expKoef = 5;
+    }
+    if (this.pers.expKoef < -4) {
+      this.pers.expKoef - 4;
+    }
+
+  }
+
   getExpKoef(isPlus: boolean): number {
     if (this.pers.isTES) {
       return 1;
@@ -2117,16 +2132,10 @@ export class PersService {
 
     if (isPlus) {
       if (this.pers.expKoef >= 0) {
-        if (this.pers.expKoef>5) {
-          this.pers.expKoef = 5;
-        }
         return 1 + this.pers.expKoef;
       }
       else {
-        if (this.pers.expKoef < -4) {
-          this.pers.expKoef  -4;
-        }
-        return 1/(1 + Math.abs(this.pers.expKoef));
+        return 1 / (1 + Math.abs(this.pers.expKoef));
       }
     }
     else {
