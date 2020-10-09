@@ -21,8 +21,6 @@ import * as moment from 'moment';
   providedIn: 'root'
 })
 export class PersService {
-  expKoefMinus: number = -1.0;
-  expKoefPlus: number = +0.05;
   returnToAdventure() {
     this.pers.isRest = false;
     for (const ch of this.pers.characteristics) {
@@ -1701,7 +1699,7 @@ export class PersService {
       task.lastNotDone = true;
 
       this.setCurInd(0);
-      this.changeExpKoef(this.expKoefMinus);
+      this.changeExpKoef(false);
       this.savePers(true, 'minus');
 
       return 'навык';
@@ -1738,7 +1736,7 @@ export class PersService {
 
       task.lastNotDone = false;
       this.setCurInd(0);
-      this.changeExpKoef(this.expKoefPlus);
+      this.changeExpKoef(true);
 
       this.savePers(true, 'plus');
 
@@ -2113,16 +2111,20 @@ export class PersService {
     return chValFinaly;
   }
 
-  changeExpKoef(v: number) {
-    this.pers.expKoef = Math.ceil((this.pers.expKoef + v) * 100) / 100;
-
-    if (this.pers.expKoef > 5) {
-      this.pers.expKoef = 5;
+  changeExpKoef(isPlus: boolean) {
+    let changeMinus = 1;
+    if (isPlus) {
+      let openAbs = this.pers.characteristics.reduce((a,b)=>{
+        return a + b.abilities.filter(n=>n.value>=1).length;
+      }, 0);
+      this.pers.expKoef += (changeMinus/openAbs);
     }
-    if (this.pers.expKoef < -4) {
-      this.pers.expKoef - 4;
+    else{
+      this.pers.expKoef -= changeMinus;
     }
-
+    if (this.pers.expKoef > 0) {
+      this.pers.expKoef = 0;
+    }
   }
 
   getExpKoef(isPlus: boolean): number {
@@ -2130,17 +2132,10 @@ export class PersService {
       return 1;
     }
 
-    if (isPlus) {
-      if (this.pers.expKoef >= 0) {
-        return 1 + this.pers.expKoef;
-      }
-      else {
-        return 1 / (1 + Math.abs(this.pers.expKoef));
-      }
-    }
-    else {
-      return 0;
-    }
+    const toRet = Math.pow(2, this.pers.expKoef);
+    debugger;
+    
+    return toRet;
   }
 
   private getTesChangeKoef(tesVal: number): number {
@@ -2363,17 +2358,18 @@ export class PersService {
       else {
         const ceilOn = Math.ceil(i * onPerLevel) + startON;
 
-        let noLinear = (1 + (i - 3) * 0.05); // ук уровень с которого
+        // let noLinear = (1 + (i - 3) * 0.05); // ук уровень с которого
 
-        if (this.pers.isOneLevOneCrist) {
-          noLinear = 1;
-        }
-        if (this.pers.isEra) {
-          noLinear = 2;
-        }
-        else {
-          exp += Math.ceil((ceilOn * noLinear) * 10.0) / 10.0;
-        }
+        // if (this.pers.isOneLevOneCrist) {
+        //   noLinear = 1;
+        // }
+        // if (this.pers.isEra) {
+        //   noLinear = 2;
+        // }
+        let noLinear = 1;
+
+        exp += Math.ceil((ceilOn * noLinear) * 10.0) / 10.0;
+
       }
       nextExp = exp;
 

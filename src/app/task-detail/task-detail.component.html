@@ -39,9 +39,9 @@
         {{tsk.requrense | titlecase }}
       </ng-container>
 
-      <div>
+      <!-- <div>
         {{tsk.timeVal | timeVal}}
-      </div>
+      </div> -->
 
       <ng-container *ngIf="tskCharact">
         <a [routerLink]="['/pers/characteristic', tskCharact.id]">{{tskCharact.name}}</a>
@@ -166,14 +166,14 @@
           </mat-select>
         </mat-form-field>
         <!-- Время -->
-        <mat-form-field>
+        <!-- <mat-form-field>
           <mat-label>Время</mat-label>
           <mat-select [(ngModel)]="tsk.timeVal" name="tsk.timeVal">
             <mat-option *ngFor="let req of times" [value]="req">
               {{req|timeVal}}
             </mat-option>
           </mat-select>
-        </mat-form-field>
+        </mat-form-field> -->
       </ng-container>
     </div>
 
