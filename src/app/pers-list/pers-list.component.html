@@ -153,8 +153,9 @@
 
                               <ng-container *ngIf="!srv.pers.isTES">
                                 <ng-container *ngIf="srv.pers.isEra; else noEra">
-                                  <a [ngClass]="{'disabled': !ab.tasks[0]?.mayUp}" matBadge="{{ab.tasks[0]?.cost}}"
-                                    matBadgeColor="accent" class="ml-0 px-1 mr-3" (click)="upAbil(ab)">
+                                  <a [ngClass]="{'disabled': !ab.tasks[0]?.mayUp}"  class="ml-0 px-1 mr-0" (click)="upAbil(ab)" *ngIf="ab.tasks[0]?.mayUp">
+                                    <!-- matBadge="{{ab.tasks[0]?.cost}}"
+                                    matBadgeColor="accent" -->
                                     <!-- *ngIf="ab.tasks[0]?.mayUp" -->
                                     <img src="assets/icons/up.png" class="img-fluid"
                                       [ngStyle]="{'object-fit': 'contain', 'height':'1.5em'}">

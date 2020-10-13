@@ -1352,6 +1352,22 @@ export class PersService {
       .set(JSON.parse(JSON.stringify(this.pers)));
   }
 
+  getEraCostLvl(curAbLvl: number) {
+    if (curAbLvl == 0) {
+      return this.pers.maxAttrLevel;
+    }
+    return curAbLvl;
+  }
+
+  getEraCostTotal(curAbLvl: number){
+    let cost=0;
+    for (let i = 0; i < curAbLvl; i++) {
+      cost+=this.getEraCostLvl(i);
+    }
+
+    return cost;
+  }
+
   /**
    * Задаем видимости для прокачки навыков.
    */
@@ -1413,18 +1429,18 @@ export class PersService {
                   break;
                 }
 
-                if (this.pers.isEra) {
-                  cost += next;
-                }
-                else {
-                  cost += 1;
-                }
+                cost += 1;
               }
 
               tsk.nextUp = next - 1;
             }
 
-            tsk.cost = cost;
+            if (!this.pers.isEra) {
+              tsk.cost = cost;
+            }
+            else{
+              tsk.cost = this.getEraCostLvl(tsk.value);
+            }
 
             if ((tsk.value >= 1) && tsk.statesDescr[Math.floor(tsk.value)] == tsk.statesDescr[Math.floor(tsk.value + 1)]) {
               tsk.IsNextLvlSame = true;
@@ -1438,6 +1454,9 @@ export class PersService {
 
             if (!this.pers.isEra) {
               cost = 1;
+            }
+            else{
+              cost = tsk.cost;
             }
 
             if (this.pers.ON > 0 && tsk.value <= this.pers.maxAttrLevel - 1 && this.pers.ON >= cost) {
@@ -1776,7 +1795,8 @@ export class PersService {
         tsk.value += 1;
       }
       else {
-        tsk.value = tsk.nextUp;
+        //tsk.value = tsk.nextUp;
+        tsk.value += 1;
       }
 
       let curTaskValue = tsk.value;
@@ -1842,7 +1862,7 @@ export class PersService {
       return;
     }
 
-    if (this.pers.isEra) {
+    if (this.pers.isMax5) {
       if (task.value >= 5) {
         revType = Pers.legendaryRevSet.name;
       }
@@ -2051,7 +2071,7 @@ export class PersService {
     }
     let taskStreang = task.value;
     if (this.pers.isEra) {
-      taskStreang = (task.value * (task.value + 1)) / 2;
+      taskStreang = this.getEraCostTotal(task.value);
     }
 
     // Расчет для ТЕС
@@ -2294,7 +2314,7 @@ export class PersService {
     this.pers.characteristics.forEach(cha => {
       cha.abilities.forEach(ab => {
         if (this.pers.isEra) {
-          curV += (ab.value * (ab.value + 1)) / 2;
+          curV += this.getEraCostTotal(ab.value);
         }
         else {
           curV += ab.value;
@@ -2319,7 +2339,8 @@ export class PersService {
         onPerLevel = (totalAbilities * 15.0) / 100.0;
       }
       else {
-        onPerLevel = (totalAbilities * 55.0) / 100.0;
+        //onPerLevel = (totalAbilities * 55.0) / 100.0;
+        onPerLevel = 10;
       }
     }
 
