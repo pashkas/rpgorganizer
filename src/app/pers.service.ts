@@ -123,23 +123,45 @@ export class PersService {
   }
 
   private getMonsterLevel(prsLvl: number) {
-    if (prsLvl < 10) {
-      return 0;
-    }
-    else if (prsLvl < 20) {
-      return 1;
-    }
-    else if (prsLvl < 30) {
-      return 2;
-    }
-    else if (prsLvl < 60) {
-      return 3;
-    }
-    else if (prsLvl < 90) {
-      return 4;
+    if (this.pers.isEra) {
+      if (prsLvl < 25) {
+        return 0;
+      }
+      else if (prsLvl < 50) {
+        return 1;
+      }
+      else if (prsLvl < 75) {
+        return 2;
+      }
+      else if (prsLvl < 125) {
+        return 3;
+      }
+      else if (prsLvl < 150) {
+        return 4;
+      }
+      else {
+        return 5;
+      }
     }
     else {
-      return 5;
+      if (prsLvl < 10) {
+        return 0;
+      }
+      else if (prsLvl < 20) {
+        return 1;
+      }
+      else if (prsLvl < 30) {
+        return 2;
+      }
+      else if (prsLvl < 60) {
+        return 3;
+      }
+      else if (prsLvl < 90) {
+        return 4;
+      }
+      else {
+        return 5;
+      }
     }
   }
 
@@ -1354,15 +1376,15 @@ export class PersService {
 
   getEraCostLvl(curAbLvl: number) {
     if (curAbLvl == 0) {
-      return this.pers.maxAttrLevel;
+      return 5;
     }
     return curAbLvl;
   }
 
-  getEraCostTotal(curAbLvl: number){
-    let cost=0;
+  getEraCostTotal(curAbLvl: number) {
+    let cost = 0;
     for (let i = 0; i < curAbLvl; i++) {
-      cost+=this.getEraCostLvl(i);
+      cost += this.getEraCostLvl(i);
     }
 
     return cost;
@@ -1438,7 +1460,7 @@ export class PersService {
             if (!this.pers.isEra) {
               tsk.cost = cost;
             }
-            else{
+            else {
               tsk.cost = this.getEraCostLvl(tsk.value);
             }
 
@@ -1455,7 +1477,7 @@ export class PersService {
             if (!this.pers.isEra) {
               cost = 1;
             }
-            else{
+            else {
               cost = tsk.cost;
             }
 
@@ -2339,8 +2361,10 @@ export class PersService {
         onPerLevel = (totalAbilities * 15.0) / 100.0;
       }
       else {
+        //const era10 = this.getEraCostTotal(10);
         //onPerLevel = (totalAbilities * 55.0) / 100.0;
-        onPerLevel = 10;
+        onPerLevel = 5;
+        //onPerLevel = (totalAbilities * era10) / 200;
       }
     }
 
