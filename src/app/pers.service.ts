@@ -114,7 +114,7 @@ export class PersService {
   }
 
   GetRndEnamy(tsk: IImg): string {
-    let mnstrLvl = this.getMonsterLevel(this.pers.level);
+    let mnstrLvl = this.getMonsterLevel();
 
     tsk.imageLvl = '' + mnstrLvl;
     tsk.image = this.getImgPathRandome(mnstrLvl);
@@ -122,47 +122,70 @@ export class PersService {
     return;
   }
 
-  private getMonsterLevel(prsLvl: number) {
-    if (this.pers.isEra) {
-      if (prsLvl < 25) {
-        return 0;
-      }
-      else if (prsLvl < 50) {
-        return 1;
-      }
-      else if (prsLvl < 75) {
-        return 2;
-      }
-      else if (prsLvl < 125) {
-        return 3;
-      }
-      else if (prsLvl < 150) {
-        return 4;
-      }
-      else {
-        return 5;
-      }
+  private getMonsterLevel(): number {
+    if (!this.pers.totalProgress) {
+      this.pers.totalProgress = 0;
+    }
+    
+    let prsLvl = this.pers.totalProgress;
+    if (prsLvl < 10) {
+      return 0;
+    }
+    else if (prsLvl < 20) {
+      return 1;
+    }
+    else if (prsLvl < 30) {
+      return 2;
+    }
+    else if (prsLvl < 60) {
+      return 3;
+    }
+    else if (prsLvl < 90) {
+      return 4;
     }
     else {
-      if (prsLvl < 10) {
-        return 0;
-      }
-      else if (prsLvl < 20) {
-        return 1;
-      }
-      else if (prsLvl < 30) {
-        return 2;
-      }
-      else if (prsLvl < 60) {
-        return 3;
-      }
-      else if (prsLvl < 90) {
-        return 4;
-      }
-      else {
-        return 5;
-      }
+      return 5;
     }
+    // if (this.pers.isEra) {
+    //   if (prsLvl < 25) {
+    //     return 0;
+    //   }
+    //   else if (prsLvl < 50) {
+    //     return 1;
+    //   }
+    //   else if (prsLvl < 75) {
+    //     return 2;
+    //   }
+    //   else if (prsLvl < 125) {
+    //     return 3;
+    //   }
+    //   else if (prsLvl < 150) {
+    //     return 4;
+    //   }
+    //   else {
+    //     return 5;
+    //   }
+    // }
+    // else {
+    //   if (prsLvl < 10) {
+    //     return 0;
+    //   }
+    //   else if (prsLvl < 20) {
+    //     return 1;
+    //   }
+    //   else if (prsLvl < 30) {
+    //     return 2;
+    //   }
+    //   else if (prsLvl < 60) {
+    //     return 3;
+    //   }
+    //   else if (prsLvl < 90) {
+    //     return 4;
+    //   }
+    //   else {
+    //     return 5;
+    //   }
+    // }
   }
 
   abSorter(): (a: Ability, b: Ability) => number {
@@ -1375,8 +1398,9 @@ export class PersService {
   }
 
   getEraCostLvl(curAbLvl: number) {
+    //return curAbLvl + 1;
     if (curAbLvl == 0) {
-      return 5;
+      return 10;
     }
     return curAbLvl;
   }
@@ -2142,13 +2166,16 @@ export class PersService {
       let openAbs = this.pers.characteristics.reduce((a, b) => {
         return a + b.abilities.filter(n => n.value >= 1).length;
       }, 0);
-      this.pers.expKoef += (changeMinus / openAbs);
+      this.pers.expKoef += (changeMinus / (openAbs*2));
     }
     else {
       this.pers.expKoef -= changeMinus;
     }
     if (this.pers.expKoef > 0) {
       this.pers.expKoef = 0;
+    }
+    if (this.pers.expKoef < -2) {
+      this.pers.expKoef = -2;
     }
   }
 
@@ -2362,9 +2389,9 @@ export class PersService {
       }
       else {
         //const era10 = this.getEraCostTotal(10);
-        //onPerLevel = (totalAbilities * 55.0) / 100.0;
-        onPerLevel = 5;
         //onPerLevel = (totalAbilities * era10) / 200;
+        //onPerLevel = (totalAbilities * 55.0) / 100.0;
+        onPerLevel = 10;
       }
     }
 
@@ -2428,10 +2455,12 @@ export class PersService {
 
     this.pers.ON = ons;
 
-    if (this.getMonsterLevel(prevPersLevel) != this.getMonsterLevel(this.pers.level)) {
-      this.updateQwestTasksImages();
-      this.updateAbTasksImages();
-    }
+    this.pers.totalProgress = (skillCur / skillMax) * 100;
+
+    // if (this.getMonsterLevel(prevPersLevel) != this.getMonsterLevel(this.pers.level)) {
+    //   this.updateQwestTasksImages();
+    //   this.updateAbTasksImages();
+    // }
   }
 
   private setPersRang() {

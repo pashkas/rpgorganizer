@@ -170,4 +170,5 @@ export class Pers {
      * Отдых в таверне.
      */
     isRest:boolean = false;
+  totalProgress: number;
 }
