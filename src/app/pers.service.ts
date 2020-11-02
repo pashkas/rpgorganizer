@@ -29,12 +29,11 @@ export class PersService {
   isGlobalTaskView: boolean;
   isOffline: boolean = false;
   isOnline: boolean;
-  mn0Count: number = 312;
-  mn1Count: number = 286;
-  mn2Count: number = 596;
-  mn3Count: number = 877;
-  mn4Count: number = 758;
-  mn5Count: number = 283;
+  mn1Count: number = 65;
+  mn2Count: number = 149;
+  mn3Count: number = 713;
+  mn4Count: number = 745;
+  mn5Count: number = 285;
   pers: Pers;
   selTabPersList: number = 0;
   // Пользователь
@@ -642,9 +641,6 @@ export class PersService {
     let max: number = 0;
 
     switch (lvl) {
-      case 0:
-        max = this.mn0Count;
-        break;
       case 1:
         max = this.mn1Count;
         break;
@@ -662,7 +658,7 @@ export class PersService {
         break;
 
       default:
-        max = this.mn0Count;
+        max = this.mn1Count;
         break;
     }
 
@@ -1481,6 +1477,10 @@ export class PersService {
     this.pers = prs;
 
     this.setView('навыки');
+
+    if (!this.pers.imgVers || this.pers.imgVers < 1) {
+      this.reImages();
+    }
   }
 
   setStatesNotDone(tsk: Task) {
@@ -2060,12 +2060,9 @@ export class PersService {
 
   private getMonsterLevel(prsLvl: number): number {
     if (prsLvl < 10) {
-      return 0;
-    }
-    else if (prsLvl < 20) {
       return 1;
     }
-    else if (prsLvl < 30) {
+    else if (prsLvl < 20) {
       return 2;
     }
     else if (prsLvl < 80) {
@@ -2077,70 +2074,6 @@ export class PersService {
     else {
       return 5;
     }
-
-    // if (!this.pers.totalProgress) {
-    //   this.pers.totalProgress = 0;
-    // }
-
-    // let prsLvl = this.pers.totalProgress;
-    // if (prsLvl < 10) {
-    //   return 0;
-    // }
-    // else if (prsLvl < 20) {
-    //   return 1;
-    // }
-    // else if (prsLvl < 30) {
-    //   return 2;
-    // }
-    // else if (prsLvl < 60) {
-    //   return 3;
-    // }
-    // else if (prsLvl < 90) {
-    //   return 4;
-    // }
-    // else {
-    //   return 5;
-    // }
-    // if (this.pers.isEra) {
-    //   if (prsLvl < 25) {
-    //     return 0;
-    //   }
-    //   else if (prsLvl < 50) {
-    //     return 1;
-    //   }
-    //   else if (prsLvl < 75) {
-    //     return 2;
-    //   }
-    //   else if (prsLvl < 125) {
-    //     return 3;
-    //   }
-    //   else if (prsLvl < 150) {
-    //     return 4;
-    //   }
-    //   else {
-    //     return 5;
-    //   }
-    // }
-    // else {
-    //   if (prsLvl < 10) {
-    //     return 0;
-    //   }
-    //   else if (prsLvl < 20) {
-    //     return 1;
-    //   }
-    //   else if (prsLvl < 30) {
-    //     return 2;
-    //   }
-    //   else if (prsLvl < 60) {
-    //     return 3;
-    //   }
-    //   else if (prsLvl < 90) {
-    //     return 4;
-    //   }
-    //   else {
-    //     return 5;
-    //   }
-    // }
   }
 
   private getRewsOfType(revType: any) {

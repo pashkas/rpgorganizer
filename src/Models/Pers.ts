@@ -8,6 +8,8 @@ import { revSetting } from './revSetting';
 import { Diary } from './Diary';
 
 export class Pers {
+
+    imgVers: number = 1;
     /**
      * Количество выполненных без пропусков задач.
      */
@@ -129,7 +131,7 @@ export class Pers {
     static maxLevel: number = 100;
     static rangLvls: number[] = [0, 20, 40, 60, 80, 100];
 
-    mnstrCounter:number = 0;
+    mnstrCounter: number = 0;
     storyProgress: number = 0;
     characteristics: Characteristic[] = [];
     curEndOfListSeq: number;
