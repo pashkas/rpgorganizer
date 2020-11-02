@@ -129,6 +129,7 @@ export class Pers {
     static maxLevel: number = 100;
     static rangLvls: number[] = [0, 20, 40, 60, 80, 100];
 
+    mnstrCounter:number = 0;
     storyProgress: number = 0;
     characteristics: Characteristic[] = [];
     curEndOfListSeq: number;
@@ -169,6 +170,7 @@ export class Pers {
     /**
      * Отдых в таверне.
      */
-    isRest:boolean = false;
-  totalProgress: number;
+    isRest: boolean = false;
+    totalProgress: number;
+    isOffline: boolean = false;
 }

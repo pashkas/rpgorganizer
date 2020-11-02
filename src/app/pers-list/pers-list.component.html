@@ -32,7 +32,7 @@
           </div> -->
           <app-image-component [(data)]="this.srv.pers.image" [isCanEdit]="false"></app-image-component>
           <div fxLayout="row" fxLayoutAlign="space-between center">
-            <span *ngIf="!this.srv.pers.isTES">
+            <span>
               <img src="assets/icons/опыт.png" class="img-fluid"
                 [ngStyle]="{'object-fit': 'contain', 'height':'1.5em'}">
               <span>
@@ -46,7 +46,7 @@
               {{this.srv.pers.name}}
             </div>
 
-            <span *ngIf="!this.srv.pers.isTES">
+            <span>
               <img src="assets/icons/diamond.png" class="img-fluid"
                 [ngStyle]="{'object-fit': 'contain', 'height':'1.5em'}">
               <span>
@@ -54,13 +54,7 @@
               </span>
             </span>
 
-            <span *ngIf="this.srv.pers.isTES">
-              <img src="assets/icons/опыт.png" class="img-fluid"
-                [ngStyle]="{'object-fit': 'contain', 'height':'1.5em'}">
-              <span>
-                {{(this.srv.pers.level)}}
-              </span>
-            </span>
+
 
           </div>
 
@@ -145,40 +139,39 @@
                               <!-- <i *ngIf="ab.tasks[0]?.plusStateMax"><small>{{'->' + ab.tasks[0]?.plusStateMax}}</small></i> -->
                             </a>
                             <div fxLayout="row" fxLayoutAlign="space-around" class="text-right align-self-baseline">
-                              <a class="pl-2" (click)="showAbility(ab)" [ngClass]="{'text-success' : ab.tasks[0]?.mayUp && ab.tasks[0]?.IsNextLvlSame && !ab.isNotDoneReqvirements,
+                              <a *ngIf="!this.srv.pers.isTES || (this.srv.pers.isTES&&!ab.tasks[0]?.mayUp)" class="pl-2"
+                                (click)="showAbility(ab)" [ngClass]="{'text-success' : ab.tasks[0]?.mayUp && ab.tasks[0]?.IsNextLvlSame && !ab.isNotDoneReqvirements,
                                 'text-danger': ab.isNotDoneReqvirements}">
                                 {{ab.rang.name}}
                               </a>
 
+                              <ng-container *ngIf="srv.pers.isEra; else noEra">
+                                <a [ngClass]="{'disabled': !ab.tasks[0]?.mayUp}" class="ml-0 px-1 mr-0"
+                                  (click)="upAbil(ab)" *ngIf="ab.tasks[0]?.mayUp">
+                                  <!-- matBadge="{{ab.tasks[0]?.cost}}"
+                                  matBadgeColor="accent" -->
+                                  <!-- *ngIf="ab.tasks[0]?.mayUp" -->
+                                  <img src="assets/icons/up.png" class="img-fluid"
+                                    [ngStyle]="{'object-fit': 'contain', 'height':'1.5em'}">
+                                </a>
+                              </ng-container>
+                              <ng-template #noEra>
 
-                              <ng-container *ngIf="!srv.pers.isTES">
-                                <ng-container *ngIf="srv.pers.isEra; else noEra">
-                                  <a [ngClass]="{'disabled': !ab.tasks[0]?.mayUp}"  class="ml-0 px-1 mr-0" (click)="upAbil(ab)" *ngIf="ab.tasks[0]?.mayUp">
-                                    <!-- matBadge="{{ab.tasks[0]?.cost}}"
-                                    matBadgeColor="accent" -->
-                                    <!-- *ngIf="ab.tasks[0]?.mayUp" -->
+                                <ng-container *ngIf="this.srv?.pers?.isEqLvlUp; else notMayNotSame">
+                                  <a *ngIf="ab.tasks[0]?.mayUp" class="ml-0 px-1 mr-0" (click)="upAbil(ab)">
                                     <img src="assets/icons/up.png" class="img-fluid"
                                       [ngStyle]="{'object-fit': 'contain', 'height':'1.5em'}">
                                   </a>
                                 </ng-container>
-                                <ng-template #noEra>
-                                  
-                                  <ng-container *ngIf="this.srv?.pers?.isEqLvlUp; else notMayNotSame">
-                                    <a *ngIf="ab.tasks[0]?.mayUp"
-                                    class="ml-0 px-1 mr-3" (click)="upAbil(ab)">
+                                <ng-template #notMayNotSame>
+                                  <a *ngIf="ab.tasks[0]?.mayUp" matBadge="{{ab.tasks[0]?.cost}}" matBadgeColor="accent"
+                                    class="ml-0 px-1 mr-0" (click)="upAbil(ab)">
                                     <img src="assets/icons/up.png" class="img-fluid"
                                       [ngStyle]="{'object-fit': 'contain', 'height':'1.5em'}">
                                   </a>
-                                  </ng-container>
-                                  <ng-template #notMayNotSame>
-                                    <a *ngIf="ab.tasks[0]?.mayUp" matBadge="{{ab.tasks[0]?.cost}}" matBadgeColor="accent"
-                                    class="ml-0 px-1 mr-3" (click)="upAbil(ab)">
-                                    <img src="assets/icons/up.png" class="img-fluid"
-                                      [ngStyle]="{'object-fit': 'contain', 'height':'1.5em'}">
-                                  </a>
-                                  </ng-template>
                                 </ng-template>
-                              </ng-container>
+                              </ng-template>
+
                             </div>
                           </div>
                         </div>
@@ -193,6 +186,21 @@
             </ul>
           </ng-container>
           <br>
+
+          <h5 class="text-right" *ngIf="this.srv.pers.isOffline">
+            <div fxLayout="row" fxLayoutAlign="space-between center">
+              <button mat-stroked-button color="accent" class="w-100 mr-1" (click)="sync(false)"
+                [disabled]="this.srv.isSynced">
+                <mat-icon>cloud_upload</mat-icon>
+              </button>
+              <button mat-stroked-button color="accent" class="w-100 ml-1" (click)="sync(true)"
+                [disabled]="this.srv.isSynced">
+                <mat-icon>cloud_download</mat-icon>
+              </button>
+            </div>
+
+          </h5>
+
           <h5 class="text-right">
             <a [routerLink]="['/mind-map']" class="badge badge-success">Карта персонажа</a>
             <a (click)="rest()" class="badge badge-primary">Отдохнуть у костра</a>
@@ -318,6 +326,11 @@
           </ng-container>
 
           <div>
+            <mat-slide-toggle class="example-margin" [(ngModel)]="this.srv.pers.isOffline">
+              Оффлайн
+            </mat-slide-toggle>
+          </div>
+          <!-- <div>
             <mat-slide-toggle class="example-margin" [(ngModel)]="this.srv.pers.isOneLevOneCrist">
               Один уровень - один кристалл
             </mat-slide-toggle>
@@ -356,7 +369,7 @@
             <mat-slide-toggle class="example-margin" [(ngModel)]="this.srv.pers.isNoDiary">
               Без дневника
             </mat-slide-toggle>
-          </div>
+          </div> -->
 
           <br>
           <button mat-stroked-button color="accent" class="w-100 mt-2" (click)="resp()">
@@ -445,7 +458,9 @@
           <!-- Инвентарь -->
           <div style="padding-left: 10px;" fxFlexFill fxLayoutAlign="center center" fxLayout="row wrap"
             fxLayoutGap="10px grid">
-            <div fxFlex="33" *ngFor="let rev of this.srv.pers.inventory" [ngStyle]="{'border-color': rev.rare | rarecol}" style="border-width: 4px!important; border-style: solid;">
+            <div fxFlex="33" *ngFor="let rev of this.srv.pers.inventory"
+              [ngStyle]="{'border-color': rev.rare | rarecol}"
+              style="border-width: 4px!important; border-style: solid;">
               <div style="cursor: pointer;" (click)="useRevard(rev)" fxLayout="column"
                 fxLayoutAlign="space-around center">
                 <img src="{{rev.image}}" class="img-fluid rounded"

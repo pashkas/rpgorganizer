@@ -235,6 +235,10 @@ export class PersListComponent implements OnInit {
     this.addAbil(firstCharact.id);
   }
 
+  sync(isDownload){
+    this.srv.sync(isDownload);
+  }
+
   /**
    * Респаун.
    */

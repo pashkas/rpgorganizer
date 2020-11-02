@@ -10,7 +10,7 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { FormsModule } from '@angular/forms';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { RarecolPipe } from '../rarecol.pipe';
-import { MatCardModule } from '@angular/material';
+import { MatCardModule, MatIconModule } from '@angular/material';
 import { MatSelectModule } from '@angular/material/select';
 import { CharacteristicDetailsComponent } from '../characteristic-details/characteristic-details.component';
 import { AbilityDetailComponent } from '../ability-detail/ability-detail.component';
@@ -58,6 +58,7 @@ import { ImageComponentComponent } from '../image-component/image-component.comp
     ImageComponentComponent,
   ],
   imports: [
+    MatIconModule,
     MatBadgeModule,
     MatSlideToggleModule,
     SharedModule,

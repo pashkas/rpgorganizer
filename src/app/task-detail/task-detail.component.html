@@ -113,11 +113,13 @@
         </div>
       </mat-list>
     </ng-container>
-    <ng-container *ngFor="let st of tsk.statesDescr; let i = index;">
-      <div *ngIf="i!=0||this.srv.pers.isTES" class="text-center px-0 py-1 border-0"
-        [ngClass]="{'bg-success': i==tsk.roundVal && tskAbility.isOpen}">
-        <b>{{i}}<ng-container *ngIf="st">: </ng-container></b>{{st}}
-      </div>
+    <ng-container>
+      <ng-container *ngFor="let st of tsk.statesDescr; let i = index;">
+        <div *ngIf="i!=0" class="text-center px-0 py-1 border-0"
+          [ngClass]="{'bg-success': i==tsk.roundVal && tskAbility.isOpen}">
+          <b>{{i}}<ng-container *ngIf="st">: </ng-container></b>{{st}}
+        </div>
+      </ng-container>
     </ng-container>
     <!-- <div class="text-center px-0 py-1 border-0">
       {{tsk.curLvlDescr}}
@@ -239,7 +241,7 @@
           в заголовок
         </span>
       </ng-container>
-      
+
       <button class="icon-small" (click)="addStateToTask();" mat-icon-button>
         <img src="assets/icons/create.png" class="img-fluid">
       </button>

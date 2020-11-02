@@ -1,5 +1,5 @@
  <router-outlet></router-outlet>
- <div *ngIf="!this.srv.pers">
+ <div *ngIf="!this.srv.isOffline && !this.srv.pers && isNoLogin()">
    <div class="grid-rest p-2  text-center">
      <div class="container">
          <img class="img-fluid p-1 element" [src]="'assets/img/sandtimer.gif'" [ngStyle]="{'object-fit': 'contain'}">

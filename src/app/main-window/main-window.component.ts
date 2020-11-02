@@ -374,8 +374,13 @@ export class MainWindowComponent implements OnInit {
       this.route.data.pipe(take(1))
         .subscribe(routeData => {
           let data = routeData['data'];
-          if (data) {
-            this.srv.setUser(data);
+          if (!this.srv.isOffline) {
+            if (data) {
+              this.srv.setUser(data);
+            }
+          }
+          else{
+            this.srv.setPers(data);
           }
         });
     }

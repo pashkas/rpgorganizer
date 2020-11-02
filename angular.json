@@ -22,7 +22,8 @@
               "src/favicon.ico",
               "src/shield_and_swords.ico",
               "src/assets",
-              "src/manifest.webmanifest"
+              "src/manifest.webmanifest",
+              "src/.well-known"
             ],
             "styles": [
               "src/custom-theme.scss",
@@ -93,7 +94,8 @@
               "src/favicon.ico",
               "src/shield_and_swords.ico",
               "src/assets",
-              "src/manifest.webmanifest"
+              "src/manifest.webmanifest",
+              "src/.well-known"
             ]
           }
         },

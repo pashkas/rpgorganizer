@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { Pers } from 'src/Models/Pers';
-import { BehaviorSubject, Subject, Observable } from 'rxjs';
+import { BehaviorSubject, Subject, Observable, fromEvent, merge, Observer } from 'rxjs';
 import { FirebaseUserModel } from 'src/Models/User';
 import { Characteristic } from 'src/Models/Characteristic';
 import { Ability } from 'src/Models/Ability';
@@ -21,26 +21,14 @@ import * as moment from 'moment';
   providedIn: 'root'
 })
 export class PersService {
-  returnToAdventure() {
-    this.pers.isRest = false;
-    for (const ch of this.pers.characteristics) {
-      for (const ab of ch.abilities) {
-        for (const tsk of ab.tasks) {
-          let tskDate: moment.Moment = moment(tsk.date);
-          if (tskDate.isBefore(moment(new Date()), 'd')) {
-            tsk.date = new Date();
-          }
-        }
-      }
-    }
-    this.savePers(false);
-  }
   // Персонаж
   private unsubscribe$ = new Subject();
 
   baseTaskPoints: number = 1.0;
   isDialogOpen: boolean = false;
   isGlobalTaskView: boolean;
+  isOffline: boolean = false;
+  isOnline: boolean;
   mn0Count: number = 312;
   mn1Count: number = 286;
   mn2Count: number = 596;
@@ -53,6 +41,12 @@ export class PersService {
   user: FirebaseUserModel;
 
   constructor(public db: AngularFirestore, private router: Router, private changes: PerschangesService, private enmSrv: EnamiesService) {
+    this.createOnline$().subscribe(isOnline => this.isOnline = isOnline);
+
+    let isOffline = localStorage.getItem("isOffline");
+    if (isOffline) {
+      this.isOffline = JSON.parse(isOffline);
+    }
   }
 
   /**
@@ -114,78 +108,12 @@ export class PersService {
   }
 
   GetRndEnamy(tsk: IImg): string {
-    let mnstrLvl = this.getMonsterLevel();
+    let mnstrLvl = this.getMonsterLevel(this.pers.level);
 
     tsk.imageLvl = '' + mnstrLvl;
     tsk.image = this.getImgPathRandome(mnstrLvl);
 
     return;
-  }
-
-  private getMonsterLevel(): number {
-    if (!this.pers.totalProgress) {
-      this.pers.totalProgress = 0;
-    }
-    
-    let prsLvl = this.pers.totalProgress;
-    if (prsLvl < 10) {
-      return 0;
-    }
-    else if (prsLvl < 20) {
-      return 1;
-    }
-    else if (prsLvl < 30) {
-      return 2;
-    }
-    else if (prsLvl < 60) {
-      return 3;
-    }
-    else if (prsLvl < 90) {
-      return 4;
-    }
-    else {
-      return 5;
-    }
-    // if (this.pers.isEra) {
-    //   if (prsLvl < 25) {
-    //     return 0;
-    //   }
-    //   else if (prsLvl < 50) {
-    //     return 1;
-    //   }
-    //   else if (prsLvl < 75) {
-    //     return 2;
-    //   }
-    //   else if (prsLvl < 125) {
-    //     return 3;
-    //   }
-    //   else if (prsLvl < 150) {
-    //     return 4;
-    //   }
-    //   else {
-    //     return 5;
-    //   }
-    // }
-    // else {
-    //   if (prsLvl < 10) {
-    //     return 0;
-    //   }
-    //   else if (prsLvl < 20) {
-    //     return 1;
-    //   }
-    //   else if (prsLvl < 30) {
-    //     return 2;
-    //   }
-    //   else if (prsLvl < 60) {
-    //     return 3;
-    //   }
-    //   else if (prsLvl < 90) {
-    //     return 4;
-    //   }
-    //   else {
-    //     return 5;
-    //   }
-    // }
   }
 
   abSorter(): (a: Ability, b: Ability) => number {
@@ -329,13 +257,29 @@ export class PersService {
     this.sortQwestTasks(qwest);
   }
 
+  changeExpKoef(isPlus: boolean) {
+    let changeMinus = 1;
+    if (isPlus) {
+      let openAbs = this.pers.characteristics.reduce((a, b) => {
+        return a + b.abilities.filter(n => n.value >= 1).length;
+      }, 0);
+      this.pers.expKoef += (changeMinus / (openAbs * 2));
+    }
+    else {
+      this.pers.expKoef -= changeMinus;
+    }
+    if (this.pers.expKoef > 0) {
+      this.pers.expKoef = 0;
+    }
+    if (this.pers.expKoef < -2) {
+      this.pers.expKoef = -2;
+    }
+  }
+
   changeTes(task: Task, isUp: boolean) {
     let change = this.getTaskChangesExp(task, isUp);
     if (isUp) {
       task.tesValue += change;
-      if (task.tesValue > this.getMaxTes()) {
-        task.tesValue = this.getMaxTes();
-      }
     }
     else {
       task.tesValue -= change;
@@ -506,6 +450,16 @@ export class PersService {
     }
   }
 
+  createOnline$() {
+    return merge<boolean>(
+      fromEvent(window, 'offline').pipe(map(() => false)),
+      fromEvent(window, 'online').pipe(map(() => true)),
+      new Observable((sub: Observer<boolean>) => {
+        sub.next(navigator.onLine);
+        sub.complete();
+      }));
+  }
+
   /**
    * Удаление навыка по идентификатору.
    * @param id Идентификатор.
@@ -599,11 +553,11 @@ export class PersService {
     this.pers.characteristics.forEach(cha => {
       cha.abilities.forEach(ab => {
         // || ab.isOpen
-        if ((ab.value >= 1 || this.pers.isTES) && !ab.isNotDoneReqvirements) {
+        if ((ab.value >= 1) && !ab.isNotDoneReqvirements) {
           ab.tasks.forEach(tsk => {
             if (tsk.states.length > 0 && tsk.isSumStates && !tsk.isStateInTitle) {
               tsk.states.forEach(st => {
-                if (st.isActive || (tsk.isSumStates && this.pers.isTES)) {
+                if (st.isActive) {
                   let t = this.getTskFromState(tsk, st, true);
                   tasks.push(t);
                 }
@@ -643,6 +597,33 @@ export class PersService {
         take(1),
         share()
       );
+  }
+
+  getEraCostLvl(curAbLvl: number) {
+    //return curAbLvl + 1;
+    if (curAbLvl == 0) {
+      return 10;
+    }
+    return curAbLvl;
+  }
+
+  getEraCostTotal(curAbLvl: number) {
+    let cost = 0;
+    for (let i = 0; i < curAbLvl; i++) {
+      cost += this.getEraCostLvl(i);
+    }
+
+    return cost;
+  }
+
+  getExpKoef(isPlus: boolean): number {
+    if (this.pers.isTES) {
+      return 1;
+    }
+
+    const toRet = Math.pow(2, this.pers.expKoef);
+
+    return toRet;
   }
 
   getImgPath(num: number, lvl: number): string {
@@ -685,7 +666,17 @@ export class PersService {
         break;
     }
 
-    im = this.randomInteger(1, max);
+    if (!this.pers.mnstrCounter) {
+      this.pers.mnstrCounter = 0;
+    }
+    if (this.pers.mnstrCounter>=max) {
+      this.pers.mnstrCounter = 0;
+    }
+
+    this.pers.mnstrCounter++;
+    im = this.pers.mnstrCounter;
+
+    //im = this.randomInteger(1, max);
 
     let result: string = '';
 
@@ -706,46 +697,7 @@ export class PersService {
       .subscribe(data => {
         // Если перс есть
         if (data != undefined) {
-          const pers = data;
-          const prs = (pers as Pers);
-
-          if (prs.tasks && prs.tasks.length > 0) {
-            prs.currentTaskIndex = 0;
-            prs.currentTask = prs.tasks[0];
-          }
-
-          this.checkPersNewFields(prs);
-
-          this.pers = prs;
-
-          // if (this.checkNullOrUndefined(this.pers.prevOrderSeq)
-          //   || this.checkNullOrUndefined(this.pers.curOrderSeq)
-          //   || this.checkNullOrUndefined(this.pers.curEndOfListSeq)
-          // ) {
-          //   this.pers.prevOrderSeq = 0;
-          //   this.pers.curOrderSeq = 0;
-          //   this.pers.curEndOfListSeq = 9999;
-          // }
-
-          // // Если наступил следующий день, меняем счетчики
-          // let curDate = new Date().setHours(0, 0, 0, 0);
-          // let lastUse = new Date(this.pers.dateLastUse).setHours(0, 0, 0, 0);
-          // if (curDate.valueOf() > lastUse.valueOf()) {
-          //   this.pers.prevOrderSeq = this.pers.curOrderSeq;
-          //   this.pers.curOrderSeq = 0;
-          //   this.pers.curEndOfListSeq = 9999;
-
-          //   this.savePers(false);
-          // }
-
-          if (this.pers.sellectedView != 'навыки') {
-            this.setView('навыки');
-          }
-          else {
-            if (!moment(this.pers.dateLastUse).isSame(new Date(), 'd')) {
-              this.setView('навыки');
-            }
-          }
+          this.setPers(data);
         }
         // Если перса пока что не было
         else if (data === undefined && usr.id != undefined) {
@@ -756,9 +708,7 @@ export class PersService {
           pers.prevExp = 0;
           pers.nextExp = 0;
 
-          this.checkPersNewFields(pers);
-
-          this.pers = pers;
+          this.setPers(pers);
         }
       });
   }
@@ -771,7 +721,7 @@ export class PersService {
       this.pers.characteristics.forEach(cha => {
         cha.abilities.forEach(ab => {
           // || ab.isOpen
-          if ((ab.value >= 1 || this.pers.isTES) && !ab.isNotDoneReqvirements) {
+          if ((ab.value >= 1) && !ab.isNotDoneReqvirements) {
             ab.tasks.forEach(tsk => {
               if (this.checkTask(tsk)) {
                 if (tsk.isSumStates && tsk.states.length > 0 && !tsk.isStateInTitle) {
@@ -886,72 +836,14 @@ export class PersService {
   getSet(tsk: Task, aim: number): number[] {
     let result: number[] = [];
 
-    if (aim > this.pers.maxAttrLevel) {
-      this.getSetMaxNeatEnd(aim, result);
+    if (aim > this.pers.maxAttrLevel && !this.pers.isTES) {
+      this.getSetMaxNeatEnd(aim, result, tsk);
     }
     else {
-      this.getSetLinear(aim, result);
+      this.getSetLinear(aim, result, tsk);
     }
 
     return result;
-  }
-
-  /**
-   * Получает равномерный набор.
-   * @param aim 
-   * @param result 
-   */
-  private getSetLinear(aim: number, result: number[]) {
-    for (let i = 0; i <= this.pers.maxAttrLevel; i++) {
-      let progr = (i) / (this.pers.maxAttrLevel);
-
-      let val = Math.ceil(progr * (aim));
-
-      result.push(val);
-    }
-  }
-
-  /**
-   * Получает набор с более плавным концом.
-   * @param aim 
-   * @param result 
-   */
-  private getSetMaxNeatEnd(aim: number, result: number[]) {
-    let max = aim;
-
-    let step = Math.floor(aim / Task.maxValue);
-    if (step < 1) {
-      step = 1;
-    }
-
-    let left = max - step * Task.maxValue;
-    if (left < 0) {
-      left = 0;
-    }
-    max = max - left;
-
-    // Основное..
-    for (let i = Task.maxValue; i >= 1; i--) {
-      result.unshift(max);
-
-      max -= step;
-
-      if (max < step) {
-        max = step;
-      }
-    }
-
-    // Остатки..
-    for (let i = 0; i < result.length; i++) {
-      let v = i + 1;
-      if (v > left) {
-        v = left;
-      }
-
-      result[i] += v;
-    }
-
-    result.unshift(0);
   }
 
   getTskValForState(value: number, maxValue: number) {
@@ -1068,6 +960,21 @@ export class PersService {
     this.savePers(false);
   }
 
+  returnToAdventure() {
+    this.pers.isRest = false;
+    for (const ch of this.pers.characteristics) {
+      for (const ab of ch.abilities) {
+        for (const tsk of ab.tasks) {
+          let tskDate: moment.Moment = moment(tsk.date);
+          if (tskDate.isBefore(moment(new Date()), 'd')) {
+            tsk.date = new Date();
+          }
+        }
+      }
+    }
+    this.savePers(false);
+  }
+
   saveGlobalTaskViewState(b: boolean) {
     this.isGlobalTaskView = b;
     this.pers.isGlobalView = b;
@@ -1136,11 +1043,11 @@ export class PersService {
           taskTes += tsk.tesValue;
           tsk.plusToNames = [];
           if (this.pers.isTES) {
-            if (tsk.value < 1) {
-              tsk.value = 1;
-            }
+            // if (tsk.value < 1) {
+            //   tsk.value = 1;
+            // }
 
-            ab.isOpen = true;
+            // ab.isOpen = true;
           }
           if (!this.pers.isNoAbs) {
             tsk.plusToNames.push(new plusToName(cha.name, cha.id, '/pers/characteristic'));
@@ -1163,7 +1070,7 @@ export class PersService {
 
           if (this.pers.isTES) {
             let prevTaskVal = tsk.value;
-            tsk.value = 1 + tsk.tesValue;
+            tsk.value = ab.isOpen ? 1 : 0 + tsk.tesValue;
             let curTaskValue = tsk.value;
             this.changeLvlAbLogic(tsk, curTaskValue, prevTaskVal);
           }
@@ -1195,13 +1102,26 @@ export class PersService {
             skillMax += this.pers.maxAttrLevel * koef;
           }
 
-          tsk.roundVal = Math.floor(tsk.value);
+
+          if (!this.pers.isTES) {
+            tsk.roundVal = Math.floor(tsk.value);
+          }
+          else {
+            let tval = Math.floor(1 + tsk.tesValue);
+            if (tval > 10) {
+              tval = 10;
+            }
+            tsk.roundVal = ab.isOpen ? tval : 0;
+          }
         });
 
         this.setAbValueAndProgress(ab, tskCur, tskMax, taskTes);
         this.setAbRang(ab);
 
         if (this.pers.isTES) {
+          if (taskTes > this.getMaxTes()) {
+            taskTes = this.getMaxTes();
+          }
           abCur += taskTes;
           abMax += this.getMaxTes();
         }
@@ -1282,7 +1202,7 @@ export class PersService {
     // });
 
     // this.setPersExp(chaCur, chaMax);
-    this.setPersExpAndON(chaCur, chaMax, abCurTotal, abMaxTotal, skillCur, skillMax, totalAbils); // Опыт чисто по навыкам
+    this.setPersExpAndAbPoints(chaCur, chaMax, abCurTotal, abMaxTotal, skillCur, skillMax, totalAbils); // Опыт чисто по навыкам
     this.setPersRang();
 
     // Прогресс ранга
@@ -1393,25 +1313,17 @@ export class PersService {
     }
     //----------------------------
 
-    this.db.collection('pers').doc(this.pers.id)
-      .set(JSON.parse(JSON.stringify(this.pers)));
-  }
+    const persJson = JSON.parse(JSON.stringify(this.pers));
 
-  getEraCostLvl(curAbLvl: number) {
-    //return curAbLvl + 1;
-    if (curAbLvl == 0) {
-      return 10;
-    }
-    return curAbLvl;
-  }
-
-  getEraCostTotal(curAbLvl: number) {
-    let cost = 0;
-    for (let i = 0; i < curAbLvl; i++) {
-      cost += this.getEraCostLvl(i);
+    if (this.isSynced || !this.pers.isOffline) {
+      this.db.collection('pers').doc(this.pers.id)
+        .set(persJson);
     }
 
-    return cost;
+    localStorage.setItem("isOffline", JSON.stringify(this.pers.isOffline));
+    localStorage.setItem("pers", JSON.stringify(this.pers));
+
+    this.isSynced = false;
   }
 
   /**
@@ -1512,6 +1424,11 @@ export class PersService {
               tsk.IsNextLvlSame = false;
               tsk.mayUp = false;
             }
+
+            if (this.pers.isTES && tsk.value >= 1) {
+              tsk.IsNextLvlSame = false;
+              tsk.mayUp = false;
+            }
           }
         }
       }
@@ -1541,6 +1458,29 @@ export class PersService {
         this.pers.currentQwestId = this.pers.currentTask.plusToNames[0].linkId;
       }
     }
+  }
+
+  setPers(data: any) {
+    const pers = data;
+    let prs: Pers;
+
+    if (!this.isOffline) {
+      prs = (pers as Pers);
+    }
+    else {
+      prs = JSON.parse(pers);
+    }
+
+    if (prs.tasks && prs.tasks.length > 0) {
+      prs.currentTaskIndex = 0;
+      prs.currentTask = prs.tasks[0];
+    }
+
+    this.checkPersNewFields(prs);
+
+    this.pers = prs;
+
+    this.setView('навыки');
   }
 
   setStatesNotDone(tsk: Task) {
@@ -1716,6 +1656,24 @@ export class PersService {
     this.pers.rewards = this.pers.rewards.sort((a, b) => a.cumulative - b.cumulative);
   }
 
+  isSynced: boolean = false;
+  sync(isDownload) {
+    this.isSynced = true;
+
+    if (isDownload) {
+      // download
+      this.loadPers(this.pers.userId).subscribe(n => {
+        let prs: Pers = n as Pers;
+        this.pers = prs;
+        this.savePers(false);
+      });
+    }
+    else {
+      // upload
+      this.savePers(false);
+    }
+  }
+
   /**
    * Клик минус по задаче.
    * @param id Идентификатор задачи.
@@ -1868,17 +1826,6 @@ export class PersService {
     }
   }
 
-  updateQwestTasksImages() {
-    for (const qwest of this.pers.qwests) {
-      for (const tsk of qwest.tasks) {
-        this.GetRndEnamy(tsk);
-        for (const sub of tsk.states) {
-          this.GetRndEnamy(sub);
-        }
-      }
-    }
-  }
-
   updateAbTasksImages() {
     for (const ch of this.pers.characteristics) {
       for (const ab of ch.abilities) {
@@ -1887,6 +1834,17 @@ export class PersService {
           for (const st of tsk.states) {
             this.GetRndEnamy(st);
           }
+        }
+      }
+    }
+  }
+
+  updateQwestTasksImages() {
+    for (const qwest of this.pers.qwests) {
+      for (const tsk of qwest.tasks) {
+        this.GetRndEnamy(tsk);
+        for (const sub of tsk.states) {
+          this.GetRndEnamy(sub);
         }
       }
     }
@@ -1978,6 +1936,9 @@ export class PersService {
   }
 
   private changeLvlAbLogic(tsk: Task, curTaskValue: number, prevTaskVal: number) {
+    if (this.pers.isTES) {
+      return;
+    }
     if (tsk.value >= 2 && !tsk.isSumStates && tsk.states.length > 0) {
       try {
         let nms: number[] = this.getSet(tsk, tsk.states.length);
@@ -2001,7 +1962,6 @@ export class PersService {
    * @param prs Персонаж.
    */
   private checkPersNewFields(prs: Pers) {
-
     if (prs.expKoef == undefined || prs.expKoef == null) {
       prs.expKoef = 0;
     }
@@ -2055,7 +2015,15 @@ export class PersService {
       prs.Diary.splice(28);
     }
 
-    // Создаем новый день если такого не было.
+    // Настройки
+    prs.isTES = false;
+    prs.isOneLevOneCrist = false;
+    prs.isEqLvlUp = true;
+    prs.isNoExpShow = true;
+    prs.isEra = false;
+    prs.isMax5 = false;
+    prs.isNoAbs = false;
+    prs.isNoDiary = true;
   }
 
   private filterRevs(revType: any) {
@@ -2067,9 +2035,18 @@ export class PersService {
   }
 
   private getCurRang(val: number) {
+    if (val > this.pers.maxAttrLevel) {
+      val = this.pers.maxAttrLevel;
+    }
     const rng = new Rangse();
-    rng.val = Math.floor(val);
-    rng.name = '' + Math.floor(val);
+    let vl = Math.floor(val);
+    let vlName = '' + Math.floor(val);
+    if (this.pers.isTES) {
+      vlName = val.toFixed(2);
+      vl = +vlName;
+    }
+    rng.val = vl;
+    rng.name = vlName;
     return rng;
   }
 
@@ -2078,7 +2055,92 @@ export class PersService {
   }
 
   private getMaxTes() {
-    return this.pers.maxAttrLevel - 0.01;
+    return this.pers.maxAttrLevel - 1;
+  }
+
+  private getMonsterLevel(prsLvl: number): number {
+    if (prsLvl < 10) {
+      return 0;
+    }
+    else if (prsLvl < 20) {
+      return 1;
+    }
+    else if (prsLvl < 30) {
+      return 2;
+    }
+    else if (prsLvl < 80) {
+      return 3;
+    }
+    else if (prsLvl < 100) {
+      return 4;
+    }
+    else {
+      return 5;
+    }
+
+    // if (!this.pers.totalProgress) {
+    //   this.pers.totalProgress = 0;
+    // }
+
+    // let prsLvl = this.pers.totalProgress;
+    // if (prsLvl < 10) {
+    //   return 0;
+    // }
+    // else if (prsLvl < 20) {
+    //   return 1;
+    // }
+    // else if (prsLvl < 30) {
+    //   return 2;
+    // }
+    // else if (prsLvl < 60) {
+    //   return 3;
+    // }
+    // else if (prsLvl < 90) {
+    //   return 4;
+    // }
+    // else {
+    //   return 5;
+    // }
+    // if (this.pers.isEra) {
+    //   if (prsLvl < 25) {
+    //     return 0;
+    //   }
+    //   else if (prsLvl < 50) {
+    //     return 1;
+    //   }
+    //   else if (prsLvl < 75) {
+    //     return 2;
+    //   }
+    //   else if (prsLvl < 125) {
+    //     return 3;
+    //   }
+    //   else if (prsLvl < 150) {
+    //     return 4;
+    //   }
+    //   else {
+    //     return 5;
+    //   }
+    // }
+    // else {
+    //   if (prsLvl < 10) {
+    //     return 0;
+    //   }
+    //   else if (prsLvl < 20) {
+    //     return 1;
+    //   }
+    //   else if (prsLvl < 30) {
+    //     return 2;
+    //   }
+    //   else if (prsLvl < 60) {
+    //     return 3;
+    //   }
+    //   else if (prsLvl < 90) {
+    //     return 4;
+    //   }
+    //   else {
+    //     return 5;
+    //   }
+    // }
   }
 
   private getRewsOfType(revType: any) {
@@ -2107,9 +2169,84 @@ export class PersService {
     return revsOfType;
   }
 
+  /**
+   * Получает равномерный набор.
+   * @param aim 
+   * @param result 
+   */
+  private getSetLinear(aim: number, result: number[], tsk: Task) {
+    for (let i = 0; i <= this.pers.maxAttrLevel; i++) {
+      let q = i;
+      if (this.pers.isTES && q == this.getTVal(tsk)) {
+        q = 1 + tsk.tesValue;
+      }
+      let progr = (q) / (this.pers.maxAttrLevel);
+
+      let val = progr * aim;
+      val = Math.ceil(val);
+
+      result.push(val);
+    }
+  }
+
+  private getTVal(tsk: Task) {
+    let tVal = 1 + Math.floor(tsk.tesValue);
+    if (tVal > 10) {
+      tVal = 10;
+    }
+    return tVal;
+  }
+
+  /**
+   * Получает набор с более плавным концом.
+   * @param aim 
+   * @param result 
+   */
+  private getSetMaxNeatEnd(aim: number, result: number[], tsk: Task) {
+    let max = aim;
+
+    let step = Math.floor(aim / Task.maxValue);
+    if (step < 1) {
+      step = 1;
+    }
+
+    let left = max - step * Task.maxValue;
+    if (left < 0) {
+      left = 0;
+    }
+    max = max - left;
+
+    // Основное..
+    for (let i = Task.maxValue; i >= 1; i--) {
+      result.unshift(max);
+
+      max -= step;
+
+      if (max < step) {
+        max = step;
+      }
+    }
+
+    // Остатки..
+    for (let i = 0; i < result.length; i++) {
+      let v = i + 1;
+      if (v > left) {
+        v = left;
+      }
+
+      result[i] += v;
+    }
+
+    result.unshift(0);
+  }
+
   private getTaskChangesExp(task: Task, isPlus: boolean) {
     const koef = this.getWeekKoef(task.requrense, isPlus, task.tskWeekDays);
-    const expKoef = this.getExpKoef(isPlus);
+    let expKoef = this.getExpKoef(isPlus);
+    expKoef = 1;
+    if (!this.pers.isTES && !isPlus) {
+      expKoef = 2;
+    }
     let chVal = this.baseTaskPoints * koef * expKoef;
 
     if (task.tesValue == null || task.tesValue == undefined) {
@@ -2160,35 +2297,6 @@ export class PersService {
     return chValFinaly;
   }
 
-  changeExpKoef(isPlus: boolean) {
-    let changeMinus = 1;
-    if (isPlus) {
-      let openAbs = this.pers.characteristics.reduce((a, b) => {
-        return a + b.abilities.filter(n => n.value >= 1).length;
-      }, 0);
-      this.pers.expKoef += (changeMinus / (openAbs*2));
-    }
-    else {
-      this.pers.expKoef -= changeMinus;
-    }
-    if (this.pers.expKoef > 0) {
-      this.pers.expKoef = 0;
-    }
-    if (this.pers.expKoef < -2) {
-      this.pers.expKoef = -2;
-    }
-  }
-
-  getExpKoef(isPlus: boolean): number {
-    if (this.pers.isTES) {
-      return 1;
-    }
-
-    const toRet = Math.pow(2, this.pers.expKoef);
-
-    return toRet;
-  }
-
   private getTesChangeKoef(tesVal: number): number {
     return 1 / ((1 + tesVal) * 1.618);
   }
@@ -2203,7 +2311,6 @@ export class PersService {
     else {
       stT.tittle = st.name;
     }
-
 
     if (!isAll) {
       let all = tsk.states.filter(n => n.isActive).length;
@@ -2242,7 +2349,12 @@ export class PersService {
   }
 
   private setAbRang(ab: Ability) {
-    ab.rang = this.getCurRang(ab.value);
+    let val = ab.value;
+    if (this.pers.isTES) {
+      const tesVal = ab.tasks[0].tesValue;
+      val = (ab.isOpen ? 1 : 0) + tesVal;
+    }
+    ab.rang = this.getCurRang(val);
     //ab.rang.name += '%';
 
     // for (let index = Ability.rangse.length - 1; index >= 0; index--) {
@@ -2345,14 +2457,19 @@ export class PersService {
     }
   }
 
-  private setPersExpAndON(chaCur: number, chaMax: number, absCur: number, absMax: number, skillCur: number, skillMax: number, totalAbilities: number) {
+  private setPersExpAndAbPoints(chaCur: number, chaMax: number, absCur: number, absMax: number, skillCur: number, skillMax: number, totalAbilities: number) {
     if (this.pers.isTES) {
-      let progr = skillCur / skillMax;
-      this.pers.exp = progr * 100 * 100;
+      let tesPoints = this.pers.characteristics.reduce((a, b) => {
+        return a + b.abilities.reduce((a1, b1) => {
+          return a1 + b1.tasks[0].tesValue;
+        }, 0);
+      }, 0);
+      this.pers.exp = tesPoints * 33.34;
     }
 
     // Считаем по развитости всех скиллов
     let maxV = skillMax;
+
     //let curV = skillCur;
 
     if (maxV <= 1) {
@@ -2373,15 +2490,15 @@ export class PersService {
 
     let onPerLevel;
 
-    if (this.pers.isMax5) {
-      onPerLevel = (totalAbilities * 5.0) / 100.0;
-    }
-    else {
-      onPerLevel = (totalAbilities * 10.0) / 100.0;
-    }
-    if (this.pers.isOneLevOneCrist) {
-      onPerLevel = 1;
-    }
+    // if (this.pers.isMax5) {
+    //   onPerLevel = (totalAbilities * 5.0) / 100.0;
+    // }
+    // else {
+    //   onPerLevel = (totalAbilities * 10.0) / 200.0;
+    // }
+    // if (this.pers.isOneLevOneCrist) {
+    //   onPerLevel = 1;
+    // }
 
     if (this.pers.isEra) {
       if (this.pers.isMax5) {
@@ -2396,12 +2513,20 @@ export class PersService {
     }
 
     // Очки навыков
-    this.pers.ONPerLevel = Math.ceil(onPerLevel);
     let persLevel = 0;
     let exp: number = 0;
     let startExp = 0;
     let nextExp = 0;
     let startON = 0;
+    if (this.pers.isTES) {
+      onPerLevel = 1;
+      startON = 2;
+    }
+    else{
+      onPerLevel = 1;
+      startON = 2;
+    }
+    this.pers.ONPerLevel = Math.ceil(onPerLevel);
 
     for (let i = 1; i <= Pers.maxLevel + 1; i++) {
       startExp = exp;
@@ -2423,7 +2548,6 @@ export class PersService {
         let noLinear = 1;
 
         exp += Math.ceil((ceilOn * noLinear) * 10.0) / 10.0;
-
       }
       nextExp = exp;
 
@@ -2457,10 +2581,10 @@ export class PersService {
 
     this.pers.totalProgress = (skillCur / skillMax) * 100;
 
-    // if (this.getMonsterLevel(prevPersLevel) != this.getMonsterLevel(this.pers.level)) {
-    //   this.updateQwestTasksImages();
-    //   this.updateAbTasksImages();
-    // }
+    if (this.getMonsterLevel(prevPersLevel) != this.getMonsterLevel(this.pers.level)) {
+      this.updateQwestTasksImages();
+      this.updateAbTasksImages();
+    }
   }
 
   private setPersRang() {
@@ -2560,6 +2684,12 @@ export class PersService {
         }
 
         let index = nms[Math.floor(tsk.value)] - 1;
+        if (!this.pers.isTES) {
+          index = nms[Math.floor(tsk.value)] - 1;
+        }
+        else {
+          index = nms[Math.floor(1 + tsk.tesValue)] - 1;
+        }
 
         if (index >= 0) {
           if (tsk.isSumStates) {
@@ -2578,6 +2708,7 @@ export class PersService {
       // Таймер
       if (tsk.aimTimer != 0) {
         //plusState = ' ' + this.getTskValForState(tsk.value, tsk.aimTimer) + '⧖';
+
         let nms: number[] = this.getSet(tsk, tsk.aimTimer);
 
         for (let i = 0; i < nms.length; i++) {
@@ -2606,7 +2737,14 @@ export class PersService {
         }
       }
 
-      let plusState = tsk.statesDescr[Math.floor(tsk.value)];
+      let stDescr;
+      if (!this.pers.isTES) {
+        stDescr = tsk.statesDescr[Math.floor(tsk.value)];
+      }
+      else {
+        stDescr = tsk.statesDescr[this.getTVal(tsk)];
+      }
+      let plusState = stDescr;
       let plusStateMax = tsk.statesDescr[this.pers.maxAttrLevel];
       tsk.plusStateMax = plusStateMax;
 
