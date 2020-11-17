@@ -665,7 +665,7 @@ export class PersService {
     if (!this.pers.mnstrCounter) {
       this.pers.mnstrCounter = 0;
     }
-    if (this.pers.mnstrCounter>=max) {
+    if (this.pers.mnstrCounter >= max) {
       this.pers.mnstrCounter = 0;
     }
 
@@ -1309,6 +1309,14 @@ export class PersService {
     }
     //----------------------------
 
+    // Настройки
+    if (this.pers.isEra) {
+      this.pers.isTES = false;
+    }
+    else if (this.pers.isTES) {
+      this.pers.isEra = false;
+    }
+
     const persJson = JSON.parse(JSON.stringify(this.pers));
 
     if (this.isSynced || !this.pers.isOffline) {
@@ -1479,6 +1487,7 @@ export class PersService {
     this.setView('навыки');
 
     if (!this.pers.imgVers || this.pers.imgVers < 1) {
+      this.pers.imgVers = 1;
       this.reImages();
     }
   }
@@ -1974,6 +1983,16 @@ export class PersService {
       prs.qwests = [];
     }
 
+    // Настройки
+    prs.isTES = false;
+    prs.isEra = false;
+    prs.isOneLevOneCrist = false;
+    prs.isEqLvlUp = true;
+    prs.isNoExpShow = true;
+    prs.isMax5 = false;
+    prs.isNoAbs = false;
+    prs.isNoDiary = true;
+
     if (prs.isNoDiary) {
       return;
     }
@@ -2014,16 +2033,6 @@ export class PersService {
     if (prs.Diary.length > 28) {
       prs.Diary.splice(28);
     }
-
-    // Настройки
-    prs.isTES = false;
-    prs.isOneLevOneCrist = false;
-    prs.isEqLvlUp = true;
-    prs.isNoExpShow = true;
-    prs.isEra = false;
-    prs.isMax5 = false;
-    prs.isNoAbs = false;
-    prs.isNoDiary = true;
   }
 
   private filterRevs(revType: any) {
@@ -2059,16 +2068,22 @@ export class PersService {
   }
 
   private getMonsterLevel(prsLvl: number): number {
-    if (prsLvl < 10) {
+    if (!this.pers.maxPersLevel || this.pers.maxPersLevel < 100) {
+      this.pers.maxPersLevel = 100;
+    }
+    let max = this.pers.maxPersLevel;
+    let progress = prsLvl / max;
+
+    if (progress < 0.1) {
       return 1;
     }
-    else if (prsLvl < 20) {
+    else if (progress < 0.3) {
       return 2;
     }
-    else if (prsLvl < 80) {
+    else if (progress < 0.7) {
       return 3;
     }
-    else if (prsLvl < 100) {
+    else if (progress < 0.9) {
       return 4;
     }
     else {
@@ -2177,7 +2192,7 @@ export class PersService {
     const koef = this.getWeekKoef(task.requrense, isPlus, task.tskWeekDays);
     let expKoef = this.getExpKoef(isPlus);
     expKoef = 1;
-    if (!this.pers.isTES && !isPlus) {
+    if (!isPlus) {
       expKoef = 2;
     }
     let chVal = this.baseTaskPoints * koef * expKoef;
@@ -2231,7 +2246,7 @@ export class PersService {
   }
 
   private getTesChangeKoef(tesVal: number): number {
-    return 1 / ((1 + tesVal) * 1.618);
+    return (1 / (1 + tesVal));
   }
 
   private getTskFromState(tsk: Task, st: taskState, isAll: boolean) {
@@ -2423,24 +2438,11 @@ export class PersService {
 
     let onPerLevel;
 
-    // if (this.pers.isMax5) {
-    //   onPerLevel = (totalAbilities * 5.0) / 100.0;
-    // }
-    // else {
-    //   onPerLevel = (totalAbilities * 10.0) / 200.0;
-    // }
-    // if (this.pers.isOneLevOneCrist) {
-    //   onPerLevel = 1;
-    // }
-
     if (this.pers.isEra) {
       if (this.pers.isMax5) {
         onPerLevel = (totalAbilities * 15.0) / 100.0;
       }
       else {
-        //const era10 = this.getEraCostTotal(10);
-        //onPerLevel = (totalAbilities * era10) / 200;
-        //onPerLevel = (totalAbilities * 55.0) / 100.0;
         onPerLevel = 10;
       }
     }
@@ -2455,11 +2457,12 @@ export class PersService {
       onPerLevel = 1;
       startON = 2;
     }
-    else{
+    else {
       onPerLevel = 1;
-      startON = 2;
+      startON = 4;
     }
     this.pers.ONPerLevel = Math.ceil(onPerLevel);
+    let ceilOn = 0;
 
     for (let i = 1; i <= Pers.maxLevel + 1; i++) {
       startExp = exp;
@@ -2468,16 +2471,12 @@ export class PersService {
         exp += 100.0;
       }
       else {
-        const ceilOn = Math.ceil(i * onPerLevel) + startON;
+        ceilOn = Math.ceil(i * onPerLevel) + startON;
 
-        // let noLinear = (1 + (i - 3) * 0.05); // ук уровень с которого
+        // Кадые 5 уровней +1 очко
+        const oneForFive = Math.trunc((i - 1) / 5);
+        ceilOn += oneForFive;
 
-        // if (this.pers.isOneLevOneCrist) {
-        //   noLinear = 1;
-        // }
-        // if (this.pers.isEra) {
-        //   noLinear = 2;
-        // }
         let noLinear = 1;
 
         exp += Math.ceil((ceilOn * noLinear) * 10.0) / 10.0;
@@ -2504,7 +2503,7 @@ export class PersService {
 
     this.pers.progressValue = progr * 100.0;
 
-    let ons = Math.ceil(((this.pers.level + 1) * onPerLevel) - curV) + startON;
+    let ons = Math.ceil(ceilOn - curV);
 
     if (ons < 0) {
       ons = 0;
@@ -2514,7 +2513,32 @@ export class PersService {
 
     this.pers.totalProgress = (skillCur / skillMax) * 100;
 
-    if (this.getMonsterLevel(prevPersLevel) != this.getMonsterLevel(this.pers.level)) {
+    // Максимальный уровень перса
+    let maxPoints = this.pers.characteristics.reduce((a, b) => {
+      return a + b.abilities.length * 10;
+    }, 0);
+    let i = 0;
+    while (true) {
+      if (i == 0) {
+        maxPoints -= 5;
+      }
+      else if (i % 5 == 0) {
+        maxPoints -= 2;
+      }
+      else {
+        maxPoints -= 1;
+      }
+
+      i++;
+
+      if (maxPoints <= 0) {
+        break;
+      }
+    }
+
+    this.pers.maxPersLevel = i;
+
+    if (prevPersLevel != this.pers.level && this.getMonsterLevel(prevPersLevel) != this.getMonsterLevel(this.pers.level)) {
       this.updateQwestTasksImages();
       this.updateAbTasksImages();
     }

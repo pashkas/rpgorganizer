@@ -48,10 +48,12 @@ export class Pers {
      */
     isNoAbs: Boolean = false;
 
+    maxPersLevel: number = 100;
+
     /**
      * Без дневника.
      */
-    isNoDiary: Boolean = false;
+    isNoDiary: Boolean = true;
 
     /**
      * Один уровень - один кристалл.
@@ -76,7 +78,7 @@ export class Pers {
     /**
      * Не показывать диалог изменения опыта.
      */
-    isNoExpShow = false;
+    isNoExpShow = true;
 
     /**
      * Можно прокачивать одинаковые уровни.
@@ -161,7 +163,7 @@ export class Pers {
         { val: 100, name: "Легенда", img: "https://live.staticflickr.com/7855/33709082758_52c128029b_o.jpg" },
     ];
     rewards: Reward[] = [];
-    sellectedView: string;
+    sellectedView: string = 'навыки';
     story: "Обычный человек, который однажды раскрыл свое геройское предназначение...";
     tasks: Task[] = [];
     totalRewardProbability: number = 0;
