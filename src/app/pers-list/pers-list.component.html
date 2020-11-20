@@ -5,7 +5,7 @@
       <img src="assets/icons/left.png" class="img-fluid" [ngStyle]="{'object-fit': 'contain', 'height':'2.5em'}">
     </button>
     <!-- Редактировать -->
-    <button mat-icon-button (click)="saveData()" *ngIf="this.srv.selTabPersList!=3">
+    <button mat-icon-button (click)="saveData()" *ngIf="this.srvSt.selTabPersList!=3">
       <img *ngIf="!isEditMode" src="assets/icons/edit.png" class="img-fluid"
         [ngStyle]="{'object-fit': 'contain', 'height':'3em'}">
       <img *ngIf="isEditMode" src="assets/icons/create.png" class="img-fluid"
@@ -15,7 +15,7 @@
 </nav>
 
 <div class="container pt-2 pb-4" *ngIf="this.srv.pers">
-  <mat-tab-group mat-align-tabs="center" animationDuration="0ms" [(selectedIndex)]="this.srv.selTabPersList"
+  <mat-tab-group mat-align-tabs="center" animationDuration="0ms" [(selectedIndex)]="this.srvSt.selTabPersList"
     isActive="true">
     <mat-tab>
       <ng-template mat-tab-label>

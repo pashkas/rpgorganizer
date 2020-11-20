@@ -11,6 +11,7 @@ import { MatDialog } from '@angular/material';
 import { AddItemDialogComponent } from '../add-item-dialog/add-item-dialog.component';
 import { AddOrEditRevardComponent } from '../add-or-edit-revard/add-or-edit-revard.component';
 import { Qwest } from 'src/Models/Qwest';
+import { StatesService } from '../states.service';
 
 @Component({
   selector: 'app-pers-list',
@@ -27,7 +28,7 @@ export class PersListComponent implements OnInit {
   selAb: Ability;
   selCha: Characteristic;
 
-  constructor(private location: Location, private route: ActivatedRoute, public srv: PersService, private router: Router, public dialog: MatDialog) { }
+  constructor(private location: Location, public srvSt: StatesService, private route: ActivatedRoute, public srv: PersService, private router: Router, public dialog: MatDialog) { }
 
   /**
    * Добавление навыка.
@@ -205,7 +206,7 @@ export class PersListComponent implements OnInit {
 
     const id = this.route.snapshot.paramMap.get('isFirst');
     if (id) {
-      this.srv.selTabPersList = 0;
+      this.srvSt.selTabPersList = 0;
     }
 
     this.getAllAbs();

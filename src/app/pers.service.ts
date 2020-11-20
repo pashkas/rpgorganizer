@@ -35,7 +35,6 @@ export class PersService {
   mn4Count: number = 745;
   mn5Count: number = 285;
   pers: Pers;
-  selTabPersList: number = 0;
   // Пользователь
   user: FirebaseUserModel;
 

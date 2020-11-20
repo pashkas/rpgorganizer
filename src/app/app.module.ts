@@ -24,6 +24,8 @@ import { ProgressBarNumComponent } from './shared/progress-bar-num/progress-bar-
 import { TskTimeValDialogComponent } from './tsk-time-val-dialog/tsk-time-val-dialog.component';
 import { ImageComponentComponent } from './image-component/image-component.component';
 import { RestComponent } from './rest/rest.component';
+import { RouteReuseStrategy } from '@angular/router';
+import { RouteReuseService } from './route-reuse.service';
 
 registerLocaleData(localeRu, 'ru');
 
@@ -58,7 +60,11 @@ registerLocaleData(localeRu, 'ru');
       provide: HAMMER_GESTURE_CONFIG,
       useClass: GestureConfig,
     },
-    { provide: LOCALE_ID, useValue: 'ru' }
+    { provide: LOCALE_ID, useValue: 'ru' },
+    {
+      provide: RouteReuseStrategy,
+      useClass: RouteReuseService
+    }
   ],
   bootstrap: [AppComponent],
   entryComponents:

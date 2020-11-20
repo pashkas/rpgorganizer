@@ -16,6 +16,7 @@ import { ArrSortDialogComponent } from '../arr-sort-dialog/arr-sort-dialog.compo
 import * as moment from 'moment';
 import { AddItemDialogComponent } from '../add-item-dialog/add-item-dialog.component';
 import { TskTimeValDialogComponent } from '../tsk-time-val-dialog/tsk-time-val-dialog.component';
+import { StatesService } from '../states.service';
 
 @Component({
   selector: 'app-main-window',
@@ -33,7 +34,7 @@ export class MainWindowComponent implements OnInit {
   lastGlobalBeforeSort: boolean;
   qwickSortVals: sortArr[] = [];
 
-  constructor(private route: ActivatedRoute, public srv: PersService, public dialog: MatDialog) {
+  constructor(private route: ActivatedRoute, public srv: PersService, public dialog: MatDialog, private srvSt: StatesService) {
   }
 
 
@@ -370,6 +371,7 @@ export class MainWindowComponent implements OnInit {
   }
 
   ngOnInit() {
+    debugger;
     if (!this.srv.pers) {
       this.route.data.pipe(take(1))
         .subscribe(routeData => {
@@ -463,7 +465,7 @@ export class MainWindowComponent implements OnInit {
   }
 
   openPersList() {
-    this.srv.selTabPersList = 0;
+    this.srvSt.selTabPersList = 0;
   }
 
   prevTask() {

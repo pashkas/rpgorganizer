@@ -11,8 +11,7 @@ import { TurnirTableComponent } from './turnir-table/turnir-table.component';
 const routes: Routes = [
   { path: '', redirectTo: 'login', pathMatch: 'full', resolve: { data: UserResolver } },
   { path: 'login', component: LoginComponent, canActivate: [AuthGuard] },
-  { path: 'main', component: MainWindowComponent, resolve: { data: UserResolver } },
-  { path: 'pers/:isFirst', loadChildren: () => import('./pers/pers.module').then(m => m.PersModule) },
+  { path: 'main', component: MainWindowComponent, resolve: { data: UserResolver }, data: { key: 'main' } },
   { path: 'pers', loadChildren: () => import('./pers/pers.module').then(m => m.PersModule) },
   { path: 'turnirtable', component: TurnirTableComponent },
   { path: 'mind-map', loadChildren: () => import('./mind-map/mind-map.module').then(m => m.MindMapModule) },
@@ -22,7 +21,6 @@ const routes: Routes = [
   imports: [RouterModule.forRoot(routes, {
     useHash: true,
     anchorScrolling: 'enabled',
-    onSameUrlNavigation: 'reload',
     scrollPositionRestoration: 'enabled',
     scrollOffset: [0, 64]
   })],

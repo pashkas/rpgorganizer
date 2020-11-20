@@ -10,7 +10,7 @@ import { QwestDetailComponent } from '../qwest-detail/qwest-detail.component';
 
 
 const routes: Routes = [
-  { path: '', component: PersListComponent },
+  { path: '', component: PersListComponent, data: { key: 'pers' } },
   { path: 'characteristic/:id', component: CharacteristicDetailsComponent },
   { path: 'ability/:id', component: AbilityDetailComponent },
   { path: 'task/:id/:isEdit', component: TaskDetailComponent },

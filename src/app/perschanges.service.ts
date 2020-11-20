@@ -8,6 +8,7 @@ import { Task } from 'src/Models/Task';
 import { ChangesModel, persExpChanges } from 'src/Models/ChangesModel';
 import { Characteristic } from 'src/Models/Characteristic';
 import { LevelUpMsgComponent } from './level-up-msg/level-up-msg.component';
+import { StatesService } from './states.service';
 
 @Injectable({
   providedIn: 'root'
@@ -16,7 +17,7 @@ export class PerschangesService {
   afterPers: Pers;
   beforePers: Pers;
 
-  constructor(public dialog: MatDialog, private router: Router) { }
+  constructor(public dialog: MatDialog, private router: Router, private srvSt: StatesService) { }
 
   getClone(pers: Pers): Pers {
     return JSON.parse(JSON.stringify(pers));
@@ -258,7 +259,8 @@ export class PerschangesService {
       dialogRefLvlUp.close();
 
       if (!this.afterPers.isTES) {
-        this.router.navigate(['/pers', true]);
+        this.srvSt.selTabPersList = 0;
+        this.router.navigate(['/pers']);
       }
     }
   }
