@@ -1,7 +1,7 @@
 <nav *ngIf="this.srv.pers && !this.srv.isDialogOpen" class="fixed-bottom">
   <div class="d-flex w-100 justify-content-end px-2 py-2">
     <!-- Назад -->
-    <button *ngIf="!isEditMode" mat-icon-button (click)="goBack()" class="mx-2">
+    <button mat-icon-button (click)="goBack()" class="mx-2">
       <img src="assets/icons/left.png" class="img-fluid" [ngStyle]="{'object-fit': 'contain', 'height':'2.5em'}">
     </button>
     <!-- Редактировать -->
@@ -394,7 +394,7 @@
           <ng-container *ngIf="this.srv.pers.qwests?.length > 0">
 
             <ul class="list-group py-0 px-0">
-              <li *ngFor="let qwest of this.srv.pers.qwests" class="list-group-item px-0 py-1 border-0">
+              <li [ngStyle]="{'opacity': qwest.parrentId ? '0.4' : '1'}" *ngFor="let qwest of this.srv.pers.qwests" class="list-group-item px-0 py-1 border-0">
 
                 <div fxLayout="row" fxLayoutAlign="space-between center">
 

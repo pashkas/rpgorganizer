@@ -153,7 +153,7 @@
       <button [ngClass]="{'disabled': isSort}" [autofocus]="false" (click)="firstOrGlobal()" mat-icon-button>
         <img *ngIf="this.srv.isGlobalTaskView" src="assets/icons/right.png" class="img-fluid"
           [ngStyle]="{'object-fit': 'contain', 'height':'3em'}">
-        <img src="assets/icons/left.png" *ngIf="!this.srv.isGlobalTaskView" class="img-fluid"
+        <img src="assets/icons/left.png" class="img-fluid"
           [ngStyle]="{'object-fit': 'contain', 'height':'3em'}">
       </button>
 

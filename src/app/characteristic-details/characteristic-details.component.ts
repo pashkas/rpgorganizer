@@ -56,8 +56,12 @@ export class CharacteristicDetailsComponent implements OnInit {
   }
 
   goBack() {
-    //this.router.navigate(['/pers']);
-    this.location.back();
+    if (this.isEditMode) {
+      this.isEditMode = false;
+    }
+    else{
+      this.location.back();
+    }
   }
 
   ngOnDestroy(): void {

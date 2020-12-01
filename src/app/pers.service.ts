@@ -100,9 +100,27 @@ export class PersService {
       this.pers.exp += plusExp;
     }
 
-    this.delQwest(qw.id);
+    const qwId = qw.id;
+    
+    this.removeParrents(qwId);
+
+    this.delQwest(qwId);
 
     this.savePers(true);
+  }
+
+  /**
+   * У следующего квеста удаляем parrent
+   * @param qwId Идентификатор родителя
+   */
+  private removeParrents(qwId: any) {
+    for (let i = 0; i < this.pers.qwests.length; i++) {
+      const qw = this.pers.qwests[i];
+      if (qw.parrentId == qwId) {
+        qw.parrentId = 0;
+      }
+    }
+    
   }
 
   GetRndEnamy(tsk: IImg): string {
@@ -194,9 +212,12 @@ export class PersService {
   * Добавить новый квест.
   * @param newQwest Название квеста.
   */
-  addQwest(newQwest: string): any {
+  addQwest(newQwest: string, parrent?: any): any {
     let qwest = new Qwest();
     qwest.name = newQwest;
+    if (parrent) {
+      qwest.parrentId = parrent;
+    }
 
     this.pers.qwests.push(qwest);
   }
@@ -485,6 +506,7 @@ export class PersService {
    * @param id Идентификатор квеста.
    */
   delQwest(id: string): any {
+    this.removeParrents(id);
     this.pers.qwests = this.pers.qwests.filter(n => {
       return n.id != id;
     });
@@ -763,6 +785,9 @@ export class PersService {
       }
       else {
         this.pers.qwests.forEach(qw => {
+          if (qw.parrentId) {
+            return;
+          }
           for (let index = 0; index < qw.tasks.length; index++) {
             const tsk = qw.tasks[index];
             if (!tsk.isDone) {
@@ -1189,6 +1214,32 @@ export class PersService {
       // Сортировка задач квеста
       this.sortQwestTasks(qw);
     });
+
+    // Сортировка квестов по следующим/предыдущим
+    let ordered = this.pers.qwests.filter(q=>!q.parrentId);
+
+    const idMapping = this.pers.qwests.reduce((acc, el, i) => {
+      acc[el.id] = i;
+      return acc;
+    }, {});
+
+
+    this.pers.qwests.forEach(el => {
+      // Handle the root element
+      if (!el.parrentId) {
+        return;
+      }
+
+      // Use our mapping to locate the parent element in our data array
+      const parentEl = this.pers.qwests[idMapping[el.parrentId]];
+      const idx = ordered.indexOf(parentEl);
+      // Add our current el to its parent's `children` array
+      ordered.splice(idx + 1, 0, el);
+    });
+
+    this.pers.qwests = ordered;
+
+    //this.pers.qwests = ordered;
 
     // Сортировка квестов по прогрессу
     // this.pers.qwests = this.pers.qwests.sort((a, b) => {

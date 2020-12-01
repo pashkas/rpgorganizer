@@ -1,8 +1,8 @@
 <nav *ngIf="this.srv.pers && !this.srv.isDialogOpen" class="fixed-bottom">
   <div class="d-flex w-100 justify-content-end px-2 py-2">
     <!-- Назад -->
-    <button *ngIf="!isEditMode" mat-icon-button (click)="goBack()" class="mx-2">
-      <img src="assets/icons/left.png" *ngIf="!this.srv.isGlobalTaskView" class="img-fluid"
+    <button mat-icon-button (click)="goBack()" class="mx-2">
+      <img src="assets/icons/left.png" class="img-fluid"
         [ngStyle]="{'object-fit': 'contain', 'height':'2.5em'}">
     </button>
     <!-- Редактировать -->

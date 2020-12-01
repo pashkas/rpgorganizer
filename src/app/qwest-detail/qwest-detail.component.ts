@@ -23,8 +23,10 @@ export class QwestDetailComponent implements OnInit {
    * Добавление задачи из просмотра, когда квест выполнен.
    */
   isFromDoneQwest: boolean = false;
-  qwest: Qwest;
   isFromMain: boolean;
+  nextQwests: Qwest[] = [];
+  prevQwest:Qwest;
+  qwest: Qwest;
 
   constructor(private location: Location, private route: ActivatedRoute, public srv: PersService, private router: Router, public dialog: MatDialog) { }
 
@@ -62,6 +64,25 @@ export class QwestDetailComponent implements OnInit {
           this.srv.sortRevards();
         }
         this.srv.isDialogOpen = false;
+      });
+  }
+
+  addNextQwest(){
+    this.srv.isDialogOpen = true;
+    const dialogRef = this.dialog.open(AddItemDialogComponent, {
+      panelClass: 'my-dialog',
+      data: { header: 'Добавить следующий квест', text: '' },
+
+      backdropClass: 'backdrop'
+    });
+
+    dialogRef.afterClosed()
+      .subscribe(name => {
+        if (name) {
+          this.srv.addQwest(name, this.qwest.id);
+        }
+        this.srv.isDialogOpen = false;
+        this.getNextPrevQwests();
       });
   }
 
@@ -114,10 +135,10 @@ export class QwestDetailComponent implements OnInit {
     if (this.isFromMain) {
       this.router.navigate(['/main']);
     }
-    else{
+    else {
       this.router.navigate(['/pers']);
     }
-    
+
     this.srv.changesAfter(true);
   }
 
@@ -138,8 +159,30 @@ export class QwestDetailComponent implements OnInit {
     moveItemInArray(this.qwest.tasks, event.previousIndex, event.currentIndex);
   }
 
+  getNextPrevQwests() {
+    let nextQw: Qwest[] = [];
+    let prevQwest;
+
+    for (const qw of this.srv.pers.qwests) {
+      if (qw.parrentId === this.qwest.id) {
+        nextQw.push(qw);
+      }
+      else if (qw.id === this.qwest.parrentId) {
+        prevQwest = qw;
+      }
+    }
+
+    this.nextQwests = nextQw;
+    this.prevQwest = prevQwest;
+  }
+
   goBack() {
-    this.location.back();
+    if (this.isEditMode) {
+      this.isEditMode = false;
+    }
+    else{
+      this.location.back();
+    }
   }
 
   ngOnInit() {
@@ -147,21 +190,27 @@ export class QwestDetailComponent implements OnInit {
       this.router.navigate(['/main']);
     }
 
-    const id = this.route.snapshot.paramMap.get('id');
-    const fromMain = this.route.snapshot.paramMap.get('fromMain');
-    if (fromMain) {
-      this.isFromMain = true;
-    }
-    else{
-      this.isFromMain = false;
-    }
+    
+    this.route.params.subscribe(n=>{
+      const id = n['id'];
+      const fromMain = n['fromMain'];
 
-    for (const qw of this.srv.pers.qwests) {
-      if (qw.id === id) {
-        this.qwest = qw;
-        break;
+      if (fromMain) {
+        this.isFromMain = true;
       }
-    }
+      else {
+        this.isFromMain = false;
+      }
+  
+      for (const qw of this.srv.pers.qwests) {
+        if (qw.id === id) {
+          this.qwest = qw;
+          break;
+        }
+      }
+  
+      this.getNextPrevQwests();
+    });
   }
 
   /**

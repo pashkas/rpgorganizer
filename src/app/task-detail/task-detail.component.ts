@@ -224,7 +224,12 @@ export class TaskDetailComponent implements OnInit {
   }
 
   goBack() {
-    this.location.back();
+    if (this.isEditMode) {
+      this.isEditMode = false;
+    }
+    else{
+      this.location.back();
+    }
   }
 
   ngOnDestroy(): void {

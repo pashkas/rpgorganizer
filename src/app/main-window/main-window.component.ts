@@ -371,7 +371,6 @@ export class MainWindowComponent implements OnInit {
   }
 
   ngOnInit() {
-    debugger;
     if (!this.srv.pers) {
       this.route.data.pipe(take(1))
         .subscribe(routeData => {

@@ -190,8 +190,12 @@ export class PersListComponent implements OnInit {
   }
 
   goBack() {
-    this.location.back();
-    //this.router.navigate(['/main']);
+    if (this.isEditMode) {
+      this.isEditMode = false;
+    }
+    else{
+      this.location.back();
+    }
   }
 
   ngOnDestroy(): void {
