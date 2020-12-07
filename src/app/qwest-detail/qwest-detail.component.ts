@@ -79,7 +79,7 @@ export class QwestDetailComponent implements OnInit {
     dialogRef.afterClosed()
       .subscribe(name => {
         if (name) {
-          this.srv.addQwest(name, this.qwest.id);
+          this.srv.addQwest(name, this.qwest.id, this.qwest.image);
         }
         this.srv.isDialogOpen = false;
         this.getNextPrevQwests();

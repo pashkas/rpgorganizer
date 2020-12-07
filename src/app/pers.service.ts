@@ -44,7 +44,7 @@ export class PersService {
     if (isOffline === 'undefined' || isOffline === 'null') {
       this.isOffline = false;
     }
-    else{
+    else {
       this.isOffline = JSON.parse(isOffline);
     }
   }
@@ -103,7 +103,7 @@ export class PersService {
     }
 
     const qwId = qw.id;
-    
+
     this.removeParrents(qwId);
 
     this.delQwest(qwId);
@@ -122,7 +122,7 @@ export class PersService {
         qw.parrentId = 0;
       }
     }
-    
+
   }
 
   GetRndEnamy(tsk: IImg): string {
@@ -214,11 +214,14 @@ export class PersService {
   * Добавить новый квест.
   * @param newQwest Название квеста.
   */
-  addQwest(newQwest: string, parrent?: any): any {
+  addQwest(newQwest: string, parrent?: any, img?: string): any {
     let qwest = new Qwest();
     qwest.name = newQwest;
     if (parrent) {
       qwest.parrentId = parrent;
+    }
+    if (img) {
+      qwest.image = img;
     }
 
     this.pers.qwests.push(qwest);
@@ -1218,7 +1221,7 @@ export class PersService {
     });
 
     // Сортировка квестов по следующим/предыдущим
-    let ordered = this.pers.qwests.filter(q=>!q.parrentId);
+    let ordered = this.pers.qwests.filter(q => !q.parrentId);
 
     const idMapping = this.pers.qwests.reduce((acc, el, i) => {
       acc[el.id] = i;
@@ -2594,6 +2597,9 @@ export class PersService {
 
     this.pers.maxPersLevel = i;
 
+    // debugger;
+    // let nnn = this.getMonsterLevel(prevPersLevel);
+    
     if (prevPersLevel != this.pers.level && this.getMonsterLevel(prevPersLevel) != this.getMonsterLevel(this.pers.level)) {
       this.updateQwestTasksImages();
       this.updateAbTasksImages();

@@ -113,35 +113,39 @@
   <div fxLayout="row" fxLayoutAlign="space-between center" class="w-100 h-100 py-1" style="min-height: 120px;">
     <button (press)="editDiaryItem()" (contextmenu)="$event.preventDefault()" class="h-100 w-100 px-1 py-0 text-left"
       mat-button routerLink="/pers" (click)="openPersList()">
-      
-      <img [ngClass]="{'disabled': isSort, 'vibrate-1': isFailShown}" (contextmenu)="$event.preventDefault()" src="{{srv.pers.image}}"
-        class="img-fluid h-100 rounded" [ngStyle]="{'object-fit': 'contain'}">
+
+      <img [ngClass]="{'disabled': isSort, 'vibrate-1': isFailShown}" (contextmenu)="$event.preventDefault()"
+        src="{{srv.pers.image}}" class="img-fluid h-100 rounded" [ngStyle]="{'object-fit': 'contain'}">
     </button>
     <!-- Кнопки -->
-    <div fxLayout="row" fxLayoutAlign="end center" fxLayoutGap="0.3em" class="w-100 h-100 px-2" *ngIf="isSort && srv.pers.sellectedView != 'квесты'">
-      <button mat-icon-button color="accent" (click)="setSort()">
-        <i class="fa fa-2x fa-save text-secondary"></i>
+    <div fxLayout="row" fxLayoutAlign="end center" fxLayoutGap="0.6em" class="w-100 h-100 px-2"
+      *ngIf="isSort && srv.pers.sellectedView != 'квесты'">
+      <button (click)="editCansel()" mat-icon-button>
+        <img src="assets/icons/left.png" class="img-fluid"
+        [ngStyle]="{'object-fit': 'contain', 'height':'3.3em'}">
       </button>
-      <button mat-icon-button color="accent" (click)="editCansel()">
-        <i class="fa fa-2x fa-window-close text-secondary"></i>
+
+      <button (click)="setSort()" mat-icon-button>
+        <img src="assets/icons/edit.png" class="img-fluid"
+        [ngStyle]="{'object-fit': 'contain', 'height':'3.3em'}">
       </button>
-      <!-- <button mat-icon-button color="accent" (click)="setTimes()">
-        <i class="fa fa-2x fa-hourglass text-secondary"></i>
-      </button>
-      <button mat-icon-button color="accent" (click)="smartSort()" style="margin-right: 12px;">
-        <i class="fa fa-2x fa-lightbulb text-secondary"></i>
-      </button> -->
     </div>
 
-    <div fxLayout="row" fxLayoutAlign="end center" fxLayoutGap="0.3em" class="w-100 h-100 px-2" *ngIf="isSort && srv.pers.sellectedView == 'квесты'">
-      <button mat-icon-button color="accent" color="accent" (click)="setSort()">
-        <i class="fa fa-2x fa-save text-secondary"></i>
+    <div fxLayout="row" fxLayoutAlign="end center" fxLayoutGap="0.6em" class="w-100 h-100 px-2"
+      *ngIf="isSort && srv.pers.sellectedView == 'квесты'">
+      <button (click)="editCansel()" mat-icon-button>
+        <img src="assets/icons/left.png" class="img-fluid"
+        [ngStyle]="{'object-fit': 'contain', 'height':'3em'}">
       </button>
-      <button mat-icon-button color="accent" (click)="editCansel()">
-        <i class="fa fa-2x fa-window-close text-secondary"></i>
+
+      <button (click)="setSort()" mat-icon-button>
+        <img src="assets/icons/edit.png" class="img-fluid"
+        [ngStyle]="{'object-fit': 'contain', 'height':'3.4em'}">
       </button>
-      <button mat-icon-button color="accent" (click)="addToQwest()" style="margin-right: 12px;">
-        <i class="fa fa-2x fa-plus text-secondary"></i>
+
+      <button (click)="addToQwest()" mat-icon-button>
+        <img src="assets/icons/create.png" class="img-fluid"
+        [ngStyle]="{'object-fit': 'contain', 'height':'3em'}">
       </button>
     </div>
     <div fxLayout="row" *ngIf="!isSort" fxLayoutAlign="end center" fxLayoutGap="0.3em" class="w-100 h-100 px-2">
@@ -153,7 +157,7 @@
       <button [ngClass]="{'disabled': isSort}" [autofocus]="false" (click)="firstOrGlobal()" mat-icon-button>
         <img *ngIf="this.srv.isGlobalTaskView" src="assets/icons/right.png" class="img-fluid"
           [ngStyle]="{'object-fit': 'contain', 'height':'3em'}">
-        <img src="assets/icons/left.png" *ngIf="!this.srv.isGlobalTaskView"  class="img-fluid"
+        <img src="assets/icons/left.png" *ngIf="!this.srv.isGlobalTaskView" class="img-fluid"
           [ngStyle]="{'object-fit': 'contain', 'height':'3em'}">
       </button>
 
