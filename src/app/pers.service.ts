@@ -40,9 +40,11 @@ export class PersService {
 
   constructor(public db: AngularFirestore, private router: Router, private changes: PerschangesService, private enmSrv: EnamiesService) {
     this.createOnline$().subscribe(isOnline => this.isOnline = isOnline);
-
     let isOffline = localStorage.getItem("isOffline");
-    if (isOffline) {
+    if (isOffline === 'undefined' || isOffline === 'null') {
+      this.isOffline = false;
+    }
+    else{
       this.isOffline = JSON.parse(isOffline);
     }
   }
@@ -2031,6 +2033,10 @@ export class PersService {
 
     if (!prs.qwests) {
       prs.qwests = [];
+    }
+
+    if (prs.isOffline == null || prs.isOffline == undefined) {
+      prs.isOffline = false;
     }
 
     // Настройки
