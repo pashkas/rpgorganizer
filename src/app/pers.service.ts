@@ -1922,62 +1922,62 @@ export class PersService {
       return;
     }
 
-    let rand = Math.random() * 99.0;
+    let rand = Math.random() * 100.0;
 
     let revType = '';
 
-    if (rand > 3) {
-      return;
-    }
-
-    if (this.pers.isMax5) {
-      if (task.value >= 5) {
-        revType = Pers.legendaryRevSet.name;
-      }
-      else if (task.value >= 4) {
-        revType = Pers.epicRevSet.name;
-      }
-      else if (task.value >= 3) {
-        revType = Pers.rareRevSet.name;
-      }
-      else if (task.value >= 2) {
-        revType = Pers.uncommonRevSet.name;
-      }
-      else {
-        revType = Pers.commonRevSet.name;
-      }
-    }
-    else {
-      if (task.value >= 9) {
-        revType = Pers.legendaryRevSet.name;
-      }
-      else if (task.value >= 7) {
-        revType = Pers.epicRevSet.name;
-      }
-      else if (task.value >= 5) {
-        revType = Pers.rareRevSet.name;
-      }
-      else if (task.value >= 3) {
-        revType = Pers.uncommonRevSet.name;
-      }
-      else {
-        revType = Pers.commonRevSet.name;
-      }
-    }
-
-    // if (rand <= Pers.commonRevSet.cumulative) {
-    //   revType = Pers.commonRevSet.name;
-    // } else if (rand <= Pers.uncommonRevSet.cumulative) {
-    //   revType = Pers.uncommonRevSet.name;
-    // } else if (rand <= Pers.rareRevSet.cumulative) {
-    //   revType = Pers.rareRevSet.name;
-    // } else if (rand <= Pers.epicRevSet.cumulative) {
-    //   revType = Pers.epicRevSet.name;
-    // } else if (rand <= Pers.legendaryRevSet.cumulative) {
-    //   revType = Pers.legendaryRevSet.name;
-    // } else {
+    // if (rand > 3) {
     //   return;
     // }
+
+    // if (this.pers.isMax5) {
+    //   if (task.value >= 5) {
+    //     revType = Pers.legendaryRevSet.name;
+    //   }
+    //   else if (task.value >= 4) {
+    //     revType = Pers.epicRevSet.name;
+    //   }
+    //   else if (task.value >= 3) {
+    //     revType = Pers.rareRevSet.name;
+    //   }
+    //   else if (task.value >= 2) {
+    //     revType = Pers.uncommonRevSet.name;
+    //   }
+    //   else {
+    //     revType = Pers.commonRevSet.name;
+    //   }
+    // }
+    // else {
+    //   if (task.value >= 9) {
+    //     revType = Pers.legendaryRevSet.name;
+    //   }
+    //   else if (task.value >= 7) {
+    //     revType = Pers.epicRevSet.name;
+    //   }
+    //   else if (task.value >= 5) {
+    //     revType = Pers.rareRevSet.name;
+    //   }
+    //   else if (task.value >= 3) {
+    //     revType = Pers.uncommonRevSet.name;
+    //   }
+    //   else {
+    //     revType = Pers.commonRevSet.name;
+    //   }
+    // }
+
+    if (rand <= Pers.commonRevSet.cumulative) {
+      revType = Pers.commonRevSet.name;
+    } else if (rand <= Pers.uncommonRevSet.cumulative) {
+      revType = Pers.uncommonRevSet.name;
+    } else if (rand <= Pers.rareRevSet.cumulative) {
+      revType = Pers.rareRevSet.name;
+    } else if (rand <= Pers.epicRevSet.cumulative) {
+      revType = Pers.epicRevSet.name;
+    } else if (rand <= Pers.legendaryRevSet.cumulative) {
+      revType = Pers.legendaryRevSet.name;
+    } else {
+      return;
+    }
 
     let revsOfType = this.getRewsOfType(revType);
 
@@ -2599,7 +2599,7 @@ export class PersService {
 
     // debugger;
     // let nnn = this.getMonsterLevel(prevPersLevel);
-    
+
     if (prevPersLevel != this.pers.level && this.getMonsterLevel(prevPersLevel) != this.getMonsterLevel(this.pers.level)) {
       this.updateQwestTasksImages();
       this.updateAbTasksImages();
