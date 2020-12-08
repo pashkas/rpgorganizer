@@ -458,13 +458,11 @@
       <div *ngIf="!isEditMode" class="pt-2 pb-4 w-100">
         <div class="pb-4">
           <!-- Инвентарь -->
-          <div style="padding-left: 10px;" fxFlexFill fxLayoutAlign="center center" fxLayout="row wrap"
-            fxLayoutGap="10px grid">
-            <div fxFlex="33" *ngFor="let rev of this.srv.pers.inventory"
-              [ngStyle]="{'border-color': rev.rare | rarecol}"
-              style="border-width: 4px!important; border-style: solid;">
+          <div fxFlexFill fxLayout="row wrap" fxLayoutAlign="center center" fxLayoutGap="10px grid" style="padding-left: 10px;">
+            <div [fxFlex]="(100/3) + '%'" *ngFor="let rev of this.srv.pers.inventory">
               <div style="cursor: pointer;" (click)="useRevard(rev)" fxLayout="column"
-                fxLayoutAlign="space-around center">
+                fxLayoutAlign="space-around center" [ngStyle]="{'border-color': rev.rare | rarecol}"
+                style="border-width: 4px!important; border-style: solid; padding: 10px;">
                 <img src="{{rev.image}}" class="img-fluid rounded"
                   [ngStyle]="{'object-fit': 'contain', 'height': '65px'}">
                 <div fxLayout="row" fxLayoutAlign="space-evenly center">

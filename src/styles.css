@@ -150,6 +150,11 @@ button:focus {
     max-width: 900px;
 }
 
+h5{
+    color: gray;
+    margin: 0px;
+    font-weight: normal;
+}
 
 .my-good .mat-dialog-container {
     background: green;
