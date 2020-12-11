@@ -11,6 +11,7 @@ import { MatDialog } from '@angular/material';
 import { AddItemDialogComponent } from '../add-item-dialog/add-item-dialog.component';
 import { filter } from 'rxjs/operators';
 import { AddOrEditRevardComponent } from '../add-or-edit-revard/add-or-edit-revard.component';
+import { ChangeCharactComponent } from '../pers/change-charact/change-charact.component';
 
 @Component({
   selector: 'app-qwest-detail',
@@ -25,7 +26,7 @@ export class QwestDetailComponent implements OnInit {
   isFromDoneQwest: boolean = false;
   isFromMain: boolean;
   nextQwests: Qwest[] = [];
-  prevQwest:Qwest;
+  prevQwest: Qwest;
   qwest: Qwest;
 
   constructor(private location: Location, private route: ActivatedRoute, public srv: PersService, private router: Router, public dialog: MatDialog) { }
@@ -67,7 +68,7 @@ export class QwestDetailComponent implements OnInit {
       });
   }
 
-  addNextQwest(){
+  addNextQwest() {
     this.srv.isDialogOpen = true;
     const dialogRef = this.dialog.open(AddItemDialogComponent, {
       panelClass: 'my-dialog',
@@ -180,7 +181,7 @@ export class QwestDetailComponent implements OnInit {
     if (this.isEditMode) {
       this.isEditMode = false;
     }
-    else{
+    else {
       this.location.back();
     }
   }
@@ -190,8 +191,8 @@ export class QwestDetailComponent implements OnInit {
       this.router.navigate(['/main']);
     }
 
-    
-    this.route.params.subscribe(n=>{
+
+    this.route.params.subscribe(n => {
       const id = n['id'];
       const fromMain = n['fromMain'];
 
@@ -201,16 +202,64 @@ export class QwestDetailComponent implements OnInit {
       else {
         this.isFromMain = false;
       }
-  
+
       for (const qw of this.srv.pers.qwests) {
         if (qw.id === id) {
           this.qwest = qw;
           break;
         }
       }
-  
+
       this.getNextPrevQwests();
+      this.getQwestAb();
     });
+  }
+
+  qwestAbiliti;
+
+  getQwestAb() {
+    let qwAb = null;
+    if (this.qwest.abilitiId) {
+      for (const ch of this.srv.pers.characteristics) {
+        for (const ab of ch.abilities) {
+          if (ab.id == this.qwest.abilitiId) {
+            qwAb = ab;
+            break;
+          }
+        }
+      }
+    }
+    this.qwestAbiliti = qwAb;
+  }
+
+  setAbil() {
+    this.srv.isDialogOpen = true;
+    const dialogRef = this.dialog.open(ChangeCharactComponent, {
+      data: {
+        characteristic: this.qwestAbiliti,
+        allCharacts: this.srv.pers.characteristics
+          .reduce((a, b) => {
+            return a.concat(b.abilities)
+          }, [])
+          .sort((a, b) => a.name.localeCompare(b.name)),
+        tittle: 'Выбери навык'
+      },
+      backdropClass: 'backdrop'
+    });
+
+    dialogRef.afterClosed()
+      .subscribe(n => {
+        if (n) {
+          this.qwest.abilitiId = n.id;
+          this.qwestAbiliti = n;
+        }
+        this.srv.isDialogOpen = false;
+      });
+  }
+
+  delAb() {
+    this.qwest.abilitiId = null;
+    this.qwestAbiliti = null;
   }
 
   /**

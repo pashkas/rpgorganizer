@@ -212,3 +212,7 @@ body {
 .mat-slider-thumb {
     transform: scale(0) !important;
 }
+
+.panel-override {
+    max-height: 40vh !important;
+}

@@ -12,4 +12,5 @@ export class Qwest {
     progressValue: number = 0;
     exp: number = 0;
     parrentId: any = 0;
+    abilitiId: any;
 }

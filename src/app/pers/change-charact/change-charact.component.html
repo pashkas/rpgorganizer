@@ -1,7 +1,9 @@
-<h1 mat-dialog-title>Выбрать характеристику</h1>
+<h1 mat-dialog-title>
+    {{tittle}}
+</h1>
 <div mat-dialog-content>
     <mat-form-field fxFlex>
-        <mat-select [(ngModel)]="characteristic">
+        <mat-select [(ngModel)]="characteristic" panelClass="panel-override">
             <mat-option *ngFor="let a of allCharacts" [value]="a">
                 {{a.name}}
             </mat-option>

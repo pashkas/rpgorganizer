@@ -16,10 +16,6 @@
   <ng-container *ngIf="this.srv.isGlobalTaskView">
 
     <mat-list (cdkDropListDropped)="drop($event)" cdkDropList class="list-group  py-2 h-100 w-100 overflow-auto">
-      <!-- <button class="btn btn-default" (click)="autoFalse()"
-        *ngIf="srv.pers?.tasks.length>0 && srv.pers?.tasks[0].requrense != 'нет' && checkDate(srv.pers?.tasks[0].date)">
-        Пропуск всех прошедших
-      </button> -->
       <ng-container *ngFor="let t of srv.pers.tasks; let i = index;">
         <div cdkDrag mat-list-item (click)="tskClick(i);"
           [ngClass]="{'list-group-item-danger': t.lastNotDone && !isSort, 'list-group-item-warning': t.requrense != 'нет' && checkDate(t.date)}">
@@ -33,21 +29,12 @@
                   {{t.tittle}}
                 </ng-container>
                 <ng-template #elseTemplate>
+                  <ng-container *ngIf="t.plusToNames[1]?.name as nn">
+                    {{'('+nn+') '}}
+                  </ng-container>
                   {{t.plusToNames[0]?.name}}
                 </ng-template>
               </div>
-              <!-- <ng-container *ngIf="t.requrense==='нет' && t.plusToNames && t.plusToNames.length>0;">
-                <span *ngFor="let pl of t.plusToNames; let i=index;">
-                  <ng-container>
-                    <ng-container *ngIf="pl.linkName; else elseTemplate">
-                      <a class="text-secondary" [routerLink]="[pl.linkName, pl.linkId]"><small>{{pl.name}}</small></a>
-                    </ng-container>
-                    <ng-template #elseTemplate>
-                      <small class="text-secondary">{{pl.name}}</small>
-                    </ng-template>
-                  </ng-container>
-                </span>
-              </ng-container> -->
             </div>
 
             <button mat-button cdkDragHandle [hidden]="!isSort">

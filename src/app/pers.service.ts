@@ -795,6 +795,7 @@ export class PersService {
           }
           for (let index = 0; index < qw.tasks.length; index++) {
             const tsk = qw.tasks[index];
+
             if (!tsk.isDone) {
               if (this.checkTask(tsk)) {
                 const subTasks = tsk.states.filter(n => !n.isDone);
@@ -1196,7 +1197,22 @@ export class PersService {
         tsk.plusToNames = [];
         tsk.tittle = tsk.name;
         tsk.plusName = qw.name;
+
         tsk.plusToNames.push(new plusToName(qw.name, qw.id, '/pers/qwest'));
+
+        let abName = '';
+        if (qw.abilitiId) {
+          for (const ch of this.pers.characteristics) {
+            for (const ab of ch.abilities) {
+              if (ab.id == qw.abilitiId) {
+                abName = ab.name;
+                break;
+              }
+            }
+          }
+        }
+        tsk.plusToNames.push(new plusToName(abName, '', ''));
+
         if (tsk.descr) {
           tsk.plusToNames.push(new plusToName(tsk.descr, '', ''));
         }
@@ -1792,6 +1808,16 @@ export class PersService {
 
       this.addToDiary(task, true);
 
+      // Счетчик обновлений стейтов
+      if (task.isStateRefresh) {
+        if (task.refreshCounter == null || task.refreshCounter == undefined) {
+          task.refreshCounter = 0;
+        }
+        else{
+          task.refreshCounter++;
+        }
+      }
+
       // Следующая дата
       this.setTaskNextDate(task, true);
       this.setStatesNotDone(task);
@@ -2312,11 +2338,12 @@ export class PersService {
     let stT = new Task();
     let stateProgr;
     //stT.tittle = tsk.name + ': ' + st.name;
+
     if (tsk.isStatePlusTitle) {
-      stT.tittle = tsk.name + ': ' + st.name;
+      stT.tittle = tsk.name + ': ' + tsk.curLvlDescr3;
     }
     else {
-      stT.tittle = st.name;
+      stT.tittle = tsk.curLvlDescr3;
     }
 
     if (!isAll) {
@@ -2680,49 +2707,68 @@ export class PersService {
       if (tsk.states.length > 0) {
         let nms: number[] = this.getSet(tsk, tsk.states.length);
 
-        for (let i = 0; i < nms.length; i++) {
-          let j = nms[i] - 1;
-          if (j < 0) {
-            tsk.statesDescr.push('');
+        if (tsk.isStateRefresh) {
+          if (tsk.refreshCounter == null && tsk.refreshCounter == undefined) {
+            tsk.refreshCounter = 0;
           }
-          else {
-            if (tsk.isSumStates) {
-              let plus = [];
-              for (let q = 0; q <= j; q++) {
-                const st = tsk.states[q];
+          let cVal = tsk.refreshCounter % tsk.states.length;
 
-                plus.push(st.name);
-              }
-
-              tsk.statesDescr.push(plus.join('; '));
+          for (let i = 0; i < nms.length; i++) {
+            const el = tsk.states[cVal].name;
+            if (tsk.statesDescr[i] != undefined) {
+              tsk.statesDescr[i] += ' ' + el;
             }
             else {
-              tsk.statesDescr.push(tsk.states[j].name);
+              tsk.statesDescr.push(el);
             }
           }
-        }
-
-        let index = nms[Math.floor(tsk.value)] - 1;
-        if (!this.pers.isTES) {
-          index = nms[Math.floor(tsk.value)] - 1;
         }
         else {
-          index = nms[Math.floor(1 + tsk.tesValue)] - 1;
-        }
+          for (let i = 0; i < nms.length; i++) {
+            let j = nms[i] - 1;
+            if (j < 0) {
+              tsk.statesDescr.push('');
+            }
+            else {
+              if (tsk.isSumStates) {
+                let plus = [];
+                for (let q = 0; q <= j; q++) {
+                  const st = tsk.states[q];
 
-        if (index >= 0) {
-          if (tsk.isSumStates) {
-            for (let i = 0; i < tsk.states.length; i++) {
-              const el = tsk.states[i];
-              if (i <= index) {
-                el.isActive = true;
+                  plus.push(st.name);
+                }
+
+                tsk.statesDescr.push(plus.join('; '));
               }
               else {
-                el.isActive = false;
+                tsk.statesDescr.push(tsk.states[j].name);
+              }
+            }
+          }
+
+          let index = nms[Math.floor(tsk.value)] - 1;
+          if (!this.pers.isTES) {
+            index = nms[Math.floor(tsk.value)] - 1;
+          }
+          else {
+            index = nms[Math.floor(1 + tsk.tesValue)] - 1;
+          }
+
+          if (index >= 0) {
+            if (tsk.isSumStates) {
+              for (let i = 0; i < tsk.states.length; i++) {
+                const el = tsk.states[i];
+                if (i <= index) {
+                  el.isActive = true;
+                }
+                else {
+                  el.isActive = false;
+                }
               }
             }
           }
         }
+
       }
       // Таймер
       if (tsk.aimTimer != 0) {
@@ -2796,6 +2842,7 @@ export class PersService {
 
       tsk.curLvlDescr = Math.floor(tsk.value) + "" + ' (' + plusState.trim() + ')';
       tsk.curLvlDescr2 = ' (' + plusState.trim() + ')';
+      tsk.curLvlDescr3 = plusState.trim();
     }
     else {
       tsk.statesDescr = [];

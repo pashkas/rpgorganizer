@@ -2,8 +2,7 @@
   <div class="d-flex w-100 justify-content-end px-2 py-2">
     <!-- Назад -->
     <button mat-icon-button (click)="goBack()" class="mx-2">
-      <img src="assets/icons/left.png" class="img-fluid"
-        [ngStyle]="{'object-fit': 'contain', 'height':'2.5em'}">
+      <img src="assets/icons/left.png" class="img-fluid" [ngStyle]="{'object-fit': 'contain', 'height':'2.5em'}">
     </button>
     <!-- Редактировать -->
     <button mat-icon-button (click)="saveData()">
@@ -87,7 +86,8 @@
 
     <!-- Требования предыдущих -->
     <div class="pt-2 text-center" *ngIf="prevQwest">
-      <a class="text-danger" [routerLink]="['/pers/qwest', prevQwest.id]">{{'Квест "'+prevQwest.name+'" должен быть выполнен!'}}</a>
+      <a class="text-danger"
+        [routerLink]="['/pers/qwest', prevQwest.id]">{{'Квест "'+prevQwest.name+'" должен быть выполнен!'}}</a>
     </div>
 
     <div *ngIf="qwest.tasks.length>0" class="pt-2">
@@ -199,7 +199,7 @@
       </button>
     </div>
     <!-- Список наград -->
-    <mat-list>
+    <mat-list *ngIf="qwest.rewards.length > 0">
       <div mat-list-item *ngFor="let rev of qwest.rewards; let i = index">
         <div class="d-flex">
           <div class="flex-grow-1 align-self-center">
@@ -213,6 +213,30 @@
                 <img src="assets/icons/edit.png" class="img-fluid">
               </button>
               <button class="icon-small" (click)="delReward(rev.id)" mat-icon-button>
+                <img src="assets/icons/del.png" class="img-fluid">
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </mat-list>
+    <!-- Навык -->
+    <div fxLayout="row" fxLayoutAlign="space-between center" class="pt-2">
+      <h5>Навык:</h5>
+      <button (click)="setAbil()" class="icon-small" mat-icon-button *ngIf="!qwest.abilitiId">
+        <img src="assets/icons/create.png" class="img-fluid">
+      </button>
+    </div>
+    <!-- Связанный навык -->
+    <mat-list>
+      <div mat-list-item *ngIf="qwestAbiliti">
+        <div class="d-flex">
+          <div class="flex-grow-1 align-self-center">
+            {{qwestAbiliti.name}}
+          </div>
+          <div class="d-flex">
+            <div class="btn-group btn-group-sm" role="group" aria-label="Действия">
+              <button class="icon-small" mat-icon-button (click)="delAb()">
                 <img src="assets/icons/del.png" class="img-fluid">
               </button>
             </div>

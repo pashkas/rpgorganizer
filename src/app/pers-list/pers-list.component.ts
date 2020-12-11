@@ -256,6 +256,7 @@ export class PersListComponent implements OnInit {
             this.srv.GetRndEnamy(tsk);
             tsk.value = 0;
             tsk.tesValue = 0;
+            tsk.refreshCounter = 0;
             tsk.date = new Date();
             this.srv.GetRndEnamy(tsk);
             tsk.states.forEach(st => {

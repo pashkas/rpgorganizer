@@ -235,6 +235,15 @@
         </span>
       </ng-container>
       <ng-container *ngIf="tsk.requrense != 'нет'">
+        <span (click)="tsk.isStateRefresh=!tsk.isStateRefresh"
+          [ngClass]="{'text-dark':!tsk.isStateRefresh, 'badge-unchecked': !tsk.isStateRefresh, 'primary-color-dark': tsk.isStateRefresh}"
+          class="badge pointer">
+          <div style="min-width: 70px;">
+            ⟳
+          </div>
+        </span>
+      </ng-container>
+      <ng-container *ngIf="tsk.requrense != 'нет'">
         <span (click)="tsk.isStateInTitle=!tsk.isStateInTitle"
           [ngClass]="{'text-dark':!tsk.isStateInTitle, 'badge-unchecked': !tsk.isStateInTitle, 'primary-color-dark': tsk.isStateInTitle}"
           class="badge pointer">

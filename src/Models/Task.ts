@@ -50,6 +50,8 @@ export class Task implements IImg {
     plusName: string;
     plusToNames: plusToName[] = [];
     isStatePlusTitle: boolean = true;
+    isStateRefresh: boolean = false;
+    refreshCounter: number = 0;
     isStateInTitle: boolean = false;
     progressValue: number = 0;
     requrense: string = "будни";
@@ -76,6 +78,7 @@ export class Task implements IImg {
     roundVal: number = 0;
     plusStateMax: string;
     timeVal: number;
+  curLvlDescr3: string;
 
     /**
      * Получить формулу для роста/понижения значения задачи.
