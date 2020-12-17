@@ -6,10 +6,10 @@
     </button>
     <!-- Редактировать -->
     <button mat-icon-button (click)="saveData()">
-      <img *ngIf="!isEditMode" src="assets/icons/edit.png" class="img-fluid"
+      <img src="assets/icons/edit.png" class="img-fluid"
         [ngStyle]="{'object-fit': 'contain', 'height':'3em'}">
-      <img *ngIf="isEditMode" src="assets/icons/create.png" class="img-fluid"
-        [ngStyle]="{'object-fit': 'contain', 'height':'3em'}">
+      <!-- <img *ngIf="isEditMode" src="assets/icons/create.png" class="img-fluid"
+        [ngStyle]="{'object-fit': 'contain', 'height':'3em'}"> -->
     </button>
   </div>
 </nav>

@@ -1,16 +1,15 @@
 <nav *ngIf="this.srv.pers && !this.srv.isDialogOpen" class="fixed-bottom">
   <div class="d-flex w-100 justify-content-end px-2 py-2">
     <!-- Назад -->
-    <button  mat-icon-button (click)="goBack()" class="mx-2">
-      <img src="assets/icons/left.png" class="img-fluid"
-        [ngStyle]="{'object-fit': 'contain', 'height':'2.5em'}">
+    <button mat-icon-button (click)="goBack()" class="mx-2">
+      <img src="assets/icons/left.png" class="img-fluid" [ngStyle]="{'object-fit': 'contain', 'height':'2.5em'}">
     </button>
     <!-- Редактировать -->
     <button mat-icon-button (click)="saveData()">
-      <img *ngIf="!isEditMode" src="assets/icons/edit.png" class="img-fluid"
+      <img src="assets/icons/edit.png" class="img-fluid"
         [ngStyle]="{'object-fit': 'contain', 'height':'3em'}">
-      <img *ngIf="isEditMode" src="assets/icons/create.png" class="img-fluid"
-        [ngStyle]="{'object-fit': 'contain', 'height':'3em'}">
+      <!-- <img *ngIf="isEditMode" src="assets/icons/create.png" class="img-fluid"
+        [ngStyle]="{'object-fit': 'contain', 'height':'3em'}"> -->
     </button>
   </div>
 </nav>
@@ -206,18 +205,44 @@
         <mat-form-field>
           <input matInput autocomplete="off" placeholder="Раз" [(ngModel)]="tsk.aimCounter" name="tsk.aimCounter">
         </mat-form-field>
-        <span (click)="setSumStates()"
-          [ngClass]="{'text-dark':!tsk.isSumStates, 'badge-unchecked': !tsk.isSumStates, 'primary-color-dark': tsk.isSumStates}"
-          class="badge pointer">
-          ∑ состояния
-        </span>
         <!-- <span (click)="setIsHard()"
           [ngClass]="{'text-dark':!tsk.isHard, 'badge-unchecked': !tsk.isHard, 'primary-color-dark': tsk.isHard}"
           class="badge p-2 mb-1 pointer">
           cложный
         </span> -->
+
+        <span (click)="setSumStates()"
+          [ngClass]="{'text-dark':!tsk.isSumStates, 'badge-unchecked': !tsk.isSumStates, 'primary-color-dark': tsk.isSumStates}"
+          class="badge pointer" style="min-width: 40px;">
+          ∑
+        </span>
+        <ng-container *ngIf="tsk.requrense != 'нет'">
+          <span (click)="tsk.isStatePlusTitle=!tsk.isStatePlusTitle"
+            [ngClass]="{'text-dark':!tsk.isStatePlusTitle, 'badge-unchecked': !tsk.isStatePlusTitle, 'primary-color-dark': tsk.isStatePlusTitle}"
+            class="badge pointer">
+            название
+          </span>
+        </ng-container>
+        <ng-container *ngIf="tsk.requrense != 'нет'">
+          <span (click)="tsk.isStateRefresh=!tsk.isStateRefresh"
+            [ngClass]="{'text-dark':!tsk.isStateRefresh, 'badge-unchecked': !tsk.isStateRefresh, 'primary-color-dark': tsk.isStateRefresh}"
+            class="badge pointer">
+            <div style="min-width: 40px;">
+              ⟳
+            </div>
+          </span>
+        </ng-container>
+        <ng-container *ngIf="tsk.requrense != 'нет'">
+          <span (click)="tsk.isStateInTitle=!tsk.isStateInTitle"
+            [ngClass]="{'text-dark':!tsk.isStateInTitle, 'badge-unchecked': !tsk.isStateInTitle, 'primary-color-dark': tsk.isStateInTitle}"
+            class="badge pointer">
+            в заголовок
+          </span>
+        </ng-container>
       </div>
     </ng-container>
+
+
     <!-- Состояния -->
     <!-- <h5>Состояния:</h5> -->
     <div fxLayout="row" fxLayoutAlign="space-between center">
@@ -227,34 +252,11 @@
       <ng-container *ngIf="tsk.requrense === 'нет'">
         <h5>Подзадачи:</h5>
       </ng-container>
-      <ng-container *ngIf="tsk.requrense != 'нет'">
-        <span (click)="tsk.isStatePlusTitle=!tsk.isStatePlusTitle"
-          [ngClass]="{'text-dark':!tsk.isStatePlusTitle, 'badge-unchecked': !tsk.isStatePlusTitle, 'primary-color-dark': tsk.isStatePlusTitle}"
-          class="badge pointer">
-          + название
-        </span>
-      </ng-container>
-      <ng-container *ngIf="tsk.requrense != 'нет'">
-        <span (click)="tsk.isStateRefresh=!tsk.isStateRefresh"
-          [ngClass]="{'text-dark':!tsk.isStateRefresh, 'badge-unchecked': !tsk.isStateRefresh, 'primary-color-dark': tsk.isStateRefresh}"
-          class="badge pointer">
-          <div style="min-width: 70px;">
-            ⟳
-          </div>
-        </span>
-      </ng-container>
-      <ng-container *ngIf="tsk.requrense != 'нет'">
-        <span (click)="tsk.isStateInTitle=!tsk.isStateInTitle"
-          [ngClass]="{'text-dark':!tsk.isStateInTitle, 'badge-unchecked': !tsk.isStateInTitle, 'primary-color-dark': tsk.isStateInTitle}"
-          class="badge pointer">
-          в заголовок
-        </span>
-      </ng-container>
-
       <button class="icon-small" (click)="addStateToTask();" mat-icon-button>
         <img src="assets/icons/create.png" class="img-fluid">
       </button>
     </div>
+
     <mat-list (cdkDropListDropped)="drop($event)" cdkDropList id="states" *ngIf="tsk.states.length > 0">
       <div mat-list-item cdkDrag *ngFor="let st of tsk.states; let i = index">
         <div class="d-flex">

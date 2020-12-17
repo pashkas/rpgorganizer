@@ -107,14 +107,14 @@
     <!-- Кнопки -->
     <div fxLayout="row" fxLayoutAlign="end center" fxLayoutGap="0.6em" class="w-100 h-100 px-2"
       *ngIf="isSort && srv.pers.sellectedView != 'квесты'">
-      <button (click)="editCansel()" mat-icon-button>
+      <button (click)="editCansel()" mat-icon-button >
         <img src="assets/icons/left.png" class="img-fluid"
-        [ngStyle]="{'object-fit': 'contain', 'height':'3.3em'}">
+        [ngStyle]="{'object-fit': 'contain', 'height':'3em'}">
       </button>
 
-      <button (click)="setSort()" mat-icon-button>
+      <button (click)="setSort()" mat-icon-button style="width: 47px !important;">
         <img src="assets/icons/edit.png" class="img-fluid"
-        [ngStyle]="{'object-fit': 'contain', 'height':'3.3em'}">
+        [ngStyle]="{'object-fit': 'contain', 'height':'3em'}">
       </button>
     </div>
 
@@ -125,13 +125,13 @@
         [ngStyle]="{'object-fit': 'contain', 'height':'3em'}">
       </button>
 
-      <button (click)="setSort()" mat-icon-button>
-        <img src="assets/icons/edit.png" class="img-fluid"
-        [ngStyle]="{'object-fit': 'contain', 'height':'3.4em'}">
-      </button>
-
       <button (click)="addToQwest()" mat-icon-button>
         <img src="assets/icons/create.png" class="img-fluid"
+        [ngStyle]="{'object-fit': 'contain', 'height':'3em'}">
+      </button>
+
+      <button (click)="setSort()" mat-icon-button style="width: 47px !important;">
+        <img src="assets/icons/edit.png" class="img-fluid"
         [ngStyle]="{'object-fit': 'contain', 'height':'3em'}">
       </button>
     </div>

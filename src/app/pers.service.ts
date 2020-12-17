@@ -214,7 +214,7 @@ export class PersService {
   * Добавить новый квест.
   * @param newQwest Название квеста.
   */
-  addQwest(newQwest: string, parrent?: any, img?: string): any {
+  addQwest(newQwest: string, parrent?: any, img?: string, abId?: any): any {
     let qwest = new Qwest();
     qwest.name = newQwest;
     if (parrent) {
@@ -222,6 +222,9 @@ export class PersService {
     }
     if (img) {
       qwest.image = img;
+    }
+    if (abId) {
+      qwest.abilitiId = abId;
     }
 
     this.pers.qwests.push(qwest);
@@ -494,6 +497,12 @@ export class PersService {
         return n.id != id
       });
     });
+
+    for (const qw of this.pers.qwests) {
+      if (qw.abilitiId == id) {
+        qw.abilitiId = null;
+      }
+    }
   }
 
   /**
@@ -1047,6 +1056,16 @@ export class PersService {
       }
       let abMax = 0, abCur = 0;
 
+      let qwestMap = this.pers.qwests.reduce((acc, el)=>{
+        if (el.abilitiId) {
+          if (!acc[el.abilitiId]) {
+            acc[el.abilitiId] = [];
+          }
+          acc[el.abilitiId].push({qwId: el.id, qwName: el.name});
+        }
+        return acc;
+      },{});
+
       cha.abilities.forEach(ab => {
         let tskMax = 0;
         let tskCur = 0;
@@ -1081,6 +1100,13 @@ export class PersService {
 
           if (tsk.descr) {
             tsk.plusToNames.push(new plusToName(tsk.descr, '', ''));
+          }
+
+          const qwLink = qwestMap[ab.id];
+          if (qwLink) {
+            for (const q of qwLink) {
+              tsk.plusToNames.push(new plusToName(q.qwName, '', ''));
+            }
           }
 
           // Для показа опыта за задачу
@@ -1210,8 +1236,8 @@ export class PersService {
               }
             }
           }
+          tsk.plusToNames.push(new plusToName(abName, '', ''));
         }
-        tsk.plusToNames.push(new plusToName(abName, '', ''));
 
         if (tsk.descr) {
           tsk.plusToNames.push(new plusToName(tsk.descr, '', ''));
@@ -1813,7 +1839,7 @@ export class PersService {
         if (task.refreshCounter == null || task.refreshCounter == undefined) {
           task.refreshCounter = 0;
         }
-        else{
+        else {
           task.refreshCounter++;
         }
       }
@@ -2339,11 +2365,21 @@ export class PersService {
     let stateProgr;
     //stT.tittle = tsk.name + ': ' + st.name;
 
+    let plusName = tsk.curLvlDescr3;
+    if (tsk.isSumStates) {
+      plusName = st.name;
+      let pattern = /\d+[⧖|✓].*/;
+      let plusTimerOrCounter = pattern.exec(tsk.curLvlDescr3);
+      if (plusTimerOrCounter) {
+        plusName += ' ' + plusTimerOrCounter;
+      }
+    }
+
     if (tsk.isStatePlusTitle) {
-      stT.tittle = tsk.name + ': ' + tsk.curLvlDescr3;
+      stT.tittle = tsk.name + ': ' + plusName;
     }
     else {
-      stT.tittle = tsk.curLvlDescr3;
+      stT.tittle = plusName;
     }
 
     if (!isAll) {
