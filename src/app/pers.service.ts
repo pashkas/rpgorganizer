@@ -136,47 +136,48 @@ export class PersService {
 
   abSorter(): (a: Ability, b: Ability) => number {
     return (a, b) => {
-      // По требованиям
-      if (a.isNotDoneReqvirements != b.isNotDoneReqvirements) {
-        return (+a.isNotDoneReqvirements - +b.isNotDoneReqvirements);
-      }
+      return (a.value - b.value);
+      //   // По требованиям
+      //   if (a.isNotDoneReqvirements != b.isNotDoneReqvirements) {
+      //     return (+a.isNotDoneReqvirements - +b.isNotDoneReqvirements);
+      //   }
 
-      if (!this.pers.isTES) {
-        let aHasSameLvl = 0;
-        if (a.HasSameAbLvl) {
-          aHasSameLvl = 1;
-        }
-        let bHasSameLvl = 0;
-        if (b.HasSameAbLvl) {
-          bHasSameLvl = 1;
-        }
-        if (this.pers.IsAbUp) {
-          // Если есть с такой же сложностью навыка
-          if (aHasSameLvl != bHasSameLvl) {
-            return -(aHasSameLvl - bHasSameLvl);
-          }
+      //   if (!this.pers.isTES) {
+      //     let aHasSameLvl = 0;
+      //     if (a.HasSameAbLvl) {
+      //       aHasSameLvl = 1;
+      //     }
+      //     let bHasSameLvl = 0;
+      //     if (b.HasSameAbLvl) {
+      //       bHasSameLvl = 1;
+      //     }
+      //     if (this.pers.IsAbUp) {
+      //       // Если есть с такой же сложностью навыка
+      //       if (aHasSameLvl != bHasSameLvl) {
+      //         return -(aHasSameLvl - bHasSameLvl);
+      //       }
 
-          // По возможности открытия
-          let aIsMax = a.value > 9;
-          let bIsMax = b.value > 9;
+      //       // По возможности открытия
+      //       let aIsMax = a.value > 9;
+      //       let bIsMax = b.value > 9;
 
-          if (aIsMax != bIsMax) {
-            return (+aIsMax - +bIsMax);
-          }
-        }
-      }
+      //       if (aIsMax != bIsMax) {
+      //         return (+aIsMax - +bIsMax);
+      //       }
+      //     }
+      //   }
 
-      // По открытости
-      // if (a.isOpen != b.isOpen) {
-      //   return -(+a.isOpen - +b.isOpen);
-      // }
+      //   // По открытости
+      //   // if (a.isOpen != b.isOpen) {
+      //   //   return -(+a.isOpen - +b.isOpen);
+      //   // }
 
-      // По значению
-      if (a.value != b.value) {
-        return -(a.value - b.value);
-      }
+      //   // По значению
+      //   if (a.value != b.value) {
+      //     return -(a.value - b.value);
+      //   }
 
-      return a.name.localeCompare(b.name);
+      //   return a.name.localeCompare(b.name);
     };
   }
 
@@ -1056,15 +1057,15 @@ export class PersService {
       }
       let abMax = 0, abCur = 0;
 
-      let qwestMap = this.pers.qwests.reduce((acc, el)=>{
+      let qwestMap = this.pers.qwests.reduce((acc, el) => {
         if (el.abilitiId) {
           if (!acc[el.abilitiId]) {
             acc[el.abilitiId] = [];
           }
-          acc[el.abilitiId].push({qwId: el.id, qwName: el.name});
+          acc[el.abilitiId].push({ qwId: el.id, qwName: el.name });
         }
         return acc;
-      },{});
+      }, {});
 
       cha.abilities.forEach(ab => {
         let tskMax = 0;
@@ -1313,32 +1314,33 @@ export class PersService {
     // Сортировка характеристик
     this.pers.characteristics
       = this.pers.characteristics.sort((a, b) => {
-        let aHasSameLvl = 0;
-        if (a.HasSameAbLvl) {
-          aHasSameLvl = 1;
-        }
-        let bHasSameLvl = 0;
-        if (b.HasSameAbLvl) {
-          bHasSameLvl = 1;
-        }
+        return (a.value - b.value);
+        // let aHasSameLvl = 0;
+        // if (a.HasSameAbLvl) {
+        //   aHasSameLvl = 1;
+        // }
+        // let bHasSameLvl = 0;
+        // if (b.HasSameAbLvl) {
+        //   bHasSameLvl = 1;
+        // }
 
-        if (this.pers.IsAbUp) {
-          // Если есть с такой же сложностью навыка
-          if (aHasSameLvl != bHasSameLvl) {
-            return -(aHasSameLvl - bHasSameLvl);
-          }
-          // По значению по возрастанию
-          if (a.value != b.value) {
-            return -(a.value - b.value);
-          }
-        } else {
-          // По значению по убыванию
-          if (a.value != b.value) {
-            return -(a.value - b.value);
-          }
-        }
+        // if (this.pers.IsAbUp) {
+        //   // Если есть с такой же сложностью навыка
+        //   if (aHasSameLvl != bHasSameLvl) {
+        //     return -(aHasSameLvl - bHasSameLvl);
+        //   }
+        //   // По значению по возрастанию
+        //   if (a.value != b.value) {
+        //     return -(a.value - b.value);
+        //   }
+        // } else {
+        //   // По значению по убыванию
+        //   if (a.value != b.value) {
+        //     return -(a.value - b.value);
+        //   }
+        // }
 
-        return 0;
+        // return 0;
       });
     // Сортировка навыков
     this.pers.characteristics.forEach(cha => {
@@ -2366,6 +2368,9 @@ export class PersService {
     //stT.tittle = tsk.name + ': ' + st.name;
 
     let plusName = tsk.curLvlDescr3;
+    if (tsk.requrense == 'нет') {
+      plusName = st.name;
+    }
     if (tsk.isSumStates) {
       plusName = st.name;
       let pattern = /\d+[⧖|✓].*/;
