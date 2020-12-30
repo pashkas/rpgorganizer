@@ -380,7 +380,7 @@ export class MainWindowComponent implements OnInit {
               this.srv.setUser(data);
             }
           }
-          else{
+          else {
             this.srv.setPers(data);
           }
         });
@@ -519,6 +519,22 @@ export class MainWindowComponent implements OnInit {
             this.srv.pers.tasks = qwest.tasks.filter(n => !n.isDone);
           }
         });
+    }
+  }
+
+  openPlusType(linkId, linkType) {
+    if (linkType == 'qwestTask') {
+      this.srv.setView('квесты');
+      this.setGlobalTaskView(false);
+      this.srv.pers.currentQwestId = linkId;
+      this.srv.getQwestTasks();
+    }
+    else if (linkType == 'abTask') {
+      this.srv.pers.currentQwestId = null;
+      this.srv.setView('навыки');
+      this.setGlobalTaskView(false);
+      let idx = this.srv.pers.tasks.findIndex(n => n.plusToNames.filter(q=>q.linkId==linkId).length>0);
+      this.srv.setCurInd(idx);
     }
   }
 

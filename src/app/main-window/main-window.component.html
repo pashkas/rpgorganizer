@@ -36,14 +36,12 @@
                 </ng-template>
               </div>
             </div>
-
             <button mat-button cdkDragHandle [hidden]="!isSort">
               <i class="fa fa-lg fa-expand-arrows-alt"></i>
             </button>
           </div>
         </div>
       </ng-container>
-
     </mat-list>
     <div></div>
   </ng-container>
@@ -80,17 +78,20 @@
         *ngIf="this.srv.pers.currentTask.plusToNames&&this.srv.pers.currentTask.plusToNames.length>0;">
         <ng-container *ngFor="let pl of this.srv.pers.currentTask.plusToNames; let i=index;">
           <ng-container *ngIf="i>0"> | </ng-container>
+         <ng-container *ngIf="pl.linkType; else noLinkType">
+          <a class="text-secondary" (click)="openPlusType(pl.linkId, pl.linkType)">{{pl.name}}</a>
+         </ng-container>
+         <ng-template #noLinkType>
           <ng-container *ngIf="pl.linkName; else elseTemplate">
             <a class="text-secondary" [routerLink]="[pl.linkName, pl.linkId]">{{pl.name}}</a>
           </ng-container>
           <ng-template #elseTemplate>
             <span class="text-secondary">{{pl.name}}</span>
           </ng-template>
+         </ng-template>
         </ng-container>
       </small>
-
     </div>
-
   </ng-container>
 
   <app-progress-bar-num

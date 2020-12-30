@@ -37,6 +37,7 @@ export class PersService {
   pers: Pers;
   // Пользователь
   user: FirebaseUserModel;
+  absMap: any;
 
   constructor(public db: AngularFirestore, private router: Router, private changes: PerschangesService, private enmSrv: EnamiesService) {
     this.createOnline$().subscribe(isOnline => this.isOnline = isOnline);
@@ -794,6 +795,12 @@ export class PersService {
     }
     // Задачи квестов
     else {
+      this.absMap = this.pers.characteristics.reduce((a, b) => a.concat(b.abilities), []).reduce((acc, el) => {
+        if (!acc[el.id]) {
+          acc[el.id] = el;
+        }
+        return acc;
+      }, {});
       if (!this.pers.isGlobalView) {
         this.getQwestTasks();
         tasks = this.pers.tasks;
@@ -801,6 +808,10 @@ export class PersService {
       else {
         this.pers.qwests.forEach(qw => {
           if (qw.parrentId) {
+            return;
+          }
+          // Если связанный навык не активен, либо задачи на сегодня выполнены.
+          if (!this.checkQwestAb(qw)) {
             return;
           }
           for (let index = 0; index < qw.tasks.length; index++) {
@@ -833,10 +844,33 @@ export class PersService {
     return tasks;
   }
 
+  checkQwestAb(qw: Qwest): boolean {
+    if (qw.abilitiId) {
+      let ab: Ability = this.absMap[qw.abilitiId];
+      if (ab) {
+        if (ab.value >= 1 && !ab.isNotDoneReqvirements) {
+          if (ab.tasks && ab.tasks.length > 0) {
+            if (!this.checkTask(ab.tasks[0])) {
+              return false;
+            }
+          }
+          else {
+            return false;
+          }
+        }
+        else {
+          return false;
+        }
+      }
+    }
+
+    return true;
+  }
+
   getQwestTasks(isSort = false) {
     let qwest = this.pers.qwests.find(n => n.id == this.pers.currentQwestId);
     if (!qwest && this.pers.qwests.length > 0) {
-      qwest = this.pers.qwests.find(n => n.progressValue < 100);
+      qwest = this.pers.qwests.find(n => n.tasks.length > 0 && n.progressValue < 100 && this.checkQwestAb(n));
     }
     if (qwest) {
       let tasks: Task[] = [];
@@ -1096,17 +1130,17 @@ export class PersService {
             // ab.isOpen = true;
           }
           if (!this.pers.isNoAbs) {
-            tsk.plusToNames.push(new plusToName(cha.name, cha.id, '/pers/characteristic'));
+            tsk.plusToNames.push(new plusToName(cha.name, cha.id, '/pers/characteristic', ''));
           }
 
           if (tsk.descr) {
-            tsk.plusToNames.push(new plusToName(tsk.descr, '', ''));
+            tsk.plusToNames.push(new plusToName(tsk.descr, '', '', ''));
           }
 
           const qwLink = qwestMap[ab.id];
           if (qwLink) {
             for (const q of qwLink) {
-              tsk.plusToNames.push(new plusToName(q.qwName, '', ''));
+              tsk.plusToNames.push(new plusToName('🔗 ' + q.qwName, q.qwId, '', 'qwestTask'));
             }
           }
 
@@ -1114,7 +1148,7 @@ export class PersService {
           if (!this.pers.isTES && tsk.requrense != 'нет') {
             let exp = this.getTaskChangesExp(tsk, true) * 10.0;
             exp = Math.floor(exp);
-            tsk.plusToNames.push(new plusToName('+' + exp + ' exp', null, null));
+            tsk.plusToNames.push(new plusToName('+' + exp + ' exp', null, null, ''));
           }
 
           this.setTaskValueAndProgress(tsk);
@@ -1225,23 +1259,25 @@ export class PersService {
         tsk.tittle = tsk.name;
         tsk.plusName = qw.name;
 
-        tsk.plusToNames.push(new plusToName(qw.name, qw.id, '/pers/qwest'));
+        tsk.plusToNames.push(new plusToName(qw.name, qw.id, '/pers/qwest', ''));
 
         let abName = '';
+        let abId;
         if (qw.abilitiId) {
           for (const ch of this.pers.characteristics) {
             for (const ab of ch.abilities) {
               if (ab.id == qw.abilitiId) {
                 abName = ab.name;
+                abId = ab.id;
                 break;
               }
             }
           }
-          tsk.plusToNames.push(new plusToName(abName, '', ''));
+          tsk.plusToNames.push(new plusToName('🔗 ' + abName, qw.id, '', 'abTask'));
         }
 
         if (tsk.descr) {
-          tsk.plusToNames.push(new plusToName(tsk.descr, '', ''));
+          tsk.plusToNames.push(new plusToName(tsk.descr, '', '', ''));
         }
         if (tsk.states.length > 0) {
           tsk.states = tsk.states.sort((a, b) => {
@@ -2417,7 +2453,7 @@ export class PersService {
     stT.plusToNames = [...tsk.plusToNames];
 
     if (stateProgr) {
-      stT.plusToNames.unshift(new plusToName(stateProgr, null, null));
+      stT.plusToNames.unshift(new plusToName(stateProgr, null, null, ''));
     }
 
     return stT;
