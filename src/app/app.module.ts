@@ -26,6 +26,7 @@ import { ImageComponentComponent } from './image-component/image-component.compo
 import { RestComponent } from './rest/rest.component';
 import { RouteReuseStrategy } from '@angular/router';
 import { RouteReuseService } from './route-reuse.service';
+import {MatDividerModule} from '@angular/material/divider';
 
 registerLocaleData(localeRu, 'ru');
 
@@ -44,6 +45,7 @@ registerLocaleData(localeRu, 'ru');
     RestComponent,
   ],
   imports: [
+    MatDividerModule,
     MatProgressSpinnerModule,
     SharedModule,
     BrowserModule,

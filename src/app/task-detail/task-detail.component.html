@@ -6,8 +6,7 @@
     </button>
     <!-- Редактировать -->
     <button mat-icon-button (click)="saveData()">
-      <img src="assets/icons/edit.png" class="img-fluid"
-        [ngStyle]="{'object-fit': 'contain', 'height':'3em'}">
+      <img src="assets/icons/edit.png" class="img-fluid" [ngStyle]="{'object-fit': 'contain', 'height':'3em'}">
       <!-- <img *ngIf="isEditMode" src="assets/icons/create.png" class="img-fluid"
         [ngStyle]="{'object-fit': 'contain', 'height':'3em'}"> -->
     </button>
@@ -151,7 +150,7 @@
     <!-- Дата, повторение -->
     <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="8px">
       <mat-form-field>
-        <input matInput autocomplete="off" placeholder="Дата" [ngModel]="tsk.date" name="tsk.date"
+        <input [readonly]="true" matInput autocomplete="off" placeholder="Дата" [ngModel]="tsk.date" name="tsk.date"
           (ngModelChange)="onTskDateChange($event)" [owlDateTimeTrigger]="dt1" [owlDateTime]="dt1">
         <owl-date-time [pickerType]="'calendar'" #dt1></owl-date-time>
       </mat-form-field>
@@ -196,6 +195,24 @@
       <input matInput autocomplete="off" placeholder="Описание" [(ngModel)]="tsk.descr" name="tsk.descr">
     </mat-form-field>
 
+    <!-- Сложность -->
+    <ng-container *ngIf="tsk.requrense != 'нет'">
+      <div  fxLayout="row" fxLayoutAlign="space-between center" class="pb-3">
+        <mat-chip-list [selectable]="true">
+          <mat-chip (click)="tsk.hardnes=1" [selected]="tsk.hardnes==1" color="accent">норм</mat-chip>
+          <mat-chip (click)="tsk.hardnes=2" [selected]="tsk.hardnes==2" color="accent">сложно</mat-chip>
+          <mat-chip (click)="tsk.hardnes=3" [selected]="tsk.hardnes==3" color="accent">оч. сложно</mat-chip>
+        </mat-chip-list>
+
+        <mat-chip-list [multiple]="true" [selectable]="true">
+          <mat-chip color="accent" (click)="setSumStates()" [selected]="tsk.isSumStates">∑</mat-chip>
+          <mat-chip [selected]="tsk.isStatePlusTitle" color="accent" (click)="tsk.isStatePlusTitle=!tsk.isStatePlusTitle">название</mat-chip>
+          <mat-chip [selected]="tsk.isStateRefresh" color="accent" (click)="tsk.isStateRefresh=!tsk.isStateRefresh">⟳</mat-chip>
+          <mat-chip [selected]="tsk.isStateInTitle" color="accent" (click)="tsk.isStateInTitle=!tsk.isStateInTitle">заголовок</mat-chip>
+        </mat-chip-list>
+      </div>
+    </ng-container>
+
     <ng-container *ngIf="tsk.requrense != 'нет'">
       <!-- Таймер, счетчик -->
       <div fxLayoutGap="8px" fxLayout="row" fxLayoutAlign="space-between center">
@@ -205,40 +222,6 @@
         <mat-form-field>
           <input matInput autocomplete="off" placeholder="Раз" [(ngModel)]="tsk.aimCounter" name="tsk.aimCounter">
         </mat-form-field>
-        <!-- <span (click)="setIsHard()"
-          [ngClass]="{'text-dark':!tsk.isHard, 'badge-unchecked': !tsk.isHard, 'primary-color-dark': tsk.isHard}"
-          class="badge p-2 mb-1 pointer">
-          cложный
-        </span> -->
-
-        <span (click)="setSumStates()"
-          [ngClass]="{'text-dark':!tsk.isSumStates, 'badge-unchecked': !tsk.isSumStates, 'primary-color-dark': tsk.isSumStates}"
-          class="badge pointer" style="min-width: 40px;">
-          ∑
-        </span>
-        <ng-container *ngIf="tsk.requrense != 'нет'">
-          <span (click)="tsk.isStatePlusTitle=!tsk.isStatePlusTitle"
-            [ngClass]="{'text-dark':!tsk.isStatePlusTitle, 'badge-unchecked': !tsk.isStatePlusTitle, 'primary-color-dark': tsk.isStatePlusTitle}"
-            class="badge pointer">
-            название
-          </span>
-        </ng-container>
-        <ng-container *ngIf="tsk.requrense != 'нет'">
-          <span (click)="tsk.isStateRefresh=!tsk.isStateRefresh"
-            [ngClass]="{'text-dark':!tsk.isStateRefresh, 'badge-unchecked': !tsk.isStateRefresh, 'primary-color-dark': tsk.isStateRefresh}"
-            class="badge pointer">
-            <div style="min-width: 40px;">
-              ⟳
-            </div>
-          </span>
-        </ng-container>
-        <ng-container *ngIf="tsk.requrense != 'нет'">
-          <span (click)="tsk.isStateInTitle=!tsk.isStateInTitle"
-            [ngClass]="{'text-dark':!tsk.isStateInTitle, 'badge-unchecked': !tsk.isStateInTitle, 'primary-color-dark': tsk.isStateInTitle}"
-            class="badge pointer">
-            в заголовок
-          </span>
-        </ng-container>
       </div>
     </ng-container>
 

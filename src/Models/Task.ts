@@ -19,15 +19,15 @@ export class Task implements IImg {
     ];
 
     static weekDays: string[] =
-    [
-        "пн",
-        "вт",
-        "ср",
-        "чт",
-        "пт",
-        "сб",
-        "вс",
-    ];
+        [
+            "пн",
+            "вт",
+            "ср",
+            "чт",
+            "пт",
+            "сб",
+            "вс",
+        ];
 
     tskWeekDays: string[] = []; //[...Task.weekDays];
 
@@ -36,6 +36,8 @@ export class Task implements IImg {
 
     curStateDescrInd: number;
     statesDescr: string[] = [];
+
+    hardnes: number = 1;
 
     date: Date = this.getNowDate();
     descr: string = "";
@@ -78,7 +80,15 @@ export class Task implements IImg {
     roundVal: number = 0;
     plusStateMax: string;
     timeVal: number;
-  curLvlDescr3: string;
+    curLvlDescr3: string;
+
+    static getHardness(tsk: Task): number {
+        if (!tsk.hardnes) {
+            tsk.hardnes = 1;
+        }
+        
+        return tsk.hardnes;
+    }
 
     /**
      * Получить формулу для роста/понижения значения задачи.

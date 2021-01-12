@@ -111,7 +111,7 @@ button:focus {
     width: auto !important;
 } */
 
-.par-dialog .mat-dialog-container{
+.par-dialog .mat-dialog-container {
     width: 100% !important;
 }
 
@@ -132,8 +132,8 @@ button:focus {
 
 .my-dialog .mat-dialog-container {
     position: absolute;
-    left:0;
-    right:0;
+    left: 0;
+    right: 0;
     top: 10px;
     height: auto;
     margin-left: auto;
@@ -142,15 +142,14 @@ button:focus {
     width: calc(100% - 20px);
 }
 
-.my-big{
-}
+.my-big {}
 
 .my-big .mat-dialog-container {
     width: 95vw;
     max-width: 900px;
 }
 
-h5{
+h5 {
     color: gray;
     margin: 0px;
     font-weight: normal;
@@ -215,4 +214,9 @@ body {
 
 .panel-override {
     max-height: 40vh !important;
+}
+
+mat-chip {
+    font-size: small !important;
+    padding: 7px !important;
 }

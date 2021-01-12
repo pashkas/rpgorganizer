@@ -164,6 +164,9 @@ export class TaskDetailComponent implements OnInit {
         for (const ab of cha.abilities) {
           for (const tsk of ab.tasks) {
             if (tsk.id === id) {
+              if (!tsk.hardnes) {
+                tsk.hardnes = 1;
+              }
               this.tsk = tsk;
               this.tskAbility = ab;
 

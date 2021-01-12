@@ -32,6 +32,7 @@ import {MatSlideToggleModule} from '@angular/material/slide-toggle';
 import { ChangeCharactComponent } from './change-charact/change-charact.component';
 import {MatBadgeModule} from '@angular/material/badge';
 import { ImageComponentComponent } from '../image-component/image-component.component';
+import {MatChipsModule} from '@angular/material/chips';
 
 @NgModule({
   declarations: [
@@ -58,6 +59,7 @@ import { ImageComponentComponent } from '../image-component/image-component.comp
     ImageComponentComponent,
   ],
   imports: [
+    MatChipsModule,
     MatIconModule,
     MatBadgeModule,
     MatSlideToggleModule,
