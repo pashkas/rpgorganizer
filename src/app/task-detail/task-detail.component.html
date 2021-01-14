@@ -19,7 +19,7 @@
     <app-image-component *ngIf="!tskAbility" [data]="'assets/img/'+ tsk.imageLvl + '/'+tsk.image+'.jpg'">
     </app-image-component>
     <h4 class="text-center">
-      {{tsk.name}}
+      {{tsk.name}}<app-ab-hardness [tsk]="tsk"></app-ab-hardness>
     </h4>
     <div abil="progress" *ngIf="tskAbility" [ngStyle]="{'height': '3px'}">
       <div class="progress-bar" [style.width]="tskAbility.progressValue + '%'"
@@ -77,21 +77,6 @@
         </span>
       </span>
     </div>
-    <!-- Таймер, счетчик -->
-    <!-- <div class="form-row">
-      <div class="md-form col">
-        <label class="active">Минут</label>
-        {{tsk.aimTimer}}
-      </div>
-      <div class="md-form col">
-        <label class="active">Раз</label>
-        {{tsk.aimCounter}}
-      </div>
-    </div> -->
-    <!-- Состояния -->
-    <!-- <div class="form-row" *ngIf="tsk.states.length>0">
-      <h5>Состояния</h5>
-    </div> -->
 
     <ng-container *ngIf="!tskAbility && tsk.states.length>0">
       <mat-list (cdkDropListDropped)="drop($event)" cdkDropList id="states" *ngIf="tsk.states.length > 0">

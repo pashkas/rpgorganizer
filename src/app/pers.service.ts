@@ -721,31 +721,7 @@ export class PersService {
     return result;
   }
 
-  /**
-   * Получить персонажа.
-   */
-  getPers(usr: FirebaseUserModel): any {
-    this.loadPers(usr.id)
-      .pipe(takeUntil(this.unsubscribe$))
-      .subscribe(data => {
-        // Если перс есть
-        if (data != undefined) {
-          this.setPers(data);
-        }
-        // Если перса пока что не было
-        else if (data === undefined && usr.id != undefined) {
-          const pers = new Pers();
-          pers.userId = usr.id;
-          pers.id = usr.id;
-          pers.level = 0;
-          pers.prevExp = 0;
-          pers.nextExp = 0;
-
-          this.setPers(pers);
-        }
-      });
-  }
-
+  
   getPersTasks() {
     let tasks: Task[] = [];
 
@@ -1157,9 +1133,9 @@ export class PersService {
         this.setAbRang(ab);
 
         abMax += this.pers.maxAttrLevel * Task.getHardness(ab.tasks[0]);
-        abMaxTotal += this.pers.maxAttrLevel* Task.getHardness(ab.tasks[0]);
-        abCur += ab.value* Task.getHardness(ab.tasks[0]);
-        abCurTotal += ab.value* Task.getHardness(ab.tasks[0]);
+        abMaxTotal += this.pers.maxAttrLevel * Task.getHardness(ab.tasks[0]);
+        abCur += ab.value * Task.getHardness(ab.tasks[0]);
+        abCurTotal += ab.value * Task.getHardness(ab.tasks[0]);
       });
 
       let start = cha.startRang.val;
@@ -1468,12 +1444,7 @@ export class PersService {
               tsk.nextUp = next - 1;
             }
 
-            if (!this.pers.isEra) {
-              tsk.cost = cost;
-            }
-            else {
-              tsk.cost = this.getEraCostLvl(tsk.value);
-            }
+            tsk.cost = cost;
 
             if ((tsk.value >= 1) && tsk.statesDescr[Math.floor(tsk.value)] == tsk.statesDescr[Math.floor(tsk.value + 1)]) {
               tsk.IsNextLvlSame = true;
@@ -1485,12 +1456,7 @@ export class PersService {
               tsk.IsNextLvlSame = false;
             }
 
-            if (!this.pers.isEra) {
-              cost = 1;
-            }
-            else {
-              cost = tsk.cost;
-            }
+            cost = Task.getHardness(tsk);
 
             if (this.pers.ON > 0 && tsk.value <= this.pers.maxAttrLevel - 1 && this.pers.ON >= cost) {
               tsk.mayUp = true;
@@ -1498,25 +1464,6 @@ export class PersService {
             } else {
               tsk.IsNextLvlSame = false;
               tsk.mayUp = false;
-            }
-
-            if (this.pers.isTES && tsk.value >= 1) {
-              tsk.IsNextLvlSame = false;
-              tsk.mayUp = false;
-            }
-          }
-        }
-      }
-    }
-
-    if (this.pers.HasSameAbLvl) {
-      for (const ch of this.pers.characteristics) {
-        for (const ab of ch.abilities) {
-          for (const tsk of ab.tasks) {
-            if (!tsk.IsNextLvlSame) {
-              if (!this.pers.isEqLvlUp) {
-                tsk.mayUp = false;
-              }
             }
           }
         }
@@ -1642,15 +1589,6 @@ export class PersService {
       }
     }
     // }
-  }
-
-  /**
-   * Задать пользователя.
-   * @param usr Пользователь.
-   */
-  setUser(usr: FirebaseUserModel) {
-    this.user = usr;
-    this.getPers(usr);
   }
 
   /**
@@ -2623,7 +2561,6 @@ export class PersService {
 
     this.pers.maxPersLevel = i;
 
-    // debugger;
     // let nnn = this.getMonsterLevel(prevPersLevel);
 
     if (prevPersLevel != this.pers.level && this.getMonsterLevel(prevPersLevel) != this.getMonsterLevel(this.pers.level)) {

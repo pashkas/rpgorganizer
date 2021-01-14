@@ -33,6 +33,7 @@ import { ChangeCharactComponent } from './change-charact/change-charact.componen
 import {MatBadgeModule} from '@angular/material/badge';
 import { ImageComponentComponent } from '../image-component/image-component.component';
 import {MatChipsModule} from '@angular/material/chips';
+import { AbHardnessComponent } from './ab-hardness/ab-hardness.component';
 
 @NgModule({
   declarations: [
@@ -57,6 +58,7 @@ import {MatChipsModule} from '@angular/material/chips';
     ReqAddComponent,
     ChangeCharactComponent,
     ImageComponentComponent,
+    AbHardnessComponent,
   ],
   imports: [
     MatChipsModule,

@@ -6,8 +6,7 @@
     </button>
     <!-- Редактировать -->
     <button mat-icon-button (click)="saveData()" *ngIf="this.srvSt.selTabPersList!=3">
-      <img src="assets/icons/edit.png" class="img-fluid"
-        [ngStyle]="{'object-fit': 'contain', 'height':'3em'}">
+      <img src="assets/icons/edit.png" class="img-fluid" [ngStyle]="{'object-fit': 'contain', 'height':'3em'}">
       <!-- <img *ngIf="isEditMode" src="assets/icons/create.png" class="img-fluid"
         [ngStyle]="{'object-fit': 'contain', 'height':'3em'}"> -->
     </button>
@@ -63,45 +62,6 @@
             <i>{{this.srv.pers.story}}</i>
           </div>
 
-          <!-- Только навыки -->
-          <ng-container *ngIf="this.allAbs.length > 0 && this.srv.pers.isNoAbs">
-            <!-- <app-diary [isFromMain]="true">
-            </app-diary> -->
-
-            <div class="d-flex flex-column w-100">
-              <div>
-                <ul class="list-group py-0">
-                  <li *ngFor="let ab of this.allAbs" class="list-group-item py-0 mt-1 mb-0 pr-0 pl-0 border-0">
-                    <div class="d-flex align-items-baseline w-100">
-                      <div class="w-100 d-flex text-primary">
-                        <!-- [routerLink]="['/ability', ab.id]" -->
-                        <a (click)="showAbility(ab)" [ngClass]="{'text-success' : ab.tasks[0]?.mayUp && ab.tasks[0]?.IsNextLvlSame&& !ab.isNotDoneReqvirements,
-                          'text-danger': ab.isNotDoneReqvirements}" class="flex-grow-1 text-left align-self-baseline">
-                          {{ab.name + ' '}}
-                          <!-- <i><small>{{ab.tasks[0]?.curLvlDescr2}}</small></i> -->
-                        </a>
-                        <div fxLayout="row" fxLayoutAlign="space-around" class="text-right align-self-baseline">
-                          <a class="pl-2" (click)="showAbility(ab)" [ngClass]="{'text-success' : ab.tasks[0]?.mayUp && ab.tasks[0]?.IsNextLvlSame&& !ab.isNotDoneReqvirements,
-                            'text-danger': ab.isNotDoneReqvirements}">
-                            {{ab.rang.name}}
-                          </a>
-                          <a class="ml-1 px-1" *ngIf="ab.tasks[0]?.mayUp" (click)="upAbil(ab)">
-                            <img src="assets/icons/up.png" class="img-fluid"
-                              [ngStyle]="{'object-fit': 'contain', 'height':'1.5em'}">
-                          </a>
-
-                        </div>
-                      </div>
-                    </div>
-                    <!-- <mat-progress-bar class="myprogr" color="accent" mode="determinate" value="{{ab.progressValue}}">
-                    </mat-progress-bar> -->
-                  </li>
-                </ul>
-              </div>
-            </div>
-
-          </ng-container>
-
           <!-- Атрибуты -->
           <ng-container *ngIf="this.srv.pers.characteristics?.length > 0 && !this.srv.pers.isNoAbs">
             <!-- <h5>Атрибуты:</h5> -->
@@ -130,54 +90,25 @@
                         <div class="d-flex align-items-baseline w-100">
                           <div class="w-100 d-flex" [ngClass]="{'text-primary': !ab.isNotChanged
                         }">
-                            <!-- [routerLink]="['/ability', ab.id]" -->
                             <a (click)="showAbility(ab)" [ngClass]="{'text-success' : ab.tasks[0]?.mayUp && ab.tasks[0]?.IsNextLvlSame && !ab.isNotDoneReqvirements,
                             'text-danger': ab.isNotDoneReqvirements}"
                               class="flex-grow-1 text-left align-self-baseline">
-                              {{ab.name + ' '}}
-                              <!-- <i><small>{{ab.tasks[0]?.s}}</small></i> -->
-                              <!-- <i *ngIf="ab.tasks[0]?.plusStateMax"><small>{{'->' + ab.tasks[0]?.plusStateMax}}</small></i> -->
+                              {{ab.name}}<app-ab-hardness [tsk]="ab.tasks[0]"></app-ab-hardness>
                             </a>
                             <div fxLayout="row" fxLayoutAlign="space-around" class="text-right align-self-baseline">
-                              <a *ngIf="!this.srv.pers.isTES || (this.srv.pers.isTES&&!ab.tasks[0]?.mayUp)" class="pl-2"
-                                (click)="showAbility(ab)" [ngClass]="{'text-success' : ab.tasks[0]?.mayUp && ab.tasks[0]?.IsNextLvlSame && !ab.isNotDoneReqvirements,
+                              <a class="pl-2" (click)="showAbility(ab)" [ngClass]="{'text-success' : ab.tasks[0]?.mayUp && ab.tasks[0]?.IsNextLvlSame && !ab.isNotDoneReqvirements,
                                 'text-danger': ab.isNotDoneReqvirements}">
                                 {{ab.rang.name}}
                               </a>
 
-                              <ng-container *ngIf="srv.pers.isEra; else noEra">
-                                <a [ngClass]="{'disabled': !ab.tasks[0]?.mayUp}" class="ml-0 px-1 mr-0"
-                                  (click)="upAbil(ab)" *ngIf="ab.tasks[0]?.mayUp">
-                                  <!-- matBadge="{{ab.tasks[0]?.cost}}"
-                                  matBadgeColor="accent" -->
-                                  <!-- *ngIf="ab.tasks[0]?.mayUp" -->
-                                  <img src="assets/icons/up.png" class="img-fluid"
-                                    [ngStyle]="{'object-fit': 'contain', 'height':'1.5em'}">
-                                </a>
-                              </ng-container>
-                              <ng-template #noEra>
-
-                                <ng-container *ngIf="this.srv?.pers?.isEqLvlUp; else notMayNotSame">
-                                  <a *ngIf="ab.tasks[0]?.mayUp" class="ml-0 px-1 mr-0" (click)="upAbil(ab)">
-                                    <img src="assets/icons/up.png" class="img-fluid"
-                                      [ngStyle]="{'object-fit': 'contain', 'height':'1.5em'}">
-                                  </a>
-                                </ng-container>
-                                <ng-template #notMayNotSame>
-                                  <a *ngIf="ab.tasks[0]?.mayUp" matBadge="{{ab.tasks[0]?.cost}}" matBadgeColor="accent"
-                                    class="ml-0 px-1 mr-0" (click)="upAbil(ab)">
-                                    <img src="assets/icons/up.png" class="img-fluid"
-                                      [ngStyle]="{'object-fit': 'contain', 'height':'1.5em'}">
-                                  </a>
-                                </ng-template>
-                              </ng-template>
-
+                              <a *ngIf="ab.tasks[0]?.mayUp"
+                                class="ml-0 px-1 mr-0" (click)="upAbil(ab)">
+                                <img src="assets/icons/up.png" class="img-fluid"
+                                  [ngStyle]="{'object-fit': 'contain', 'height':'1.5em'}">
+                              </a>
                             </div>
                           </div>
                         </div>
-                        <!-- <mat-progress-bar class="myprogr" color="accent" mode="determinate"
-                          value="{{ab.progressValue}}">
-                        </mat-progress-bar> -->
                       </li>
                     </ul>
                   </div>
@@ -394,7 +325,8 @@
           <ng-container *ngIf="this.srv.pers.qwests?.length > 0">
 
             <ul class="list-group py-0 px-0">
-              <li [ngStyle]="{'opacity': qwest.parrentId ? '0.4' : '1'}" *ngFor="let qwest of this.srv.pers.qwests" class="list-group-item px-0 py-1 border-0">
+              <li [ngStyle]="{'opacity': qwest.parrentId ? '0.4' : '1'}" *ngFor="let qwest of this.srv.pers.qwests"
+                class="list-group-item px-0 py-1 border-0">
 
                 <div fxLayout="row" fxLayoutAlign="space-between center">
 
@@ -458,7 +390,8 @@
       <div *ngIf="!isEditMode" class="pt-2 pb-4 w-100">
         <div class="pb-4">
           <!-- Инвентарь -->
-          <div fxFlexFill fxLayout="row wrap" fxLayoutAlign="center center" fxLayoutGap="10px grid" style="padding-left: 10px;">
+          <div fxFlexFill fxLayout="row wrap" fxLayoutAlign="center center" fxLayoutGap="10px grid"
+            style="padding-left: 10px;">
             <div [fxFlex]="(100/3) + '%'" *ngFor="let rev of this.srv.pers.inventory">
               <div style="cursor: pointer;" (click)="useRevard(rev)" fxLayout="column"
                 fxLayoutAlign="space-around center" [ngStyle]="{'border-color': rev.rare | rarecol}"

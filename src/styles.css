@@ -217,6 +217,6 @@ body {
 }
 
 mat-chip {
-    font-size: small !important;
-    padding: 7px !important;
+    font-size: x-small !important;
+    padding: 5px !important;
 }

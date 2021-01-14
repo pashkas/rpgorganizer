@@ -14,6 +14,7 @@ export class UserResolver implements Resolve<any> {
   constructor(public userService: UserService, private router: Router, private srv: PersService) { }
 
   async resolve(route: ActivatedRouteSnapshot): Promise<any> {
+    debugger;
     if (!this.srv.isOffline) {
       let user = new FirebaseUserModel();
 

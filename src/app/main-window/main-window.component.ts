@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Pers } from 'src/Models/Pers';
 import { PersService } from '../pers.service';
 import { Task } from 'src/Models/Task';
@@ -34,7 +34,7 @@ export class MainWindowComponent implements OnInit {
   lastGlobalBeforeSort: boolean;
   qwickSortVals: sortArr[] = [];
 
-  constructor(private route: ActivatedRoute, public srv: PersService, public dialog: MatDialog, private srvSt: StatesService) {
+  constructor(private route: ActivatedRoute, public srv: PersService, public dialog: MatDialog, private srvSt: StatesService, private router: Router) {
   }
 
 
@@ -376,12 +376,49 @@ export class MainWindowComponent implements OnInit {
         .subscribe(routeData => {
           let data = routeData['data'];
           if (!this.srv.isOffline) {
+            // Оналайн
             if (data) {
-              this.srv.setUser(data);
+              this.srv.user = data;
+              // Пользователь пустой
+              if (!this.srv.user || !this.srv.user.id) {
+                this.router.navigate(['/login']);
+              }
+              else {
+                this.srv.loadPers(this.srv.user.id)
+                  .pipe(takeUntil(this.unsubscribe$))
+                  .subscribe(prsInDb => {
+                    // Если перс есть
+                    if (prsInDb) {
+                      this.srv.setPers(prsInDb);
+                    }
+                    // Если перса пока что не было
+                    else if (!prsInDb) {
+                      if (confirm("Вы готовы начать новую игру?")) {
+                        const pers = new Pers();
+                        pers.userId = this.srv.user.id;
+                        pers.id = this.srv.user.id;
+                        pers.level = 0;
+                        pers.prevExp = 0;
+                        pers.nextExp = 0;
+
+                        this.srv.setPers(pers);
+                      }
+                    }
+                  });
+              }
             }
           }
           else {
-            this.srv.setPers(data);
+            // Оффлайн
+            let prs = JSON.parse(data);
+            if (prs) {
+              this.srv.setPers(data);
+            }
+            else {
+              // Сбрасывем оффлайн
+              localStorage.setItem("isOffline", JSON.stringify(false));
+              localStorage.setItem("pers", JSON.stringify(null));
+            }
           }
         });
     }
@@ -533,7 +570,7 @@ export class MainWindowComponent implements OnInit {
       this.srv.pers.currentQwestId = null;
       this.srv.setView('навыки');
       this.setGlobalTaskView(false);
-      let idx = this.srv.pers.tasks.findIndex(n => n.plusToNames.filter(q=>q.linkId==linkId).length>0);
+      let idx = this.srv.pers.tasks.findIndex(n => n.plusToNames.filter(q => q.linkId == linkId).length > 0);
       this.srv.setCurInd(idx);
     }
   }
