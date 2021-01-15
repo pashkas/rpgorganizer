@@ -17,6 +17,7 @@ import * as moment from 'moment';
 import { AddItemDialogComponent } from '../add-item-dialog/add-item-dialog.component';
 import { TskTimeValDialogComponent } from '../tsk-time-val-dialog/tsk-time-val-dialog.component';
 import { StatesService } from '../states.service';
+import { ConfirmationDialogComponent } from '../confirmation-dialog/confirmation-dialog.component';
 
 @Component({
   selector: 'app-main-window',
@@ -374,6 +375,7 @@ export class MainWindowComponent implements OnInit {
     if (!this.srv.pers) {
       this.route.data.pipe(take(1))
         .subscribe(routeData => {
+
           let data = routeData['data'];
           if (!this.srv.isOffline) {
             // Оналайн
@@ -393,16 +395,22 @@ export class MainWindowComponent implements OnInit {
                     }
                     // Если перса пока что не было
                     else if (!prsInDb) {
-                      if (confirm("Вы готовы начать новую игру?")) {
-                        const pers = new Pers();
-                        pers.userId = this.srv.user.id;
-                        pers.id = this.srv.user.id;
-                        pers.level = 0;
-                        pers.prevExp = 0;
-                        pers.nextExp = 0;
+                      const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
+                        panelClass: 'custom-black'
+                      });
 
-                        this.srv.setPers(pers);
-                      }
+                      dialogRef.afterClosed().subscribe(result => {
+                        if (result) {
+                          const pers = new Pers();
+                          pers.userId = this.srv.user.id;
+                          pers.id = this.srv.user.id;
+                          pers.level = 0;
+                          pers.prevExp = 0;
+                          pers.nextExp = 0;
+
+                          this.srv.setPers(pers);
+                        }
+                      });
                     }
                   });
               }

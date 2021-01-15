@@ -1,0 +1,6 @@
+.grid-rest {
+    height: 100%;
+    display: grid;
+    grid-template-columns: auto;
+    grid-template-rows: auto 1fr auto;
+}

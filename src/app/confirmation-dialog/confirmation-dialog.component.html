@@ -1,0 +1,10 @@
+<div class="grid-rest">
+  <h3 class="text-center" style="color: white;">Ты готов начать новую игру?</h3>
+  <div>
+    <img class="img-fluid p-1 h-100 w-100" style="max-height: 62vh;" [src]="'assets/img/rest2.jpg'" [ngStyle]="{'object-fit': 'contain'}">
+  </div>
+  <div fxLayout="row" fxLayoutAlign="space-around center" style="margin-top: 5px;">
+    <button fxFlex="48" mat-flat-button mat-dialog-close>Отмена</button>
+    <button fxFlex="48" mat-flat-button color="accent" cdkFocusInitial (click)="ok()">Ok</button>
+  </div>
+</div>

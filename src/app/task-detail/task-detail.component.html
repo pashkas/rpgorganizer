@@ -78,6 +78,10 @@
       </span>
     </div>
 
+    <button *ngIf="tsk.isStateRefresh" class="my-1" style="width: 100%;" color="accent" mat-stroked-button (click)="refrCounter()">
+      <mat-icon>refresh</mat-icon>
+    </button>
+
     <ng-container *ngIf="!tskAbility && tsk.states.length>0">
       <mat-list (cdkDropListDropped)="drop($event)" cdkDropList id="states" *ngIf="tsk.states.length > 0">
         <div mat-list-item *ngFor="let st of tsk.states; let i = index">
@@ -182,7 +186,7 @@
 
     <!-- Сложность -->
     <ng-container *ngIf="tsk.requrense != 'нет'">
-      <div  fxLayout="row" fxLayoutAlign="space-between center" class="pb-3">
+      <div fxLayout="row" fxLayoutAlign="space-between center" class="pb-3">
         <mat-chip-list [selectable]="true">
           <mat-chip (click)="tsk.hardnes=1" [selected]="tsk.hardnes==1" color="accent">норм</mat-chip>
           <mat-chip (click)="tsk.hardnes=2" [selected]="tsk.hardnes==2" color="accent">сложно</mat-chip>
@@ -191,9 +195,12 @@
 
         <mat-chip-list [multiple]="true" [selectable]="true">
           <mat-chip color="accent" (click)="setSumStates()" [selected]="tsk.isSumStates">∑</mat-chip>
-          <mat-chip [selected]="tsk.isStatePlusTitle" color="accent" (click)="tsk.isStatePlusTitle=!tsk.isStatePlusTitle">название</mat-chip>
-          <mat-chip [selected]="tsk.isStateRefresh" color="accent" (click)="tsk.isStateRefresh=!tsk.isStateRefresh">⟳</mat-chip>
-          <mat-chip [selected]="tsk.isStateInTitle" color="accent" (click)="tsk.isStateInTitle=!tsk.isStateInTitle">заголовок</mat-chip>
+          <mat-chip [selected]="tsk.isStatePlusTitle" color="accent"
+            (click)="tsk.isStatePlusTitle=!tsk.isStatePlusTitle">название</mat-chip>
+          <mat-chip [selected]="tsk.isStateRefresh" color="accent" (click)="tsk.isStateRefresh=!tsk.isStateRefresh">⟳
+          </mat-chip>
+          <mat-chip [selected]="tsk.isStateInTitle" color="accent" (click)="tsk.isStateInTitle=!tsk.isStateInTitle">
+            заголовок</mat-chip>
         </mat-chip-list>
       </div>
     </ng-container>

@@ -73,8 +73,8 @@
           </ng-container>
         </h4>
       </a>
-      <small *ngIf="this.srv.pers.currentTask.descr" class="text-center text-secondary">
-        ~ {{this.srv.pers.currentTask.descr}} ~
+      <small *ngIf="this.srv.pers.currentTask.descr" class="text-center text-secondary mynote">
+        {{this.srv.pers.currentTask.descr}}
       </small>
       <small class="text-center"
         *ngIf="this.srv.pers.currentTask.plusToNames&&this.srv.pers.currentTask.plusToNames.length>0;">

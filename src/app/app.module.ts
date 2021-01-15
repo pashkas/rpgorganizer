@@ -27,6 +27,7 @@ import { RestComponent } from './rest/rest.component';
 import { RouteReuseStrategy } from '@angular/router';
 import { RouteReuseService } from './route-reuse.service';
 import {MatDividerModule} from '@angular/material/divider';
+import { ConfirmationDialogComponent } from './confirmation-dialog/confirmation-dialog.component';
 
 registerLocaleData(localeRu, 'ru');
 
@@ -43,6 +44,7 @@ registerLocaleData(localeRu, 'ru');
     ProgressBarNumComponent,
     TskTimeValDialogComponent,
     RestComponent,
+    ConfirmationDialogComponent,
   ],
   imports: [
     MatDividerModule,
@@ -73,7 +75,8 @@ registerLocaleData(localeRu, 'ru');
     [
       LevelUpMsgComponent,
       ArrSortDialogComponent,
-      TskTimeValDialogComponent
+      TskTimeValDialogComponent,
+      ConfirmationDialogComponent
     ]
 })
 export class AppModule {

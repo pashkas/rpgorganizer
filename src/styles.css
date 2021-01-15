@@ -142,6 +142,13 @@ button:focus {
     width: calc(100% - 20px);
 }
 
+.custom-black{
+}
+
+.custom-black .mat-dialog-container {
+    background: black;    
+}
+
 .my-big {}
 
 .my-big .mat-dialog-container {

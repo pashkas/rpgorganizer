@@ -225,7 +225,10 @@ export class TaskDetailComponent implements OnInit {
 
     return dt;
   }
-
+  refrCounter(){
+    this.tsk.refreshCounter++;
+    this.srv.savePers(false);
+  }
   goBack() {
     if (this.isEditMode) {
       this.isEditMode = false;
@@ -257,11 +260,6 @@ export class TaskDetailComponent implements OnInit {
   */
   saveData() {
     if (this.isEditMode) {
-      if (Pers.GameSettings.isNoAbilities) {
-        if (this.tskAbility) {
-          this.tskAbility.name = this.tsk.name;
-        }
-      }
       this.srv.savePers(false);
       this.isEditMode = false;
     }
