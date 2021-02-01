@@ -1083,6 +1083,9 @@ export class PersService {
 
           skillMax += this.pers.maxAttrLevel;
         }
+        else{
+          ab.name = ab.tasks[0].name;
+        }
 
         let taskTes = 0;
         ab.tasks.forEach(tsk => {

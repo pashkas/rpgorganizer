@@ -27,10 +27,20 @@ export class AddItemDialogComponent implements OnInit {
     if (this.data && this.data.isGallery) {
       this.isGallery = true;
     }
-    for (let i = 1; i <= 125; i++) {
-      let ss = '000' + i;
-      ss = ss.substr(ss.length - 3);
-      this.gallerryImages.push('assets/img/Gallery/' + ss + '.jpg');
+    if (this.data.isPers) {
+      for (let i = 1; i <= 16; i++) {
+        let ss = '000' + i;
+        ss = ss.substr(ss.length - 3);
+        this.gallerryImages.push('assets/img/Perses/' + ss + '.jpg');
+      }
     }
+    else{
+      for (let i = 1; i <= 125; i++) {
+        let ss = '000' + i;
+        ss = ss.substr(ss.length - 3);
+        this.gallerryImages.push('assets/img/Gallery/' + ss + '.jpg');
+      }
+    }
+    
   }
 }

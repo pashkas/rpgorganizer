@@ -103,7 +103,7 @@
     <ng-container>
       <ng-container *ngFor="let st of tsk.statesDescr; let i = index;">
         <div *ngIf="i!=0" class="text-center px-0 py-1 border-0"
-          [ngClass]="{'bg-success': i==tsk.roundVal && tskAbility.isOpen}">
+          [ngClass]="{'bg-success': i==tsk.value && tskAbility.isOpen}">
           <b>{{i}}<ng-container *ngIf="st">: </ng-container></b>{{st}}
         </div>
       </ng-container>

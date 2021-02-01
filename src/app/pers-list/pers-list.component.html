@@ -149,7 +149,7 @@
       <!-- Редактирование -->
       <div *ngIf="isEditMode" class="pt-2 pb-4 w-100">
         <div class="pb-4">
-          <app-image-component [(data)]="this.srv.pers.image" [isCanEdit]="true"></app-image-component>
+          <app-image-component [(data)]="this.srv.pers.image" [isCanEdit]="true" [isPers]="true"></app-image-component>
           <mat-form-field class="w-100">
             <input matInput autocomplete="off" placeholder="Имя" [(ngModel)]="this.srv.pers.name"
               name="this.srv.pers.name">
