@@ -44,6 +44,13 @@ export class Task implements IImg {
     id: any = uuid();
     image: string = "";
     isDone: boolean = false;
+
+    // Таймер/счетчик
+    isCounter:boolean=false;
+    counterValue:number=0;
+    isTimer:boolean=false;
+    timerStart:Date;
+    timerValue:number=0;
     /**
      * Суммирование состояний.
      */

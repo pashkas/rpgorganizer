@@ -5,7 +5,7 @@ import { Task } from 'src/Models/Task';
   selector: 'app-ab-hardness',
   templateUrl: './ab-hardness.component.html',
   styleUrls: ['./ab-hardness.component.css'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.Default
 })
 export class AbHardnessComponent implements OnInit {
   @Input() tsk: Task;

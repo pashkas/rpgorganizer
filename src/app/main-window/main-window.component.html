@@ -73,6 +73,7 @@
           </ng-container>
         </h4>
       </a>
+      <app-timer-counter [tsk]="this.srv.pers.currentTask"></app-timer-counter>
       <small *ngIf="this.srv.pers.currentTask.descr" class="text-center text-secondary mynote">
         {{this.srv.pers.currentTask.descr}}
       </small>

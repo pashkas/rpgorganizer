@@ -1,0 +1,20 @@
+<div *ngIf="this.tsk.isTimer||this.tsk.isCounter" fxLayout="row" fxLayoutAlign="space-around center" fxLayoutGap="10px"
+  >
+  <div *ngIf="this.tsk.isCounter">
+    <button mat-icon-button color="primary" (click)="counter()">
+      <mat-icon>check</mat-icon>
+      {{tsk.counterValue}}
+    </button>
+  </div>
+  <div *ngIf="this.tsk.isTimer" >
+    <button mat-icon-button color="primary" (click)="timer()" >
+        <ng-container *ngIf="isTimerStart; else noStart">
+            <mat-icon >timer</mat-icon>
+        </ng-container>
+        <ng-template #noStart>
+            <mat-icon >timer_off</mat-icon>
+        </ng-template>
+      {{((tsk.timerValue+this.timeSteal)/60000)| number : '0.0-0'}}
+    </button>
+  </div>
+</div>

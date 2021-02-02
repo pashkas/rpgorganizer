@@ -16,7 +16,7 @@ import { LevelUpMsgComponent } from './level-up-msg/level-up-msg.component';
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { registerLocaleData } from '@angular/common';
 import localeRu from '@angular/common/locales/ru';
-import { GestureConfig, MatProgressSpinnerModule, MatGridListModule, MatGridTile } from '@angular/material';
+import { GestureConfig, MatProgressSpinnerModule, MatGridListModule, MatGridTile, MatIconModule } from '@angular/material';
 import { SharedModule } from './shared/shared.module';
 import { TurnirTableComponent } from './turnir-table/turnir-table.component';
 import { ArrSortDialogComponent } from './arr-sort-dialog/arr-sort-dialog.component';
@@ -28,6 +28,7 @@ import { RouteReuseStrategy } from '@angular/router';
 import { RouteReuseService } from './route-reuse.service';
 import {MatDividerModule} from '@angular/material/divider';
 import { ConfirmationDialogComponent } from './confirmation-dialog/confirmation-dialog.component';
+import { TimerCounterComponent } from './main-window/timer-counter/timer-counter.component';
 
 registerLocaleData(localeRu, 'ru');
 
@@ -45,9 +46,11 @@ registerLocaleData(localeRu, 'ru');
     TskTimeValDialogComponent,
     RestComponent,
     ConfirmationDialogComponent,
+    TimerCounterComponent,
   ],
   imports: [
     MatDividerModule,
+    MatIconModule,
     MatProgressSpinnerModule,
     SharedModule,
     BrowserModule,

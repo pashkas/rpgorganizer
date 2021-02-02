@@ -78,7 +78,8 @@
       </span>
     </div>
 
-    <button *ngIf="tsk.isStateRefresh" class="my-1" style="width: 100%;" color="accent" mat-stroked-button (click)="refrCounter()">
+    <button *ngIf="tsk.isStateRefresh" class="my-1" style="width: 100%;" color="accent" mat-stroked-button
+      (click)="refrCounter()">
       <mat-icon>refresh</mat-icon>
     </button>
 
@@ -111,7 +112,6 @@
     <!-- <div class="text-center px-0 py-1 border-0">
       {{tsk.curLvlDescr}}
     </div> -->
-
   </form>
   <br>
   <br>
@@ -211,9 +211,20 @@
         <mat-form-field>
           <input matInput autocomplete="off" placeholder="Минут" [(ngModel)]="tsk.aimTimer" name="tsk.aimTimer">
         </mat-form-field>
+
         <mat-form-field>
           <input matInput autocomplete="off" placeholder="Раз" [(ngModel)]="tsk.aimCounter" name="tsk.aimCounter">
         </mat-form-field>
+
+        <mat-chip-list [multiple]="true" [selectable]="true" fxFlex="noshrink">
+          <mat-chip color="accent" (click)="tsk.isTimer=!tsk.isTimer" [selected]="tsk.isTimer">
+            таймер
+          </mat-chip>
+          <mat-chip [selected]="tsk.isCounter" color="accent"
+            (click)="tsk.isCounter=!tsk.isCounter">
+            счетчик
+          </mat-chip>
+        </mat-chip-list>
       </div>
     </ng-container>
 

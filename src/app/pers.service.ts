@@ -16,6 +16,7 @@ import { PerschangesService } from './perschanges.service';
 import { EnamiesService } from './enamies.service';
 import { Diary, DiaryParam } from 'src/Models/Diary';
 import * as moment from 'moment';
+import { isNullOrUndefined } from 'util';
 
 @Injectable({
   providedIn: 'root'
@@ -721,7 +722,7 @@ export class PersService {
     return result;
   }
 
-  
+
   getPersTasks() {
     let tasks: Task[] = [];
 
@@ -1083,9 +1084,6 @@ export class PersService {
 
           skillMax += this.pers.maxAttrLevel;
         }
-        else{
-          ab.name = ab.tasks[0].name;
-        }
 
         let taskTes = 0;
         ab.tasks.forEach(tsk => {
@@ -1365,6 +1363,24 @@ export class PersService {
     }
     else if (this.pers.isTES) {
       this.pers.isEra = false;
+    }
+
+    // Синхронизация названий навыков и задач
+    for (const ch of this.pers.characteristics) {
+      for (const ab of ch.abilities) {
+        if (ab.tasks.length > 0) {
+          ab.name = ab.tasks[0].name;
+        }
+        // Таймер и счетчик
+        for (const t of ab.tasks) {
+          if (this.checkNullOrUndefined(t.counterValue)) {
+            t.counterValue = 0;
+          }
+          if (this.checkNullOrUndefined(t.timerValue)) {
+            t.timerValue = 0;
+          }
+        }
+      }
     }
 
     const persJson = JSON.parse(JSON.stringify(this.pers));
@@ -1744,6 +1760,8 @@ export class PersService {
 
     ({ task, abil } = this.findTaskAnAb(id, task, abil));
     if (task) {
+      task.counterValue = 0;
+      task.timerValue = 0;
       // Разыгрываем награды
       this.CasinoRevards(task);
 
@@ -2318,7 +2336,12 @@ export class PersService {
     stT.value = tsk.value;
     stT.imageLvl = tsk.imageLvl;
     stT.requrense = tsk.requrense;
+    stT.isCounter = tsk.isCounter;
+    stT.isTimer = tsk.isTimer;
     stT.timeVal = st.timeVal;
+    stT.counterValue = tsk.counterValue;
+    stT.timerValue = tsk.timerValue;
+    stT.timerStart = tsk.timerStart;
 
     //stT.image = tsk.image;
     if (!st.image) {
