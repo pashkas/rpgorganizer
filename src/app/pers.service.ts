@@ -1722,6 +1722,9 @@ export class PersService {
 
     ({ task, abil } = this.findTaskAnAb(id, task, abil));
     if (task) {
+      task.counterValue = 0;
+      task.timerValue = 0;
+
       this.addToDiary(task, false);
 
       // Следующая дата

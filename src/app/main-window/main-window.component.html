@@ -59,21 +59,24 @@
     <!-- (error)="onImgErr()" -->
 
     <div fxLayout="column" fxLayoutAlign="center center" class="w-100 h-100 py-2 px-2" [ngStyle]="{'height': '3em'}">
-      <a [routerLink]="['/pers/task', this.srv.pers.currentTask.parrentTask ? this.srv.pers.currentTask.parrentTask : this.srv.pers.currentTask.id, false]"
-        class="text-dark text-center">
-        <h4 class="m-0">
-          <ng-container>
-            <ng-container
-              *ngIf="this.srv.pers.currentTask.requrense != 'нет' && checkDate(this.srv.pers.currentTask.date)"
-              class="bg-danger">
-              [{{getDateString(this.srv.pers.currentTask.date)}}]
+      <div fxLayout="row" fxLayoutAlign="center center">
+        
+        <a [routerLink]="['/pers/task', this.srv.pers.currentTask.parrentTask ? this.srv.pers.currentTask.parrentTask : this.srv.pers.currentTask.id, false]"
+          class="text-dark text-center">
+          <h4 class="m-0">
+            <ng-container>
+              <ng-container
+                *ngIf="this.srv.pers.currentTask.requrense != 'нет' && checkDate(this.srv.pers.currentTask.date)"
+                class="bg-danger">
+                [{{getDateString(this.srv.pers.currentTask.date)}}]
+              </ng-container>
+              {{this.srv.pers.currentTask.tittle}}
+              <!-- {{this.srv.pers.currentTask.imageLvl + '/' + this.srv.pers.currentTask.image}} -->
             </ng-container>
-            {{this.srv.pers.currentTask.tittle}}
-            <!-- {{this.srv.pers.currentTask.imageLvl + '/' + this.srv.pers.currentTask.image}} -->
-          </ng-container>
-        </h4>
-      </a>
-      <app-timer-counter [tsk]="this.srv.pers.currentTask"></app-timer-counter>
+          </h4>
+        </a>
+        <app-timer-counter [tsk]="this.srv.pers.currentTask"></app-timer-counter>
+      </div>
       <small *ngIf="this.srv.pers.currentTask.descr" class="text-center text-secondary mynote">
         {{this.srv.pers.currentTask.descr}}
       </small>
