@@ -1476,8 +1476,13 @@ export class PersService {
             }
 
             cost = Task.getHardness(tsk);
+            // Сложные покупаем "авансом"
+            cost = 1;
 
-            if (this.pers.ON > 0 && tsk.value <= this.pers.maxAttrLevel - 1 && this.pers.ON >= cost) {
+            if (
+              this.pers.ON > 0
+              && tsk.value <= this.pers.maxAttrLevel - 1
+              && this.pers.ON >= cost) {
               tsk.mayUp = true;
               this.pers.IsAbUp = true;
             } else {
@@ -2556,9 +2561,9 @@ export class PersService {
 
     let ons = Math.ceil(ceilOn - curV);
 
-    if (ons < 0) {
-      ons = 0;
-    }
+    // if (ons < 0) {
+    //   ons = 0;
+    // }
 
     this.pers.ON = ons;
 
