@@ -300,6 +300,16 @@ export class TaskDetailComponent implements OnInit {
     }
   }
 
+  downAbil(){
+    if (this.tskAbility) {
+      this.srv.changesBefore();
+
+      this.srv.downAbility(this.tskAbility);
+
+      this.srv.changesAfter(false);
+    }
+  }
+
   upAbil() {
     if (this.tskAbility) {
       this.srv.changesBefore();

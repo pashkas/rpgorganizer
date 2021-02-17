@@ -1,10 +1,5 @@
-[
-  {
-    "relation": ["delegate_permission/common.handle_all_urls"],
-    "target": {
-      "namespace": "android_app",
-      "package_name": "xyz.appmaker.vmllgo",
-      "sha256_cert_fingerprints": ["45:7B:0C:1D:CB:6C:2F:39:5E:79:1D:4F:7A:4B:07:26:67:CF:15:04:FB:4B:2A:06:D6:2F:9A:F6:97:96:73:F8"]
-    }
-  }
-]
+[{
+  "relation": ["delegate_permission/common.handle_all_urls"],
+  "target" : { "namespace": "android_app", "package_name": "com.firebaseapp.rpgorganizer_72d0b.twa",
+               "sha256_cert_fingerprints": ["FE:86:99:8B:BD:64:03:4E:24:E0:6A:31:C3:69:9E:52:38:20:0C:50:01:69:C9:86:0C:AA:D8:ED:77:D7:F4:B9"] }
+}]

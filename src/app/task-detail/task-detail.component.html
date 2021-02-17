@@ -29,21 +29,36 @@
     <br *ngIf="tskAbility">
     <!-- Дата и время, повтор -->
     <div fxLayout="row" fxLayoutAlign="space-between center" class="form-row" *ngIf="tskAbility">
+      <ng-container *ngIf="tskCharact">
+        <a [routerLink]="['/pers/characteristic', tskCharact.id]">{{tskCharact.name}}</a>
+      </ng-container>
+
       <div>
         {{getDateString(tsk)}}
+        ({{tsk.requrense | titlecase }})
       </div>
-
-      <ng-container>
-        {{tsk.requrense | titlecase }}
-      </ng-container>
 
       <!-- <div>
         {{tsk.timeVal | timeVal}}
       </div> -->
 
-      <ng-container *ngIf="tskCharact">
-        <a [routerLink]="['/pers/characteristic', tskCharact.id]">{{tskCharact.name}}</a>
-      </ng-container>
+      <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="7px">
+        <button *ngIf="tsk.value>=1" class="icon-small" mat-icon-button (click)="downAbil();">
+          <img src="assets/icons/down.png" class="img-fluid">
+        </button>
+
+        <button *ngIf="tsk.mayUp" class="icon-small" mat-icon-button (click)="upAbil();">
+          <img src="assets/icons/up.png" class="img-fluid">
+        </button>
+
+
+        <span *ngIf="tsk.requrense != 'нет'">
+          <img src="assets/icons/diamond.png" class="img-fluid" [ngStyle]="{'object-fit': 'contain', 'height':'1.5em'}">
+          <span>
+            {{this.srv.pers.ON}}
+          </span>
+        </span>
+      </div>
     </div>
 
     <!-- Описание -->
@@ -55,28 +70,6 @@
     </div>
 
     <!-- <app-req-show *ngIf="tskAbility" [reqvirements]="tsk.reqvirements"></app-req-show> -->
-
-    <!-- Действия -->
-    <div fxLayout="row" fxLayoutAlign="space-between center"
-      *ngIf="tsk.requrense != 'нет' && tsk.mayUp && !this.srv.pers.isTES" class="py-2 text-center">
-      <span style="visibility: hidden;">
-        <img src="assets/icons/diamond.png" class="img-fluid" [ngStyle]="{'object-fit': 'contain', 'height':'1.5em'}">
-        <span>
-          {{this.srv.pers.ON}}
-        </span>
-      </span>
-
-      <button class="icon-small" mat-icon-button (click)="upAbil();">
-        <img src="assets/icons/up.png" class="img-fluid">
-      </button>
-
-      <span>
-        <img src="assets/icons/diamond.png" class="img-fluid" [ngStyle]="{'object-fit': 'contain', 'height':'1.5em'}">
-        <span>
-          {{this.srv.pers.ON}}
-        </span>
-      </span>
-    </div>
 
     <button *ngIf="tsk.isStateRefresh" class="my-1" style="width: 100%;" color="accent" mat-stroked-button
       (click)="refrCounter()">
@@ -220,8 +213,7 @@
           <mat-chip color="accent" (click)="tsk.isTimer=!tsk.isTimer" [selected]="tsk.isTimer">
             таймер
           </mat-chip>
-          <mat-chip [selected]="tsk.isCounter" color="accent"
-            (click)="tsk.isCounter=!tsk.isCounter">
+          <mat-chip [selected]="tsk.isCounter" color="accent" (click)="tsk.isCounter=!tsk.isCounter">
             счетчик
           </mat-chip>
         </mat-chip-list>

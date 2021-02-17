@@ -1,35 +1,41 @@
 <nav *ngIf="this.srv.pers && !this.srv.isDialogOpen" class="fixed-bottom">
-    <div fxLayout="row" fxLayoutAlign="space-between center" class="p-2">
-        <!-- Назад -->
-        <div *ngIf="!this.contextmenu">
-            &nbsp;
-        </div>
-        <button mat-icon-button (click)="goBack()" class="mx-2" *ngIf="!this.contextmenu">
-            <img src="assets/icons/left.png" class="img-fluid" [ngStyle]="{'object-fit': 'contain', 'height':'2.5em'}">
-        </button>
-
+  <div fxLayout="row" fxLayoutAlign="space-between center" class="p-2">
+    <!-- Назад -->
+    <div *ngIf="!this.contextmenu">
+      &nbsp;
     </div>
+    <button mat-icon-button (click)="goBack()" class="mx-2" *ngIf="!this.contextmenu">
+      <img src="assets/icons/left.png" class="img-fluid" [ngStyle]="{'object-fit': 'contain', 'height':'2.5em'}">
+    </button>
+
+  </div>
 </nav>
 <nav *ngIf="this.contextmenu" class="fixed-bottom">
-    <div fxLayout="row" fxLayoutAlign="space-between center" class="p-2">
-        <ng-container>
-            <button mat-flat-button [disabled]="item?.type=='st'" color="accent" class="pointer"
-                (click)="choose('открыть')">
-                Открыть
-            </button>
-            <button mat-flat-button [disabled]="item?.type=='st' || item?.type=='t'" color="accent" class="pointer"
-                (click)="choose('добавить')">
-                Добавить
-            </button>
-            <button mat-flat-button [disabled]="item?.type=='pers'" color="accent" class="pointer"
-                (click)="choose('удалить')">
-                Удалить
-            </button>
-            <button mat-flat-button color="accent" class="pointer" (click)="choose('')">
-                X
-            </button>
-        </ng-container>
+  <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="3px">
+    <div fxFlex>
+      <button mat-flat-button [disabled]="item?.type=='st'" color="accent" class="pointer w-100"
+        (click)="choose('открыть')">
+        Открыть
+      </button>
     </div>
+    <div fxFlex>
+      <button mat-flat-button [disabled]="item?.type=='st' || item?.type=='t'" color="accent" class="pointer  w-100"
+        (click)="choose('добавить')">
+        Добавить
+      </button>
+    </div>
+    <div fxFlex>
+      <button mat-flat-button [disabled]="item?.type=='pers'" color="accent" class="pointer  w-100"
+        (click)="choose('удалить')">
+        Удалить
+      </button>
+    </div>
+    <div>
+      <button mat-flat-button color="accent" class="pointer  w-100" (click)="choose('')">
+        X
+      </button>
+    </div>
+  </div>
 </nav>
 <div [autoResize]="true" echarts [options]="options" [merge]="updateOptions" style="height: 100vh; width: 100vw;"
-    (chartClick)="onChartEvent($event, 'chartClick')"></div>
+  (chartClick)="onChartEvent($event, 'chartClick')"></div>

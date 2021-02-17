@@ -1827,6 +1827,43 @@ export class PersService {
     }
   }
 
+  downAbility(ab: Ability) {
+    let isOpen: Boolean = true;
+
+    for (let i = 0; i < ab.tasks.length; i++) {
+
+      const tsk: Task = ab.tasks[i];
+
+      if (tsk.value < 1) {
+        continue;
+      }
+
+      if (tsk.value == 1) {
+        isOpen = false;
+      }
+
+      let prevTaskVal = tsk.value;
+
+      let curTaskValue = tsk.value;
+      tsk.value -= 1;
+
+      this.GetRndEnamy(tsk);
+      tsk.states.forEach(st => {
+        st.value = tsk.value;
+        this.GetRndEnamy(tsk);
+      });
+
+      this.changeLvlAbLogic(tsk, prevTaskVal, curTaskValue);
+    }
+
+    //todo
+    if (isOpen==false) {
+      ab.isOpen = false;
+    }
+
+    this.savePers(true, 'minus');
+  }
+
   upAbility(ab: Ability) {
     let isOpenForEdit = false;
 
