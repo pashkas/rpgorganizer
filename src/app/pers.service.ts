@@ -2077,7 +2077,7 @@ export class PersService {
     prs.isEra = false;
     prs.isOneLevOneCrist = false;
     prs.isEqLvlUp = true;
-    prs.isNoExpShow = true;
+    prs.isNoExpShow = false;
     prs.isMax5 = false;
     prs.isNoAbs = false;
     prs.isNoDiary = true;

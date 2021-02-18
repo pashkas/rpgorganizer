@@ -59,23 +59,30 @@ export class PerschangesService {
       if (changesMap[n].type == 'qwest') {
         // Квест выполнен
         if (changesMap[n].after === null || changesMap[n].after === undefined) {
+          debugger;
+
+
           changes.push(
             new ChangesModel('Квест завершен - ' + changesMap[n].name, 'qwest', changesMap[n].before, changesMap[n].before, 0, changesMap[n].total, changesMap[n].img)
           );
           isDoneQwest = true;
           //qwestToEdit = n;
         }
-        else if (changesMap[n].after > changesMap[n].before && this.afterPers.isNoExpShow != true) {
-          changes.push(
-            new ChangesModel(changesMap[n].name, 'qwest', changesMap[n].before, changesMap[n].after, 0, changesMap[n].total, changesMap[n].img)
-          );
-        }
-        else if (changesMap[n].after > changesMap[n].before && changesMap[n].after == changesMap[n].total) {
-          changes.push(
-            new ChangesModel('"' + changesMap[n].name + '" задания выполнены!', 'qwest', changesMap[n].after, changesMap[n].after, 0, changesMap[n].total, changesMap[n].img)
-          );
-          isDoneQwest = true;
-          qwestToEdit = n;
+        else {
+          if (changesMap[n].after > changesMap[n].before && this.afterPers.isNoExpShow != true) {
+
+            changes.push(
+              new ChangesModel(changesMap[n].name, 'qwest', changesMap[n].before, changesMap[n].after, 0, changesMap[n].total, changesMap[n].img)
+            );
+          }
+          if (changesMap[n].after > changesMap[n].before && changesMap[n].after == changesMap[n].total) {
+
+            changes.push(
+              new ChangesModel('"' + changesMap[n].name + '" задания выполнены!', 'qwest', changesMap[n].after, changesMap[n].after, 0, changesMap[n].total, changesMap[n].img)
+            );
+            isDoneQwest = true;
+            qwestToEdit = n;
+          }
         }
       }
       // Награды
@@ -162,15 +169,15 @@ export class PerschangesService {
         if (isShowBySettings) {
           if (changesMap[n].after != changesMap[n].before) {
             let expChanges = new ChangesModel('Опыт', 'exp', changesMap[n].before * 10, changesMap[n].after * 10, this.afterPers.prevExp * 10, this.afterPers.nextExp * 10, changesMap[n].img);
-  
+
             let beforeExp = changesMap[n].before;
             let afterExp = changesMap[n].after;
-  
+
             let prevLvl = this.beforePers.level;
             let afterLvl = this.afterPers.level;
-  
+
             let eCh: persExpChanges[] = [];
-  
+
             if (afterLvl > prevLvl) {
               //1
               eCh.push(new persExpChanges(beforeExp, this.beforePers.nextExp, this.beforePers.prevExp, this.beforePers.nextExp));
@@ -184,13 +191,13 @@ export class PerschangesService {
             } else {
               eCh.push(new persExpChanges(beforeExp, afterExp, this.afterPers.prevExp, this.afterPers.nextExp));
             }
-  
+
             expChanges.expChanges = eCh;
-  
+
             if (isDoneQwest) {
               changes.push(expChanges);
             }
-            else{
+            else {
               changes.unshift(expChanges);
             }
           }
