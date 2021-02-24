@@ -138,6 +138,14 @@ export class PersService {
 
   abSorter(): (a: Ability, b: Ability) => number {
     return (a, b) => {
+
+      let aperk = a.tasks[0].isPerk ? 1 : 0;
+      let bperk = b.tasks[0].isPerk ? 1 : 0;
+
+      if (aperk != bperk) {
+        return aperk - bperk;
+      }
+
       return (a.value - b.value);
       //   // По требованиям
       //   if (a.isNotDoneReqvirements != b.isNotDoneReqvirements) {
@@ -1074,6 +1082,10 @@ export class PersService {
       }, {});
 
       cha.abilities.forEach(ab => {
+        if (ab.tasks[0].isPerk && ab.tasks[0].value >= 1) {
+          ab.tasks[0].value = 10;
+        }
+
         let tskMax = 0;
         let tskCur = 0;
         totalAbils += 1;
@@ -1845,7 +1857,13 @@ export class PersService {
       let prevTaskVal = tsk.value;
 
       let curTaskValue = tsk.value;
-      tsk.value -= 1;
+
+      if (tsk.isPerk) {
+        tsk.value = 0;
+      }
+      else {
+        tsk.value -= 1;
+      }
 
       this.GetRndEnamy(tsk);
       tsk.states.forEach(st => {
@@ -1857,7 +1875,7 @@ export class PersService {
     }
 
     //todo
-    if (isOpen==false) {
+    if (isOpen == false) {
       ab.isOpen = false;
     }
 
@@ -1889,11 +1907,10 @@ export class PersService {
 
       let prevTaskVal = tsk.value;
 
-      if (!this.pers.isEra) {
-        tsk.value += 1;
+      if (tsk.isPerk) {
+        tsk.value = 10;
       }
       else {
-        //tsk.value = tsk.nextUp;
         tsk.value += 1;
       }
 
@@ -2077,7 +2094,7 @@ export class PersService {
     prs.isEra = false;
     prs.isOneLevOneCrist = false;
     prs.isEqLvlUp = true;
-    prs.isNoExpShow = false;
+    prs.isNoExpShow = true;
     prs.isMax5 = false;
     prs.isNoAbs = false;
     prs.isNoDiary = true;
@@ -2504,15 +2521,6 @@ export class PersService {
   }
 
   private setPersExpAndAbPoints(chaCur: number, chaMax: number, absCur: number, absMax: number, skillCur: number, skillMax: number, totalAbilities: number) {
-    if (this.pers.isTES) {
-      let tesPoints = this.pers.characteristics.reduce((a, b) => {
-        return a + b.abilities.reduce((a1, b1) => {
-          return a1 + b1.tasks[0].tesValue;
-        }, 0);
-      }, 0);
-      this.pers.exp = tesPoints * 33.34;
-    }
-
     // Считаем по развитости всех скиллов
     let maxV = skillMax;
 

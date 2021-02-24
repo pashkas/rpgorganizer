@@ -29,11 +29,19 @@ export class ChangesModel {
         this.type = type;
 
         let change = Math.floor(valTo) - Math.floor(valFrom);
-        if (change != 0 && type != 'subtask' && type != 'qwest' && type != 'state' && type != 'inv') {
+        if (change != 0 && type != 'subtask' && type != 'qwest' && type != 'state' && type != 'inv' && type != 'perk') {
             if (change > 0) {
                 this.valChange = '+' + change;
             } else {
                 this.valChange = '' + change;
+            }
+        }
+        if (type == 'perk') {
+            this.name = '"' + this.name + '"';
+            if (change > 0) {
+                this.valChange = 'получен!';
+            } else {
+                this.valChange = 'потерян!';
             }
         }
         if (type == 'inv') {

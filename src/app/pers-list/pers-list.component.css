@@ -3,8 +3,11 @@
     height: 2em;
 }
 
-.nomarg{
-    margin-right: 0px!important;
-    margin-left: 3px!important;
+.nomarg {
+    margin-right: 0px !important;
+    margin-left: 3px !important;
 }
 
+.perk {
+    color: gold;
+}

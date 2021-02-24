@@ -80,6 +80,7 @@ export class Task implements IImg {
     curLvlDescr2: string;
     imageLvl: string = '0';
     IsNextLvlSame: boolean;
+    isPerk: boolean = false;
     mayUp: boolean;
     cost: number = 0;
     nextUp: number = 0;

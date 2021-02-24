@@ -88,8 +88,7 @@
                     <ul class="list-group py-0" *ngIf="item.abilities.length>0">
                       <li *ngFor="let ab of item.abilities" class="list-group-item py-0 mt-1 mb-0 pr-0 pl-0 border-0">
                         <div class="d-flex align-items-baseline w-100">
-                          <div class="w-100 d-flex" [ngClass]="{'text-primary': !ab.isNotChanged
-                        }">
+                          <div class="w-100 d-flex" [ngClass]="{'text-primary': !ab.isNotChanged && !ab.tasks[0].isPerk, 'perk':ab.tasks[0].isPerk}">
                             <a (click)="showAbility(ab)" [ngClass]="{'text-success' : ab.tasks[0]?.mayUp && ab.tasks[0]?.IsNextLvlSame && !ab.isNotDoneReqvirements,
                             'text-danger': ab.isNotDoneReqvirements}"
                               class="flex-grow-1 text-left align-self-baseline">
@@ -233,7 +232,7 @@
                   <!-- Навыки -->
                   <mat-list *ngIf="item.abilities.length>0" class="p-0">
                     <div mat-list-item *ngFor="let ab of item.abilities">
-                      <div class="d-flex align-items-center">
+                      <div class="d-flex align-items-center" [ngClass]="{'perk': ab.tasks[0].isPerk}">
                         <div class="flex-grow-1 align-self-center">
                           <i>{{ab.name}}</i>
                         </div>

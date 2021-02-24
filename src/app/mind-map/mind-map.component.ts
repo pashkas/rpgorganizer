@@ -157,9 +157,9 @@ export class MindMapComponent implements OnInit {
           type: 'graph',
           layout: 'force',//'force', 'circular'
           force: {
-            repulsion: 300,
-            //edgeLength: 40,
-            gravity: 0.25
+            repulsion: 999,
+            edgeLength: 85,
+            gravity: 0.999
           },
           roam: true,
           nodeScaleRatio: 0.001,
@@ -186,13 +186,13 @@ export class MindMapComponent implements OnInit {
     let idx = 0;
     this.dic.set('pers', new mapDicItem('pers', this.srv.pers.name, idx, null));
     idx++;
-    this.date.push(new mindMapItem('pers', this.srv.pers.name, 50, 'LawnGreen'));
+    this.date.push(new mindMapItem('pers', this.srv.pers.name, 60, 'LawnGreen'));
     // Характеристики
     for (const ch of this.srv.pers.characteristics) {
       if (!this.srv.pers.isNoAbs) {
         this.dic.set(ch.id, new mapDicItem('ch', ch.name, idx, ch));
         idx++;
-        this.date.push(new mindMapItem(ch.id, ch.name, 35, 'LemonChiffon'));
+        this.date.push(new mindMapItem(ch.id, ch.name, 45, 'LemonChiffon'));
         this.links.push(new mindMapLink(this.dic.get('pers').index, this.dic.get(ch.id).index));
       }
       // Навыки
@@ -200,7 +200,12 @@ export class MindMapComponent implements OnInit {
         // SumStates
         for (const t of ab.tasks) {
           this.dic.set(t.id, new mapDicItem('t', t.name, idx, ab));
-          this.date.push(new mindMapItem(t.id, t.name, 25, 'transparent'));
+          if (t.isPerk) {
+            this.date.push(new mindMapItem(t.id, t.name, 25, 'yellow'));
+          }
+          else{
+            this.date.push(new mindMapItem(t.id, t.name, 25, 'transparent'));
+          }
           idx++;
           this.links.push(new mindMapLink(!this.srv.pers.isNoAbs ? this.dic.get(ch.id).index : this.dic.get('pers').index, this.dic.get(t.id).index));
           // if (t.isSumStates) {
