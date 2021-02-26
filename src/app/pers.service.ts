@@ -142,11 +142,16 @@ export class PersService {
       let aperk = a.tasks[0].isPerk ? 1 : 0;
       let bperk = b.tasks[0].isPerk ? 1 : 0;
 
-      if (aperk != bperk) {
+      if (a.value == b.value) {
         return aperk - bperk;
       }
+      else {
+        return (a.value - b.value);
+      }
 
-      return (a.value - b.value);
+
+
+
       //   // По требованиям
       //   if (a.isNotDoneReqvirements != b.isNotDoneReqvirements) {
       //     return (+a.isNotDoneReqvirements - +b.isNotDoneReqvirements);
@@ -2426,20 +2431,21 @@ export class PersService {
 
   private setAbRang(ab: Ability) {
     let val = ab.value;
-    if (this.pers.isTES) {
-      const tesVal = ab.tasks[0].tesValue;
-      val = (ab.isOpen ? 1 : 0) + tesVal;
-    }
-    ab.rang = this.getCurRang(val);
-    //ab.rang.name += '%';
+    let firstTask = ab.tasks[0];
+    if (firstTask.isPerk) {
+      const rng = new Rangse();
+      if (firstTask.value == 0) {
+        rng.name = "-";
+      }
+      else {
+        rng.name = "👍";
+      }
 
-    // for (let index = Ability.rangse.length - 1; index >= 0; index--) {
-    //   const rang = Ability.rangse[index];
-    //   if (ab.value >= rang.val) {
-    //     ab.rang = rang;
-    //     return;
-    //   }
-    // }
+      ab.rang = rng;
+    }
+    else {
+      ab.rang = this.getCurRang(val);
+    }
   }
 
   private setAbValueAndProgress(ab: Ability, tskCur: number, tskMax: number, tesCur: number) {

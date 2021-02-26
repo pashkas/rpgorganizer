@@ -227,3 +227,7 @@ mat-chip {
     font-size: x-small !important;
     padding: 5px !important;
 }
+
+.perk {
+    color: gold;
+}

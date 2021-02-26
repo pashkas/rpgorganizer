@@ -157,9 +157,9 @@ export class MindMapComponent implements OnInit {
           type: 'graph',
           layout: 'force',//'force', 'circular'
           force: {
-            repulsion: 999,
-            edgeLength: 85,
-            gravity: 0.999
+            repulsion: 160,
+            edgeLength: 70,
+            //gravity: 0.17
           },
           roam: true,
           nodeScaleRatio: 0.001,
