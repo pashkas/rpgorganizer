@@ -94,11 +94,12 @@
         </div>
       </mat-list>
     </ng-container>
-    <ng-container *ngIf="!tsk.isPerk">
+    <ng-container>
+      <br>
       <ng-container *ngFor="let st of tsk.statesDescr; let i = index;">
-        <div *ngIf="i!=0" class="text-center px-0 py-1 border-0"
+        <div *ngIf="i!=0 &&(!tsk.isPerk || (tsk.isPerk && tsk.value>1 && i==10))" class="text-center px-0 py-1 border-0"
           [ngClass]="{'bg-success': i==tsk.value && tskAbility.isOpen}">
-          <b>{{i}}<ng-container *ngIf="st">: </ng-container></b>{{st}}
+          <b *ngIf="!tsk.isPerk">{{i}}<ng-container *ngIf="st&&!tsk.isPerk">: </ng-container></b>{{st}}
         </div>
       </ng-container>
     </ng-container>
@@ -192,7 +193,7 @@
           <mat-chip (click)="tsk.hardnes=3" [selected]="tsk.hardnes==3" color="accent">оч. сложно</mat-chip>
         </mat-chip-list>
 
-        <mat-chip-list *ngIf="!tsk.isPerk" [multiple]="true" [selectable]="true">
+        <mat-chip-list [multiple]="true" [selectable]="true">
           <mat-chip color="accent" (click)="setSumStates()" [selected]="tsk.isSumStates">∑</mat-chip>
           <mat-chip [selected]="tsk.isStatePlusTitle" color="accent"
             (click)="tsk.isStatePlusTitle=!tsk.isStatePlusTitle">название</mat-chip>
@@ -204,7 +205,7 @@
       </div>
     </ng-container>
 
-    <ng-container *ngIf="tsk.requrense != 'нет' && !tsk.isPerk">
+    <ng-container *ngIf="tsk.requrense != 'нет'">
       <!-- Таймер, счетчик -->
       <div fxLayoutGap="8px" fxLayout="row" fxLayoutAlign="space-between center">
         <mat-form-field>
@@ -229,7 +230,7 @@
 
     <!-- Состояния -->
     <!-- <h5>Состояния:</h5> -->
-    <div fxLayout="row" fxLayoutAlign="space-between center" *ngIf="!tsk.isPerk">
+    <div fxLayout="row" fxLayoutAlign="space-between center">
       <ng-container *ngIf="tsk.requrense != 'нет'">
         <h5>Состояния:</h5>
       </ng-container>
@@ -241,7 +242,7 @@
       </button>
     </div>
 
-    <mat-list (cdkDropListDropped)="drop($event)" cdkDropList id="states" *ngIf="tsk.states.length > 0 && !tsk.isPerk">
+    <mat-list (cdkDropListDropped)="drop($event)" cdkDropList id="states" *ngIf="tsk.states.length > 0">
       <div mat-list-item cdkDrag *ngFor="let st of tsk.states; let i = index">
         <div class="d-flex">
           <div class="flex-grow-1 align-self-center">
