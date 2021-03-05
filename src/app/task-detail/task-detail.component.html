@@ -97,7 +97,7 @@
     <ng-container>
       <br>
       <ng-container *ngFor="let st of tsk.statesDescr; let i = index;">
-        <div *ngIf="i!=0 &&(!tsk.isPerk || (tsk.isPerk && tsk.value>1 && i==10))" class="text-center px-0 py-1 border-0"
+        <div *ngIf="i!=0 && st &&(!tsk.isPerk || (tsk.isPerk && tsk.value>1 && i==10))" class="text-center px-0 py-1 border-0"
           [ngClass]="{'bg-success': i==tsk.value && tskAbility.isOpen}">
           <b *ngIf="!tsk.isPerk">{{i}}<ng-container *ngIf="st&&!tsk.isPerk">: </ng-container></b>{{st}}
         </div>

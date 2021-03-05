@@ -401,14 +401,7 @@ export class MainWindowComponent implements OnInit {
 
                       dialogRef.afterClosed().subscribe(result => {
                         if (result) {
-                          const pers = new Pers();
-                          pers.userId = this.srv.user.id;
-                          pers.id = this.srv.user.id;
-                          pers.level = 0;
-                          pers.prevExp = 0;
-                          pers.nextExp = 0;
-
-                          this.srv.setPers(pers);
+                          this.srv.setNewPers(this.srv.user.id);
                         }
                       });
                     }

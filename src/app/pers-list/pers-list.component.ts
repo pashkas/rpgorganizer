@@ -244,11 +244,26 @@ export class PersListComponent implements OnInit {
     this.srv.sync(isDownload);
   }
 
+  loadSamplePers(){
+    if (window.confirm('Вы уверены, что хотите загрузить тренировочного перса?')) {
+      this.srv.loadLearningPers(this.srv.pers.userId);
+      this.saveData();
+    }
+  }
+
+  newgame(){
+    if (window.confirm('Вы уверены, что хотите очистить все данные?')) {
+      this.srv.setNewPers(this.srv.pers.userId);
+      this.saveData();
+    }
+  }
+
   /**
    * Респаун.
    */
   resp() {
     if (window.confirm('Вы уверены?')) {
+      this.srv.pers.isOffline = true;
       this.srv.pers.characteristics.forEach(cha => {
         cha.abilities.forEach(ab => {
           ab.isOpen = false;
@@ -278,7 +293,7 @@ export class PersListComponent implements OnInit {
 
       this.srv.clearDiary(); 
       // там тоже перс сохраняется...
-      //this.srv.savePers(false);
+      this.saveData();
     }
   }
 

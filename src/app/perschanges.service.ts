@@ -66,7 +66,7 @@ export class PerschangesService {
           //qwestToEdit = n;
         }
         else {
-          if (changesMap[n].after > changesMap[n].before && this.afterPers.isNoExpShow != true) {
+          if (changesMap[n].after > changesMap[n].before) {
             changes.push(
               new ChangesModel(changesMap[n].name, 'qwest', changesMap[n].before, changesMap[n].after, 0, changesMap[n].total, changesMap[n].img)
             );
@@ -156,7 +156,10 @@ export class PerschangesService {
     Object.keys(changesMap).forEach(n => {
       // Опыт
       if (changesMap[n].type == 'exp') {
-        let isShowBySettings = this.afterPers.isNoExpShow != true || isDoneQwest == true;
+        let isShowBySettings = this.afterPers.isNoExpShow != true 
+        || isDoneQwest == true
+        || changesMap[n].after < changesMap[n].before;
+        //|| isDoneQwest == true;
         if (isShowBySettings) {
           if (changesMap[n].after != changesMap[n].before) {
             let expChanges = new ChangesModel('Опыт', 'exp', changesMap[n].before * 10, changesMap[n].after * 10, this.afterPers.prevExp * 10, this.afterPers.nextExp * 10, changesMap[n].img);

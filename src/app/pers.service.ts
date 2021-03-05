@@ -17,6 +17,7 @@ import { EnamiesService } from './enamies.service';
 import { Diary, DiaryParam } from 'src/Models/Diary';
 import * as moment from 'moment';
 import { isNullOrUndefined } from 'util';
+import { SamplePers } from 'src/Models/SamplePers';
 
 @Injectable({
   providedIn: 'root'
@@ -25,11 +26,13 @@ export class PersService {
   // Персонаж
   private unsubscribe$ = new Subject();
 
+  absMap: any;
   baseTaskPoints: number = 1.0;
   isDialogOpen: boolean = false;
   isGlobalTaskView: boolean;
   isOffline: boolean = false;
   isOnline: boolean;
+  isSynced: boolean = false;
   mn1Count: number = 65;
   mn2Count: number = 149;
   mn3Count: number = 713;
@@ -38,7 +41,6 @@ export class PersService {
   pers: Pers;
   // Пользователь
   user: FirebaseUserModel;
-  absMap: any;
 
   constructor(public db: AngularFirestore, private router: Router, private changes: PerschangesService, private enmSrv: EnamiesService) {
     this.createOnline$().subscribe(isOnline => this.isOnline = isOnline);
@@ -113,20 +115,6 @@ export class PersService {
     this.savePers(true);
   }
 
-  /**
-   * У следующего квеста удаляем parrent
-   * @param qwId Идентификатор родителя
-   */
-  private removeParrents(qwId: any) {
-    for (let i = 0; i < this.pers.qwests.length; i++) {
-      const qw = this.pers.qwests[i];
-      if (qw.parrentId == qwId) {
-        qw.parrentId = 0;
-      }
-    }
-
-  }
-
   GetRndEnamy(tsk: IImg): string {
     let mnstrLvl = this.getMonsterLevel(this.pers.level);
 
@@ -138,7 +126,6 @@ export class PersService {
 
   abSorter(): (a: Ability, b: Ability) => number {
     return (a, b) => {
-
       let aperk = a.tasks[0].isPerk ? 1 : 0;
       let bperk = b.tasks[0].isPerk ? 1 : 0;
 
@@ -148,9 +135,6 @@ export class PersService {
       else {
         return (a.value - b.value);
       }
-
-
-
 
       //   // По требованиям
       //   if (a.isNotDoneReqvirements != b.isNotDoneReqvirements) {
@@ -435,6 +419,29 @@ export class PersService {
     return false;
   }
 
+  checkQwestAb(qw: Qwest): boolean {
+    if (qw.abilitiId) {
+      let ab: Ability = this.absMap[qw.abilitiId];
+      if (ab) {
+        if (ab.value >= 1 && !ab.isNotDoneReqvirements) {
+          if (ab.tasks && ab.tasks.length > 0) {
+            if (!this.checkTask(ab.tasks[0])) {
+              return false;
+            }
+          }
+          else {
+            return false;
+          }
+        }
+        else {
+          return false;
+        }
+      }
+    }
+
+    return true;
+  }
+
   /**
    * Проверка задачи - доступна ли она сейчас.
    * @param tsk Задача.
@@ -568,6 +575,48 @@ export class PersService {
   */
   delTaskfromQwest(qwest: Qwest, id: string): any {
     qwest.tasks = qwest.tasks.filter(n => { return n.id != id });
+  }
+
+  downAbility(ab: Ability) {
+    let isOpen: Boolean = true;
+
+    for (let i = 0; i < ab.tasks.length; i++) {
+      const tsk: Task = ab.tasks[i];
+
+      if (tsk.value < 1) {
+        continue;
+      }
+
+      if (tsk.value == 1) {
+        isOpen = false;
+      }
+
+      let prevTaskVal = tsk.value;
+
+      let curTaskValue = tsk.value;
+
+      if (tsk.isPerk) {
+        tsk.value = 0;
+      }
+      else {
+        tsk.value -= 1;
+      }
+
+      this.GetRndEnamy(tsk);
+      tsk.states.forEach(st => {
+        st.value = tsk.value;
+        this.GetRndEnamy(tsk);
+      });
+
+      this.changeLvlAbLogic(tsk, prevTaskVal, curTaskValue);
+    }
+
+    //todo
+    if (isOpen == false) {
+      ab.isOpen = false;
+    }
+
+    this.savePers(true, 'minus');
   }
 
   /**
@@ -735,7 +784,6 @@ export class PersService {
     return result;
   }
 
-
   getPersTasks() {
     let tasks: Task[] = [];
 
@@ -832,29 +880,6 @@ export class PersService {
     }
 
     return tasks;
-  }
-
-  checkQwestAb(qw: Qwest): boolean {
-    if (qw.abilitiId) {
-      let ab: Ability = this.absMap[qw.abilitiId];
-      if (ab) {
-        if (ab.value >= 1 && !ab.isNotDoneReqvirements) {
-          if (ab.tasks && ab.tasks.length > 0) {
-            if (!this.checkTask(ab.tasks[0])) {
-              return false;
-            }
-          }
-          else {
-            return false;
-          }
-        }
-        else {
-          return false;
-        }
-      }
-    }
-
-    return true;
   }
 
   getQwestTasks(isSort = false) {
@@ -963,6 +988,17 @@ export class PersService {
     }
 
     return 1.0;
+  }
+
+  loadLearningPers(userId) {
+    let sp = new SamplePers();
+    let samplePers: Pers = JSON.parse(sp.prsjson);
+    samplePers.userId = userId;
+    samplePers.id = userId;
+    samplePers.isOffline = true;
+    this.checkPersNewFields(samplePers);
+
+    this.pers = samplePers;
   }
 
   /**
@@ -1126,7 +1162,6 @@ export class PersService {
           this.setTaskTittle(tsk);
           this.CheckSetTaskDate(tsk);
 
-
           if (tsk.value > this.pers.maxAttrLevel) {
             tsk.value = this.pers.maxAttrLevel;
           }
@@ -1138,7 +1173,6 @@ export class PersService {
 
           skillCur += tsk.value * koef;
           skillMax += this.pers.maxAttrLevel * koef;
-
 
           let tval = Math.floor(1 + tsk.tesValue);
           if (tval > 10) {
@@ -1236,7 +1270,6 @@ export class PersService {
       acc[el.id] = i;
       return acc;
     }, {});
-
 
     this.pers.qwests.forEach(el => {
       // Handle the root element
@@ -1523,6 +1556,19 @@ export class PersService {
     }
   }
 
+  setNewPers(userid: string) {
+    const pers = new Pers();
+    pers.userId = userid;
+    pers.id = userid;
+    pers.level = 0;
+    pers.prevExp = 0;
+    pers.nextExp = 0;
+    pers.isOffline = true;
+
+    this.checkPersNewFields(pers);
+    this.pers = pers;
+  }
+
   setPers(data: any) {
     const pers = data;
     let prs: Pers;
@@ -1715,7 +1761,6 @@ export class PersService {
     this.pers.rewards = this.pers.rewards.sort((a, b) => a.cumulative - b.cumulative);
   }
 
-  isSynced: boolean = false;
   sync(isDownload) {
     this.isSynced = true;
 
@@ -1754,14 +1799,9 @@ export class PersService {
       this.setStatesNotDone(task);
 
       // Минусуем значение
-      if (this.pers.isTES) {
-        this.changeTes(task, false);
-      }
-      else {
-        this.pers.exp -= this.getTaskChangesExp(task, false);
-        if (this.pers.exp < 0) {
-          this.pers.exp = 0;
-        }
+      this.pers.exp -= this.getTaskChangesExp(task, false);
+      if (this.pers.exp < 0) {
+        this.pers.exp = 0;
       }
 
       task.lastNotDone = true;
@@ -1842,49 +1882,6 @@ export class PersService {
 
       return 'квест';
     }
-  }
-
-  downAbility(ab: Ability) {
-    let isOpen: Boolean = true;
-
-    for (let i = 0; i < ab.tasks.length; i++) {
-
-      const tsk: Task = ab.tasks[i];
-
-      if (tsk.value < 1) {
-        continue;
-      }
-
-      if (tsk.value == 1) {
-        isOpen = false;
-      }
-
-      let prevTaskVal = tsk.value;
-
-      let curTaskValue = tsk.value;
-
-      if (tsk.isPerk) {
-        tsk.value = 0;
-      }
-      else {
-        tsk.value -= 1;
-      }
-
-      this.GetRndEnamy(tsk);
-      tsk.states.forEach(st => {
-        st.value = tsk.value;
-        this.GetRndEnamy(tsk);
-      });
-
-      this.changeLvlAbLogic(tsk, prevTaskVal, curTaskValue);
-    }
-
-    //todo
-    if (isOpen == false) {
-      ab.isOpen = false;
-    }
-
-    this.savePers(true, 'minus');
   }
 
   upAbility(ab: Ability) {
@@ -2248,14 +2245,6 @@ export class PersService {
     }
   }
 
-  private getTVal(tsk: Task) {
-    let tVal = 1 + Math.floor(tsk.tesValue);
-    if (tVal > 10) {
-      tVal = 10;
-    }
-    return tVal;
-  }
-
   /**
    * Получает набор с более плавным концом.
    * @param aim 
@@ -2299,12 +2288,20 @@ export class PersService {
     result.unshift(0);
   }
 
+  private getTVal(tsk: Task) {
+    let tVal = 1 + Math.floor(tsk.tesValue);
+    if (tVal > 10) {
+      tVal = 10;
+    }
+    return tVal;
+  }
+
   private getTaskChangesExp(task: Task, isPlus: boolean) {
     const koef = this.getWeekKoef(task.requrense, isPlus, task.tskWeekDays);
     let expKoef = this.getExpKoef(isPlus);
     expKoef = 1;
     if (!isPlus) {
-      expKoef = 2;
+      expKoef = 3;
     }
 
     expKoef = expKoef * Task.getHardness(task);
@@ -2427,6 +2424,19 @@ export class PersService {
     }
 
     return stT;
+  }
+
+  /**
+   * У следующего квеста удаляем parrent
+   * @param qwId Идентификатор родителя
+   */
+  private removeParrents(qwId: any) {
+    for (let i = 0; i < this.pers.qwests.length; i++) {
+      const qw = this.pers.qwests[i];
+      if (qw.parrentId == qwId) {
+        qw.parrentId = 0;
+      }
+    }
   }
 
   private setAbRang(ab: Ability) {
@@ -2790,7 +2800,6 @@ export class PersService {
             }
           }
         }
-
       }
       // Таймер
       if (tsk.aimTimer != 0) {
