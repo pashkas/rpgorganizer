@@ -61,7 +61,7 @@
     <app-image-component [(data)]="charact.image" [isCanEdit]="true"></app-image-component>
     <!-- Название -->
     <mat-form-field class="w-100">
-      <input matInput autocomplete="off" placeholder="Название" [(ngModel)]="charact.name" name="charact.name">
+      <input matInput onfocus="this.select()" autocomplete="off" placeholder="Название" [(ngModel)]="charact.name" name="charact.name">
     </mat-form-field>
 
     <!-- Начальное значение -->
@@ -76,7 +76,7 @@
 
     <!-- Описание -->
     <mat-form-field class="w-100">
-      <input matInput autocomplete="off" placeholder="Описание" [(ngModel)]="charact.descr" name="charact.descr">
+      <input matInput onfocus="this.select()" autocomplete="off" placeholder="Описание" [(ngModel)]="charact.descr" name="charact.descr">
     </mat-form-field>
 
     <!-- Навыки -->

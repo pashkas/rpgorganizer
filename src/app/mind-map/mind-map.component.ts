@@ -157,7 +157,7 @@ export class MindMapComponent implements OnInit {
           type: 'graph',
           layout: 'force',//'force', 'circular'
           force: {
-            repulsion: 135,
+            repulsion: 140,
             edgeLength: 70,
             //gravity: 0.17
           },
@@ -207,7 +207,23 @@ export class MindMapComponent implements OnInit {
             this.date.push(new mindMapItem(t.id, t.name, 25, 'transparent'));
           }
           idx++;
-          this.links.push(new mindMapLink(!this.srv.pers.isNoAbs ? this.dic.get(ch.id).index : this.dic.get('pers').index, this.dic.get(t.id).index));
+
+          // Если в требованиях есть с такой же характеристикой, ссылку не делаем
+          let haveSameCharact = false;
+          for (const r of t.reqvirements) {
+            for (const abs of ch.abilities) {
+              for (const tscs of abs.tasks) {
+               if (tscs.id == r.elId) {
+                 haveSameCharact = true;
+               } 
+              }
+            }
+          }
+
+          if (!haveSameCharact) {
+            this.links.push(new mindMapLink(!this.srv.pers.isNoAbs ? this.dic.get(ch.id).index : this.dic.get('pers').index, this.dic.get(t.id).index));
+          }
+          
           // if (t.isSumStates) {
           //   for (const st of t.states) {
           //     this.dic.set(st.id, new mapDicItem('st', st.name, idx, t));
