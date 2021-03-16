@@ -177,6 +177,43 @@ export class QwestDetailComponent implements OnInit {
     this.prevQwest = prevQwest;
   }
 
+  chooseNextQwest() {
+    this.srv.isDialogOpen = true;
+    const dialogRef = this.dialog.open(ChangeCharactComponent, {
+      panelClass: 'my-big',
+      data: { characteristic: this.qwest, allCharacts: this.srv.pers.qwests.sort((a, b) => a.name.localeCompare(b.name)), tittle: 'Выберите квест' },
+      backdropClass: 'backdrop'
+    });
+
+    dialogRef.afterClosed()
+      .subscribe(n => {
+        if (n) {
+          if (n.id != this.qwest.id) {
+            for (const qw of this.srv.pers.qwests) {
+              if (qw.id == n.id) {
+                qw.parrentId = this.qwest.id;
+
+                break;
+              }
+            }
+          }
+        }
+        this.srv.isDialogOpen = false;
+        this.getNextPrevQwests();
+      });
+  }
+
+  delNextQwest(id) {
+    for (const qw of this.srv.pers.qwests) {
+      if (qw.id === id) {
+        qw.parrentId = null;
+        break;
+      }
+    }
+
+    this.getNextPrevQwests();
+  }
+
   goBack() {
     if (this.isEditMode) {
       this.isEditMode = false;

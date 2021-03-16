@@ -6,8 +6,7 @@
     </button>
     <!-- Редактировать -->
     <button mat-icon-button (click)="saveData()">
-      <img src="assets/icons/edit.png" class="img-fluid"
-        [ngStyle]="{'object-fit': 'contain', 'height':'3em'}">
+      <img src="assets/icons/edit.png" class="img-fluid" [ngStyle]="{'object-fit': 'contain', 'height':'3em'}">
       <!-- <img *ngIf="isEditMode" src="assets/icons/create.png" class="img-fluid"
         [ngStyle]="{'object-fit': 'contain', 'height':'3em'}"> -->
     </button>
@@ -123,18 +122,21 @@
 
     <!-- Название -->
     <mat-form-field class="w-100">
-      <input onfocus="this.select()" matInput autocomplete="off" placeholder="Название" [(ngModel)]="qwest.name" name="qwest.name">
+      <input onfocus="this.select()" matInput autocomplete="off" placeholder="Название" [(ngModel)]="qwest.name"
+        name="qwest.name">
     </mat-form-field>
 
     <!-- Описание -->
     <mat-form-field class="w-100">
-      <input matInput onfocus="this.select()" autocomplete="off" placeholder="Описание" [(ngModel)]="qwest.descr" name="descr">
+      <textarea matInput autosize minRows='1' maxRows='5' useImportant='true' onfocus="this.select()" autocomplete="off"
+        placeholder="Описание" [(ngModel)]="qwest.descr" name="descr"></textarea>
     </mat-form-field>
 
     <!-- Опыт -->
     <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="8px">
       <mat-form-field class="w-100">
-        <input matInput onfocus="this.select()" autocomplete="off" placeholder="Опыт" [(ngModel)]="qwest.exp" name="exp">
+        <input matInput onfocus="this.select()" autocomplete="off" placeholder="Опыт" [(ngModel)]="qwest.exp"
+          name="exp">
       </mat-form-field>
       <button mat-button color="primary" (click)="setExp(1)">Легко</button>
       <button mat-button color="primary" (click)="setExp(2)">Норм</button>
@@ -176,16 +178,27 @@
 
     <!-- Следующие квесты -->
     <div fxLayout="row" fxLayoutAlign="space-between center" class="pt-2">
-      <h5>Следующие квесты:</h5>
-      <button class="icon-small" (click)="addNextQwest();" mat-icon-button *ngIf="nextQwests.length==0">
-        <img src="assets/icons/create.png" class="img-fluid">
-      </button>
+      <h5>Следующий квест:</h5>
+      <div>
+        <button class="icon-small" (click)="chooseNextQwest();" mat-icon-button *ngIf="nextQwests.length==0">
+          <img src="assets/icons/edit.png" class="img-fluid">
+        </button>
+
+        <button class="icon-small" (click)="addNextQwest();" mat-icon-button *ngIf="nextQwests.length==0">
+          <img src="assets/icons/create.png" class="img-fluid">
+        </button>
+      </div>
     </div>
     <mat-list *ngIf="nextQwests.length >0">
       <div mat-list-item *ngFor="let q of nextQwests; let i = index">
         <div class="d-flex">
           <div class="flex-grow-1 align-self-center">
             <h6>{{q.name}}</h6>
+          </div>
+          <div class="btn-group btn-group-sm" role="group" aria-label="Действия">
+            <button class="icon-small" (click)="delNextQwest(q.id)" mat-icon-button>
+              <img src="assets/icons/del.png" class="img-fluid">
+            </button>
           </div>
         </div>
       </div>

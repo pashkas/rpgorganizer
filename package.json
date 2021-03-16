@@ -45,6 +45,7 @@
     "ng-imgcache": "^1.0.1",
     "ng-pick-datetime": "^7.0.0",
     "ng2-charts": "^2.3.0",
+    "ngx-autosize": "^1.8.4",
     "ngx-echarts": "^4.2.2",
     "ngx-masonry": "^10.0.5",
     "ngx-material-timepicker": "^5.2.0",

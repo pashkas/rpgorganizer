@@ -19,8 +19,8 @@
       }
     }, {
       "name": "assets",
-      "installMode": "lazy",
-      "updateMode": "lazy",
+      "installMode": "prefetch",
+      "updateMode": "prefetch",
       "resources": {
         "files": [
           "/assets/**",

@@ -83,7 +83,8 @@ export class TaskDetailComponent implements OnInit {
 
     this.srv.isDialogOpen = true;
     const dialogRef = this.dialog.open(ChangeCharactComponent, {
-      data: { characteristic: this.tskCharact, allCharacts: this.srv.pers.characteristics.sort((a, b) => a.name.localeCompare(b.name)) },
+      panelClass: 'my-big',
+      data: { characteristic: this.tskCharact, allCharacts: this.srv.pers.characteristics.sort((a, b) => a.name.localeCompare(b.name)), tittle: 'Выберите квест' },
       backdropClass: 'backdrop'
     });
 
@@ -225,7 +226,7 @@ export class TaskDetailComponent implements OnInit {
 
     return dt;
   }
-  refrCounter(){
+  refrCounter() {
     this.tsk.refreshCounter++;
     this.srv.savePers(false);
   }
@@ -233,7 +234,7 @@ export class TaskDetailComponent implements OnInit {
     if (this.isEditMode) {
       this.isEditMode = false;
     }
-    else{
+    else {
       this.location.back();
     }
   }
@@ -300,7 +301,7 @@ export class TaskDetailComponent implements OnInit {
     }
   }
 
-  downAbil(){
+  downAbil() {
     if (this.tskAbility) {
       this.srv.changesBefore();
 

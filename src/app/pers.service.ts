@@ -2176,6 +2176,7 @@ export class PersService {
   }
 
   private getMonsterLevel(prsLvl: number): number {
+    debugger;
     if (!this.pers.maxPersLevel || this.pers.maxPersLevel < 100) {
       this.pers.maxPersLevel = 100;
     }

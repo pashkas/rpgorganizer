@@ -76,7 +76,7 @@
 
     <!-- Описание -->
     <mat-form-field class="w-100">
-      <input matInput onfocus="this.select()" autocomplete="off" placeholder="Описание" [(ngModel)]="charact.descr" name="charact.descr">
+      <textarea matInput autosize minRows='1' maxRows='5' useImportant='true' onfocus="this.select()" autocomplete="off" placeholder="Описание" [(ngModel)]="charact.descr" name="charact.descr"></textarea>
     </mat-form-field>
 
     <!-- Навыки -->

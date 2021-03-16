@@ -28,12 +28,13 @@ import { ReqvirementsComponent } from '../reqvirements/reqvirements.component';
 import { ReqShowComponent } from '../reqvirements/req-show/req-show.component';
 import { ReqEditComponent } from '../reqvirements/req-edit/req-edit.component';
 import { ReqAddComponent } from './req-add/req-add.component';
-import {MatSlideToggleModule} from '@angular/material/slide-toggle';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { ChangeCharactComponent } from './change-charact/change-charact.component';
-import {MatBadgeModule} from '@angular/material/badge';
+import { MatBadgeModule } from '@angular/material/badge';
 import { ImageComponentComponent } from '../image-component/image-component.component';
-import {MatChipsModule} from '@angular/material/chips';
+import { MatChipsModule } from '@angular/material/chips';
 import { AbHardnessComponent } from './ab-hardness/ab-hardness.component';
+import { AutosizeModule } from 'ngx-autosize';
 
 @NgModule({
   declarations: [
@@ -61,6 +62,7 @@ import { AbHardnessComponent } from './ab-hardness/ab-hardness.component';
     AbHardnessComponent,
   ],
   imports: [
+    AutosizeModule,
     MatChipsModule,
     MatIconModule,
     MatBadgeModule,
@@ -79,7 +81,7 @@ import { AbHardnessComponent } from './ab-hardness/ab-hardness.component';
   ],
   entryComponents:
     [
-      
+
       AddOrEditRevardComponent,
       EditDiaryParamsComponent,
       ReqAddComponent,
