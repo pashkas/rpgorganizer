@@ -3,6 +3,11 @@
   <mat-form-field *ngIf="!isGallery">
     <input cdkFocusInitial matInput [(ngModel)]="data.text" autocomplete="off" placeholder="Название" name="data.text">
   </mat-form-field>
+  <mat-form-field *ngIf="data.time">
+    <input placeholder="Время" matInput [ngxTimepicker]="picker" [format]="24" [(ngModel)]="data.time"
+      name="tasktime" readonly>
+    <ngx-material-timepicker #picker></ngx-material-timepicker>
+  </mat-form-field>
   <!-- <mat-form-field *ngIf="!isGallery && data?.timeVal">
     <mat-label>Время</mat-label>
     <mat-select [(ngModel)]=" data.timeVal" name="tsk.timeVal">
@@ -39,5 +44,6 @@
     Путь из интернета
   </button>
   <button mat-button mat-dialog-close>Отмена</button>
-  <button mat-button [mat-dialog-close]="data.text">Ok</button>
+  <button *ngIf="data.time" mat-button [mat-dialog-close]="data">Ok</button>
+  <button *ngIf="!data.time" mat-button [mat-dialog-close]="data.text">Ok</button>
 </div>

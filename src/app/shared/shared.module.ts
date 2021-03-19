@@ -14,6 +14,7 @@ import { AddItemDialogComponent } from '../add-item-dialog/add-item-dialog.compo
 import { ImageComponentComponent } from '../image-component/image-component.component';
 import { NgxMasonryModule } from 'ngx-masonry';
 import { TimeValPipe } from './time-val.pipe';
+import { NgxMaterialTimepickerModule } from 'ngx-material-timepicker';
 
 @NgModule({
   declarations: [
@@ -24,6 +25,7 @@ import { TimeValPipe } from './time-val.pipe';
     TimeValPipe,
   ],
   imports: [
+    NgxMaterialTimepickerModule,
     NgxMasonryModule,
     MatGridListModule,
     CommonModule,

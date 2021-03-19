@@ -36,6 +36,12 @@
                 </ng-template>
               </div>
             </div>
+            <div *ngIf="t.requrense != 'нет'" class="px-2">
+              <ngx-material-timepicker-toggle [for]="pikTimeInList"></ngx-material-timepicker-toggle>
+              <ngx-material-timepicker (timeSet)="onTimeChanged($event, t.id)" #pikTimeInList
+                [format]="24" [defaultTime]="t.time"></ngx-material-timepicker>
+              {{t.time}}
+            </div>
             <button mat-button cdkDragHandle [hidden]="!isSort">
               <i class="fa fa-lg fa-expand-arrows-alt"></i>
             </button>
@@ -60,7 +66,7 @@
 
     <div fxLayout="column" fxLayoutAlign="center center" class="w-100 h-100 py-2 px-2" [ngStyle]="{'height': '3em'}">
       <div fxLayout="row" fxLayoutAlign="center center">
-        
+
         <a [routerLink]="['/pers/task', this.srv.pers.currentTask.parrentTask ? this.srv.pers.currentTask.parrentTask : this.srv.pers.currentTask.id, false]"
           class="text-dark text-center">
           <h4 class="m-0">
@@ -92,7 +98,16 @@
               <a class="text-secondary" [routerLink]="[pl.linkName, pl.linkId]">{{pl.name}}</a>
             </ng-container>
             <ng-template #elseTemplate>
-              <span class="text-secondary">{{pl.name}}</span>
+
+              <span class="text-secondary">
+                <ng-container *ngIf="i==0 && this.srv.pers.currentTask.reccurence!='нет'">
+                  <ngx-material-timepicker-toggle [for]="toggleTimepicker"></ngx-material-timepicker-toggle>
+                  <ngx-material-timepicker (timeSet)="onTimeChanged($event, this.srv.pers.currentTask.id)"
+                    #toggleTimepicker [format]="24" [defaultTime]="this.srv.pers.currentTask.time"></ngx-material-timepicker>
+                </ng-container>
+                {{pl.name}}
+              </span>
+
             </ng-template>
           </ng-template>
         </ng-container>

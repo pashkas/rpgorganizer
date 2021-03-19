@@ -50,7 +50,7 @@ export class TaskDetailComponent implements OnInit {
     header += this.tsk.requrense == 'нет' ? ' подзадачу' : ' состояние';
     const dialogRef = this.dialog.open(AddItemDialogComponent, {
       panelClass: 'my-dialog',
-      data: { header: header, text: isEdit ? st.name : '', timeVal: st ? st.timeVal : null },
+      data: { header: header, text: isEdit ? st.name : '', timeVal: st ? st.timeVal : null, time: st ? st.time ? st.time : '23:59' : null },
       backdropClass: 'backdrop'
     });
 
@@ -62,14 +62,16 @@ export class TaskDetailComponent implements OnInit {
             state.value = this.tsk.value;
             state.requrense = this.tsk.requrense;
             state.image = this.srv.GetRndEnamy(state);
-            state.name = stt;
+            state.name = stt.text;
+            state.time = stt.time;
             this.tsk.states.push(state);
 
             this.tsk.states = this.tsk.states.sort((a, b) => {
               return a.isDone === b.isDone ? 0 : b.isDone ? -1 : 1;
             });
           } else {
-            st.name = stt;
+            st.name = stt.text;
+            st.time = stt.time;
           }
         }
         this.srv.isDialogOpen = false;

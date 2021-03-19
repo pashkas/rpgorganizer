@@ -35,6 +35,7 @@ import { ImageComponentComponent } from '../image-component/image-component.comp
 import { MatChipsModule } from '@angular/material/chips';
 import { AbHardnessComponent } from './ab-hardness/ab-hardness.component';
 import { AutosizeModule } from 'ngx-autosize';
+import { NgxMaterialTimepickerModule } from 'ngx-material-timepicker';
 
 @NgModule({
   declarations: [
@@ -62,6 +63,7 @@ import { AutosizeModule } from 'ngx-autosize';
     AbHardnessComponent,
   ],
   imports: [
+    NgxMaterialTimepickerModule,
     AutosizeModule,
     MatChipsModule,
     MatIconModule,

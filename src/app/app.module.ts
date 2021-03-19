@@ -29,6 +29,7 @@ import { RouteReuseService } from './route-reuse.service';
 import {MatDividerModule} from '@angular/material/divider';
 import { ConfirmationDialogComponent } from './confirmation-dialog/confirmation-dialog.component';
 import { TimerCounterComponent } from './main-window/timer-counter/timer-counter.component';
+import { NgxMaterialTimepickerModule } from 'ngx-material-timepicker';
 
 registerLocaleData(localeRu, 'ru');
 
@@ -49,6 +50,7 @@ registerLocaleData(localeRu, 'ru');
     TimerCounterComponent,
   ],
   imports: [
+    NgxMaterialTimepickerModule,
     MatBadgeModule,
     MatDividerModule,
     MatIconModule,

@@ -150,6 +150,12 @@
           </mat-select>
         </mat-form-field>
         <!-- Время -->
+        <mat-form-field>
+          <input placeholder="Время" matInput [ngxTimepicker]="picker" [format]="24" [(ngModel)]="tsk.time"
+            name="tasktime" readonly>
+          <ngx-material-timepicker #picker></ngx-material-timepicker>
+        </mat-form-field>
+
         <!-- <mat-form-field>
           <mat-label>Время</mat-label>
           <mat-select [(ngModel)]="tsk.timeVal" name="tsk.timeVal">
@@ -177,8 +183,8 @@
     <!-- Описание -->
     <div fxLayout="row" fxLayoutAlign="space-around center" fxLayoutGap="10px">
       <mat-form-field>
-        <textarea matInput autosize minRows='1' maxRows='5' useImportant='true' onfocus="this.select()" autocomplete="off" placeholder="Описание" [(ngModel)]="tsk.descr"
-          name="tsk.descr"></textarea>
+        <textarea matInput autosize minRows='1' maxRows='5' useImportant='true' onfocus="this.select()"
+          autocomplete="off" placeholder="Описание" [(ngModel)]="tsk.descr" name="tsk.descr"></textarea>
       </mat-form-field>
     </div>
     <div *ngIf="tsk.requrense != 'нет'" class="pb-2">

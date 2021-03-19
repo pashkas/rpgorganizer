@@ -651,7 +651,6 @@ export class PersService {
     // Задачи навыков
     this.pers.characteristics.forEach(cha => {
       cha.abilities.forEach(ab => {
-        // || ab.isOpen
         if ((ab.value >= 1) && !ab.isNotDoneReqvirements) {
           ab.tasks.forEach(tsk => {
             if (tsk.states.length > 0 && tsk.isSumStates && !tsk.isStateInTitle) {
@@ -672,6 +671,10 @@ export class PersService {
     });
 
     tasks = tasks.sort((a, b) => {
+      if (a.time != b.time) {
+        return a.time.localeCompare(b.time)
+      }
+
       return a.order - b.order;
     });
 
@@ -1153,6 +1156,13 @@ export class PersService {
 
           // Для показа опыта за задачу
           if (tsk.requrense != 'нет') {
+            // Время
+            if (tsk.time == "00:00" || isNullOrUndefined(tsk.time)) {
+              tsk.time = "23:59";
+            }
+
+            tsk.plusToNames.unshift(new plusToName('' + tsk.time, null, null, ''));
+
             let exp = this.getTaskChangesExp(tsk, true) * 10.0;
             exp = Math.floor(exp);
             tsk.plusToNames.push(new plusToName('+' + exp + ' exp', null, null, ''));
@@ -1723,6 +1733,11 @@ export class PersService {
       // По дате
       if (aValDate != bValDate) {
         return aDate.valueOf() - bDate.valueOf();
+      }
+
+      // По времени
+      if (a.time != b.time) {
+        return a.time.localeCompare(b.time)
       }
 
       // По Order
@@ -2419,10 +2434,22 @@ export class PersService {
     stT.parrentTask = tsk.id;
     stT.lastNotDone = tsk.lastNotDone;
     stT.plusToNames = [...tsk.plusToNames];
+    
+    stT.plusToNames.shift();
 
     if (stateProgr) {
       stT.plusToNames.unshift(new plusToName(stateProgr, null, null, ''));
     }
+
+    if (tsk.time == "00:00" || isNullOrUndefined(tsk.time)) {
+      tsk.time = "23:59";
+    }
+    if (st.time == "00:00" || isNullOrUndefined(st.time)) {
+      st.time = "23:59";
+    }
+
+    stT.time = st.time;
+    stT.plusToNames.unshift(new plusToName('' + st.time, null, null, ''));
 
     return stT;
   }

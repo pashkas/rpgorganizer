@@ -616,7 +616,26 @@ export class MainWindowComponent implements OnInit {
     this.isSort = !this.isSort;
   }
 
-
+  onTimeChanged(ev, tskid){
+    for (const ch of this.srv.pers.characteristics) {
+      for (const ab of ch.abilities) {
+        for (const tsk of ab.tasks) {
+          if (tsk.id==tskid) {
+            tsk.time = ev;
+            break;
+          }
+          for (const st of tsk.states) {
+            if (st.id==tskid) {
+              st.time = ev;
+              break;
+            }
+          }
+        }
+      }
+    }
+    
+    this.srv.savePers(false);
+  }
 
   /**
    * Задать вид - задачи, квесты.
