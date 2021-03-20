@@ -1157,9 +1157,7 @@ export class PersService {
           // Для показа опыта за задачу
           if (tsk.requrense != 'нет') {
             // Время
-            if (tsk.time == "00:00" || isNullOrUndefined(tsk.time)) {
-              tsk.time = "23:59";
-            }
+            
 
             tsk.plusToNames.unshift(new plusToName('' + tsk.time, null, null, ''));
 
@@ -2434,13 +2432,6 @@ export class PersService {
       stT.plusToNames.unshift(new plusToName(stateProgr, null, null, ''));
     }
 
-    if (tsk.time == "00:00" || isNullOrUndefined(tsk.time)) {
-      tsk.time = "23:59";
-    }
-    if (st.time == "00:00" || isNullOrUndefined(st.time)) {
-      st.time = "23:59";
-    }
-
     stT.time = st.time;
     stT.plusToNames.unshift(new plusToName('' + st.time, null, null, ''));
 
@@ -2609,7 +2600,7 @@ export class PersService {
       let thisOn = ceilOn - prevOn;
       prevOn = ceilOn;
 
-      exp += ceilOn * thisOn;
+      exp += ceilOn * Math.floor(onPerLevel);
 
       nextExp = exp;
 

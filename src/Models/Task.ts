@@ -66,7 +66,7 @@ export class Task implements IImg {
     requrense: string = "будни";
     states: taskState[] = [];
     // statesDescr: taskState[] = [];
-    time: string = "23:59";
+    time: string = "00:00";
     timeForSort: number = 200000000;
     tittle: string;
     value: number = 0;
@@ -212,7 +212,7 @@ export class taskState implements IImg {
     img: string;
     image: string;
     imageLvl: string = '0';
-    time: string = "23:59";
+    time: string = "00:00";
     value: number;
     requrense: string;
     timeVal: number;

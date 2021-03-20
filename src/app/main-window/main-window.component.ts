@@ -635,6 +635,14 @@ export class MainWindowComponent implements OnInit {
     }
     
     this.srv.savePers(false);
+    if (this.isSort) {
+      if (this.srv.pers.sellectedView === 'квесты') {
+        this.srv.getQwestTasks(true);
+      }
+      else {
+        this.srv.getAllAbTasks();
+      }
+    }
   }
 
   /**

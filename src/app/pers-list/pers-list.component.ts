@@ -269,12 +269,14 @@ export class PersListComponent implements OnInit {
           ab.isOpen = false;
           ab.tasks.forEach(tsk => {
             this.srv.GetRndEnamy(tsk);
+            tsk.time = "00:00";
             tsk.value = 0;
             tsk.tesValue = 0;
             tsk.refreshCounter = 0;
             tsk.date = new Date();
             this.srv.GetRndEnamy(tsk);
             tsk.states.forEach(st => {
+              st.time = "00:00";
               this.srv.GetRndEnamy(st);
             });
             tsk.lastNotDone = false;
