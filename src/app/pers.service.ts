@@ -2191,23 +2191,16 @@ export class PersService {
   }
 
   private getMonsterLevel(prsLvl: number): number {
-    debugger;
-    if (!this.pers.maxPersLevel || this.pers.maxPersLevel < 100) {
-      this.pers.maxPersLevel = 100;
-    }
-    let max = this.pers.maxPersLevel;
-    let progress = prsLvl / max;
-
-    if (progress < 0.1) {
+    if (prsLvl < 10) {
       return 1;
     }
-    else if (progress < 0.3) {
+    else if (prsLvl < 30) {
       return 2;
     }
-    else if (progress < 0.7) {
+    else if (prsLvl < 70) {
       return 3;
     }
-    else if (progress < 0.9) {
+    else if (prsLvl < 90) {
       return 4;
     }
     else {
@@ -2434,7 +2427,7 @@ export class PersService {
     stT.parrentTask = tsk.id;
     stT.lastNotDone = tsk.lastNotDone;
     stT.plusToNames = [...tsk.plusToNames];
-    
+
     stT.plusToNames.shift();
 
     if (stateProgr) {
@@ -2583,14 +2576,11 @@ export class PersService {
 
     let onPerLevel;
 
-    if (this.pers.isEra) {
-      if (this.pers.isMax5) {
-        onPerLevel = (totalAbilities * 15.0) / 100.0;
-      }
-      else {
-        onPerLevel = 10;
-      }
-    }
+    // Максимальное количество навыков
+    let maxPoints = this.pers.characteristics.reduce((a, b) => {
+      let withHardness = b.abilities.reduce((c, d) => c + (10 * d.tasks[0].hardnes), 0);
+      return a + withHardness;
+    }, 0);
 
     // Очки навыков
     let persLevel = 0;
@@ -2598,34 +2588,29 @@ export class PersService {
     let startExp = 0;
     let nextExp = 0;
     let startON = 0;
-    if (this.pers.isTES) {
+    let prevOn = 0;
+
+    onPerLevel = maxPoints / 100;
+    if (onPerLevel < 1) {
       onPerLevel = 1;
-      startON = 2;
     }
-    else {
-      onPerLevel = 1;
-      startON = 4;
-    }
+
+    startON = 0;
+
     this.pers.ONPerLevel = Math.ceil(onPerLevel);
     let ceilOn = 0;
 
     for (let i = 1; i <= 9999 + 1; i++) {
       startExp = exp;
 
-      if (this.pers.isTES) {
-        exp += 100.0;
-      }
-      else {
-        ceilOn = Math.ceil(i * onPerLevel) + startON;
 
-        // Кадые 5 уровней +1 очко
-        const oneForFive = Math.trunc((i - 1) / 5);
-        ceilOn += oneForFive;
+      ceilOn = Math.ceil(i * onPerLevel) + startON;
 
-        let noLinear = 1;
+      let thisOn = ceilOn - prevOn;
+      prevOn = ceilOn;
 
-        exp += Math.ceil((ceilOn * noLinear) * 10.0) / 10.0;
-      }
+      exp += ceilOn * thisOn;
+
       nextExp = exp;
 
       if (exp > this.pers.exp) {
@@ -2659,30 +2644,26 @@ export class PersService {
     this.pers.totalProgress = (skillCur / skillMax) * 100;
 
     // Максимальный уровень перса
-    let maxPoints = this.pers.characteristics.reduce((a, b) => {
-      let withHardness = b.abilities.reduce((c, d) => c + (10 * d.tasks[0].hardnes), 0);
-      return a + withHardness;
-    }, 0);
-    let i = 0;
-    while (true) {
-      if (i == 0) {
-        maxPoints -= 5;
-      }
-      else if (i % 5 == 0) {
-        maxPoints -= 2;
-      }
-      else {
-        maxPoints -= 1;
-      }
+    // let i = 0;
+    // while (true) {
+    //   if (i == 0) {
+    //     maxPoints -= 5;
+    //   }
+    //   else if (i % 5 == 0) {
+    //     maxPoints -= 2;
+    //   }
+    //   else {
+    //     maxPoints -= 1;
+    //   }
 
-      i++;
+    //   i++;
 
-      if (maxPoints <= 0) {
-        break;
-      }
-    }
+    //   if (maxPoints <= 0) {
+    //     break;
+    //   }
+    // }
 
-    this.pers.maxPersLevel = i;
+    // this.pers.maxPersLevel = i;
 
     // let nnn = this.getMonsterLevel(prevPersLevel);
 
