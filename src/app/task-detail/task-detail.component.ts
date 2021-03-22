@@ -45,12 +45,29 @@ export class TaskDetailComponent implements OnInit {
     }
 
     let header = '';
+    
+
+    let time;
+    if (this.tsk.requrense == 'нет') {
+      time = null;
+    }
+    else{
+      if (st) {
+        if (st.time == null || st.time == undefined) {
+          st.time = "00:00";
+        }
+        time = st.time;
+      }
+      else{
+        time = "00:00";
+      }
+    }
 
     header += isEdit ? 'Редактировать' : 'Добавить';
-    header += this.tsk.requrense == 'нет' ? ' подзадачу' : ' состояние';
+    header += this.tsk.requrense == 'нет' ? ' подзадачу' : ' подзадачу';
     const dialogRef = this.dialog.open(AddItemDialogComponent, {
       panelClass: 'my-dialog',
-      data: { header: header, text: isEdit ? st.name : '', timeVal: st ? st.timeVal : null, time: st ? st.time ? st.time : '23:59' : null },
+      data: { header: header, text: isEdit ? st.name : '', timeVal: st ? st.timeVal : null, time: time },
       backdropClass: 'backdrop'
     });
 

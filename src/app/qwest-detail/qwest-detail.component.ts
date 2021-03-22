@@ -242,6 +242,9 @@ export class QwestDetailComponent implements OnInit {
 
       for (const qw of this.srv.pers.qwests) {
         if (qw.id === id) {
+          if (qw.hardnes == null || qw.hardnes == undefined) {
+            qw.hardnes = 0;
+          }
           this.qwest = qw;
           break;
         }
@@ -313,23 +316,8 @@ export class QwestDetailComponent implements OnInit {
   }
 
   setExp(i: number) {
-    let exp = (this.srv.pers.nextExp - this.srv.pers.prevExp) * 10.0;
-    let expChange = 0;
-
-    switch (i) {
-      case 1:
-        expChange = exp * 0.25;
-        break;
-      case 2:
-        expChange = exp * 0.5;
-        break;
-      case 3:
-        expChange = exp * 1;
-        break;
-
-      default:
-        break;
-    }
+    this.qwest.hardnes = i;
+    let expChange = this.srv.getQwestExpChange(i);
 
     this.qwest.exp = Math.ceil(expChange);
   }

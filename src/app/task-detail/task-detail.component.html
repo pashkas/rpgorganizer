@@ -43,15 +43,12 @@
       </div> -->
 
       <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="7px">
-        <button *ngIf="tsk.value>=1" class="icon-small" mat-icon-button (click)="downAbil();">
-          <img src="assets/icons/down.png" class="img-fluid">
-        </button>
-
         <button *ngIf="tsk.mayUp" class="icon-small" mat-icon-button (click)="upAbil();">
           <img src="assets/icons/up.png" class="img-fluid">
         </button>
-
-
+        <button *ngIf="tsk.value>=1" class="icon-small" mat-icon-button (click)="downAbil();">
+          <img src="assets/icons/down.png" class="img-fluid">
+        </button>
         <span *ngIf="tsk.requrense != 'нет'">
           <img src="assets/icons/diamond.png" class="img-fluid" [ngStyle]="{'object-fit': 'contain', 'height':'1.5em'}">
           <span>
@@ -242,7 +239,7 @@
     <!-- <h5>Состояния:</h5> -->
     <div fxLayout="row" fxLayoutAlign="space-between center">
       <ng-container *ngIf="tsk.requrense != 'нет'">
-        <h5>Состояния:</h5>
+        <h5>Подзадачи:</h5>
       </ng-container>
       <ng-container *ngIf="tsk.requrense === 'нет'">
         <h5>Подзадачи:</h5>

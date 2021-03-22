@@ -653,8 +653,14 @@ export class PersService {
       cha.abilities.forEach(ab => {
         if ((ab.value >= 1) && !ab.isNotDoneReqvirements) {
           ab.tasks.forEach(tsk => {
+            if (this.isNullOrUndefined(tsk.time)) {
+              tsk.time = "00:00";
+            }
             if (tsk.states.length > 0 && tsk.isSumStates && !tsk.isStateInTitle) {
               tsk.states.forEach(st => {
+                if (this.isNullOrUndefined(st.time)) {
+                  st.time = "00:00";
+                }
                 if (st.isActive) {
                   let t = this.getTskFromState(tsk, st, true);
                   tasks.push(t);
@@ -797,9 +803,15 @@ export class PersService {
           // || ab.isOpen
           if ((ab.value >= 1) && !ab.isNotDoneReqvirements) {
             ab.tasks.forEach(tsk => {
+              if (this.isNullOrUndefined(tsk.time)) {
+                tsk.time = "00:00";
+              }
               if (this.checkTask(tsk)) {
                 if (tsk.isSumStates && tsk.states.length > 0 && !tsk.isStateInTitle) {
                   tsk.states.forEach(st => {
+                    if (this.isNullOrUndefined(st.time)) {
+                      st.time = "00:00";
+                    }
                     if (st.isActive && !st.isDone) {
                       let stT = this.getTskFromState(tsk, st, false);
                       tasks.push(stT);
@@ -1157,7 +1169,7 @@ export class PersService {
           // Для показа опыта за задачу
           if (tsk.requrense != 'нет') {
             // Время
-            
+
 
             tsk.plusToNames.unshift(new plusToName('' + tsk.time, null, null, ''));
 
@@ -1221,6 +1233,13 @@ export class PersService {
 
     // Обновляем квесты
     this.pers.qwests.forEach(qw => {
+      if (qw.hardnes == null || qw.hardnes == undefined) {
+        qw.hardnes = 0;
+      }
+
+      let expChange = this.getQwestExpChange(qw.hardnes);
+      qw.exp = Math.ceil(expChange);
+
       let totalTsks = qw.tasks.length;
       let doneTsks = qw.tasks.filter(n => {
         return n.isDone === true;
@@ -1452,6 +1471,29 @@ export class PersService {
     localStorage.setItem("pers", JSON.stringify(this.pers));
 
     this.isSynced = false;
+  }
+
+  getQwestExpChange(qwHardness:number) {
+    let exp = (this.pers.nextExp - this.pers.prevExp) * 10.0;
+    let expChange = 0;
+    switch (qwHardness) {
+      case 1:
+        expChange = exp * 0.25;
+        break;
+      case 2:
+        expChange = exp * 0.5;
+        break;
+      case 3:
+        expChange = exp * 1;
+        break;
+      case 0:
+        expChange = 0;
+        break;
+
+      default:
+        break;
+    }
+    return expChange;
   }
 
   /**
@@ -2432,10 +2474,25 @@ export class PersService {
       stT.plusToNames.unshift(new plusToName(stateProgr, null, null, ''));
     }
 
+    if (this.isNullOrUndefined(tsk.time)) {
+      tsk.time = "00:00";
+    }
+    if (this.isNullOrUndefined(st.time)) {
+      st.time = "00:00";
+    }
+
     stT.time = st.time;
     stT.plusToNames.unshift(new plusToName('' + st.time, null, null, ''));
 
     return stT;
+  }
+
+  isNullOrUndefined(ob) {
+    if (ob == null || ob == undefined) {
+      return true;
+    }
+
+    return false;
   }
 
   /**
@@ -2594,13 +2651,12 @@ export class PersService {
     for (let i = 1; i <= 9999 + 1; i++) {
       startExp = exp;
 
-
       ceilOn = Math.ceil(i * onPerLevel) + startON;
 
-      let thisOn = ceilOn - prevOn;
+      //let thisOn = ceilOn - prevOn;
       prevOn = ceilOn;
 
-      exp += ceilOn * Math.floor(onPerLevel);
+      exp += ceilOn * this.getMonsterLevel(i);
 
       nextExp = exp;
 

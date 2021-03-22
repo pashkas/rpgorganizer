@@ -134,13 +134,20 @@
 
     <!-- Опыт -->
     <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="8px">
-      <mat-form-field class="w-100">
-        <input matInput onfocus="this.select()" autocomplete="off" placeholder="Опыт" [(ngModel)]="qwest.exp"
-          name="exp">
-      </mat-form-field>
-      <button mat-button color="primary" (click)="setExp(1)">Легко</button>
-      <button mat-button color="primary" (click)="setExp(2)">Норм</button>
-      <button mat-button color="primary" (click)="setExp(3)">Трудно</button>
+      <div style="width: 100%;">
+        <mat-form-field class="w-100">
+          <input matInput onfocus="this.select()" autocomplete="off" placeholder="Опыт" [(ngModel)]="qwest.exp" name="exp"
+            [disabled]="qwest.hardnes != 0">
+        </mat-form-field>
+      </div>
+      <div fxFlex="noshrink">
+        <mat-chip-list [selectable]="true">
+          <mat-chip (click)="setExp(1)" [selected]="qwest.hardnes==1" color="accent">Легко</mat-chip>
+          <mat-chip (click)="setExp(2)" [selected]="qwest.hardnes==2" color="accent">Норм</mat-chip>
+          <mat-chip (click)="setExp(3)" [selected]="qwest.hardnes==3" color="accent">Сложно</mat-chip>
+          <mat-chip (click)="setExp(0)" [selected]="qwest.hardnes==0" color="accent">Польз.</mat-chip>
+        </mat-chip-list>
+      </div>
     </div>
 
     <!-- Задачи -->

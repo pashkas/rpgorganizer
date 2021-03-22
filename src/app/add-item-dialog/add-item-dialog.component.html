@@ -1,7 +1,7 @@
 <h1 mat-dialog-title class="text-center">{{data.header}}</h1>
 <div mat-dialog-content>
   <mat-form-field *ngIf="!isGallery">
-    <input cdkFocusInitial matInput [(ngModel)]="data.text" autocomplete="off" placeholder="Название" name="data.text">
+    <input onfocus="this.select()" cdkFocusInitial matInput [(ngModel)]="data.text" autocomplete="off" placeholder="Название" name="data.text">
   </mat-form-field>
   <mat-form-field *ngIf="data.time">
     <input placeholder="Время" matInput [ngxTimepicker]="picker" [format]="24" [(ngModel)]="data.time"
