@@ -45,29 +45,27 @@ export class TaskDetailComponent implements OnInit {
     }
 
     let header = '';
-    
-
-    let time;
-    if (this.tsk.requrense == 'нет') {
-      time = null;
-    }
-    else{
-      if (st) {
-        if (st.time == null || st.time == undefined) {
-          st.time = "00:00";
-        }
-        time = st.time;
-      }
-      else{
-        time = "00:00";
-      }
-    }
+    let time = null;
+    // if (this.tsk.requrense == 'нет') {
+    //   time = null;
+    // }
+    // else{
+    //   if (st) {
+    //     if (st.time == null || st.time == undefined) {
+    //       st.time = "00:00";
+    //     }
+    //     time = st.time;
+    //   }
+    //   else{
+    //     time = "00:00";
+    //   }
+    // }
 
     header += isEdit ? 'Редактировать' : 'Добавить';
     header += this.tsk.requrense == 'нет' ? ' подзадачу' : ' подзадачу';
     const dialogRef = this.dialog.open(AddItemDialogComponent, {
       panelClass: 'my-dialog',
-      data: { header: header, text: isEdit ? st.name : '', timeVal: st ? st.timeVal : null, time: time },
+      data: { header: header, text: isEdit ? st.name : '', timeVal: st ? st.timeVal : null },
       backdropClass: 'backdrop'
     });
 
@@ -80,15 +78,17 @@ export class TaskDetailComponent implements OnInit {
             state.requrense = this.tsk.requrense;
             state.image = this.srv.GetRndEnamy(state);
             state.name = stt.text;
-            state.time = stt.time;
+            //state.time = stt.time;
             this.tsk.states.push(state);
 
-            this.tsk.states = this.tsk.states.sort((a, b) => {
-              return a.isDone === b.isDone ? 0 : b.isDone ? -1 : 1;
-            });
+            if (this.tsk.requrense == 'нет') {
+              this.tsk.states = this.tsk.states.sort((a, b) => {
+                return a.isDone === b.isDone ? 0 : b.isDone ? -1 : 1;
+              });
+            }
           } else {
             st.name = stt.text;
-            st.time = stt.time;
+            //st.time = stt.time;
           }
         }
         this.srv.isDialogOpen = false;
