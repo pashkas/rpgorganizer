@@ -77,7 +77,7 @@ export class TaskDetailComponent implements OnInit {
             state.value = this.tsk.value;
             state.requrense = this.tsk.requrense;
             state.image = this.srv.GetRndEnamy(state);
-            state.name = stt.text;
+            state.name = stt;
             //state.time = stt.time;
             this.tsk.states.push(state);
 
@@ -87,7 +87,7 @@ export class TaskDetailComponent implements OnInit {
               });
             }
           } else {
-            st.name = stt.text;
+            st.name = stt;
             //st.time = stt.time;
           }
         }
