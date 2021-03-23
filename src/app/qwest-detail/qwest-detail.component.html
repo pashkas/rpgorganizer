@@ -86,7 +86,13 @@
     <!-- Требования предыдущих -->
     <div class="pt-2 text-center" *ngIf="prevQwest">
       <a class="text-danger"
-        [routerLink]="['/pers/qwest', prevQwest.id]">{{'Квест "'+prevQwest.name+'" должен быть выполнен!'}}</a>
+        [routerLink]="['/pers/qwest', prevQwest.id]">{{'"'+prevQwest.name+'" должен быть выполнен!'}}</a>
+    </div>
+
+    <!-- Следующий квест -->
+    <div class="pt-2 text-center" *ngIf="nextQwests.length>0">
+      <a *ngFor="let qw of nextQwests" skipLocationChange
+        [routerLink]="['/pers/qwest', qw.id]">{{'👉 '+qw.name+' 👈'}}</a>
     </div>
 
     <div *ngIf="qwest.tasks.length>0" class="pt-2">
@@ -136,8 +142,8 @@
     <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="8px">
       <div style="width: 100%;">
         <mat-form-field class="w-100">
-          <input matInput onfocus="this.select()" autocomplete="off" placeholder="Опыт" [(ngModel)]="qwest.exp" name="exp"
-            [disabled]="qwest.hardnes != 0">
+          <input matInput onfocus="this.select()" autocomplete="off" placeholder="Опыт" [(ngModel)]="qwest.exp"
+            name="exp" [disabled]="qwest.hardnes != 0">
         </mat-form-field>
       </div>
       <div fxFlex="noshrink">

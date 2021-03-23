@@ -50,6 +50,15 @@ export class Pers {
 
     maxPersLevel: number = 100;
 
+    rangName: string = 'обыватель';
+    static rangNames=[
+        'обыватель',
+        'авантюрист',
+        'воин',
+        'герой',
+        'легенда'
+    ];
+
     /**
      * Без дневника.
      */

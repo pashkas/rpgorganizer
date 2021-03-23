@@ -116,7 +116,7 @@
   </ng-container>
 
   <app-progress-bar-num
-    [text]="srv.pers.name+', уровень ' + srv.pers.level+': '+((srv.pers.exp - srv.pers.prevExp) * 10.0 | number : '1.0-0')+'/'+((srv.pers.nextExp- srv.pers.prevExp) * 10.0 | number : '1.0-0')"
+    [text]="srv.pers.name+' ('+srv.pers.rangName+')'+', уровень ' + srv.pers.level+': '+((srv.pers.exp - srv.pers.prevExp) * 10.0 | number : '1.0-0')+'/'+((srv.pers.nextExp- srv.pers.prevExp) * 10.0 | number : '1.0-0')"
     [val]="srv.pers.progressValue">
   </app-progress-bar-num>
   <div fxLayout="row" fxLayoutAlign="space-between center" class="w-100 h-100 py-1" style="min-height: 120px;">

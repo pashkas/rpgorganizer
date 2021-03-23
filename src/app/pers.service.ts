@@ -1236,9 +1236,11 @@ export class PersService {
       if (qw.hardnes == null || qw.hardnes == undefined) {
         qw.hardnes = 0;
       }
-
-      let expChange = this.getQwestExpChange(qw.hardnes);
-      qw.exp = Math.ceil(expChange);
+      
+      if (qw.hardnes != 0) {
+        let expChange = this.getQwestExpChange(qw.hardnes);
+        qw.exp = Math.ceil(expChange);
+      }
 
       let totalTsks = qw.tasks.length;
       let doneTsks = qw.tasks.filter(n => {
@@ -1434,6 +1436,10 @@ export class PersService {
     }
     //----------------------------
 
+    // Ранг
+    let monstersLvl = this.getMonsterLevel(this.pers.level);
+    this.pers.rangName = Pers.rangNames[monstersLvl-1];
+
     // Настройки
     if (this.pers.isEra) {
       this.pers.isTES = false;
@@ -1473,7 +1479,7 @@ export class PersService {
     this.isSynced = false;
   }
 
-  getQwestExpChange(qwHardness:number) {
+  getQwestExpChange(qwHardness: number) {
     let exp = (this.pers.nextExp - this.pers.prevExp) * 10.0;
     let expChange = 0;
     switch (qwHardness) {
@@ -2130,6 +2136,10 @@ export class PersService {
    * @param prs Персонаж.
    */
   private checkPersNewFields(prs: Pers) {
+    if (!prs.rangName) {
+      prs.rangName = "обыватель";
+    }
+
     if (prs.expKoef == undefined || prs.expKoef == null) {
       prs.expKoef = 0;
     }
