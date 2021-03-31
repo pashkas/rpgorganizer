@@ -1132,7 +1132,7 @@ export class PersService {
           if (!acc[el.abilitiId]) {
             acc[el.abilitiId] = [];
           }
-          acc[el.abilitiId].push({ qwId: el.id, qwName: el.name });
+          acc[el.abilitiId].push({ qwId: el.id, qwName: el.name, par: el.parrentId });
         }
         return acc;
       }, {});
@@ -1162,7 +1162,9 @@ export class PersService {
           const qwLink = qwestMap[ab.id];
           if (qwLink) {
             for (const q of qwLink) {
-              tsk.plusToNames.push(new plusToName('🔗 ' + q.qwName, q.qwId, '', 'qwestTask'));
+              if (!q.par) {
+                tsk.plusToNames.push(new plusToName('🔗 ' + q.qwName, q.qwId, '', 'qwestTask'));
+              }
             }
           }
 
@@ -1236,7 +1238,7 @@ export class PersService {
       if (qw.hardnes == null || qw.hardnes == undefined) {
         qw.hardnes = 0;
       }
-      
+
       if (qw.hardnes != 0) {
         let expChange = this.getQwestExpChange(qw.hardnes);
         qw.exp = Math.ceil(expChange);
@@ -1288,32 +1290,88 @@ export class PersService {
 
       qw.tasksDone = doneTsks;
 
+      if (qw.abilitiId) {
+        let abil = null;
+        for (const ch of this.pers.characteristics) {
+          for (const ab of ch.abilities) {
+            if (ab.id == qw.abilitiId) {
+              abil = ab;
+            }
+          }
+        }
+
+        if (abil != null && !this.checkTask(abil.tasks[0])) {
+          qw.isNoActive = true;
+        }
+        else {
+          qw.isNoActive = false;
+        }
+      }
+      else {
+        qw.isNoActive = false;
+      }
+
+      if (qw.isNoActive==false) {
+        if (qw.tasks.length>0) {
+          if (!this.checkTask(qw.tasks[0])) {
+            qw.isNoActive = true;
+          }
+          else{
+            qw.isNoActive = false;
+          }
+        }
+        else{
+          qw.isNoActive = false;
+        }
+      }
+
       // Сортировка задач квеста
       this.sortQwestTasks(qw);
     });
 
-    // Сортировка квестов по следующим/предыдущим
-    let ordered = this.pers.qwests.filter(q => !q.parrentId);
+    let root = this.pers.qwests.filter(q => !q.parrentId);
+    let child = this.pers.qwests.filter(q => q.parrentId);
+    let ordered = [];
 
-    const idMapping = this.pers.qwests.reduce((acc, el, i) => {
-      acc[el.id] = i;
-      return acc;
-    }, {});
-
-    this.pers.qwests.forEach(el => {
-      // Handle the root element
-      if (!el.parrentId) {
-        return;
+    while (root.length > 0) {
+      let r = root.pop();
+      let stack: Qwest[] = [];
+      stack.push(r);
+      while (stack.length > 0) {
+        let cur = stack.pop();
+        ordered.push(cur);
+        let nextIdx = child.findIndex(n => n.parrentId == cur.id);
+        if (nextIdx != -1) {
+          stack.push(child[nextIdx]);
+          child.splice(nextIdx, 1);
+        }
       }
-
-      // Use our mapping to locate the parent element in our data array
-      const parentEl = this.pers.qwests[idMapping[el.parrentId]];
-      const idx = ordered.indexOf(parentEl);
-      // Add our current el to its parent's `children` array
-      ordered.splice(idx + 1, 0, el);
-    });
+    }
 
     this.pers.qwests = ordered;
+
+    // // Сортировка квестов по следующим/предыдущим
+    // let ordered = this.pers.qwests.filter(q => !q.parrentId);
+
+    // const idMapping = this.pers.qwests.reduce((acc, el, i) => {
+    //   acc[el.id] = i;
+    //   return acc;
+    // }, {});
+
+    // this.pers.qwests.forEach(el => {
+    //   // Handle the root element
+    //   if (!el.parrentId) {
+    //     return;
+    //   }
+
+    //   // Use our mapping to locate the parent element in our data array
+    //   const parentEl = this.pers.qwests[idMapping[el.parrentId]];
+    //   const idx = ordered.indexOf(parentEl);
+    //   // Add our current el to its parent's `children` array
+    //   ordered.splice(idx + 1, 0, el);
+    // });
+
+    // this.pers.qwests = ordered;
 
     //this.pers.qwests = ordered;
 
@@ -1438,7 +1496,7 @@ export class PersService {
 
     // Ранг
     let monstersLvl = this.getMonsterLevel(this.pers.level);
-    this.pers.rangName = Pers.rangNames[monstersLvl-1];
+    this.pers.rangName = Pers.rangNames[monstersLvl - 1];
 
     // Настройки
     if (this.pers.isEra) {
@@ -1523,6 +1581,8 @@ export class PersService {
             && tsk.aimCounter == 0
             && tsk.aimTimer == 0
             && tsk.states.length == 0
+            && tsk.isPerk == false
+            && tsk.hardnes == 1
           ) {
             ab.isNotChanged = true;
           }
@@ -2241,20 +2301,20 @@ export class PersService {
   }
 
   private getMonsterLevel(prsLvl: number): number {
-    if (prsLvl < 10) {
-      return 1;
+    if (prsLvl < 20) {
+      return 1; // Обыватель
     }
-    else if (prsLvl < 30) {
-      return 2;
+    else if (prsLvl < 40) {
+      return 2; // Авантюрист
     }
-    else if (prsLvl < 70) {
-      return 3;
+    else if (prsLvl < 60) {
+      return 3; // Воин
     }
-    else if (prsLvl < 90) {
-      return 4;
+    else if (prsLvl < 80) {
+      return 4; // Герой
     }
     else {
-      return 5;
+      return 5; // Легенда
     }
   }
 

@@ -12,6 +12,7 @@ import { AddItemDialogComponent } from '../add-item-dialog/add-item-dialog.compo
 import { filter } from 'rxjs/operators';
 import { AddOrEditRevardComponent } from '../add-or-edit-revard/add-or-edit-revard.component';
 import { ChangeCharactComponent } from '../pers/change-charact/change-charact.component';
+import { Task } from 'src/Models/Task';
 
 @Component({
   selector: 'app-qwest-detail',
@@ -28,6 +29,7 @@ export class QwestDetailComponent implements OnInit {
   nextQwests: Qwest[] = [];
   prevQwest: Qwest;
   qwest: Qwest;
+  linkAbs: Task[]=[];
 
   constructor(private location: Location, private route: ActivatedRoute, public srv: PersService, private router: Router, public dialog: MatDialog) { }
 
@@ -250,12 +252,29 @@ export class QwestDetailComponent implements OnInit {
         }
       }
 
+      this.findLinks();
+
       this.getNextPrevQwests();
       this.getQwestAb();
     });
   }
 
   qwestAbiliti;
+
+  private findLinks() {
+    let linkAbs = [];
+    if (this.qwest) {
+      for (const ch of this.srv.pers.characteristics) {
+        for (const ab of ch.abilities) {
+          if (ab.id == this.qwest.abilitiId) {
+            linkAbs.push(ab.tasks[0]);
+          }
+        }
+      }
+    }
+
+    this.linkAbs = linkAbs;
+  }
 
   getQwestAb() {
     let qwAb = null;
@@ -308,6 +327,7 @@ export class QwestDetailComponent implements OnInit {
   saveData() {
     if (this.isEditMode) {
       this.srv.savePers(false);
+      this.findLinks();
       this.isEditMode = false;
     }
     else {

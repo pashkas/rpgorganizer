@@ -14,4 +14,5 @@ export class Qwest {
   parrentId: any = 0;
   abilitiId: any;
   hardnes: number;
+  isNoActive: boolean;
 }

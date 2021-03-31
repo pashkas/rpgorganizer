@@ -12,6 +12,7 @@ import { MatDialog } from '@angular/material';
 import { AddItemDialogComponent } from '../add-item-dialog/add-item-dialog.component';
 import { Characteristic } from 'src/Models/Characteristic';
 import { ChangeCharactComponent } from '../pers/change-charact/change-charact.component';
+import { Qwest } from 'src/Models/Qwest';
 
 @Component({
   selector: 'app-task-detail',
@@ -28,6 +29,7 @@ export class TaskDetailComponent implements OnInit {
   tskAbility: Ability;
   tskCharact: Characteristic;
   weekDays: string[] = Task.weekDays;
+  linkQwests: Qwest[]=[];
 
   constructor(private location: Location, private route: ActivatedRoute, public srv: PersService, private router: Router, public dialog: MatDialog) { }
 
@@ -228,6 +230,20 @@ export class TaskDetailComponent implements OnInit {
     if (!this.tsk.reqvirements) {
       this.tsk.reqvirements = [];
     }
+
+    this.findLinks();
+  }
+
+  private findLinks() {
+    let linkQwests = [];
+    if (this.tskAbility) {
+      for (const qw of this.srv.pers.qwests) {
+        if (qw.abilitiId == this.tskAbility.id) {
+          linkQwests.push(qw);
+        }
+      }
+    }
+    this.linkQwests = linkQwests;
   }
 
   getDateString(tsk: Task) {
@@ -281,6 +297,7 @@ export class TaskDetailComponent implements OnInit {
   saveData() {
     if (this.isEditMode) {
       this.srv.savePers(false);
+      this.findLinks();
       this.isEditMode = false;
     }
     else {

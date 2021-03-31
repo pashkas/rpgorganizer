@@ -66,6 +66,13 @@
       </i>
     </div>
 
+    <!-- Связанные квесты -->
+    <div class="pt-2 text-center" *ngIf="linkQwests.length>0">
+      <div *ngFor="let qw of linkQwests">
+        <a skipLocationChange [routerLink]="['/pers/qwest', qw.id]">{{'🔗 '+qw.name+' 🔗'}}</a>
+      </div>
+    </div>
+
     <app-req-show *ngIf="tskAbility" [reqvirements]="tsk.reqvirements"></app-req-show>
 
     <button *ngIf="tsk.isStateRefresh" class="my-1" style="width: 100%;" color="accent" mat-stroked-button
