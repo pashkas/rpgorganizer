@@ -136,7 +136,12 @@
 
 
     <!-- Дата, повторение -->
-    <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="8px">
+    <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="10px">
+      <mat-chip-list fxFlex="noshrink" [selectable]="false">
+        <mat-chip (click)="qwickSetDate('today')" color="accent">сегодня</mat-chip>
+        <mat-chip (click)="qwickSetDate('tomorrow')" color="accent">&nbsp;завтра&nbsp;</mat-chip>
+      </mat-chip-list>
+
       <mat-form-field>
         <input [readonly]="true" matInput autocomplete="off" placeholder="Дата" [ngModel]="tsk.date" name="tsk.date"
           (ngModelChange)="onTskDateChange($event)" [owlDateTimeTrigger]="dt1" [owlDateTime]="dt1">

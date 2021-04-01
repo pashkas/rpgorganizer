@@ -1291,7 +1291,7 @@ export class PersService {
       qw.tasksDone = doneTsks;
 
       if (qw.abilitiId) {
-        let abil = null;
+        let abil: Ability = null;
         for (const ch of this.pers.characteristics) {
           for (const ab of ch.abilities) {
             if (ab.id == qw.abilitiId) {
@@ -1299,6 +1299,7 @@ export class PersService {
             }
           }
         }
+        
 
         if (abil != null && !this.checkTask(abil.tasks[0])) {
           qw.isNoActive = true;
@@ -1306,21 +1307,25 @@ export class PersService {
         else {
           qw.isNoActive = false;
         }
+
+        if (abil != null && (abil.value < 1 || abil.isNotDoneReqvirements)) {
+          qw.isNoActive = true;
+        }
       }
       else {
         qw.isNoActive = false;
       }
 
-      if (qw.isNoActive==false) {
-        if (qw.tasks.length>0) {
+      if (qw.isNoActive == false) {
+        if (qw.tasks.length > 0) {
           if (!this.checkTask(qw.tasks[0])) {
             qw.isNoActive = true;
           }
-          else{
+          else {
             qw.isNoActive = false;
           }
         }
-        else{
+        else {
           qw.isNoActive = false;
         }
       }
@@ -1331,7 +1336,7 @@ export class PersService {
 
     let root = this.pers.qwests.filter(q => !q.parrentId);
     let child = this.pers.qwests.filter(q => q.parrentId);
-    let ordered = [];
+    let ordered:Qwest[] = [];
 
     while (root.length > 0) {
       let r = root.pop();
@@ -1347,6 +1352,10 @@ export class PersService {
         }
       }
     }
+
+    ordered = ordered.sort((a,b)=>{
+      return +a.isNoActive-+b.isNoActive;
+    });
 
     this.pers.qwests = ordered;
 

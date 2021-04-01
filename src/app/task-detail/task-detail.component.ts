@@ -29,7 +29,7 @@ export class TaskDetailComponent implements OnInit {
   tskAbility: Ability;
   tskCharact: Characteristic;
   weekDays: string[] = Task.weekDays;
-  linkQwests: Qwest[]=[];
+  linkQwests: Qwest[] = [];
 
   constructor(private location: Location, private route: ActivatedRoute, public srv: PersService, private router: Router, public dialog: MatDialog) { }
 
@@ -272,6 +272,19 @@ export class TaskDetailComponent implements OnInit {
     else {
       this.location.back();
     }
+  }
+
+  qwickSetDate(v) {
+    let date = new Date();
+    date.setHours(0, 0, 0, 0);
+    if (v == 'today') {
+      this.tsk.date = date;
+    }
+    else {
+      date.setDate(date.getDate() + 1);
+      this.tsk.date = date;
+    }
+    this.srv.CheckSetTaskDate(this.tsk);
   }
 
   ngOnDestroy(): void {
