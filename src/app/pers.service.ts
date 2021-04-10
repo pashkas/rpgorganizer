@@ -116,7 +116,7 @@ export class PersService {
   }
 
   GetRndEnamy(tsk: IImg): string {
-    let mnstrLvl = this.getMonsterLevel(this.pers.level);
+    let mnstrLvl = this.getMonsterLevel(this.pers.level, this.pers.maxPersLevel);
 
     tsk.imageLvl = '' + mnstrLvl;
     tsk.image = this.getImgPathRandome(mnstrLvl);
@@ -133,7 +133,7 @@ export class PersService {
         return aperk - bperk;
       }
       else {
-        return (a.value - b.value);
+        return -(a.value - b.value);
       }
 
       //   // По требованиям
@@ -1299,7 +1299,7 @@ export class PersService {
             }
           }
         }
-        
+
 
         if (abil != null && !this.checkTask(abil.tasks[0])) {
           qw.isNoActive = true;
@@ -1334,9 +1334,10 @@ export class PersService {
       this.sortQwestTasks(qw);
     });
 
-    let root = this.pers.qwests.filter(q => !q.parrentId);
+    let root = this.pers.qwests.filter(q => !q.parrentId)
+    .sort((a,b)=>{return a.progressValue-b.progressValue});
     let child = this.pers.qwests.filter(q => q.parrentId);
-    let ordered:Qwest[] = [];
+    let ordered: Qwest[] = [];
 
     while (root.length > 0) {
       let r = root.pop();
@@ -1353,8 +1354,8 @@ export class PersService {
       }
     }
 
-    ordered = ordered.sort((a,b)=>{
-      return +a.isNoActive-+b.isNoActive;
+    ordered = ordered.sort((a, b) => {
+      return +a.isNoActive - +b.isNoActive;
     });
 
     this.pers.qwests = ordered;
@@ -1409,7 +1410,7 @@ export class PersService {
     // Сортировка характеристик
     this.pers.characteristics
       = this.pers.characteristics.sort((a, b) => {
-        return (a.value - b.value);
+        return -(a.value - b.value);
         // let aHasSameLvl = 0;
         // if (a.HasSameAbLvl) {
         //   aHasSameLvl = 1;
@@ -1504,7 +1505,7 @@ export class PersService {
     //----------------------------
 
     // Ранг
-    let monstersLvl = this.getMonsterLevel(this.pers.level);
+    let monstersLvl = this.getMonsterLevel(this.pers.level, this.pers.maxPersLevel);
     this.pers.rangName = Pers.rangNames[monstersLvl - 1];
 
     // Настройки
@@ -2309,17 +2310,23 @@ export class PersService {
     return this.pers.maxAttrLevel - 1;
   }
 
-  private getMonsterLevel(prsLvl: number): number {
-    if (prsLvl < 20) {
+  private getMonsterLevel(prsLvl: number, maxLevel: number): number {
+    if (!maxLevel) {
+      maxLevel = 100;
+    }
+
+    let progr = (prsLvl / maxLevel) * 100;
+
+    if (progr < 20) {
       return 1; // Обыватель
     }
-    else if (prsLvl < 40) {
+    else if (progr < 40) {
       return 2; // Авантюрист
     }
-    else if (prsLvl < 60) {
+    else if (progr < 60) {
       return 3; // Воин
     }
-    else if (prsLvl < 80) {
+    else if (progr < 80) {
       return 4; // Герой
     }
     else {
@@ -2716,32 +2723,53 @@ export class PersService {
     let nextExp = 0;
     let startON = 0;
     let prevOn = 0;
-
-    onPerLevel = maxPoints / 100;
-    if (onPerLevel < 1) {
-      onPerLevel = 1;
-    }
-
-    startON = 0;
+    let maxLevel = 0;
 
     this.pers.ONPerLevel = Math.ceil(onPerLevel);
     let ceilOn = 0;
 
-    for (let i = 1; i <= 9999 + 1; i++) {
-      startExp = exp;
+    let hasPersLevel = false;
+    let hasMaxLevel = false;
 
-      ceilOn = Math.ceil(i * onPerLevel) + startON;
+    let algoOn = ceilOn;
 
-      //let thisOn = ceilOn - prevOn;
-      prevOn = ceilOn;
+    for (let i = 1; i <= 9999; i++) {
+      let thisLevel = 0;
+      if (i == 1 || (i - 1) % 5 == 0) {
+        thisLevel = 2;
+      }
+      else {
+        thisLevel = 1;
+      }
 
-      exp += ceilOn * this.getMonsterLevel(i);
+      algoOn += thisLevel;
 
-      nextExp = exp;
+      if (!hasPersLevel) {
+        ceilOn += thisLevel;
 
-      if (exp > this.pers.exp) {
+        startExp = exp;
+
+        exp += ceilOn;
+
+        nextExp = exp;
+      }
+
+      if (!hasPersLevel && exp > this.pers.exp) {
         persLevel = i - 1;
 
+        hasPersLevel = true;
+      }
+
+      if (!hasMaxLevel && algoOn >= maxPoints) {
+        maxLevel = i - 1;
+        if (maxLevel < 100) {
+          maxLevel = 100;
+        }
+
+        hasMaxLevel = true;
+      }
+
+      if (hasPersLevel && hasMaxLevel) {
         break;
       }
     }
@@ -2750,6 +2778,7 @@ export class PersService {
     this.pers.level = persLevel;
     this.pers.nextExp = nextExp;
     this.pers.prevExp = startExp;
+    this.pers.maxPersLevel = maxLevel;
 
     let lvlExp = nextExp - startExp;
     let progr = 0;
@@ -2761,39 +2790,11 @@ export class PersService {
 
     let ons = Math.ceil(ceilOn - curV);
 
-    // if (ons < 0) {
-    //   ons = 0;
-    // }
-
     this.pers.ON = ons;
 
     this.pers.totalProgress = (skillCur / skillMax) * 100;
 
-    // Максимальный уровень перса
-    // let i = 0;
-    // while (true) {
-    //   if (i == 0) {
-    //     maxPoints -= 5;
-    //   }
-    //   else if (i % 5 == 0) {
-    //     maxPoints -= 2;
-    //   }
-    //   else {
-    //     maxPoints -= 1;
-    //   }
-
-    //   i++;
-
-    //   if (maxPoints <= 0) {
-    //     break;
-    //   }
-    // }
-
-    // this.pers.maxPersLevel = i;
-
-    // let nnn = this.getMonsterLevel(prevPersLevel);
-
-    if (prevPersLevel != this.pers.level && this.getMonsterLevel(prevPersLevel) != this.getMonsterLevel(this.pers.level)) {
+    if (prevPersLevel != this.pers.level && this.getMonsterLevel(prevPersLevel, this.pers.maxPersLevel) != this.getMonsterLevel(this.pers.level, this.pers.maxPersLevel)) {
       this.updateQwestTasksImages();
       this.updateAbTasksImages();
     }

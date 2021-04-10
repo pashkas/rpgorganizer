@@ -156,9 +156,9 @@ export class PerschangesService {
     Object.keys(changesMap).forEach(n => {
       // Опыт
       if (changesMap[n].type == 'exp') {
-        let isShowBySettings = this.afterPers.isNoExpShow != true 
-        || isDoneQwest == true
-        || changesMap[n].after < changesMap[n].before;
+        let isShowBySettings = this.afterPers.isNoExpShow != true
+          || isDoneQwest == true
+          || changesMap[n].after < changesMap[n].before;
         //|| isDoneQwest == true;
         if (isShowBySettings) {
           if (changesMap[n].after != changesMap[n].before) {
@@ -249,7 +249,7 @@ export class PerschangesService {
       }
     }
 
-    if (newLevel) {
+    if (newLevel && this.afterPers.ON > 0) {
       let dialogRefLvlUp = this.dialog.open(LevelUpMsgComponent, {
         panelClass: classPanel,
         backdropClass: 'backdrop'
