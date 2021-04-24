@@ -1,31 +1,30 @@
-<div class="grid-container" *ngIf="srv.pers && !srv?.pers?.isRest">
+<div class="grid-container" *ngIf="this.pers && !this.pers.isRest">
   <!-- Если пусто -->
-  <div *ngIf="!this.srv.pers.currentTask && !this.srv.isGlobalTaskView" fxLayout="row" fxLayoutAlign="center center">
-    <h3 class="text-center" *ngIf="this.srv.pers.exp==0">
+  <div *ngIf="!this.pers.currentTask && (this.pers.currentView=='QwestTasks'||this.pers.currentView=='SkillTasks')" fxLayout="row" fxLayoutAlign="center center">
+    <h3 class="text-center" *ngIf="this.pers.exp==0">
       Пока пусто... Может стоит
       <a href="https://pashkas.github.io/rpgorganizertutorial.github.io/" target="_blank">
         посетить инструкцию?
       </a>
     </h3>
   </div>
-  <div *ngIf="!this.srv.pers.currentTask && !this.srv.isGlobalTaskView">
+  <div *ngIf="!this.pers.currentTask && (this.pers.currentView=='QwestTasks'||this.pers.currentView=='SkillTasks')">
     &nbsp;
   </div>
 
-  <!-- Задачи -->
-  <ng-container *ngIf="this.srv.isGlobalTaskView">
-
+  <!-- Задачи списком -->
+  <ng-container *ngIf="this.pers.currentView=='SkillsSort'||this.pers.currentView=='SkillsGlobal'||this.pers.currentView=='QwestsGlobal'||this.pers.currentView=='QwestSort'">
     <mat-list (cdkDropListDropped)="drop($event)" cdkDropList class="list-group  py-2 h-100 w-100 overflow-auto">
-      <ng-container *ngFor="let t of srv.pers.tasks; let i = index;">
+      <ng-container *ngFor="let t of this.pers.tasks; let i = index;">
         <div cdkDrag mat-list-item (click)="tskClick(i);"
           [ngClass]="{'list-group-item-danger': t.lastNotDone && !isSort, 'list-group-item-warning': t.requrense != 'нет' && checkDate(t.date)}">
           <div class="d-flex align-items-center" [ngClass]="{' py-2': !isSort}">
             <div class="flex-grow-1 text-center">
               <div class="pointer">
                 <ng-container *ngIf="t.requrense != 'нет' && checkDate(t.date)" class="bg-danger">
-                  [{{getDateString(t.date)}}]
+                  [{{t.date| datestring}}]
                 </ng-container>
-                <ng-container *ngIf="t.requrense != 'нет' || isSort; else elseTemplate">
+                <ng-container *ngIf="t.requrense != 'нет' || this.pers.currentView=='QwestSort'; else elseTemplate">
                   {{t.tittle}}
                 </ng-container>
                 <ng-template #elseTemplate>
@@ -38,11 +37,11 @@
             </div>
             <div *ngIf="t.requrense != 'нет'" class="px-2">
               <ngx-material-timepicker-toggle [for]="pikTimeInList"></ngx-material-timepicker-toggle>
-              <ngx-material-timepicker (timeSet)="onTimeChanged($event, t.id)" #pikTimeInList
-                [format]="24" [defaultTime]="t.time"></ngx-material-timepicker>
+              <ngx-material-timepicker (timeSet)="onTimeChanged($event, t.id)" #pikTimeInList [format]="24"
+                [defaultTime]="t.time"></ngx-material-timepicker>
               {{t.time}}
             </div>
-            <button mat-button cdkDragHandle [hidden]="!isSort">
+            <button mat-button cdkDragHandle [hidden]="this.pers.currentView!='QwestSort'">
               <i class="fa fa-lg fa-expand-arrows-alt"></i>
             </button>
           </div>
@@ -52,43 +51,43 @@
     <div></div>
   </ng-container>
   <!-- Сфокусированный вид задач -->
-  <ng-container *ngIf="this.srv.pers.currentTask && !this.srv.isGlobalTaskView">
+  <ng-container *ngIf="this.pers.currentTask && (this.pers.currentView=='QwestTasks'||this.pers.currentView=='SkillTasks')">
 
     <!-- (error)="ReImages()" -->
     <div class="container" [ngClass]="{'vibrate-1': isSucessShown}">
       <img (press)="onLongPress($event)" (contextmenu)="$event.preventDefault()"
-        (swipeup)="done(this.srv.pers.currentTask)" (swipedown)="fail(this.srv.pers.currentTask)"
+        (swipeup)="done(this.pers.currentTask)" (swipedown)="fail(this.pers.currentTask)"
         (swiperight)="onSwipeLeft($event)" (swipeleft)="onSwipeRight($event)"
         class="rounded element img-fluid pt-1 pb-0 px-1 mh-100 w-100" [ngStyle]="{'object-fit': 'contain'}"
-        src="{{'assets/img/'+ this.srv.pers.currentTask.imageLvl + '/' + this.srv.pers.currentTask.image + '.jpg'}}">
+        src="{{'assets/img/'+ this.pers.currentTask.imageLvl + '/' + this.pers.currentTask.image + '.jpg'}}">
     </div>
     <!-- (error)="onImgErr()" -->
 
     <div fxLayout="column" fxLayoutAlign="center center" class="w-100 h-100 py-2 px-2" [ngStyle]="{'height': '3em'}">
       <div fxLayout="row" fxLayoutAlign="center center">
 
-        <a [routerLink]="['/pers/task', this.srv.pers.currentTask.parrentTask ? this.srv.pers.currentTask.parrentTask : this.srv.pers.currentTask.id, false]"
+        <a [routerLink]="['/pers/task', this.pers.currentTask.parrentTask ? this.pers.currentTask.parrentTask : this.pers.currentTask.id, false]"
           class="text-dark text-center">
           <h4 class="m-0">
             <ng-container>
               <ng-container
-                *ngIf="this.srv.pers.currentTask.requrense != 'нет' && checkDate(this.srv.pers.currentTask.date)"
+                *ngIf="this.pers.currentTask.requrense != 'нет' && checkDate(this.pers.currentTask.date)"
                 class="bg-danger">
-                [{{getDateString(this.srv.pers.currentTask.date)}}]
+                [{{this.pers.currentTask.date|datestring}}]
               </ng-container>
-              {{this.srv.pers.currentTask.tittle}}
-              <!-- {{this.srv.pers.currentTask.imageLvl + '/' + this.srv.pers.currentTask.image}} -->
+              {{this.pers.currentTask.tittle}}
+              <!-- {{this.pers.currentTask.imageLvl + '/' + this.pers.currentTask.image}} -->
             </ng-container>
           </h4>
         </a>
-        <app-timer-counter [tsk]="this.srv.pers.currentTask"></app-timer-counter>
+        <app-timer-counter [tsk]="this.pers.currentTask"></app-timer-counter>
       </div>
-      <small *ngIf="this.srv.pers.currentTask.descr" class="text-center text-secondary mynote">
-        {{this.srv.pers.currentTask.descr}}
+      <small *ngIf="this.pers.currentTask.descr" class="text-center text-secondary mynote">
+        {{this.pers.currentTask.descr}}
       </small>
       <small class="text-center"
-        *ngIf="this.srv.pers.currentTask.plusToNames&&this.srv.pers.currentTask.plusToNames.length>0;">
-        <ng-container *ngFor="let pl of this.srv.pers.currentTask.plusToNames; let i=index;">
+        *ngIf="this.pers.currentTask.plusToNames&&this.pers.currentTask.plusToNames.length>0;">
+        <ng-container *ngFor="let pl of this.pers.currentTask.plusToNames; let i=index;">
           <ng-container *ngIf="i>0"> | </ng-container>
           <ng-container *ngIf="pl.linkType; else noLinkType">
             <a class="text-secondary" (click)="openPlusType(pl.linkId, pl.linkType)">{{pl.name}}</a>
@@ -100,10 +99,11 @@
             <ng-template #elseTemplate>
 
               <span class="text-secondary">
-                <ng-container *ngIf="i==0 && this.srv.pers.currentTask.reccurence!='нет'">
+                <ng-container *ngIf="i==0 && this.pers.currentTask.requrense!='нет'">
                   <ngx-material-timepicker-toggle [for]="toggleTimepicker"></ngx-material-timepicker-toggle>
-                  <ngx-material-timepicker (timeSet)="onTimeChanged($event, this.srv.pers.currentTask.id)"
-                    #toggleTimepicker [format]="24" [defaultTime]="this.srv.pers.currentTask.time"></ngx-material-timepicker>
+                  <ngx-material-timepicker (timeSet)="onTimeChanged($event, this.pers.currentTask.id)"
+                    #toggleTimepicker [format]="24" [defaultTime]="this.pers.currentTask.time">
+                  </ngx-material-timepicker>
                 </ng-container>
                 {{pl.name}}
               </span>
@@ -116,75 +116,79 @@
   </ng-container>
 
   <app-progress-bar-num
-    [text]="srv.pers.name+' ('+srv.pers.rangName+')'+', уровень ' + srv.pers.level+': '+((srv.pers.exp - srv.pers.prevExp) * 10.0 | number : '1.0-0')+'/'+((srv.pers.nextExp- srv.pers.prevExp) * 10.0 | number : '1.0-0')"
-    [val]="srv.pers.progressValue">
+    [text]="this.pers.name+' ('+this.pers.rangName+')'+', уровень ' + this.pers.level+': '+((this.pers.exp - this.pers.prevExp) * 10.0 | number : '1.0-0')+'/'+((this.pers.nextExp- this.pers.prevExp) * 10.0 | number : '1.0-0')"
+    [val]="this.pers.progressValue">
   </app-progress-bar-num>
   <div fxLayout="row" fxLayoutAlign="space-between center" class="w-100 h-100 py-1" style="min-height: 120px;">
-    <button (press)="editDiaryItem()" (contextmenu)="$event.preventDefault()" class="h-100 w-100 px-1 py-0 text-left"
-      mat-button routerLink="/pers" (click)="openPersList()">
-
-      <img [ngClass]="{'disabled': isSort, 'vibrate-1': isFailShown}" (contextmenu)="$event.preventDefault()"
-        src="{{srv.pers.image}}" class="img-fluid h-100 rounded" [ngStyle]="{'object-fit': 'contain'}">
-    </button>
+   
     <!-- Кнопки -->
-    <div fxLayout="row" fxLayoutAlign="end center" fxLayoutGap="0.6em" class="w-100 h-100 px-2"
-      *ngIf="isSort && srv.pers.sellectedView != 'квесты'">
-      <button (click)="editCansel()" mat-icon-button>
+    <button (press)="editDiaryItem()" (contextmenu)="$event.preventDefault()" class="h-100 w-100 px-1 py-0 text-left"
+    mat-button routerLink="/pers" (click)="openPersList()">
+
+    <img [ngClass]="{'disabled': isSort, 'vibrate-1': isFailShown}" (contextmenu)="$event.preventDefault()"
+      src="{{this.pers.image}}" class="img-fluid h-100 rounded" [ngStyle]="{'object-fit': 'contain'}">
+  </button>
+    <!-- Сортировка навыков -->
+    <div fxLayout="row" fxLayoutAlign="end center" fxLayoutGap="0.6em" class="w-100 h-100 px-2" *ngIf="this.pers.currentView == 'SkillsSort'">
+      <!-- <button (click)="editCansel()" mat-icon-button>
         <img src="assets/icons/left.png" class="img-fluid" [ngStyle]="{'object-fit': 'contain', 'height':'3em'}">
-      </button>
+      </button> -->
 
       <button (click)="setSort()" mat-icon-button style="width: 47px !important;">
         <img src="assets/icons/edit.png" class="img-fluid" [ngStyle]="{'object-fit': 'contain', 'height':'3em'}">
       </button>
     </div>
 
-    <div fxLayout="row" fxLayoutAlign="end center" fxLayoutGap="0.6em" class="w-100 h-100 px-2"
-      *ngIf="isSort && srv.pers.sellectedView == 'квесты'">
-      <button (click)="editCansel()" mat-icon-button>
+    <!-- Сортировка квестов -->
+    <div fxLayout="row" fxLayoutAlign="end center" fxLayoutGap="0.6em" class="w-100 h-100 px-2" *ngIf="this.pers.currentView == 'QwestSort'">
+      <!-- Назад -->
+      <!-- <button (click)="editCansel()" mat-icon-button>
         <img src="assets/icons/left.png" class="img-fluid" [ngStyle]="{'object-fit': 'contain', 'height':'3em'}">
-      </button>
+      </button> -->
 
+      <!-- Добавить -->
       <button (click)="addToQwest()" mat-icon-button>
         <img src="assets/icons/create.png" class="img-fluid" [ngStyle]="{'object-fit': 'contain', 'height':'3em'}">
       </button>
 
+      <!-- Сохранить -->
       <button (click)="setSort()" mat-icon-button style="width: 47px !important;">
         <img src="assets/icons/edit.png" class="img-fluid" [ngStyle]="{'object-fit': 'contain', 'height':'3em'}">
       </button>
     </div>
-    <div fxLayout="row" *ngIf="!isSort" fxLayoutAlign="end center" fxLayoutGap="0.3em" class="w-100 h-100 px-2">
+    <div fxLayout="row" *ngIf="this.pers.currentView != 'QwestSort' && this.pers.currentView != 'SkillsSort'" fxLayoutAlign="end center" fxLayoutGap="0.3em" class="w-100 h-100 px-2">
 
-      <!-- <button (click)="tmp()">
-        tmp
-      </button> -->
-
+      <!-- Первый / глобальный -->
       <button [ngClass]="{'disabled': isSort}" [autofocus]="false" (click)="firstOrGlobal()" mat-icon-button>
-        <img *ngIf="this.srv.isGlobalTaskView" src="assets/icons/right.png" class="img-fluid"
+        <img *ngIf="this.pers.currentView == 'SkillsGlobal' || this.pers.currentView == 'QwestsGlobal'" src="assets/icons/right.png" class="img-fluid"
           [ngStyle]="{'object-fit': 'contain', 'height':'3em'}">
-        <img src="assets/icons/left.png" *ngIf="!this.srv.isGlobalTaskView" class="img-fluid"
+        <img src="assets/icons/left.png" *ngIf="this.pers.currentView == 'SkillTasks' || this.pers.currentView == 'QwestTasks'" class="img-fluid"
           [ngStyle]="{'object-fit': 'contain', 'height':'3em'}">
       </button>
 
+      <!-- Навыки / квесты -->
       <div fxLayout="column" fxLayoutAlign="center center" fxLayoutGap="0.3em" class="h-100">
-        <button [ngClass]="{'disabled': isSort}" (click)="setView()" mat-icon-button>
-          <img *ngIf="srv.pers.sellectedView!='навыки'" src="assets/icons/abils.png" class="img-fluid"
+        <button [ngClass]="{'disabled': this.pers.currentView == 'SkillsSort'||this.pers.currentView == 'QwestSort'}" (click)="setView()" mat-icon-button>
+          <img *ngIf="this.pers.currentView == 'QwestTasks'||this.pers.currentView == 'QwestsGlobal'||this.pers.currentView == 'QwestSort'" src="assets/icons/abils.png" class="img-fluid"
             [ngStyle]="{'object-fit': 'contain', 'height':'2.2em'}">
-          <img *ngIf="srv.pers.sellectedView!='квесты'" src="assets/icons/qwests.png" class="img-fluid"
+          <img *ngIf="this.pers.currentView == 'SkillTasks'||this.pers.currentView == 'SkillsGlobal'||this.pers.currentView == 'SkillsSort'" src="assets/icons/qwests.png" class="img-fluid"
             [ngStyle]="{'object-fit': 'contain', 'height':'2.5em'}">
         </button>
-        <button (click)="setSort()" mat-icon-button [ngClass]="{'disabled': this.srv.isGlobalTaskView || isSort}">
+        <button (click)="setSort()" mat-icon-button [ngClass]="{'disabled': this.pers.currentView == 'SkillsGlobal'||this.pers.currentView == 'QwestsGlobal'}">
           <img src="assets/icons/edit.png" class="img-fluid" [ngStyle]="{'object-fit': 'contain', 'height':'3em'}">
         </button>
       </div>
 
-      <button [ngClass]="{'disabled': isSort||this.srv.isGlobalTaskView||!this.srv.pers.currentTask}"
-        (click)="done(this.srv.pers.currentTask)" mat-icon-button>
+      <!-- Сделано -->
+      <button [ngClass]="{'disabled': !this.pers.currentTask||this.pers.currentView == 'SkillsGlobal'||this.pers.currentView == 'SkillsSort'||this.pers.currentView == 'QwestsGlobal'||this.pers.currentView == 'QwestSort'}"
+        (click)="done(this.pers.currentTask)" mat-icon-button>
         <img src="assets/icons/sword.png" class="img-fluid" [ngStyle]="{'object-fit': 'contain', 'height':'3em'}">
       </button>
 
+      <!-- Пропуск -->
       <button
-        [ngClass]="{'disabled': isSort||this.srv.isGlobalTaskView||!this.srv.pers.currentTask||this.srv.pers.currentTask?.requrense=='нет'}"
-        (click)="fail(this.srv.pers.currentTask)" mat-icon-button>
+        [ngClass]="{'disabled': !this.pers.currentTask||this.pers.currentView == 'SkillsSort'||this.pers.currentView == 'SkillsGlobal'||this.pers.currentView == 'QwestTasks'||this.pers.currentView == 'QwestsGlobal'||this.pers.currentView == 'QwestSort'}"
+        (click)="fail(this.pers.currentTask)" mat-icon-button>
         <img src="assets/icons/shild.png" class="img-fluid" [ngStyle]="{'object-fit': 'contain', 'height':'3em'}">
       </button>
 
@@ -192,4 +196,4 @@
   </div>
 </div>
 <div id="overlay" [ngClass]="{ovsuccess: isSucessShownOv, ovfail: isFailShownOv}"></div>
-<app-rest *ngIf="srv.pers && srv?.pers?.isRest"></app-rest>
+<app-rest *ngIf="this.pers && this.pers.isRest"></app-rest>

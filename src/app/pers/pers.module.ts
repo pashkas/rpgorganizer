@@ -83,7 +83,6 @@ import { NgxMaterialTimepickerModule } from 'ngx-material-timepicker';
   ],
   entryComponents:
     [
-
       AddOrEditRevardComponent,
       EditDiaryParamsComponent,
       ReqAddComponent,

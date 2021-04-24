@@ -1,7 +1,7 @@
-<nav *ngIf="this.srv.pers && !this.srv.isDialogOpen" class="fixed-bottom">
+<nav *ngIf="this.pers && !this.srv.isDialogOpen" class="fixed-bottom">
   <div class="d-flex w-100 justify-content-end px-2 py-2">
     <!-- Назад -->
-    <button mat-icon-button (click)="goBack()" class="mx-2">
+    <button mat-icon-button (click)="goBack()" class="mx-2" *ngIf="!isEditMode">
       <img src="assets/icons/left.png" class="img-fluid"
         [ngStyle]="{'object-fit': 'contain', 'height':'2.5em'}">
     </button>
@@ -17,7 +17,7 @@
 
 
 <!-- Просмотр -->
-<div class="container pt-2 pb-4" *ngIf="this.srv.pers && charact && !isEditMode">
+<div class="container pt-2 pb-4" *ngIf="this.pers && charact && !isEditMode">
   <form class="pb-4">
     <!-- Картинка -->
     <app-image-component [(data)]="charact.image"></app-image-component>
@@ -52,7 +52,7 @@
   <br>
 </div>
 <!-- Редактирование -->
-<div class="container pt-2 pb-4" *ngIf="this.srv.pers && charact && isEditMode">
+<div class="container pt-2 pb-4" *ngIf="this.pers && charact && isEditMode">
   <form class="pb-4">
     <!-- Картинка -->
     <!-- <div class="md-form text-center" *ngIf="charact.image">

@@ -33,7 +33,7 @@ export class TurnirTableComponent implements OnInit {
   ngOnInit() {
     this.champions$ = this.srv.getChampions();
 
-    if (!this.srv.pers) {
+    if (!this.srv.pers$.value) {
       this.router.navigate(['/main']);
     }
   }

@@ -16,11 +16,11 @@ export class DiaryComponent implements OnInit {
   constructor(private srv: PersService) { }
 
   ngOnInit() {
-    this.Diary = this.srv.pers.Diary;
+    // this.Diary = this.srv.pers.Diary;
   }
 
   onDiaryChanged(e){
-    this.Diary = this.srv.pers.Diary;
+    // this.Diary = this.srv.pers.Diary;
   }
 
 }

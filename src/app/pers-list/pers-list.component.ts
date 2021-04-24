@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { PersService } from '../pers.service';
 import { Pers } from 'src/Models/Pers';
 import { Characteristic } from 'src/Models/Characteristic';
@@ -12,19 +12,21 @@ import { AddItemDialogComponent } from '../add-item-dialog/add-item-dialog.compo
 import { AddOrEditRevardComponent } from '../add-or-edit-revard/add-or-edit-revard.component';
 import { Qwest } from 'src/Models/Qwest';
 import { StatesService } from '../states.service';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'app-pers-list',
   templateUrl: './pers-list.component.html',
-  styleUrls: ['./pers-list.component.css']
+  styleUrls: ['./pers-list.component.css'],
+  changeDetection: ChangeDetectionStrategy.Default
 })
 export class PersListComponent implements OnInit {
   private unsubscribe$ = new Subject();
 
   GameSettings = Pers.GameSettings;
-  allAbs: Ability[] = [];
   chaArea: string = "";
   isEditMode: boolean = false;
+  pers: Pers;
   selAb: Ability;
   selCha: Characteristic;
 
@@ -45,7 +47,6 @@ export class PersListComponent implements OnInit {
       .subscribe(name => {
         if (name) {
           this.srv.addAbil(charactId, name);
-          this.getAllAbs();
         }
         this.srv.isDialogOpen = false;
       });
@@ -69,12 +70,6 @@ export class PersListComponent implements OnInit {
         }
         this.srv.isDialogOpen = false;
       });
-  }
-
-  rest(){
-    this.srv.pers.isRest = true;
-    this.srv.savePers(false);
-    this.router.navigate(['/main']);
   }
 
   /**
@@ -133,13 +128,25 @@ export class PersListComponent implements OnInit {
       });
   }
 
+  addOnlyAb() {
+    let firstCharact: Characteristic;
+    if (this.pers.characteristics.length > 0) {
+      firstCharact = this.pers.characteristics[0];
+    }
+    else {
+      this.srv.addCharact('');
+      firstCharact = this.pers.characteristics[0];
+    }
+
+    this.addAbil(firstCharact.id);
+  }
+
   /**
    * Удаление навыка.
    * @param id Идентификатор.
    */
   delAbil(id: string) {
     this.srv.delAbil(id);
-    this.getAllAbs();
   }
 
   /**
@@ -180,15 +187,6 @@ export class PersListComponent implements OnInit {
     this.srv.changesAfter(true);
   }
 
-  getDateString(dt: Date) {
-    if (dt === undefined || dt === null) {
-      return "";
-    }
-
-    let date = new Date(dt);
-    return date.toLocaleDateString([], { day: 'numeric', month: 'numeric' });
-  }
-
   goBack() {
     if (this.isEditMode) {
       this.isEditMode = false;
@@ -198,13 +196,27 @@ export class PersListComponent implements OnInit {
     }
   }
 
+  loadSamplePers(){
+    if (window.confirm('Вы уверены, что хотите загрузить тренировочного перса?')) {
+      this.srv.loadLearningPers(this.pers.userId);
+      this.saveData();
+    }
+  }
+
+  newgame(){
+    if (window.confirm('Вы уверены, что хотите очистить все данные?')) {
+      this.srv.setNewPers(this.pers.userId);
+      this.saveData();
+    }
+  }
+
   ngOnDestroy(): void {
     this.unsubscribe$.next();
     this.unsubscribe$.complete();
   }
 
   ngOnInit() {
-    if (!this.srv.pers) {
+    if (!this.srv.pers$.value) {
       this.router.navigate(['/main']);
     }
 
@@ -213,49 +225,11 @@ export class PersListComponent implements OnInit {
       this.srvSt.selTabPersList = 0;
     }
 
-    this.getAllAbs();
-  }
-
-  private getAllAbs() {
-    let allAbs: Ability[] = [];
-    for (const ch of this.srv.pers.characteristics) {
-      allAbs = allAbs.concat(ch.abilities);
-    }
-
-    allAbs = allAbs.sort(this.srv.abSorter());
-
-    this.allAbs = allAbs;
-  }
-
-  addOnlyAb() {
-    let firstCharact: Characteristic;
-    if (this.srv.pers.characteristics.length > 0) {
-      firstCharact = this.srv.pers.characteristics[0];
-    }
-    else {
-      this.srv.addCharact('');
-      firstCharact = this.srv.pers.characteristics[0];
-    }
-
-    this.addAbil(firstCharact.id);
-  }
-
-  sync(isDownload){
-    this.srv.sync(isDownload);
-  }
-
-  loadSamplePers(){
-    if (window.confirm('Вы уверены, что хотите загрузить тренировочного перса?')) {
-      this.srv.loadLearningPers(this.srv.pers.userId);
-      this.saveData();
-    }
-  }
-
-  newgame(){
-    if (window.confirm('Вы уверены, что хотите очистить все данные?')) {
-      this.srv.setNewPers(this.srv.pers.userId);
-      this.saveData();
-    }
+    this.srv.pers$
+    .pipe(takeUntil(this.unsubscribe$))
+    .subscribe(n=>{
+      this.pers=n;
+    });
   }
 
   /**
@@ -263,21 +237,21 @@ export class PersListComponent implements OnInit {
    */
   resp() {
     if (window.confirm('Вы уверены?')) {
-      this.srv.pers.isOffline = true;
-      this.srv.pers.characteristics.forEach(cha => {
+      this.pers.isOffline = true;
+      this.pers.characteristics.forEach(cha => {
         cha.abilities.forEach(ab => {
           ab.isOpen = false;
           ab.tasks.forEach(tsk => {
-            this.srv.GetRndEnamy(tsk);
+            this.srv.GetRndEnamy(tsk, this.pers.level, this.pers.maxPersLevel);
             tsk.time = "00:00";
             tsk.value = 0;
             tsk.tesValue = 0;
             tsk.refreshCounter = 0;
             tsk.date = new Date();
-            this.srv.GetRndEnamy(tsk);
+            this.srv.GetRndEnamy(tsk, this.pers.level, this.pers.maxPersLevel);
             tsk.states.forEach(st => {
               st.time = "00:00";
-              this.srv.GetRndEnamy(st);
+              this.srv.GetRndEnamy(st, this.pers.level, this.pers.maxPersLevel);
             });
             tsk.lastNotDone = false;
             this.srv.setStatesNotDone(tsk);
@@ -286,17 +260,23 @@ export class PersListComponent implements OnInit {
       });
 
       // Обновление картинок квестов
-      this.srv.updateQwestTasksImages();
+      this.srv.updateQwestTasksImages(this.pers);
 
-      this.srv.pers.expKoef = 0;
-      this.srv.pers.exp = 0;
-      this.srv.pers.level = 0;
-      this.srv.pers.inventory = [];
+      this.pers.expKoef = 0;
+      this.pers.exp = 0;
+      this.pers.level = 0;
+      this.pers.inventory = [];
 
-      this.srv.clearDiary(); 
+      // this.srv.clearDiary(); 
       // там тоже перс сохраняется...
       this.saveData();
     }
+  }
+
+  rest(){
+    this.pers.isRest = true;
+    this.srv.savePers(false);
+    this.router.navigate(['/main']);
   }
 
   /**
@@ -310,12 +290,14 @@ export class PersListComponent implements OnInit {
     else {
       this.isEditMode = true;
     }
-
-    this.getAllAbs();
   }
 
   showAbility(ab: Ability) {
     this.srv.showAbility(ab);
+  }
+
+  sync(isDownload){
+    this.srv.sync(isDownload);
   }
 
   upAbil(ab: Ability) {

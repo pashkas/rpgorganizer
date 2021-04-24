@@ -6,6 +6,7 @@ import { Reward } from './Reward';
 import { Qwest } from './Qwest';
 import { revSetting } from './revSetting';
 import { Diary } from './Diary';
+import { curpersview } from './curpersview';
 
 export class Pers {
 
@@ -51,7 +52,7 @@ export class Pers {
     maxPersLevel: number = 100;
 
     rangName: string = 'обыватель';
-    static rangNames=[
+    static rangNames = [
         'обыватель',
         'авантюрист',
         'воин',
@@ -186,4 +187,5 @@ export class Pers {
     isRest: boolean = false;
     totalProgress: number;
     isOffline: boolean = false;
+    currentView: curpersview;
 }

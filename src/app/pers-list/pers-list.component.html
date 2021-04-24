@@ -1,7 +1,7 @@
-<nav *ngIf="this.srv.pers && !this.srv.isDialogOpen" class="fixed-bottom">
+<nav *ngIf="pers && !this.srv.isDialogOpen" class="fixed-bottom">
   <div class="d-flex w-100 justify-content-end px-2 py-2">
     <!-- Назад -->
-    <button mat-icon-button (click)="goBack()" class="mx-2">
+    <button mat-icon-button (click)="goBack()" class="mx-2" *ngIf="!isEditMode">
       <img src="assets/icons/left.png" class="img-fluid" [ngStyle]="{'object-fit': 'contain', 'height':'2.5em'}">
     </button>
     <!-- Редактировать -->
@@ -13,7 +13,7 @@
   </div>
 </nav>
 
-<div class="container pt-2 pb-4" *ngIf="this.srv.pers">
+<div class="container pt-2 pb-4" *ngIf="pers">
   <mat-tab-group mat-align-tabs="center" animationDuration="0ms" [(selectedIndex)]="this.srvSt.selTabPersList"
     isActive="true">
     <mat-tab>
@@ -26,30 +26,30 @@
         <div class="pb-4">
           <!-- Картинка -->
           <!-- <div class="text-center p-1">
-            <img src="{{this.srv.pers.image}}" class="img-fluid rounded"
+            <img src="{{pers.image}}" class="img-fluid rounded"
               [ngStyle]="{'object-fit': 'contain', 'height': '30vh'}">
           </div> -->
-          <app-image-component [(data)]="this.srv.pers.image" [isCanEdit]="false"></app-image-component>
+          <app-image-component [(data)]="pers.image" [isCanEdit]="false"></app-image-component>
           <div fxLayout="row" fxLayoutAlign="space-between center">
             <span>
               <img src="assets/icons/опыт.png" class="img-fluid"
                 [ngStyle]="{'object-fit': 'contain', 'height':'1.5em'}">
               <span>
-                {{(this.srv.pers.level)}}
+                {{(pers.level)}}
               </span>
             </span>
 
             <!-- Имя -->
             <div class="text-center text-dark">
-              <!-- {{this.srv.pers.name + ' (' + (this.srv.pers.rang.name|lowercase) + ')'}} -->
-              {{this.srv.pers.name + ' ('+this.srv.pers.rangName+')'}}
+              <!-- {{pers.name + ' (' + (pers.rang.name|lowercase) + ')'}} -->
+              {{pers.name + ' ('+pers.rangName+')'}}
             </div>
 
             <span>
               <img src="assets/icons/diamond.png" class="img-fluid"
                 [ngStyle]="{'object-fit': 'contain', 'height':'1.5em'}">
               <span>
-                {{this.srv.pers.ON}}
+                {{pers.ON}}
               </span>
             </span>
 
@@ -58,16 +58,16 @@
           </div>
 
           <!-- История -->
-          <div class="md-form" *ngIf="this.srv.pers.story">
-            <i>{{this.srv.pers.story}}</i>
+          <div class="md-form" *ngIf="pers.story">
+            <i>{{pers.story}}</i>
           </div>
 
           <!-- Атрибуты -->
-          <ng-container *ngIf="this.srv.pers.characteristics?.length > 0 && !this.srv.pers.isNoAbs">
+          <ng-container *ngIf="pers.characteristics?.length > 0 && !pers.isNoAbs">
             <!-- <h5>Атрибуты:</h5> -->
             <!-- Характеристики -->
             <ul class="list-group py-0">
-              <li *ngFor="let item of this.srv.pers.characteristics; let i = index;"
+              <li *ngFor="let item of pers.characteristics; let i = index;"
                 class="list-group-item pb-0 px-0 mt-0 mb-0 border-0">
                 <!-- Характеристика -->
                 <a class="align-self-center w-100" [routerLink]="['/pers/characteristic', item.id]">
@@ -102,7 +102,7 @@
                                 {{ab.rang.name}}
                               </a>
 
-                              <a *ngIf="ab.tasks[0]?.mayUp" class="ml-0 px-1 mr-0" (click)="upAbil(ab)">
+                              <a *ngIf="ab.tasks[0]?.mayUp && pers.ON>0" class="ml-0 px-1 mr-0" (click)="upAbil(ab)">
                                 <img src="assets/icons/up.png" class="img-fluid"
                                   [ngStyle]="{'object-fit': 'contain', 'height':'1.5em'}">
                               </a>
@@ -157,54 +157,30 @@
               class="badge badge-secondary">Руководство</a>
             <a href="http://rpg-organizer.107353.n8.nabble.com/" target="_blank" class="badge badge-success">Форум</a>
             <a href="http://nerdistway.blogspot.com/" target="_blank" class="badge badge-warning">Блог</a>
+            <a href="https://t.me/rpgorganizerchat" target="_blank" class="badge badge-info">Telegram</a>
           </h5>
         </div>
       </div>
       <!-- Редактирование -->
       <div *ngIf="isEditMode" class="pt-2 pb-4 w-100">
         <div class="pb-4">
-          <app-image-component [(data)]="this.srv.pers.image" [isCanEdit]="true" [isPers]="true"></app-image-component>
+          <app-image-component [(data)]="pers.image" [isCanEdit]="true" [isPers]="true"></app-image-component>
           <mat-form-field class="w-100">
-            <input matInput autocomplete="off" placeholder="Имя" [(ngModel)]="this.srv.pers.name"
-              name="this.srv.pers.name">
+            <input matInput autocomplete="off" placeholder="Имя" [(ngModel)]="pers.name"
+              name="pers.name">
           </mat-form-field>
           <!-- <mat-form-field class="w-100">
-            <input matInput autocomplete="off" placeholder="Изображение" [(ngModel)]="this.srv.pers.image"
-              name="this.srv.pers.image">
+            <input matInput autocomplete="off" placeholder="Изображение" [(ngModel)]="pers.image"
+              name="pers.image">
           </mat-form-field> -->
           <mat-form-field class="w-100">
-            <input matInput autocomplete="off" placeholder="История" [(ngModel)]="this.srv.pers.story"
-              name="this.srv.pers.story">
+            <input matInput autocomplete="off" placeholder="История" [(ngModel)]="pers.story"
+              name="pers.story">
           </mat-form-field>
 
-          <!-- Только навыки -->
-          <ng-container *ngIf="this.srv.pers.isNoAbs">
-            <div fxLayout="row" fxLayoutAlign="space-between center">
-              <h5>Навыки:</h5>
-              <button class="icon-small" mat-icon-button (click)="addOnlyAb()">
-                <img src="assets/icons/create.png" class="img-fluid">
-              </button>
-            </div>
-            <mat-list *ngIf="allAbs.length>0" class="p-0">
-              <div mat-list-item *ngFor="let ab of allAbs">
-                <div class="d-flex align-items-center">
-                  <div class="flex-grow-1 align-self-center">
-                    <i>{{ab.name}}</i>
-                  </div>
-                  <div class="btn-group btn-group-sm" role="group" aria-label="Действия">
-                    <!-- Удалить -->
-                    <div class="btn-group btn-group-sm" role="group" aria-label="Действия">
-                      <button class="icon-small" (click)="delAbil(ab.id)" mat-icon-button>
-                        <img src="assets/icons/del.png" class="img-fluid">
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </mat-list>
-          </ng-container>
+         
           <!-- Атрибуты -->
-          <ng-container *ngIf="!this.srv.pers.isNoAbs">
+          <ng-container>
             <div fxLayout="row" fxLayoutAlign="space-between center">
               <h5>Атрбуты:</h5>
               <button class="icon-small" mat-icon-button (click)="addCharact()">
@@ -212,7 +188,7 @@
               </button>
             </div>
             <mat-list>
-              <div mat-list-item *ngFor="let item of this.srv.pers.characteristics; let i = index" class="p-0">
+              <div mat-list-item *ngFor="let item of pers.characteristics; let i = index" class="p-0">
                 <div class="d-flex flex-column">
                   <!-- Характеристика -->
                   <div class="d-flex align-items-center">
@@ -256,7 +232,7 @@
           <br>
           <ng-container *ngIf="false">
             <div fxLayout="row" class="my-1" fxLayoutAlign="space-between center" fxLayoutGap="4px"
-              *ngFor="let item of this.srv.pers.rangse; let i = index">
+              *ngFor="let item of pers.rangse; let i = index">
               <mat-form-field fxFlex>
                 <input matInput autocomplete="off" placeholder="Название" [(ngModel)]="item.name" name="rangName{{i}}">
               </mat-form-field>
@@ -269,54 +245,6 @@
               </div>
             </div>
           </ng-container>
-
-          <!-- <div>
-            <mat-slide-toggle class="example-margin" [(ngModel)]="this.srv.pers.isTES">
-              TES Mode
-            </mat-slide-toggle>
-          </div>
-          <div>
-            <mat-slide-toggle class="example-margin" [(ngModel)]="this.srv.pers.isEra">
-              Эра Водолея
-            </mat-slide-toggle>
-          </div> -->
-          <div>
-            <mat-slide-toggle class="example-margin" [(ngModel)]="this.srv.pers.isOffline">
-              Оффлайн
-            </mat-slide-toggle>
-          </div>
-          <!-- <div>
-            <mat-slide-toggle class="example-margin" [(ngModel)]="this.srv.pers.isOneLevOneCrist">
-              Один уровень - один кристалл
-            </mat-slide-toggle>
-          </div>
-          <div>
-            <mat-slide-toggle class="example-margin" [(ngModel)]="this.srv.pers.isEqLvlUp">
-              Можно прокачивать одинаковые уровни
-            </mat-slide-toggle>
-          </div>
-          <div>
-            <mat-slide-toggle class="example-margin" [(ngModel)]="this.srv.pers.isNoExpShow">
-              Меньше всплывающих окон
-            </mat-slide-toggle>
-          </div>
-
-          
-          <div>
-            <mat-slide-toggle class="example-margin" [(ngModel)]="this.srv.pers.isMax5">
-              Макс 5
-            </mat-slide-toggle>
-          </div>
-          <div>
-            <mat-slide-toggle class="example-margin" [(ngModel)]="this.srv.pers.isNoAbs">
-              Без характеристик
-            </mat-slide-toggle>
-          </div>
-          <div>
-            <mat-slide-toggle class="example-margin" [(ngModel)]="this.srv.pers.isNoDiary">
-              Без дневника
-            </mat-slide-toggle>
-          </div> -->
 
           <br>
           <button mat-stroked-button color="accent" class="w-100 mt-2" (click)="resp()">
@@ -342,10 +270,10 @@
       <div *ngIf="!isEditMode" class="pt-2 pb-4 w-100">
         <div class="pb-4">
           <!-- Квесты -->
-          <ng-container *ngIf="this.srv.pers.qwests?.length > 0">
+          <ng-container *ngIf="pers.qwests?.length > 0">
 
             <ul class="list-group py-0 px-0">
-              <li [ngStyle]="{'opacity': qwest.parrentId||qwest.isNoActive ? '0.4' : '1'}" *ngFor="let qwest of this.srv.pers.qwests"
+              <li [ngStyle]="{'opacity': qwest.parrentId||qwest.isNoActive ? '0.4' : '1'}" *ngFor="let qwest of pers.qwests"
                 class="list-group-item px-0 py-1 border-0">
 
                 <div fxLayout="row" fxLayoutAlign="space-between center">
@@ -381,7 +309,7 @@
           </div>
           <!-- Список квестов -->
           <mat-list>
-            <div mat-list-item *ngFor="let qwest of this.srv.pers.qwests; let i = index">
+            <div mat-list-item *ngFor="let qwest of pers.qwests; let i = index">
               <div class="d-flex align-items-center">
                 <div class="flex-grow-1 align-self-center">
                   {{qwest.name}}
@@ -412,7 +340,7 @@
           <!-- Инвентарь -->
           <div fxFlexFill fxLayout="row wrap" fxLayoutAlign="center center" fxLayoutGap="10px grid"
             style="padding-left: 10px;">
-            <div [fxFlex]="(100/3) + '%'" *ngFor="let rev of this.srv.pers.inventory">
+            <div [fxFlex]="(100/3) + '%'" *ngFor="let rev of pers.inventory">
               <div style="cursor: pointer;" (click)="useRevard(rev)" fxLayout="column"
                 fxLayoutAlign="space-around center" [ngStyle]="{'border-color': rev.rare | rarecol}"
                 style="border-width: 4px!important; border-style: solid; padding: 10px;">
@@ -443,7 +371,7 @@
           </div>
           <!-- Список наград -->
           <mat-list>
-            <div mat-list-item *ngFor="let rev of this.srv.pers.rewards; let i = index">
+            <div mat-list-item *ngFor="let rev of pers.rewards; let i = index">
               <div fxFill>
                 <div fxFlex fxLayout="row" fxLayoutAlign="start center">
                   <div>
@@ -468,14 +396,14 @@
               </div>
             </div>
           </mat-list>
-          <!-- <small class="pt-1" *ngIf="this.srv.pers.totalRewardProbability"><i>Вероятность награды:
-              {{this.srv.pers.totalRewardProbability}}%</i></small> -->
+          <!-- <small class="pt-1" *ngIf="pers.totalRewardProbability"><i>Вероятность награды:
+              {{pers.totalRewardProbability}}%</i></small> -->
           <br>
         </div>
       </div>
     </mat-tab>
 
-    <mat-tab *ngIf="!isEditMode && !this.srv.pers.isNoDiary">
+    <mat-tab *ngIf="!isEditMode && !pers.isNoDiary">
       <ng-template mat-tab-label>
         <img src="assets/icons/diary.png" class="tabimg img-fluid">
       </ng-template>

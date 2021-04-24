@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { PersService } from '../pers.service';
 import { Location } from '@angular/common';
@@ -17,7 +17,8 @@ import { Task } from 'src/Models/Task';
 @Component({
   selector: 'app-qwest-detail',
   templateUrl: './qwest-detail.component.html',
-  styleUrls: ['./qwest-detail.component.css']
+  styleUrls: ['./qwest-detail.component.css'],
+  changeDetection: ChangeDetectionStrategy.Default
 })
 export class QwestDetailComponent implements OnInit {
   isEditMode: boolean = false;
@@ -30,6 +31,7 @@ export class QwestDetailComponent implements OnInit {
   prevQwest: Qwest;
   qwest: Qwest;
   linkAbs: Task[]=[];
+  pers: Pers;
 
   constructor(private location: Location, private route: ActivatedRoute, public srv: PersService, private router: Router, public dialog: MatDialog) { }
 
@@ -166,7 +168,7 @@ export class QwestDetailComponent implements OnInit {
     let nextQw: Qwest[] = [];
     let prevQwest;
 
-    for (const qw of this.srv.pers.qwests) {
+    for (const qw of this.pers.qwests) {
       if (qw.parrentId === this.qwest.id) {
         nextQw.push(qw);
       }
@@ -183,7 +185,7 @@ export class QwestDetailComponent implements OnInit {
     this.srv.isDialogOpen = true;
     const dialogRef = this.dialog.open(ChangeCharactComponent, {
       panelClass: 'my-big',
-      data: { characteristic: this.qwest, allCharacts: this.srv.pers.qwests.sort((a, b) => a.name.localeCompare(b.name)), tittle: 'Выберите квест' },
+      data: { characteristic: this.qwest, allCharacts: this.pers.qwests.sort((a, b) => a.name.localeCompare(b.name)), tittle: 'Выберите квест' },
       backdropClass: 'backdrop'
     });
 
@@ -191,7 +193,7 @@ export class QwestDetailComponent implements OnInit {
       .subscribe(n => {
         if (n) {
           if (n.id != this.qwest.id) {
-            for (const qw of this.srv.pers.qwests) {
+            for (const qw of this.pers.qwests) {
               if (qw.id == n.id) {
                 qw.parrentId = this.qwest.id;
 
@@ -206,7 +208,7 @@ export class QwestDetailComponent implements OnInit {
   }
 
   delNextQwest(id) {
-    for (const qw of this.srv.pers.qwests) {
+    for (const qw of this.pers.qwests) {
       if (qw.id === id) {
         qw.parrentId = null;
         break;
@@ -226,15 +228,14 @@ export class QwestDetailComponent implements OnInit {
   }
 
   ngOnInit() {
-    if (!this.srv.pers) {
+    if (!this.srv.pers$.value) {
       this.router.navigate(['/main']);
     }
 
-
-    this.route.params.subscribe(n => {
-      const id = n['id'];
-      const fromMain = n['fromMain'];
-
+    this.srv.pers$.subscribe(n=>{
+      this.pers=n;
+      const id = this.route.snapshot.paramMap.get('id');
+      const fromMain = this.route.snapshot.paramMap.get('fromMain');
       if (fromMain) {
         this.isFromMain = true;
       }
@@ -242,7 +243,7 @@ export class QwestDetailComponent implements OnInit {
         this.isFromMain = false;
       }
 
-      for (const qw of this.srv.pers.qwests) {
+      for (const qw of this.pers.qwests) {
         if (qw.id === id) {
           if (qw.hardnes == null || qw.hardnes == undefined) {
             qw.hardnes = 0;
@@ -264,7 +265,7 @@ export class QwestDetailComponent implements OnInit {
   private findLinks() {
     let linkAbs = [];
     if (this.qwest) {
-      for (const ch of this.srv.pers.characteristics) {
+      for (const ch of this.pers.characteristics) {
         for (const ab of ch.abilities) {
           if (ab.id == this.qwest.abilitiId) {
             linkAbs.push(ab.tasks[0]);
@@ -279,7 +280,7 @@ export class QwestDetailComponent implements OnInit {
   getQwestAb() {
     let qwAb = null;
     if (this.qwest.abilitiId) {
-      for (const ch of this.srv.pers.characteristics) {
+      for (const ch of this.pers.characteristics) {
         for (const ab of ch.abilities) {
           if (ab.id == this.qwest.abilitiId) {
             qwAb = ab;
@@ -296,7 +297,7 @@ export class QwestDetailComponent implements OnInit {
     const dialogRef = this.dialog.open(ChangeCharactComponent, {
       data: {
         characteristic: this.qwestAbiliti,
-        allCharacts: this.srv.pers.characteristics
+        allCharacts: this.pers.characteristics
           .reduce((a, b) => {
             return a.concat(b.abilities)
           }, [])

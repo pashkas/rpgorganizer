@@ -26,16 +26,16 @@ export class DiaryShowComponent implements OnInit {
   constructor(public dialog: MatDialog, private srv: PersService, private overlay: Overlay) { }
 
   chartClick(e: number) {
-    if (e != undefined && e != null && this.srv.pers.Diary.length > 0) {
-      const dind = (this.srv.pers.Diary.length - 1) - e;
-      this.editDiaryItem(this.srv.pers.Diary[dind]);
-    }
+    // if (e != undefined && e != null && this.srv.pers.Diary.length > 0) {
+    //   const dind = (this.srv.pers.Diary.length - 1) - e;
+    //   this.editDiaryItem(this.srv.pers.Diary[dind]);
+    // }
   }
 
   clearDiary() {
-    this.srv.clearDiary();
-    this.onChanged.emit(true);
-    this.updateChart();
+    // this.srv.clearDiary();
+    // this.onChanged.emit(true);
+    // this.updateChart();
   }
 
   editDiaryItem(d: Diary) {
@@ -86,47 +86,47 @@ export class DiaryShowComponent implements OnInit {
   }
 
   updateChart() {
-    if (this.srv.pers.Diary.length == 0) {
-      return;
-    }
+    // if (this.srv.pers.Diary.length == 0) {
+    //   return;
+    // }
 
-    let labels: Label[] = [];
-    let data: ChartDataSets[] = [];
-    let dict = new Map<string, DicData>();
+    // let labels: Label[] = [];
+    // let data: ChartDataSets[] = [];
+    // let dict = new Map<string, DicData>();
 
-    this.srv.pers.Diary[0].params.forEach(p => {
-      dict.set(p.id, new DicData(p.name));
-    });
+    // this.srv.pers.Diary[0].params.forEach(p => {
+    //   dict.set(p.id, new DicData(p.name));
+    // });
 
-    this.srv.pers.Diary.forEach(d => {
-      let dat = moment(d.date).format('DD.MM');
-      labels.unshift(dat);
-      d.params.forEach(p => {
-        dict.get(p.id).data.unshift(p.val);
-      });
-    });
+    // this.srv.pers.Diary.forEach(d => {
+    //   let dat = moment(d.date).format('DD.MM');
+    //   labels.unshift(dat);
+    //   d.params.forEach(p => {
+    //     dict.get(p.id).data.unshift(p.val);
+    //   });
+    // });
 
-    dict.forEach(dic => {
-      data.push({
-        data: dic.data, label: dic.name
-      });
-    });
+    // dict.forEach(dic => {
+    //   data.push({
+    //     data: dic.data, label: dic.name
+    //   });
+    // });
 
-    let getHidden = (i: number): boolean => {
-      if (this.hiddenIndex == null) {
-        return false;
-      }
-      if (this.hiddenIndex != i) {
-        return true;
-      }
-    };
+    // let getHidden = (i: number): boolean => {
+    //   if (this.hiddenIndex == null) {
+    //     return false;
+    //   }
+    //   if (this.hiddenIndex != i) {
+    //     return true;
+    //   }
+    // };
 
-    for (let i = 0; i < data.length; i++) {
-      let dd = data[i];
-      dd.hidden = getHidden(i);
-    }
+    // for (let i = 0; i < data.length; i++) {
+    //   let dd = data[i];
+    //   dd.hidden = getHidden(i);
+    // }
 
-    this.chartLabels = labels;
-    this.chartData = data;
+    // this.chartLabels = labels;
+    // this.chartData = data;
   }
 }

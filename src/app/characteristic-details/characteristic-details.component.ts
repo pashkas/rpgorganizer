@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { PersService } from '../pers.service';
 import { Pers } from 'src/Models/Pers';
@@ -14,7 +14,8 @@ import { AddItemDialogComponent } from '../add-item-dialog/add-item-dialog.compo
 @Component({
   selector: 'app-characteristic-details',
   templateUrl: './characteristic-details.component.html',
-  styleUrls: ['./characteristic-details.component.css']
+  styleUrls: ['./characteristic-details.component.css'],
+  changeDetection: ChangeDetectionStrategy.Default
 })
 export class CharacteristicDetailsComponent implements OnInit {
   private unsubscribe$ = new Subject();
@@ -23,6 +24,7 @@ export class CharacteristicDetailsComponent implements OnInit {
   isEditMode: boolean = false;
 
   rangse: Rangse[];
+  pers: Pers;
 
   //  = Characteristic.rangse;
   constructor(private location: Location, private route: ActivatedRoute, public srv: PersService, private router: Router, public dialog: MatDialog) { }
@@ -59,7 +61,7 @@ export class CharacteristicDetailsComponent implements OnInit {
     if (this.isEditMode) {
       this.isEditMode = false;
     }
-    else{
+    else {
       this.location.back();
     }
   }
@@ -70,30 +72,26 @@ export class CharacteristicDetailsComponent implements OnInit {
   }
 
   ngOnInit() {
-    if (!this.srv.pers) {
+    this.srv.pers$
+      .pipe(takeUntil(this.unsubscribe$))
+      .subscribe(n => {
+        this.pers = n;
+        const id = this.route.snapshot.paramMap.get('id');
+        this.charact = this.srv.allMap[id].item;
+      });
+
+    if (!this.srv.pers$.value) {
       this.router.navigate(['/main']);
     }
-    
+
     this.rangse = [];
-    for (let index = 0; index <= this.srv.pers.maxAttrLevel; index++) {
-      if (this.srv.pers.isTES && index == 0) {
-        continue;
-      }
+    for (let index = 0; index <= 10; index++) {
       let rng = new Rangse();
       rng.val = index;
       rng.img = '';
       rng.name = '' + index;
       this.rangse.push(rng);
     }
-
-
-    if (!this.srv.pers) {
-      this.router.navigate(['/main']);
-    }
-
-    const id = this.route.snapshot.paramMap.get('id');
-    this.charact = this.srv.pers.characteristics.filter(n => { return n.id === id })[0];
-
   }
 
   /**
@@ -110,14 +108,9 @@ export class CharacteristicDetailsComponent implements OnInit {
   }
 
   showAbility(ab: Ability) {
-    if (Pers.GameSettings.isNoAbilities) {
-      let tsk = ab.tasks[0];
-      if (tsk) {
-        this.router.navigate(['/pers/task', tsk.id, false]);
-      }
-    }
-    else {
-      this.router.navigate(['/pers/ability', ab.id]);
+    let tsk = ab.tasks[0];
+    if (tsk) {
+      this.router.navigate(['/pers/task', tsk.id, false]);
     }
   }
 }

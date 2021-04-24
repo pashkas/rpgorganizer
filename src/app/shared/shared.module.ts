@@ -15,6 +15,7 @@ import { ImageComponentComponent } from '../image-component/image-component.comp
 import { NgxMasonryModule } from 'ngx-masonry';
 import { TimeValPipe } from './time-val.pipe';
 import { NgxMaterialTimepickerModule } from 'ngx-material-timepicker';
+import { DatestringPipe } from './datestring.pipe';
 
 @NgModule({
   declarations: [
@@ -23,6 +24,7 @@ import { NgxMaterialTimepickerModule } from 'ngx-material-timepicker';
     PersChangesItemComponent,
     AddItemDialogComponent,
     TimeValPipe,
+    DatestringPipe,
   ],
   imports: [
     NgxMaterialTimepickerModule,
@@ -61,7 +63,8 @@ import { NgxMaterialTimepickerModule } from 'ngx-material-timepicker';
     PersChangesComponent,
     AddItemDialogComponent,
     TimeValPipe,
-    MatSelectModule
+    MatSelectModule,
+    DatestringPipe
   ]
 })
 export class SharedModule { }

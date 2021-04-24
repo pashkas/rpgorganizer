@@ -1,5 +1,5 @@
 <!-- Просмотр -->
-<div class="container pt-2 pb-4" *ngIf="this.srv.pers && abil && !isEditMode">
+<div class="container pt-2 pb-4" *ngIf="this.pers && abil && !isEditMode">
   <form class="pb-4">
     <!-- Картинка -->
     <!-- <div class="form-group text-center" *ngIf="abil.image">
@@ -38,7 +38,7 @@
               <h6>{{tsk.name}}</h6>
             </div>
             <div class="text-right text-nowrap align-self-baseline">
-              <small>{{tsk.requrense}} | {{getDateString(tsk.date)}} | {{tsk.time}}</small>
+              <small>{{tsk.requrense}} | {{tsk.date| datestring}} | {{tsk.time}}</small>
             </div>
           </div>
         </a>
@@ -52,7 +52,7 @@
   </form>
 </div>
 <!-- Редактирование -->
-<div class="container pt-2 pb-4" *ngIf="this.srv.pers && abil && isEditMode">
+<div class="container pt-2 pb-4" *ngIf="this.pers && abil && isEditMode">
   <form class="pb-4">
     <!-- Картинка -->
     <div class="form-group text-center" *ngIf="abil.image">

@@ -55,49 +55,49 @@ export class EditDiaryParamsComponent implements OnInit {
   }
 
   ngOnInit() {
-    if (this.srv.pers.Diary.length > 0) {
-      this.DiaryParams = [...this.srv.pers.Diary[0].params];
-    }
+    // if (this.srv.pers.Diary.length > 0) {
+    //   this.DiaryParams = [...this.srv.pers.Diary[0].params];
+    // }
   }
 
   save() {
-    // Order
-    for (let i = 0; i < this.DiaryParams.length; i++) {
-      const el = this.DiaryParams[i];
-      el.order = i;
-    }
+    // // Order
+    // for (let i = 0; i < this.DiaryParams.length; i++) {
+    //   const el = this.DiaryParams[i];
+    //   el.order = i;
+    // }
 
-    // Удаление
-    this.srv.pers.Diary.forEach(d => {
-      d.params = d.params.filter(n => this.DiaryParams.filter(q => q.id == n.id).length > 0);
-    });
+    // // Удаление
+    // this.srv.pers.Diary.forEach(d => {
+    //   d.params = d.params.filter(n => this.DiaryParams.filter(q => q.id == n.id).length > 0);
+    // });
 
-    // Добавление, редактирование
-    for (let i = 0; i < this.DiaryParams.length; i++) {
-      const par = this.DiaryParams[i];
+    // // Добавление, редактирование
+    // for (let i = 0; i < this.DiaryParams.length; i++) {
+    //   const par = this.DiaryParams[i];
 
-      for (let j = 0; j < this.srv.pers.Diary.length; j++) {
-        const d = this.srv.pers.Diary[j];
-        let p = d.params.filter(z => z.id == par.id);
-        if (p.length == 0) {
-          let dp = new DiaryParam();
-          dp.name = par.name;
-          dp.id = par.id;
-          dp.order = par.order;
-          d.params.push(dp);
-        }
-        else {
-          p[0].name = par.name;
-          p[0].order = par.order;
-        }
+    //   for (let j = 0; j < this.srv.pers.Diary.length; j++) {
+    //     const d = this.srv.pers.Diary[j];
+    //     let p = d.params.filter(z => z.id == par.id);
+    //     if (p.length == 0) {
+    //       let dp = new DiaryParam();
+    //       dp.name = par.name;
+    //       dp.id = par.id;
+    //       dp.order = par.order;
+    //       d.params.push(dp);
+    //     }
+    //     else {
+    //       p[0].name = par.name;
+    //       p[0].order = par.order;
+    //     }
 
-        d.params = d.params.sort((a,b)=>a.order-b.order);
-      }
-    }
+    //     d.params = d.params.sort((a,b)=>a.order-b.order);
+    //   }
+    // }
 
 
 
-    this.srv.savePers(false);
-    this.dialogRef.close();
+    // this.srv.savePers(false);
+    // this.dialogRef.close();
   }
 }

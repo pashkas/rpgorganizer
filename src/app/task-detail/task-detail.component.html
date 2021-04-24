@@ -1,7 +1,7 @@
-<nav *ngIf="this.srv.pers && !this.srv.isDialogOpen" class="fixed-bottom">
+<nav *ngIf="this.pers && !this.srv.isDialogOpen" class="fixed-bottom">
   <div class="d-flex w-100 justify-content-end px-2 py-2">
     <!-- Назад -->
-    <button mat-icon-button (click)="goBack()" class="mx-2">
+    <button mat-icon-button (click)="goBack()" class="mx-2" *ngIf="!isEditMode">
       <img src="assets/icons/left.png" class="img-fluid" [ngStyle]="{'object-fit': 'contain', 'height':'2.5em'}">
     </button>
     <!-- Редактировать -->
@@ -13,7 +13,7 @@
   </div>
 </nav>
 <!-- Просмотр -->
-<div class="container pt-2 pb-4" *ngIf="this.srv.pers && tsk && !isEditMode">
+<div class="container pt-2 pb-4" *ngIf="this.pers && tsk && !isEditMode">
   <form class="pb-4">
     <app-image-component *ngIf="tskAbility && tskAbility?.image" [(data)]="tskAbility.image"></app-image-component>
     <app-image-component *ngIf="!tskAbility" [data]="'assets/img/'+ tsk.imageLvl + '/'+tsk.image+'.jpg'">
@@ -34,7 +34,7 @@
       </ng-container>
 
       <div>
-        {{getDateString(tsk)}}
+        {{tsk.date| datestring}}
         ({{tsk.requrense | titlecase }})
       </div>
 
@@ -43,7 +43,7 @@
       </div> -->
 
       <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="7px">
-        <button *ngIf="tsk.mayUp" class="icon-small" mat-icon-button (click)="upAbil();">
+        <button *ngIf="tsk.mayUp&& this.pers.ON>0" class="icon-small" mat-icon-button (click)="upAbil();">
           <img src="assets/icons/up.png" class="img-fluid">
         </button>
         <button *ngIf="tsk.value>=1" class="icon-small" mat-icon-button (click)="downAbil();">
@@ -52,7 +52,7 @@
         <span *ngIf="tsk.requrense != 'нет'">
           <img src="assets/icons/diamond.png" class="img-fluid" [ngStyle]="{'object-fit': 'contain', 'height':'1.5em'}">
           <span>
-            {{this.srv.pers.ON}}
+            {{this.pers.ON}}
           </span>
         </span>
       </div>
@@ -115,7 +115,7 @@
   <br>
 </div>
 <!-- Режим редактирования -->
-<div class="container pt-2 pb-4" *ngIf="this.srv.pers && tsk && isEditMode">
+<div class="container pt-2 pb-4" *ngIf="this.pers && tsk && isEditMode">
   <form class="pb-4">
     <app-image-component *ngIf="tskAbility && tskAbility?.image" [(data)]="tskAbility.image" [isCanEdit]="true">
     </app-image-component>
@@ -196,21 +196,21 @@
           autocomplete="off" placeholder="Описание" [(ngModel)]="tsk.descr" name="tsk.descr"></textarea>
       </mat-form-field>
     </div>
-    <div *ngIf="tsk.requrense != 'нет'" class="pb-2">
-      <mat-slide-toggle [checked]="tsk.isPerk" (change)="tsk.isPerk=!tsk.isPerk">
-        Перк?
-      </mat-slide-toggle>
-    </div>
+
     <!-- Сложность -->
     <ng-container *ngIf="tsk.requrense != 'нет'">
-      <div fxLayout="row" fxLayoutAlign="space-between center" class="pb-3">
-        <mat-chip-list [selectable]="true">
+      <div fxLayout="row" fxLayoutAlign="center center" class="pb-3">
+        <mat-chip-list [selectable]="true" [multiple]="true">
+          <mat-chip (click)="tsk.isPerk=!tsk.isPerk" [selected]="tsk.isPerk" color="accent">перк?</mat-chip>
+
+          <mat-divider vertical class="vertdiv"></mat-divider>
+
+          <mat-chip (click)="tsk.hardnes=0.5" [selected]="tsk.hardnes==0.5" color="accent">легко</mat-chip>
           <mat-chip (click)="tsk.hardnes=1" [selected]="tsk.hardnes==1" color="accent">норм</mat-chip>
           <mat-chip (click)="tsk.hardnes=2" [selected]="tsk.hardnes==2" color="accent">сложно</mat-chip>
-          <mat-chip (click)="tsk.hardnes=3" [selected]="tsk.hardnes==3" color="accent">оч. сложно</mat-chip>
-        </mat-chip-list>
 
-        <mat-chip-list [multiple]="true" [selectable]="true">
+          <mat-divider vertical class="vertdiv"></mat-divider>
+
           <mat-chip color="accent" (click)="setSumStates()" [selected]="tsk.isSumStates">∑</mat-chip>
           <mat-chip [selected]="tsk.isStatePlusTitle" color="accent"
             (click)="tsk.isStatePlusTitle=!tsk.isStatePlusTitle">название</mat-chip>
@@ -235,14 +235,6 @@
             name="tsk.aimCounter">
         </mat-form-field>
 
-        <mat-chip-list [multiple]="true" [selectable]="true" fxFlex="noshrink">
-          <mat-chip color="accent" (click)="tsk.isTimer=!tsk.isTimer" [selected]="tsk.isTimer">
-            таймер
-          </mat-chip>
-          <mat-chip [selected]="tsk.isCounter" color="accent" (click)="tsk.isCounter=!tsk.isCounter">
-            счетчик
-          </mat-chip>
-        </mat-chip-list>
       </div>
     </ng-container>
 

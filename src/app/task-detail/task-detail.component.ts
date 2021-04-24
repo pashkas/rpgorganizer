@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { Pers } from 'src/Models/Pers';
 import { Task, taskState, Reqvirement } from 'src/Models/Task';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -17,19 +17,21 @@ import { Qwest } from 'src/Models/Qwest';
 @Component({
   selector: 'app-task-detail',
   templateUrl: './task-detail.component.html',
-  styleUrls: ['./task-detail.component.css']
+  styleUrls: ['./task-detail.component.css'],
+  changeDetection: ChangeDetectionStrategy.Default
 })
 export class TaskDetailComponent implements OnInit {
   private unsubscribe$ = new Subject();
 
   isEditMode: boolean = false;
+  linkQwests: Qwest[] = [];
+  pers:Pers;
   requrenses: string[] = Task.requrenses;
   times = [1, 2, 3, 4, 5];
   tsk: Task;
   tskAbility: Ability;
   tskCharact: Characteristic;
   weekDays: string[] = Task.weekDays;
-  linkQwests: Qwest[] = [];
 
   constructor(private location: Location, private route: ActivatedRoute, public srv: PersService, private router: Router, public dialog: MatDialog) { }
 
@@ -78,7 +80,7 @@ export class TaskDetailComponent implements OnInit {
             let state = new taskState();
             state.value = this.tsk.value;
             state.requrense = this.tsk.requrense;
-            state.image = this.srv.GetRndEnamy(state);
+            state.image = this.srv.GetRndEnamy(state, this.pers.level, this.pers.maxPersLevel);
             state.name = stt;
             //state.time = stt.time;
             this.tsk.states.push(state);
@@ -105,7 +107,7 @@ export class TaskDetailComponent implements OnInit {
     this.srv.isDialogOpen = true;
     const dialogRef = this.dialog.open(ChangeCharactComponent, {
       panelClass: 'my-big',
-      data: { characteristic: this.tskCharact, allCharacts: this.srv.pers.characteristics.sort((a, b) => a.name.localeCompare(b.name)), tittle: 'Выберите квест' },
+      data: { characteristic: this.tskCharact, allCharacts: this.pers.characteristics.sort((a, b) => a.name.localeCompare(b.name)), tittle: 'Выберите квест' },
       backdropClass: 'backdrop'
     });
 
@@ -113,7 +115,7 @@ export class TaskDetailComponent implements OnInit {
       .subscribe(n => {
         if (n) {
           if (n.id != this.tskCharact.id) {
-            for (const ch of this.srv.pers.characteristics) {
+            for (const ch of this.pers.characteristics) {
               if (ch.id == n.id) {
                 ch.abilities.push(this.tskAbility);
 
@@ -152,66 +154,38 @@ export class TaskDetailComponent implements OnInit {
     }
   }
 
+  downAbil() {
+    if (this.tskAbility) {
+      this.srv.changesBefore();
+
+      this.srv.downAbility(this.tskAbility);
+
+      this.srv.changesAfter(false);
+    }
+  }
+
   drop(event: CdkDragDrop<string[]>) {
     moveItemInArray(this.tsk.states, event.previousIndex, event.currentIndex);
   }
 
   findTask() {
-    if (!this.srv.pers) {
+    if (!this.pers) {
       this.router.navigate(['/main']);
     }
 
     const id = this.route.snapshot.paramMap.get('id');
 
-    // Находим задачу
-    let isFind = false;
-
-    // В квестах
-    if (isFind === false) {
-      for (const qw of this.srv.pers.qwests) {
-        for (const tsk of qw.tasks) {
-          if (tsk.id === id) {
-            this.tsk = tsk;
-            isFind = true;
-
-            break;
-          }
-        }
-      }
-    }
-
-    // В навыках
-    if (isFind === false) {
-      for (const cha of this.srv.pers.characteristics) {
-        for (const ab of cha.abilities) {
-          for (const tsk of ab.tasks) {
-            if (tsk.id === id) {
-              if (!tsk.hardnes) {
-                tsk.hardnes = 1;
-              }
-              this.tsk = tsk;
-              this.tskAbility = ab;
-
-              if (!this.srv.pers.isNoAbs) {
-                this.tskCharact = cha;
-              }
-
-              isFind = true;
-
-              break;
-            }
-          }
-        }
-      }
-    }
+    this.tsk = this.srv.allMap[id].item;
 
     if (this.tsk) {
-      if (this.tsk.requrense === 'нет') {
+      if (this.tsk.requrense == 'нет') {
         this.requrenses = Task.requrenses.filter(n => {
           return n === 'нет';
         });
       }
       else {
+        this.tskAbility=this.srv.allMap[id].link;
+        this.tskCharact=this.srv.allMap[this.srv.allMap[id].link.id].link;
         this.requrenses = Task.requrenses.filter(n => {
           return n != 'нет';
         });
@@ -234,37 +208,6 @@ export class TaskDetailComponent implements OnInit {
     this.findLinks();
   }
 
-  private findLinks() {
-    let linkQwests = [];
-    if (this.tskAbility) {
-      for (const qw of this.srv.pers.qwests) {
-        if (qw.abilitiId == this.tskAbility.id) {
-          linkQwests.push(qw);
-        }
-      }
-    }
-    this.linkQwests = linkQwests;
-  }
-
-  getDateString(tsk: Task) {
-    if (tsk.date === undefined || tsk.date === null) {
-      return "";
-    }
-
-    let date = new Date(tsk.date);
-
-    let dt = date.toLocaleDateString([], { day: 'numeric', month: 'numeric' });
-
-    // if (tsk.time) {
-    //   dt += ' | ' + tsk.time;
-    // }
-
-    return dt;
-  }
-  refrCounter() {
-    this.tsk.refreshCounter++;
-    this.srv.savePers(false);
-  }
   goBack() {
     if (this.isEditMode) {
       this.isEditMode = false;
@@ -272,6 +215,28 @@ export class TaskDetailComponent implements OnInit {
     else {
       this.location.back();
     }
+  }
+
+  ngOnDestroy(): void {
+    this.unsubscribe$.next();
+    this.unsubscribe$.complete();
+  }
+
+  ngOnInit() {
+    this.srv.pers$
+    .pipe(takeUntil(this.unsubscribe$))
+    .subscribe(n=>{
+      this.pers=n;
+      this.findTask();
+    });
+  }
+
+  onTskDateChange(ev) {
+    this.tsk.date = ev;
+
+    this.tsk.states.forEach(el => {
+      el.isDone = false;
+    });
   }
 
   qwickSetDate(v) {
@@ -287,21 +252,9 @@ export class TaskDetailComponent implements OnInit {
     this.srv.CheckSetTaskDate(this.tsk);
   }
 
-  ngOnDestroy(): void {
-    this.unsubscribe$.next();
-    this.unsubscribe$.complete();
-  }
-
-  ngOnInit() {
-    this.findTask();
-  }
-
-  onTskDateChange(ev) {
-    this.tsk.date = ev;
-
-    this.tsk.states.forEach(el => {
-      el.isDone = false;
-    });
+  refrCounter() {
+    this.tsk.refreshCounter++;
+    this.srv.savePers(false);
   }
 
   /**
@@ -350,16 +303,6 @@ export class TaskDetailComponent implements OnInit {
     }
   }
 
-  downAbil() {
-    if (this.tskAbility) {
-      this.srv.changesBefore();
-
-      this.srv.downAbility(this.tskAbility);
-
-      this.srv.changesAfter(false);
-    }
-  }
-
   upAbil() {
     if (this.tskAbility) {
       this.srv.changesBefore();
@@ -368,5 +311,17 @@ export class TaskDetailComponent implements OnInit {
 
       this.srv.changesAfter(true);
     }
+  }
+
+  private findLinks() {
+    let linkQwests = [];
+    if (this.tskAbility) {
+      for (const qw of this.pers.qwests) {
+        if (qw.abilitiId == this.tskAbility.id) {
+          linkQwests.push(qw);
+        }
+      }
+    }
+    this.linkQwests = linkQwests;
   }
 }

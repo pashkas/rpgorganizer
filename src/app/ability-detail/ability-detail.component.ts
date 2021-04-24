@@ -20,6 +20,7 @@ export class AbilityDetailComponent implements OnInit {
   abil: Ability;
   isEditMode: boolean = false;
   newTsk: string;
+  pers: Pers;
 
   // rangse: Rangse[] = Ability.rangse;
 
@@ -41,15 +42,6 @@ export class AbilityDetailComponent implements OnInit {
     this.srv.delTask(this.abil, id);
   }
 
-  getDateString(dt: Date) {
-    if (dt === undefined || dt === null) {
-      return "";
-    }
-
-    let date = new Date(dt);
-    return date.toLocaleDateString([], { day: 'numeric', month: 'numeric' });
-  }
-
   getTimeString(dt: Date) {
     if (dt === undefined || dt === null) {
       return "";
@@ -69,19 +61,15 @@ export class AbilityDetailComponent implements OnInit {
   }
 
   ngOnInit() {
-    if (!this.srv.pers) {
+    if (!this.srv.pers$.value) {
       this.router.navigate(['/main']);
     }
 
-    const id = this.route.snapshot.paramMap.get('id');
-    for (const cha of this.srv.pers.characteristics) {
-      for (const ab of cha.abilities) {
-        if (ab.id === id) {
-          this.abil = ab;
-          break;
-        }
-      }
-    }
+    this.srv.pers$.subscribe(n=>{
+      this.pers=n;
+      const id = this.route.snapshot.paramMap.get('id');
+      this.abil = this.srv.allMap[id].item;
+    });
   }
 
   /**
