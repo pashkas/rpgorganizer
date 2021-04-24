@@ -295,6 +295,7 @@ export class QwestDetailComponent implements OnInit {
   setAbil() {
     this.srv.isDialogOpen = true;
     const dialogRef = this.dialog.open(ChangeCharactComponent, {
+      panelClass: 'my-dialog',
       data: {
         characteristic: this.qwestAbiliti,
         allCharacts: this.pers.characteristics

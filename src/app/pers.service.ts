@@ -1082,6 +1082,7 @@ export class PersService {
       });
 
     for (const qw of prs.qwests) {
+      qw.isNoActive = false;
       let totalTasks = 0;
       let doneTasks = 0;
 
@@ -1108,6 +1109,11 @@ export class PersService {
             if (this.allMap['stt' + st.id]) {
               stt.item.plusToNames.push(new plusToName('🔗 ' + qw.name, qw.id, '', 'qwestTask'));
             }
+          }
+
+          // Квест неактивен, если навык неактивен
+          if (!this.checkTask(abLink.item.tasks[0])) {
+            qw.isNoActive = true;
           }
         }
       }
@@ -1534,6 +1540,7 @@ export class PersService {
       // download
       this.loadPers(this.pers$.value.userId).subscribe(n => {
         let prs: Pers = n as Pers;
+        prs.currentView = curpersview.SkillTasks;
         this.pers$.next(prs);
         this.savePers(false);
       });
