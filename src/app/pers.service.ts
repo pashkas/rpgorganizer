@@ -129,22 +129,32 @@ export class PersService {
   abSorter(): (a: Ability, b: Ability) => number {
     return (a, b) => {
 
-      let aMayup = a.tasks[0].mayUp ? 1 : 0;
-      let bMayUp = b.tasks[0].mayUp ? 1 : 0;
+      let aMayUp = (a.tasks[0].mayUp || a.tasks[0].value == 10) ? 1 : 0;
 
-      if (aMayup != bMayUp) {
-        return -(aMayup - bMayUp);
+      let bMayUp = (b.tasks[0].mayUp || b.tasks[0].value == 10) ? 1 : 0;
+
+      if (aMayUp != bMayUp) {
+        return -(aMayUp - bMayUp);
+      }
+
+      let aIsOpen = a.value > 0 ? 1 : 0;
+      let bIsOpen = b.value > 0 ? 1 : 0;
+      if (aIsOpen != bIsOpen) {
+        return -(aIsOpen - bIsOpen);
       }
 
       let aperk = a.tasks[0].isPerk ? 1 : 0;
       let bperk = b.tasks[0].isPerk ? 1 : 0;
 
-      if (a.value == b.value) {
-        return aperk - bperk;
+      if (aperk!=bperk) {
+        return (aperk - bperk);
       }
-      else {
-        return -(a.value - b.value);
+
+      if (a.value != b.value) {
+        return (a.value - b.value);
       }
+
+      
 
       //   // По требованиям
       //   if (a.isNotDoneReqvirements != b.isNotDoneReqvirements) {
@@ -1038,11 +1048,13 @@ export class PersService {
             || prs.currentView == curpersview.SkillsGlobal) {
             if (doneReq && tsk.value >= 1) {
               if (tsk.isSumStates && tsk.states.length > 0 && !tsk.isStateInTitle) {
-                for (const st of tsk.states) {
-                  if (st.isActive
-                    && (!st.isDone || prs.currentView == curpersview.SkillsSort)) {
-                    let stT = this.getTskFromState(tsk, st, false);
-                    tasks.push(stT);
+                if (this.checkTask(tsk) || prs.currentView == curpersview.SkillsSort) {
+                  for (const st of tsk.states) {
+                    if (st.isActive
+                      && (!st.isDone || prs.currentView == curpersview.SkillsSort)) {
+                      let stT = this.getTskFromState(tsk, st, false);
+                      tasks.push(stT);
+                    }
                   }
                 }
               }
@@ -2338,9 +2350,6 @@ export class PersService {
           }
 
           let index = nms[Math.floor(tsk.value)] - 1;
-
-          index = nms[Math.floor(1 + tsk.tesValue)] - 1;
-
 
           if (index >= 0) {
             if (tsk.isSumStates) {
