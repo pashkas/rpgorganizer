@@ -146,7 +146,7 @@ export class PersService {
       let aperk = a.tasks[0].isPerk ? 1 : 0;
       let bperk = b.tasks[0].isPerk ? 1 : 0;
 
-      if (aperk!=bperk) {
+      if (aperk != bperk) {
         return (aperk - bperk);
       }
 
@@ -154,7 +154,7 @@ export class PersService {
         return (a.value - b.value);
       }
 
-      
+
 
       //   // По требованиям
       //   if (a.isNotDoneReqvirements != b.isNotDoneReqvirements) {
@@ -950,6 +950,9 @@ export class PersService {
           if (tsk.value > 10) {
             tsk.value = 10;
           }
+
+          tsk.isCounter = false;
+          tsk.isTimer = false;
           tsk.progressValue = (tsk.value / 10) * 100;
 
           ab.value = tsk.value;
@@ -1090,7 +1093,7 @@ export class PersService {
 
     prs.characteristics
       = prs.characteristics.sort((a, b) => {
-        return -(a.value - b.value);
+        return (a.value - b.value);
       });
 
     for (const qw of prs.qwests) {
@@ -2105,14 +2108,6 @@ export class PersService {
     result.unshift(0);
   }
 
-  private getTVal(tsk: Task) {
-    let tVal = 1 + Math.floor(tsk.tesValue);
-    if (tVal > 10) {
-      tVal = 10;
-    }
-    return tVal;
-  }
-
   private getTaskChangesExp(task: Task, isPlus: boolean) {
     const koef = this.getWeekKoef(task.requrense, isPlus, task.tskWeekDays);
     let expKoef = this.getExpKoef(isPlus);
@@ -2301,7 +2296,6 @@ export class PersService {
 
 
   private setTaskTittle(tsk: Task) {
-
     tsk.statesDescr = [];
     tsk.curStateDescrInd = 0;
 
@@ -2397,9 +2391,9 @@ export class PersService {
           }
         }
       }
-
+      
       let stDescr;
-      stDescr = tsk.statesDescr[this.getTVal(tsk)];
+      stDescr = tsk.statesDescr[tsk.value];
       let plusState = stDescr;
       let plusStateMax = tsk.statesDescr[10];
       tsk.plusStateMax = plusStateMax;
