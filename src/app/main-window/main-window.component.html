@@ -75,7 +75,9 @@
                 class="bg-danger">
                 [{{this.pers.currentTask.date|datestring}}]
               </ng-container>
-              {{this.pers.currentTask.tittle}}
+             
+                
+                <span matBadge="{{this.pers.currentTask.failCounter|failMod}}" matBadgeSize="medium" matBadgeColor="warn" matBadgePosition="above after" matBadgeOverlap="false" >{{this.pers.currentTask.tittle}}</span>
               <!-- {{this.pers.currentTask.imageLvl + '/' + this.pers.currentTask.image}} -->
             </ng-container>
           </h4>

@@ -30,6 +30,7 @@ import {MatDividerModule} from '@angular/material/divider';
 import { ConfirmationDialogComponent } from './confirmation-dialog/confirmation-dialog.component';
 import { TimerCounterComponent } from './main-window/timer-counter/timer-counter.component';
 import { NgxMaterialTimepickerModule } from 'ngx-material-timepicker';
+import { FailModPipe } from './fail-mod.pipe';
 
 registerLocaleData(localeRu, 'ru');
 
@@ -48,6 +49,7 @@ registerLocaleData(localeRu, 'ru');
     RestComponent,
     ConfirmationDialogComponent,
     TimerCounterComponent,
+    FailModPipe,
   ],
   imports: [
     NgxMaterialTimepickerModule,

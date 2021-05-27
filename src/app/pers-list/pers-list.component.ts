@@ -243,6 +243,7 @@ export class PersListComponent implements OnInit {
           ab.isOpen = false;
           ab.tasks.forEach(tsk => {
             this.srv.GetRndEnamy(tsk, this.pers.level, this.pers.maxPersLevel);
+            tsk.failCounter = 0;
             tsk.time = "00:00";
             tsk.value = 0;
             tsk.tesValue = 0;

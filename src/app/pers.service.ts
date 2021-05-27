@@ -1579,6 +1579,9 @@ export class PersService {
     if (task) {
       task.counterValue = 0;
       task.timerValue = 0;
+      if (this.isNullOrUndefined(task.failCounter)) {
+        task.failCounter = 0;
+      }
 
       // Следующая дата
       this.setTaskNextDate(task, false);
@@ -1591,6 +1594,7 @@ export class PersService {
       }
 
       task.lastNotDone = true;
+      task.failCounter++;
 
       this.setCurInd(0);
       this.changeExpKoef(false);
@@ -1613,6 +1617,8 @@ export class PersService {
       if (task) {
         task.counterValue = 0;
         task.timerValue = 0;
+        task.failCounter = 0;
+
         // Разыгрываем награды
         this.CasinoRevards(task);
 
@@ -2004,16 +2010,16 @@ export class PersService {
 
     let progr = (prsLvl / maxLevel) * 100;
 
-    if (progr < 20) {
+    if (progr < 10) {
       return 1; // Обыватель
     }
-    else if (progr < 40) {
+    else if (progr < 30) {
       return 2; // Авантюрист
     }
-    else if (progr < 60) {
+    else if (progr < 70) {
       return 3; // Воин
     }
-    else if (progr < 80) {
+    else if (progr < 90) {
       return 4; // Герой
     }
     else {
@@ -2113,7 +2119,7 @@ export class PersService {
     let expKoef = this.getExpKoef(isPlus);
     expKoef = 1;
     if (!isPlus) {
-      expKoef = 3;
+      expKoef = Math.pow(2, task.failCounter);
     }
 
     expKoef = expKoef * Task.getHardness(task);
@@ -2391,7 +2397,7 @@ export class PersService {
           }
         }
       }
-      
+
       let stDescr;
       stDescr = tsk.statesDescr[tsk.value];
       let plusState = stDescr;
