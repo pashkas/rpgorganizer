@@ -2145,6 +2145,7 @@ export class PersService {
   private getTskFromState(tsk: Task, st: taskState, isAll: boolean): Task {
     let stT = new Task();
     let stateProgr;
+    stT.failCounter = tsk.failCounter;
     //stT.tittle = tsk.name + ': ' + st.name;
 
     let plusName = tsk.curLvlDescr3;
