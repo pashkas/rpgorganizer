@@ -6,7 +6,7 @@ import { Pipe, PipeTransform } from '@angular/core';
 export class FailModPipe implements PipeTransform {
 
   transform(value: number, ...args: any[]): any {
-    if (value > 0) {
+    if (value && value > 0) {
       let mod=Math.pow(2, value);
       if (mod<100) {
         return 'x'+mod;

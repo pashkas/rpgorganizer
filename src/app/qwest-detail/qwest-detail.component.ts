@@ -9,10 +9,11 @@ import { Reward } from 'src/Models/Reward';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { MatDialog } from '@angular/material';
 import { AddItemDialogComponent } from '../add-item-dialog/add-item-dialog.component';
-import { filter } from 'rxjs/operators';
+import { filter, switchMap, takeUntil } from 'rxjs/operators';
 import { AddOrEditRevardComponent } from '../add-or-edit-revard/add-or-edit-revard.component';
 import { ChangeCharactComponent } from '../pers/change-charact/change-charact.component';
 import { Task } from 'src/Models/Task';
+import { combineLatest, of, Subject } from 'rxjs';
 
 @Component({
   selector: 'app-qwest-detail',
@@ -21,17 +22,20 @@ import { Task } from 'src/Models/Task';
   changeDetection: ChangeDetectionStrategy.Default
 })
 export class QwestDetailComponent implements OnInit {
+  private unsubscribe$ = new Subject();
+
   isEditMode: boolean = false;
   /**
    * Добавление задачи из просмотра, когда квест выполнен.
    */
   isFromDoneQwest: boolean = false;
   isFromMain: boolean;
+  linkAbs: Task[]=[];
   nextQwests: Qwest[] = [];
+  pers: Pers;
   prevQwest: Qwest;
   qwest: Qwest;
-  linkAbs: Task[]=[];
-  pers: Pers;
+  qwestAbiliti;
 
   constructor(private location: Location, private route: ActivatedRoute, public srv: PersService, private router: Router, public dialog: MatDialog) { }
 
@@ -112,6 +116,48 @@ export class QwestDetailComponent implements OnInit {
       });
   }
 
+  chooseNextQwest() {
+    this.srv.isDialogOpen = true;
+    const dialogRef = this.dialog.open(ChangeCharactComponent, {
+      panelClass: 'my-big',
+      data: { characteristic: this.qwest, allCharacts: this.pers.qwests.sort((a, b) => a.name.localeCompare(b.name)), tittle: 'Выберите квест' },
+      backdropClass: 'backdrop'
+    });
+
+    dialogRef.afterClosed()
+      .subscribe(n => {
+        if (n) {
+          if (n.id != this.qwest.id) {
+            for (const qw of this.pers.qwests) {
+              if (qw.id == n.id) {
+                qw.parrentId = this.qwest.id;
+
+                break;
+              }
+            }
+          }
+        }
+        this.srv.isDialogOpen = false;
+        this.getNextPrevQwests();
+      });
+  }
+
+  delAb() {
+    this.qwest.abilitiId = null;
+    this.qwestAbiliti = null;
+  }
+
+  delNextQwest(id) {
+    for (const qw of this.pers.qwests) {
+      if (qw.id === id) {
+        qw.parrentId = null;
+        break;
+      }
+    }
+
+    this.getNextPrevQwests();
+  }
+
   /**
    * Удаление награды.
    * @param id Идентификатор.
@@ -181,41 +227,19 @@ export class QwestDetailComponent implements OnInit {
     this.prevQwest = prevQwest;
   }
 
-  chooseNextQwest() {
-    this.srv.isDialogOpen = true;
-    const dialogRef = this.dialog.open(ChangeCharactComponent, {
-      panelClass: 'my-big',
-      data: { characteristic: this.qwest, allCharacts: this.pers.qwests.sort((a, b) => a.name.localeCompare(b.name)), tittle: 'Выберите квест' },
-      backdropClass: 'backdrop'
-    });
-
-    dialogRef.afterClosed()
-      .subscribe(n => {
-        if (n) {
-          if (n.id != this.qwest.id) {
-            for (const qw of this.pers.qwests) {
-              if (qw.id == n.id) {
-                qw.parrentId = this.qwest.id;
-
-                break;
-              }
-            }
+  getQwestAb() {
+    let qwAb = null;
+    if (this.qwest.abilitiId) {
+      for (const ch of this.pers.characteristics) {
+        for (const ab of ch.abilities) {
+          if (ab.id == this.qwest.abilitiId) {
+            qwAb = ab;
+            break;
           }
         }
-        this.srv.isDialogOpen = false;
-        this.getNextPrevQwests();
-      });
-  }
-
-  delNextQwest(id) {
-    for (const qw of this.pers.qwests) {
-      if (qw.id === id) {
-        qw.parrentId = null;
-        break;
       }
     }
-
-    this.getNextPrevQwests();
+    this.qwestAbiliti = qwAb;
   }
 
   goBack() {
@@ -227,15 +251,29 @@ export class QwestDetailComponent implements OnInit {
     }
   }
 
+  ngOnDestroy(): void {
+    this.unsubscribe$.next();
+    this.unsubscribe$.complete();
+  }
+
   ngOnInit() {
     if (!this.srv.pers$.value) {
       this.router.navigate(['/main']);
     }
 
-    this.srv.pers$.subscribe(n=>{
-      this.pers=n;
-      const id = this.route.snapshot.paramMap.get('id');
-      const fromMain = this.route.snapshot.paramMap.get('fromMain');
+    this.srv.pers$
+    .pipe(takeUntil(this.unsubscribe$))
+    .pipe(switchMap(n=>combineLatest(
+      [
+        this.route.params,
+        of(n)
+      ]
+    )))
+    .subscribe(n=>{
+      const id = n[0]['id'];
+      const fromMain = n[0]['fromMain'];
+      this.pers=n[1];
+
       if (fromMain) {
         this.isFromMain = true;
       }
@@ -260,36 +298,18 @@ export class QwestDetailComponent implements OnInit {
     });
   }
 
-  qwestAbiliti;
-
-  private findLinks() {
-    let linkAbs = [];
-    if (this.qwest) {
-      for (const ch of this.pers.characteristics) {
-        for (const ab of ch.abilities) {
-          if (ab.id == this.qwest.abilitiId) {
-            linkAbs.push(ab.tasks[0]);
-          }
-        }
-      }
+  /**
+  * Сохранить данные.
+  */
+  saveData() {
+    if (this.isEditMode) {
+      this.srv.savePers(false);
+      this.findLinks();
+      this.isEditMode = false;
     }
-
-    this.linkAbs = linkAbs;
-  }
-
-  getQwestAb() {
-    let qwAb = null;
-    if (this.qwest.abilitiId) {
-      for (const ch of this.pers.characteristics) {
-        for (const ab of ch.abilities) {
-          if (ab.id == this.qwest.abilitiId) {
-            qwAb = ab;
-            break;
-          }
-        }
-      }
+    else {
+      this.isEditMode = true;
     }
-    this.qwestAbiliti = qwAb;
   }
 
   setAbil() {
@@ -318,25 +338,6 @@ export class QwestDetailComponent implements OnInit {
       });
   }
 
-  delAb() {
-    this.qwest.abilitiId = null;
-    this.qwestAbiliti = null;
-  }
-
-  /**
-  * Сохранить данные.
-  */
-  saveData() {
-    if (this.isEditMode) {
-      this.srv.savePers(false);
-      this.findLinks();
-      this.isEditMode = false;
-    }
-    else {
-      this.isEditMode = true;
-    }
-  }
-
   setExp(i: number) {
     this.qwest.hardnes = i;
     let expChange = this.srv.getQwestExpChange(i);
@@ -355,5 +356,20 @@ export class QwestDetailComponent implements OnInit {
       this.qwest.tasks[i] = this.qwest.tasks[i - 1];
       this.qwest.tasks[i - 1] = tmp;
     }
+  }
+
+  private findLinks() {
+    let linkAbs = [];
+    if (this.qwest) {
+      for (const ch of this.pers.characteristics) {
+        for (const ab of ch.abilities) {
+          if (ab.id == this.qwest.abilitiId) {
+            linkAbs.push(ab.tasks[0]);
+          }
+        }
+      }
+    }
+
+    this.linkAbs = linkAbs;
   }
 }

@@ -91,8 +91,7 @@
                           <div class="w-100 d-flex" [ngClass]="{'text-primary': !ab.isNotChanged}">
                             <!-- [ngClass]="{'text-success' : ab.tasks[0]?.mayUp && ab.tasks[0]?.IsNextLvlSame && !ab.isNotDoneReqvirements,
                             'text-danger': ab.isNotDoneReqvirements}" -->
-                            <a (click)="showAbility(ab)"
-                              class="flex-grow-1 text-left align-self-baseline">
+                            <a (click)="showAbility(ab)" class="flex-grow-1 text-left align-self-baseline">
                               {{ab.name}}<app-ab-hardness [tsk]="ab.tasks[0]"></app-ab-hardness>
                             </a>
                             <div fxLayout="row" fxLayoutAlign="space-around" class="text-right align-self-baseline">
@@ -151,7 +150,7 @@
               </div>
             </ng-container>
           </div>
-          
+
           <h5 class="text-right" style="margin-right: 7px; margin-top: 3px;">
             <a href="https://pashkas.github.io/rpgorganizertutorial.github.io/" target="_blank"
               class="badge badge-secondary">Руководство</a>
@@ -166,19 +165,18 @@
         <div class="pb-4">
           <app-image-component [(data)]="pers.image" [isCanEdit]="true" [isPers]="true"></app-image-component>
           <mat-form-field class="w-100">
-            <input matInput autocomplete="off" placeholder="Имя" [(ngModel)]="pers.name"
-              name="pers.name">
+            <input matInput autocomplete="off" placeholder="Имя" [(ngModel)]="pers.name" name="pers.name">
           </mat-form-field>
           <!-- <mat-form-field class="w-100">
             <input matInput autocomplete="off" placeholder="Изображение" [(ngModel)]="pers.image"
               name="pers.image">
           </mat-form-field> -->
           <mat-form-field class="w-100">
-            <input matInput autocomplete="off" placeholder="История" [(ngModel)]="pers.story"
-              name="pers.story">
+            <textarea matInput autosize minRows='1' maxRows='5' useImportant='true' onfocus="this.select()"
+              autocomplete="off" placeholder="Описание" [(ngModel)]="pers.story" name="pers.story"></textarea>
           </mat-form-field>
 
-         
+
           <!-- Атрибуты -->
           <ng-container>
             <div fxLayout="row" fxLayoutAlign="space-between center">
@@ -210,7 +208,7 @@
                   <!-- Навыки -->
                   <mat-list *ngIf="item.abilities.length>0" class="p-0">
                     <div mat-list-item *ngFor="let ab of item.abilities">
-                      <div class="d-flex align-items-center" >
+                      <div class="d-flex align-items-center">
                         <div class="flex-grow-1 align-self-center">
                           <i>{{ab.name}}</i>
                         </div>
@@ -273,8 +271,8 @@
           <ng-container *ngIf="pers.qwests?.length > 0">
 
             <ul class="list-group py-0 px-0">
-              <li [ngStyle]="{'opacity': qwest.parrentId||qwest.isNoActive ? '0.4' : '1'}" *ngFor="let qwest of pers.qwests"
-                class="list-group-item px-0 py-1 border-0">
+              <li [ngStyle]="{'opacity': qwest.parrentId||qwest.isNoActive ? '0.4' : '1'}"
+                *ngFor="let qwest of pers.qwests" class="list-group-item px-0 py-1 border-0">
 
                 <div fxLayout="row" fxLayoutAlign="space-between center">
 
