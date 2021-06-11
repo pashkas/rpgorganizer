@@ -51,7 +51,7 @@
         </button>
         <span *ngIf="tsk.requrense != 'нет'">
           <img src="assets/icons/diamond.png" class="img-fluid" [ngStyle]="{'object-fit': 'contain', 'height':'1.5em'}">
-          <span>
+          <span [ngClass]="{'text-success': pers.ON>0, 'text-danger': pers.ON<0}">
             {{this.pers.ON}}
           </span>
         </span>
@@ -59,8 +59,7 @@
     </div>
 
     <!-- Описание -->
-    <div class="text-center pt-2" *ngIf="tsk.descr">
-      <!-- <label class="active">Описание</label> -->
+    <div class="text-center pt-2 font-small text-secondary" *ngIf="tsk.descr">
       <i>
         {{tsk.descr}}
       </i>

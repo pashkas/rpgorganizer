@@ -31,34 +31,34 @@
           </div> -->
           <app-image-component [(data)]="pers.image" [isCanEdit]="false"></app-image-component>
           <div fxLayout="row" fxLayoutAlign="space-between center">
-            <span>
-              <img src="assets/icons/опыт.png" class="img-fluid"
+            <div fxFlex="initial">
+              <img src="assets/icons/опыт.png" class="img-fluid mr-1"
                 [ngStyle]="{'object-fit': 'contain', 'height':'1.5em'}">
               <span>
-                {{(pers.level)}}
+                <span class="text-success">{{pers.level}}</span>
+                <span class="text-secondary"> ({{pers.totalProgress}}%)</span>
               </span>
-            </span>
-
-            <!-- Имя -->
-            <div class="text-center text-dark">
-              <!-- {{pers.name + ' (' + (pers.rang.name|lowercase) + ')'}} -->
-              {{pers.name + ' ('+pers.rangName+')'}}
             </div>
 
-            <span>
+            <!-- Имя -->
+            <div class="text-center text-dark" fxFlex>
+              {{pers.name + ', '+pers.rangName+''}}
+              <span style="visibility: hidden;">
+                ({{pers.totalProgress}}%)
+              </span>
+            </div>
+
+            <div fxFlex="initial">
               <img src="assets/icons/diamond.png" class="img-fluid"
                 [ngStyle]="{'object-fit': 'contain', 'height':'1.5em'}">
-              <span>
+              <span [ngClass]="{'text-success': pers.ON>0, 'text-danger': pers.ON<0}">
                 {{pers.ON}}
               </span>
-            </span>
-
-
-
+            </div>
           </div>
 
           <!-- История -->
-          <div class="md-form" *ngIf="pers.story">
+          <div class="pt-2 font-small text-center text-secondary" *ngIf="pers.story">
             <i>{{pers.story}}</i>
           </div>
 
@@ -88,7 +88,7 @@
                     <ul class="list-group py-0" *ngIf="item.abilities.length>0">
                       <li *ngFor="let ab of item.abilities" class="list-group-item py-0 mt-1 mb-0 pr-0 pl-0 border-0">
                         <div class="d-flex align-items-baseline w-100">
-                          <div class="w-100 d-flex" [ngClass]="{'text-primary': !ab.isNotChanged}">
+                          <div class="w-100 d-flex" [ngClass]="{'text-primary': ab.value>0 && ab.value<10, 'text-secondary': ab.value==0, 'text-success':ab.value==10}">
                             <!-- [ngClass]="{'text-success' : ab.tasks[0]?.mayUp && ab.tasks[0]?.IsNextLvlSame && !ab.isNotDoneReqvirements,
                             'text-danger': ab.isNotDoneReqvirements}" -->
                             <a (click)="showAbility(ab)" class="flex-grow-1 text-left align-self-baseline">
@@ -280,7 +280,10 @@
                     <h6>{{qwest.name}}</h6>
                   </a>
                   <a [routerLink]="['/pers/qwest', qwest.id]">
-                    <h6 *ngIf="qwest.progressValue < 100">{{qwest.tasksDone}}/{{qwest.tasks.length}}</h6>
+                    <h6 *ngIf="qwest.progressValue < 100">
+                      <!-- {{qwest.tasksDone}}/{{qwest.tasks.length}} -->
+                    {{qwest.progressValue| number: '1.0-0'}}%
+                  </h6>
                   </a>
                   <img *ngIf="qwest.progressValue >= 100" (click)="doneQwest(qwest)" src="assets/icons/star.png"
                     class="img-fluid" [ngStyle]="{'object-fit': 'contain', 'height':'1.5em'}">

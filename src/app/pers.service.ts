@@ -143,18 +143,16 @@ export class PersService {
         return -(aIsOpen - bIsOpen);
       }
 
+      if (a.value != b.value) {
+        return -(a.value - b.value);
+      }
+
       let aperk = a.tasks[0].isPerk ? 1 : 0;
       let bperk = b.tasks[0].isPerk ? 1 : 0;
 
       if (aperk != bperk) {
         return (aperk - bperk);
       }
-
-      if (a.value != b.value) {
-        return (a.value - b.value);
-      }
-
-
 
       //   // По требованиям
       //   if (a.isNotDoneReqvirements != b.isNotDoneReqvirements) {
@@ -1093,7 +1091,7 @@ export class PersService {
 
     prs.characteristics
       = prs.characteristics.sort((a, b) => {
-        return (a.value - b.value);
+        return -(a.value - b.value);
       });
 
     for (const qw of prs.qwests) {
@@ -1291,6 +1289,7 @@ export class PersService {
     prs.nextExp = nextExp;
     prs.ON = ons - abTotalCur;
     prs.maxPersLevel = maxLevel;
+    prs.totalProgress = Math.floor((prs.level/prs.maxPersLevel)*100);
     let lvlExp = nextExp - startExp;
     let progr = 0;
     if (lvlExp != 0) {
@@ -2010,16 +2009,16 @@ export class PersService {
 
     let progr = (prsLvl / maxLevel) * 100;
 
-    if (progr < 10) {
+    if (progr < 20) {
       return 1; // Обыватель
     }
-    else if (progr < 30) {
+    else if (progr < 40) {
       return 2; // Авантюрист
     }
-    else if (progr < 70) {
+    else if (progr < 60) {
       return 3; // Воин
     }
-    else if (progr < 90) {
+    else if (progr < 80) {
       return 4; // Герой
     }
     else {
