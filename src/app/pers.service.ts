@@ -137,14 +137,14 @@ export class PersService {
         return -(aMayUp - bMayUp);
       }
 
-      let aIsOpen = a.value > 0 ? 1 : 0;
-      let bIsOpen = b.value > 0 ? 1 : 0;
-      if (aIsOpen != bIsOpen) {
-        return -(aIsOpen - bIsOpen);
-      }
+      // let aIsOpen = a.value > 0 ? 1 : 0;
+      // let bIsOpen = b.value > 0 ? 1 : 0;
+      // if (aIsOpen != bIsOpen) {
+      //   return -(aIsOpen - bIsOpen);
+      // }
 
       if (a.value != b.value) {
-        return -(a.value - b.value);
+        return (a.value - b.value);
       }
 
       let aperk = a.tasks[0].isPerk ? 1 : 0;
@@ -583,7 +583,12 @@ export class PersService {
         tsk.value = 0;
       }
       else {
-        tsk.value -= 1;
+        if (tsk.hardnes == 0.5) {
+          tsk.value -= 2;
+        }
+        else {
+          tsk.value -= 1;
+        }
       }
 
       this.GetRndEnamy(tsk, this.pers$.value.level, this.pers$.value.maxPersLevel);
@@ -935,6 +940,9 @@ export class PersService {
           if (!tsk.hardnes) {
             tsk.hardnes = 1;
           }
+          if (tsk.hardnes == 0.5 && tsk.value % 2 != 0) {
+            tsk.value = tsk.value + 1;
+          }
           if (this.isNullOrUndefined(tsk.time)) {
             tsk.time = "00:00";
           }
@@ -1091,7 +1099,7 @@ export class PersService {
 
     prs.characteristics
       = prs.characteristics.sort((a, b) => {
-        return -(a.value - b.value);
+        return (a.value - b.value);
       });
 
     for (const qw of prs.qwests) {
@@ -1289,7 +1297,7 @@ export class PersService {
     prs.nextExp = nextExp;
     prs.ON = ons - abTotalCur;
     prs.maxPersLevel = maxLevel;
-    prs.totalProgress = Math.floor((prs.level/prs.maxPersLevel)*100);
+    prs.totalProgress = Math.floor((prs.level / prs.maxPersLevel) * 100);
     let lvlExp = nextExp - startExp;
     let progr = 0;
     if (lvlExp != 0) {
