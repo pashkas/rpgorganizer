@@ -129,30 +129,45 @@ export class PersService {
   abSorter(): (a: Ability, b: Ability) => number {
     return (a, b) => {
 
-      let aMayUp = (a.tasks[0].mayUp || a.tasks[0].value == 10) ? 1 : 0;
+      let aTask = a.tasks[0];
+      let bTask = b.tasks[0];
+      // Макс?
+      let aMax = aTask.value == 10 ? 1 : 0;
+      let bMax = bTask.value == 10 ? 1 : 0;
+      if (aMax != bMax) {
+        return (aMax - bMax);
+      }
 
-      let bMayUp = (b.tasks[0].mayUp || b.tasks[0].value == 10) ? 1 : 0;
+      // Можно открыть
+      let aMayUp = (aTask.mayUp || aTask.value == 10) ? 1 : 0;
+
+      let bMayUp = (bTask.mayUp || bTask.value == 10) ? 1 : 0;
 
       if (aMayUp != bMayUp) {
         return -(aMayUp - bMayUp);
       }
 
-      // let aIsOpen = a.value > 0 ? 1 : 0;
-      // let bIsOpen = b.value > 0 ? 1 : 0;
-      // if (aIsOpen != bIsOpen) {
-      //   return -(aIsOpen - bIsOpen);
-      // }
+      
 
+      // Значение
       if (a.value != b.value) {
-        return (a.value - b.value);
+        return -(a.value - b.value);
       }
 
-      let aperk = a.tasks[0].isPerk ? 1 : 0;
-      let bperk = b.tasks[0].isPerk ? 1 : 0;
+      // Сложность
+      if (aTask.hardnes != bTask.hardnes) {
+        return aTask.hardnes - bTask.hardnes;
+      }
+
+      // Перк?
+      let aperk = aTask.isPerk ? 1 : 0;
+      let bperk = bTask.isPerk ? 1 : 0;
 
       if (aperk != bperk) {
-        return (aperk - bperk);
+        return -(aperk - bperk);
       }
+
+
 
       //   // По требованиям
       //   if (a.isNotDoneReqvirements != b.isNotDoneReqvirements) {
