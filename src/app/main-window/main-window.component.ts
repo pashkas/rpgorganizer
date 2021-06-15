@@ -371,7 +371,7 @@ export class MainWindowComponent implements OnInit {
    */
   setView() {
     if (this.pers.currentView == curpersview.SkillTasks || this.pers.currentView == curpersview.SkillsGlobal) {
-      this.pers.currentView = curpersview.QwestsGlobal;
+      this.pers.currentView = curpersview.QwestTasks;
     }
     else if (this.pers.currentView == curpersview.QwestTasks || this.pers.currentView == curpersview.QwestsGlobal) {
       this.pers.currentQwestId = null;
