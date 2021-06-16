@@ -34,7 +34,7 @@ export class Task implements IImg {
     aimCounter: number = 0;
     aimTimer: number = 0;
 
-    failCounter:number=0;
+    failCounter: number = 0;
     curStateDescrInd: number;
     statesDescr: string[] = [];
 
@@ -47,11 +47,11 @@ export class Task implements IImg {
     isDone: boolean = false;
 
     // Таймер/счетчик
-    isCounter:boolean=false;
-    counterValue:number=0;
-    isTimer:boolean=false;
-    timerStart:Date;
-    timerValue:number=0;
+    isCounter: boolean = false;
+    counterValue: number = 0;
+    isTimer: boolean = false;
+    timerStart: Date;
+    timerValue: number = 0;
     /**
      * Суммирование состояний.
      */
@@ -90,12 +90,13 @@ export class Task implements IImg {
     plusStateMax: string;
     timeVal: number;
     curLvlDescr3: string;
+    qwestId: string;
 
     static getHardness(tsk: Task): number {
         if (!tsk.hardnes) {
             tsk.hardnes = 1;
         }
-        
+
         return tsk.hardnes;
     }
 

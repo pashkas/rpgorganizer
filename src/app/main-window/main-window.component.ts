@@ -19,6 +19,7 @@ import { TskTimeValDialogComponent } from '../tsk-time-val-dialog/tsk-time-val-d
 import { StatesService } from '../states.service';
 import { ConfirmationDialogComponent } from '../confirmation-dialog/confirmation-dialog.component';
 import { curpersview } from 'src/Models/curpersview';
+import { Qwest } from 'src/Models/Qwest';
 
 @Component({
   selector: 'app-main-window',
@@ -42,7 +43,7 @@ export class MainWindowComponent implements OnInit {
   }
 
   addToQwest() {
-    let qwest = this.srv.allMap[this.pers.currentQwestId].item;
+    let qwest = this.srv.allMap[this.srv.pers$.value.currentQwestId].item;
 
     if (qwest) {
       const dialogRef = this.dialog.open(AddItemDialogComponent, {
@@ -170,23 +171,23 @@ export class MainWindowComponent implements OnInit {
   }
 
   firstOrGlobal() {
-    if (this.pers.currentView == curpersview.SkillTasks) {
-      this.pers.currentView = curpersview.SkillsGlobal;
+    if (this.srv.pers$.value.currentView == curpersview.SkillTasks) {
+      this.srv.pers$.value.currentView = curpersview.SkillsGlobal;
     }
-    else if (this.pers.currentView == curpersview.SkillsSort) {
-      this.pers.currentView = curpersview.SkillTasks;
+    else if (this.srv.pers$.value.currentView == curpersview.SkillsSort) {
+      this.srv.pers$.value.currentView = curpersview.SkillTasks;
     }
-    else if (this.pers.currentView == curpersview.SkillsGlobal) {
-      this.pers.currentView = curpersview.SkillTasks;
+    else if (this.srv.pers$.value.currentView == curpersview.SkillsGlobal) {
+      this.srv.pers$.value.currentView = curpersview.SkillTasks;
     }
-    else if (this.pers.currentView == curpersview.QwestTasks) {
-      this.pers.currentView = curpersview.QwestsGlobal;
+    else if (this.srv.pers$.value.currentView == curpersview.QwestTasks) {
+      this.srv.pers$.value.currentView = curpersview.QwestsGlobal;
     }
-    else if (this.pers.currentView == curpersview.QwestsGlobal) {
-      this.pers.currentView = curpersview.QwestTasks;
+    else if (this.srv.pers$.value.currentView == curpersview.QwestsGlobal) {
+      this.srv.pers$.value.currentView = curpersview.QwestTasks;
     }
-    else if (this.pers.currentView == curpersview.QwestSort) {
-      this.pers.currentView = curpersview.QwestTasks;
+    else if (this.srv.pers$.value.currentView == curpersview.QwestSort) {
+      this.srv.pers$.value.currentView = curpersview.QwestTasks;
     }
 
     this.srv.savePers(false);
@@ -216,9 +217,9 @@ export class MainWindowComponent implements OnInit {
 
   ngOnInit() {
     this.srv.pers$
-    .pipe(takeUntil(this.unsubscribe$))
-    .subscribe(n=>
-      this.pers=n);
+      .pipe(takeUntil(this.unsubscribe$))
+      .subscribe(n =>
+        this.pers = n);
     if (!this.pers) {
       this.route.data.pipe(take(1))
         .subscribe(routeData => {
@@ -295,13 +296,13 @@ export class MainWindowComponent implements OnInit {
 
   openPlusType(linkId, linkType) {
     if (linkType == 'qwestTask') {
-      this.pers.currentQwestId = linkId;
-      this.pers.currentView= curpersview.QwestTasks;
+      this.srv.pers$.value.currentQwestId = linkId;
+      this.srv.pers$.value.currentView = curpersview.QwestTasks;
       this.srv.savePers(false);
     }
     else if (linkType == 'abTask') {
-      this.pers.currentQwestId = null;
-      this.pers.currentView= curpersview.SkillTasks;
+      this.srv.pers$.value.currentQwestId = null;
+      this.srv.pers$.value.currentView = curpersview.SkillTasks;
       this.srv.savePers(false);
       let idx = this.pers.tasks.findIndex(n => n.plusToNames.filter(q => q.linkId == linkId).length > 0);
       this.srv.setCurInd(idx);
@@ -343,23 +344,23 @@ export class MainWindowComponent implements OnInit {
   }
 
   setSort() {
-    if (this.pers.currentView == curpersview.QwestTasks) {
-      this.pers.currentView = curpersview.QwestSort;
+    if (this.srv.pers$.value.currentView == curpersview.QwestTasks) {
+      this.srv.pers$.value.currentView = curpersview.QwestSort;
     }
-    else if (this.pers.currentView == curpersview.QwestSort) {
-      let qwest = this.srv.allMap[this.pers.currentQwestId].item;
+    else if (this.srv.pers$.value.currentView == curpersview.QwestSort) {
+      let qwest: Qwest = this.srv.allMap[this.srv.pers$.value.currentQwestId].item;
       for (let index = 0; index < this.pers.tasks.length; index++) {
         this.pers.tasks[index].order = index;
       }
       qwest.tasks.sort((a, b) => a.order - b.order);
 
-      this.pers.currentView = curpersview.QwestTasks;
+      this.srv.pers$.value.currentView = curpersview.QwestTasks;
     }
-    else if (this.pers.currentView == curpersview.SkillTasks) {
-      this.pers.currentView = curpersview.SkillsSort;
+    else if (this.srv.pers$.value.currentView == curpersview.SkillTasks) {
+      this.srv.pers$.value.currentView = curpersview.SkillsSort;
     }
-    else if (this.pers.currentView == curpersview.SkillsSort) {
-      this.pers.currentView = curpersview.SkillTasks;
+    else if (this.srv.pers$.value.currentView == curpersview.SkillsSort) {
+      this.srv.pers$.value.currentView = curpersview.SkillTasks;
     }
 
     this.srv.savePers(false);
@@ -370,12 +371,12 @@ export class MainWindowComponent implements OnInit {
    * @param name Название вида.
    */
   setView() {
-    if (this.pers.currentView == curpersview.SkillTasks || this.pers.currentView == curpersview.SkillsGlobal) {
-      this.pers.currentView = curpersview.QwestTasks;
+    if (this.srv.pers$.value.currentView == curpersview.SkillTasks || this.srv.pers$.value.currentView == curpersview.SkillsGlobal) {
+      this.srv.pers$.value.currentView = curpersview.QwestTasks;
     }
-    else if (this.pers.currentView == curpersview.QwestTasks || this.pers.currentView == curpersview.QwestsGlobal) {
-      this.pers.currentQwestId = null;
-      this.pers.currentView = curpersview.SkillTasks;
+    else if (this.srv.pers$.value.currentView == curpersview.QwestTasks || this.srv.pers$.value.currentView == curpersview.QwestsGlobal) {
+      this.srv.pers$.value.currentQwestId = null;
+      this.srv.pers$.value.currentView = curpersview.SkillTasks;
     }
 
     this.srv.savePers(false);
@@ -388,13 +389,13 @@ export class MainWindowComponent implements OnInit {
   }
 
   tskClick(i) {
-    if (this.pers.currentView != curpersview.SkillsSort && this.pers.currentView != curpersview.QwestSort) {
+    if (this.srv.pers$.value.currentView != curpersview.SkillsSort && this.srv.pers$.value.currentView != curpersview.QwestSort) {
       this.srv.setCurInd(i);
-      if (this.pers.currentView == curpersview.SkillsGlobal) {
-        this.pers.currentView = curpersview.SkillTasks;
+      if (this.srv.pers$.value.currentView == curpersview.SkillsGlobal) {
+        this.srv.pers$.value.currentView = curpersview.SkillTasks;
       }
-      else if (this.pers.currentView == curpersview.QwestsGlobal) {
-        this.pers.currentView = curpersview.QwestTasks;
+      else if (this.srv.pers$.value.currentView == curpersview.QwestsGlobal) {
+        this.srv.pers$.value.currentView = curpersview.QwestTasks;
       }
       this.srv.savePers(false);
     }

@@ -906,8 +906,10 @@ export class PersService {
    * Записать персонажа в БД.
    */
   savePers(isShowNotif: boolean, plusOrMinus?): any {
+
     //let prs: Pers = JSON.parse(JSON.stringify(this.pers$.value));
     let prs: Pers = this.pers$.value;
+
     prs.maxAttrLevel = 10;
     prs.dateLastUse = new Date();
 
@@ -1133,6 +1135,7 @@ export class PersService {
         }
 
         tsk.plusToNames = [];
+        tsk.qwestId = qw.id;
         tsk.tittle = tsk.name;
         tsk.plusName = qw.name;
         tsk.plusToNames.push(new plusToName(qw.name, qw.id, '/pers/qwest', ''));
@@ -1243,6 +1246,8 @@ export class PersService {
 
     prs.tasks = tasks;
 
+
+
     if (prs.currentView == curpersview.SkillTasks || prs.currentView == curpersview.SkillsSort || prs.currentView == curpersview.SkillsGlobal) {
       this.sortPersTasks(prs);
     }
@@ -1348,9 +1353,10 @@ export class PersService {
     this.pers$.value.currentTaskIndex = i;
     this.pers$.value.currentTask = this.pers$.value.tasks[i];
 
-    if (this.pers$.value.currentView == curpersview.QwestsGlobal) {
-      if (this.pers$.value.currentTask && this.pers$.value.currentTask.plusToNames && this.pers$.value.currentTask.plusToNames.length > 0) {
-        this.pers$.value.currentQwestId = this.pers$.value.currentTask.plusToNames[0].linkId;
+    if (this.pers$.value.currentView == curpersview.QwestsGlobal
+      || this.pers$.value.currentView == curpersview.QwestTasks) {
+      if (this.pers$.value.currentTask) {
+        this.pers$.value.currentQwestId = this.pers$.value.currentTask.qwestId;
       }
     }
   }
@@ -1661,7 +1667,9 @@ export class PersService {
       if (tsk) {
         tsk.isDone = true;
         this.savePers(true, 'plus');
-        //this.setCurInd(0);
+        if (this.pers$.value.currentView != curpersview.QwestTasks) {
+          this.setCurInd(0);
+        }
 
         return 'квест';
       }
@@ -2183,6 +2191,7 @@ export class PersService {
     }
 
     stT.name = stT.tittle;
+    stT.qwestId = tsk.qwestId;
     stT.order = st.order;
     stT.date = tsk.date;
     stT.requrense = tsk.requrense;
@@ -2295,53 +2304,40 @@ export class PersService {
 
   private setCurPersTask(prs: Pers) {
     if (prs && prs.tasks) {
+      if (prs.currentView == curpersview.QwestTasks) {
+        if (prs.currentQwestId) {
+          let firstTask = null;
+          for (const t of prs.tasks) {
+            if (t.qwestId == prs.currentQwestId) {
+              firstTask = t;
+            }
+          }
+
+          if (firstTask != null) {
+            prs.currentTaskIndex = prs.tasks.indexOf(firstTask);
+          }
+          else {
+            prs.currentTaskIndex = 0;
+            let tsk = prs.tasks[prs.currentTaskIndex];
+            if (tsk) {
+              prs.currentQwestId = tsk.qwestId;
+            }
+          }
+        }
+        else {
+          prs.currentTaskIndex = 0;
+        }
+      }
+
       if (prs.currentTaskIndex >= prs.tasks.length
         || prs.tasks[prs.currentTaskIndex] == undefined
         || prs.tasks[prs.currentTaskIndex] == null) {
         prs.currentTaskIndex = 0;
       }
-      else {
-        if (prs.currentView == curpersview.QwestTasks) {
-          if (prs.currentQwestId) {
-            let firstTask = null;
-            for (const t of prs.tasks) {
-              for (const p of t.plusToNames) {
-                if (p.linkId == prs.currentQwestId) {
-                  firstTask = t;
-                }
-
-                if (firstTask != null) {
-                  break;
-                }
-              }
-
-              if (firstTask != null) {
-                break;
-              }
-            }
-
-            
-            if (firstTask != null) {
-              prs.currentTaskIndex = prs.tasks.indexOf(firstTask);
-              debugger;
-            }
-            else{
-              prs.currentTaskIndex = 0;
-            }
-          }
-          else {
-            prs.currentTaskIndex = 0;
-          }
-        }
-      }
 
       prs.currentTask = prs.tasks[prs.currentTaskIndex];
     }
   }
-
-
-
-
 
   private setTaskTittle(tsk: Task) {
     tsk.statesDescr = [];
