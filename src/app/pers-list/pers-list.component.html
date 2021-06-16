@@ -88,7 +88,9 @@
                     <ul class="list-group py-0" *ngIf="item.abilities.length>0">
                       <li *ngFor="let ab of item.abilities" class="list-group-item py-0 mt-1 mb-0 pr-0 pl-0 border-0">
                         <div class="d-flex align-items-baseline w-100">
-                          <div class="w-100 d-flex" [ngClass]="{'text-primary': ab.value>0 && ab.value<10, 'text-secondary': ab.value==0, 'text-success':ab.value==10}">
+                          <div class="w-100 d-flex" [ngClass]="{'text-primary': ab.value>0 && ab.value<10, 'text-secondary': ab.value==0, 
+                          'text-success':ab.value==10,
+                          'text-warning': ab.tasks[0].IsNextLvlSame}">
                             <!-- [ngClass]="{'text-success' : ab.tasks[0]?.mayUp && ab.tasks[0]?.IsNextLvlSame && !ab.isNotDoneReqvirements,
                             'text-danger': ab.isNotDoneReqvirements}" -->
                             <a (click)="showAbility(ab)" class="flex-grow-1 text-left align-self-baseline">

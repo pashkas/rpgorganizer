@@ -126,32 +126,48 @@ export class PersService {
     return;
   }
 
+  chaSorter(): (a: Characteristic, b: Characteristic) => number {
+    return (a, b) => {
+      if (a.value != b.value) {
+        return (a.value - b.value);
+      }
+
+      return a.name.localeCompare(b.name);
+    }
+  }
+
   abSorter(): (a: Ability, b: Ability) => number {
     return (a, b) => {
 
       let aTask = a.tasks[0];
       let bTask = b.tasks[0];
+
       // Макс?
-      let aMax = aTask.value == 10 ? 1 : 0;
-      let bMax = bTask.value == 10 ? 1 : 0;
-      if (aMax != bMax) {
-        return (aMax - bMax);
-      }
+      // let aMax = aTask.value == 10 ? 1 : 0;
+      // let bMax = bTask.value == 10 ? 1 : 0;
+      // if (aMax != bMax) {
+      //   return (aMax - bMax);
+      // }
 
       // Можно открыть
       let aMayUp = (aTask.mayUp || aTask.value == 10) ? 1 : 0;
-
       let bMayUp = (bTask.mayUp || bTask.value == 10) ? 1 : 0;
 
       if (aMayUp != bMayUp) {
         return -(aMayUp - bMayUp);
       }
 
-      
+      // Следующий уровень такой же
+      let aSame = aTask.IsNextLvlSame ? 1 : 0;
+      let bSame = bTask.IsNextLvlSame ? 1 : 0;
+
+      if (aSame != bSame) {
+        return -(aSame - bSame);
+      }
 
       // Значение
       if (a.value != b.value) {
-        return -(a.value - b.value);
+        return (a.value - b.value);
       }
 
       // Сложность
@@ -167,49 +183,7 @@ export class PersService {
         return -(aperk - bperk);
       }
 
-
-
-      //   // По требованиям
-      //   if (a.isNotDoneReqvirements != b.isNotDoneReqvirements) {
-      //     return (+a.isNotDoneReqvirements - +b.isNotDoneReqvirements);
-      //   }
-
-      //   if (!this.pers.isTES) {
-      //     let aHasSameLvl = 0;
-      //     if (a.HasSameAbLvl) {
-      //       aHasSameLvl = 1;
-      //     }
-      //     let bHasSameLvl = 0;
-      //     if (b.HasSameAbLvl) {
-      //       bHasSameLvl = 1;
-      //     }
-      //     if (this.pers.IsAbUp) {
-      //       // Если есть с такой же сложностью навыка
-      //       if (aHasSameLvl != bHasSameLvl) {
-      //         return -(aHasSameLvl - bHasSameLvl);
-      //       }
-
-      //       // По возможности открытия
-      //       let aIsMax = a.value > 9;
-      //       let bIsMax = b.value > 9;
-
-      //       if (aIsMax != bIsMax) {
-      //         return (+aIsMax - +bIsMax);
-      //       }
-      //     }
-      //   }
-
-      //   // По открытости
-      //   // if (a.isOpen != b.isOpen) {
-      //   //   return -(+a.isOpen - +b.isOpen);
-      //   // }
-
-      //   // По значению
-      //   if (a.value != b.value) {
-      //     return -(a.value - b.value);
-      //   }
-
-      //   return a.name.localeCompare(b.name);
+      return a.name.localeCompare(b.name);
     };
   }
 
@@ -1113,9 +1087,7 @@ export class PersService {
     }
 
     prs.characteristics
-      = prs.characteristics.sort((a, b) => {
-        return (a.value - b.value);
-      });
+      = prs.characteristics.sort(this.chaSorter());
 
     for (const qw of prs.qwests) {
       qw.isNoActive = false;
@@ -1178,7 +1150,7 @@ export class PersService {
           }
         }
 
-        if ((prs.currentView == curpersview.QwestTasks || prs.currentView == curpersview.QwestSort)
+        if ((prs.currentView == curpersview.QwestSort)
           && !qw.isNoActive
           && (qw.id == prs.currentQwestId || !prs.currentQwestId)) {
           if (noDoneStates.length > 0 && prs.currentView != curpersview.QwestSort) {
@@ -1221,7 +1193,7 @@ export class PersService {
 
       this.sortQwestTasks(qw);
 
-      if (prs.currentView == curpersview.QwestsGlobal
+      if ((prs.currentView == curpersview.QwestTasks || prs.currentView == curpersview.QwestsGlobal)
         && !qw.isNoActive && totalTasks > 0 && totalTasks != doneTasks) {
         if (this.checkTask(qw.tasks[0])) {
           tasks.push(qw.tasks[0]);
@@ -1230,8 +1202,20 @@ export class PersService {
     }
 
     let root = prs.qwests.filter(q => !q.parrentId)
-      .sort((a, b) => { return a.progressValue - b.progressValue });
-    let child = prs.qwests.filter(q => q.parrentId);
+      .sort((a, b) => {
+        if (a.progressValue != b.progressValue) {
+          return a.progressValue - b.progressValue;
+        }
+        return a.name.localeCompare(b.name);
+      });
+    let child = prs.qwests
+      .sort((a, b) => {
+        if (a.progressValue != b.progressValue) {
+          return a.progressValue - b.progressValue;
+        }
+        return a.name.localeCompare(b.name);
+      })
+      .filter(q => q.parrentId);
     let ordered: Qwest[] = [];
 
     while (root.length > 0) {
@@ -1677,7 +1661,7 @@ export class PersService {
       if (tsk) {
         tsk.isDone = true;
         this.savePers(true, 'plus');
-        this.setCurInd(0);
+        //this.setCurInd(0);
 
         return 'квест';
       }
@@ -2316,6 +2300,41 @@ export class PersService {
         || prs.tasks[prs.currentTaskIndex] == null) {
         prs.currentTaskIndex = 0;
       }
+      else {
+        if (prs.currentView == curpersview.QwestTasks) {
+          if (prs.currentQwestId) {
+            let firstTask = null;
+            for (const t of prs.tasks) {
+              for (const p of t.plusToNames) {
+                if (p.linkId == prs.currentQwestId) {
+                  firstTask = t;
+                }
+
+                if (firstTask != null) {
+                  break;
+                }
+              }
+
+              if (firstTask != null) {
+                break;
+              }
+            }
+
+            
+            if (firstTask != null) {
+              prs.currentTaskIndex = prs.tasks.indexOf(firstTask);
+              debugger;
+            }
+            else{
+              prs.currentTaskIndex = 0;
+            }
+          }
+          else {
+            prs.currentTaskIndex = 0;
+          }
+        }
+      }
+
       prs.currentTask = prs.tasks[prs.currentTaskIndex];
     }
   }
@@ -2421,11 +2440,16 @@ export class PersService {
         }
       }
 
-      let stDescr;
-      stDescr = tsk.statesDescr[tsk.value];
-      let plusState = stDescr;
-      let plusStateMax = tsk.statesDescr[10];
-      tsk.plusStateMax = plusStateMax;
+      let plusState = tsk.statesDescr[tsk.value];
+      tsk.plusStateMax = tsk.statesDescr[10];
+
+      if (tsk.value > 0 && tsk.value < 10
+        && tsk.statesDescr[tsk.value] == tsk.statesDescr[tsk.value + 1]) {
+        tsk.IsNextLvlSame = true;
+      }
+      else {
+        tsk.IsNextLvlSame = false;
+      }
 
       if (plusState) {
         if (tsk.states.length > 0 && !tsk.isSumStates) {
