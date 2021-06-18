@@ -180,7 +180,7 @@ export class PersService {
       let bperk = bTask.isPerk ? 1 : 0;
 
       if (aperk != bperk) {
-        return -(aperk - bperk);
+        return (aperk - bperk);
       }
 
       return a.name.localeCompare(b.name);
@@ -1246,8 +1246,6 @@ export class PersService {
 
     prs.tasks = tasks;
 
-
-
     if (prs.currentView == curpersview.SkillTasks || prs.currentView == curpersview.SkillsSort || prs.currentView == curpersview.SkillsGlobal) {
       this.sortPersTasks(prs);
     }
@@ -1347,7 +1345,35 @@ export class PersService {
       prs.currentView = curpersview.SkillTasks;
       this.savePers(false);
     }
+
+    if (prs.isAutoPumping) {
+      let isNoUp = true;
+      if (prs.ON > 0) {
+        if (prs.characteristics.length > 0) {
+          if (prs.characteristics[0].abilities.length > 0) {
+            const abil = prs.characteristics[0].abilities[0];
+            const tsk = abil.tasks[0];
+
+            if (tsk.value < 10 && tsk.mayUp) {
+              if (!this.isAutoPumpInProcess) {
+                this.isAutoPumpInProcess = true;
+                this.changesBefore();
+              }
+              this.upAbility(abil);
+              isNoUp = false;
+            }
+          }
+        }
+      }
+
+      if (isNoUp == true && this.isAutoPumpInProcess) {
+        this.isAutoPumpInProcess = false;
+        this.changesAfter(true);
+      }
+    }
   }
+
+  isAutoPumpInProcess: boolean = false;
 
   setCurInd(i: number): any {
     this.pers$.value.currentTaskIndex = i;
@@ -1734,7 +1760,7 @@ export class PersService {
     this.savePers(true, 'plus');
 
     // Переходим в настройку навыка, если это первый уровень
-    if (isOpenForEdit) {
+    if (isOpenForEdit && !this.pers$.value.isAutoPumping) {
       this.showAbility(ab);
     }
   }

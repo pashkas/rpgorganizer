@@ -151,6 +151,7 @@ export class Pers {
     currentQwestId: string;
     currentTaskIndex: number = 0;
     currentTask: Task;
+    isAutoPumping: boolean = false;
     dateLastUse: Date = new Date();
     exp: number = 0;
     id: any;
