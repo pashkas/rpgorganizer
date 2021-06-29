@@ -128,6 +128,14 @@ export class PersService {
 
   chaSorter(): (a: Characteristic, b: Characteristic) => number {
     return (a, b) => {
+
+      // let aHasSame = a.HasSameAbLvl ? 1 : 0;
+      // let bHasSame = b.HasSameAbLvl ? 1 : 0;
+
+      // if (aHasSame != bHasSame) {
+      //   return -(aHasSame - bHasSame);
+      // }
+
       if (a.value != b.value) {
         return (a.value - b.value);
       }
@@ -143,11 +151,11 @@ export class PersService {
       let bTask = b.tasks[0];
 
       // Макс?
-      // let aMax = aTask.value == 10 ? 1 : 0;
-      // let bMax = bTask.value == 10 ? 1 : 0;
-      // if (aMax != bMax) {
-      //   return (aMax - bMax);
-      // }
+      let aMax = aTask.value == 10 ? 1 : 0;
+      let bMax = bTask.value == 10 ? 1 : 0;
+      if (aMax != bMax) {
+        return (aMax - bMax);
+      }
 
       // Можно открыть
       let aMayUp = (aTask.mayUp || aTask.value == 10) ? 1 : 0;
@@ -158,22 +166,12 @@ export class PersService {
       }
 
       // Следующий уровень такой же
-      let aSame = aTask.IsNextLvlSame ? 1 : 0;
-      let bSame = bTask.IsNextLvlSame ? 1 : 0;
+      // let aSame = aTask.IsNextLvlSame ? 1 : 0;
+      // let bSame = bTask.IsNextLvlSame ? 1 : 0;
 
-      if (aSame != bSame) {
-        return -(aSame - bSame);
-      }
-
-      // Значение
-      if (a.value != b.value) {
-        return (a.value - b.value);
-      }
-
-      // Сложность
-      if (aTask.hardnes != bTask.hardnes) {
-        return aTask.hardnes - bTask.hardnes;
-      }
+      // if (aSame != bSame) {
+      //   return -(aSame - bSame);
+      // }
 
       // Перк?
       let aperk = aTask.isPerk ? 1 : 0;
@@ -181,6 +179,16 @@ export class PersService {
 
       if (aperk != bperk) {
         return (aperk - bperk);
+      }
+
+      // Значение
+      if (a.value != b.value) {
+        return -(a.value - b.value);
+      }
+
+      // Сложность
+      if (aTask.hardnes != bTask.hardnes) {
+        return aTask.hardnes - bTask.hardnes;
       }
 
       return a.name.localeCompare(b.name);
@@ -738,11 +746,19 @@ export class PersService {
   getSet(tsk: Task, aim: number): number[] {
     let result: number[] = [];
 
-    if (aim > this.pers$.value.maxAttrLevel && !this.pers$.value.isTES) {
+    if (aim > this.pers$.value.maxAttrLevel) {
       this.getSetMaxNeatEnd(aim, result, tsk);
     }
     else {
       this.getSetLinear(aim, result, tsk);
+    }
+
+    if (tsk.hardnes == 0.5) {
+      for (let i = result.length - 1; i > 0; i--) {
+        if (i % 2 == 0) {
+          result[i - 1] = result[i];
+        }
+      }
     }
 
     return result;
@@ -926,6 +942,8 @@ export class PersService {
     for (const ch of prs.characteristics) {
       let abMax = 0;
       let abCur = 0;
+      let isHasSameAbil = false;
+
       for (const ab of ch.abilities) {
         for (const tsk of ab.tasks) {
           if (!tsk.hardnes) {
@@ -1065,7 +1083,17 @@ export class PersService {
               }
             }
           }
+
+          if (tsk.mayUp == false) {
+            tsk.IsNextLvlSame = false;
+          }
+
+          if (tsk.IsNextLvlSame) {
+            isHasSameAbil = true;
+          }
         }
+
+        ch.HasSameAbLvl = isHasSameAbil;
       }
       abTotalMax += abMax;
       abTotalCur += abCur;
@@ -2099,15 +2127,61 @@ export class PersService {
    * @param result 
    */
   private getSetLinear(aim: number, result: number[], tsk: Task) {
-    for (let i = 0; i <= 10; i++) {
-      let q = i;
 
-      let progr = (q) / (10);
+    if (aim == 2) {
+      result.push(1); // 0
+      result.push(1); // 1
+      result.push(1); // 2
+      result.push(1); // 3
+      result.push(1); // 4
+      result.push(1); // 5
+      result.push(2); // 6
+      result.push(2); // 7
+      result.push(2); // 8
+      result.push(2); // 9
+      result.push(2); // 10
+    }
+    else if (aim == 3) {
+      result.push(1); // 0
+      result.push(1); // 1
+      result.push(1); // 2
+      result.push(1); // 3
+      result.push(1); // 4
+      result.push(2); // 5
+      result.push(2); // 6
+      result.push(2); // 7
+      result.push(3); // 8
+      result.push(3); // 9
+      result.push(3); // 10
+    }
+    else if (aim == 4) {
+      result.push(1); // 0
+      result.push(1); // 1
+      result.push(1); // 2
+      result.push(1); // 3
+      result.push(2); // 4
+      result.push(2); // 5
+      result.push(2); // 6
+      result.push(3); // 7
+      result.push(3); // 8
+      result.push(4); // 9
+      result.push(4); // 10
+    }
+    else {
+      for (let i = 0; i <= 10; i++) {
+        let q = i;
 
-      let val = progr * aim;
-      val = Math.ceil(val);
+        let progr = (q) / (10);
 
-      result.push(val);
+        let val = progr * aim;
+
+        val = Math.ceil(val);
+        if (val < 1) {
+          val = 1;
+        }
+
+        result.push(val);
+      }
     }
   }
 
