@@ -124,7 +124,7 @@
   <div fxLayout="row" fxLayoutAlign="space-between center" class="w-100 h-100 py-1" style="min-height: 120px;">
    
     <!-- Кнопки -->
-    <button (press)="editDiaryItem()" (contextmenu)="$event.preventDefault()" class="h-100 w-100 px-1 py-0 text-left"
+    <button (press)="qwickAddTask()" (contextmenu)="$event.preventDefault()" class="h-100 w-100 px-1 py-0 text-left"
     mat-button routerLink="/pers" (click)="openPersList()">
 
     <img [ngClass]="{'disabled': isSort, 'vibrate-1': isFailShown}" (contextmenu)="$event.preventDefault()"

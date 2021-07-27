@@ -1284,23 +1284,32 @@ export class PersService {
     let exp: number = 0;
     let startExp = 0;
     let nextExp = 0;
-    let maxLevel = 0;
+    let maxLevel = 100;
     let ons = 0;
+    let prevOn = 0;
 
     let hasPersLevel = false;
-    let hasMaxLevel = false;
-
+    let hasMaxLevel = true;
+    let round = Math.ceil(abTotalMax / 100);
+    if (round < 1) {
+      round = 1;
+    }
     let i = 0;
     do {
-      let thisLevel = 1;
-      if (i % 5 == 0) {
-        thisLevel = 2;
-      }
+      // let thisLevel = Math.ceil(abTotalMax * ((i + 1) / 100)) - prevOn;
+      // if (thisLevel <= 0) {
+      //   thisLevel = 1;
+      // }
+      let thisLevel = round;
+      prevOn = thisLevel;
+      // if (i % 5 == 0) {
+      //   thisLevel = 2;
+      // }
 
       if (!hasPersLevel) {
         startExp = exp;
         ons += thisLevel;
-        exp += ons;
+        exp += ons * this.getMonsterLevel(i, maxLevel);
         nextExp = exp;
         if (exp > prs.exp) {
           hasPersLevel = true;
@@ -1308,15 +1317,15 @@ export class PersService {
         }
       }
 
-      abTotalMax -= thisLevel;
+      // abTotalMax -= thisLevel;
 
-      if (abTotalMax <= 0) {
-        maxLevel = i;
-        if (maxLevel < 100) {
-          maxLevel = 100;
-        }
-        hasMaxLevel = true;
-      }
+      // if (abTotalMax <= 0) {
+      //   maxLevel = i;
+      //   if (maxLevel < 100) {
+      //     maxLevel = 100;
+      //   }
+      //   hasMaxLevel = true;
+      // }
 
       i++;
     } while (!hasPersLevel || !hasMaxLevel);

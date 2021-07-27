@@ -382,6 +382,30 @@ export class MainWindowComponent implements OnInit {
     this.srv.savePers(false);
   }
 
+  qwickAddTask(){
+    this.srv.isDialogOpen = true;
+    const dialogRef = this.dialog.open(AddItemDialogComponent, {
+      panelClass: 'my-dialog',
+      data: { header: 'Добавить задачу', text: '' },
+      backdropClass: 'backdrop'
+    });
+
+    dialogRef.afterClosed()
+      .subscribe(name => {
+        if (name) {
+          let dialQwest = this.srv.pers$.value.qwests.find(n=>n.name=='Дела');
+          if (dialQwest == null) {
+            this.srv.addQwest('Дела');
+          }
+          dialQwest = this.srv.pers$.value.qwests.find(n=>n.name=='Дела');
+          this.srv.addTskToQwest(dialQwest, name);
+
+          this.srv.savePers(false);
+        }
+        this.srv.isDialogOpen = false;
+      });
+  }
+
   taskToEnd(tsk: Task) {
     this.srv.setTaskOrder(tsk, true, true);
     this.srv.setCurInd(0);
