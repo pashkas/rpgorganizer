@@ -250,6 +250,10 @@ export class TaskDetailComponent implements OnInit {
       this.tsk.date = date;
     }
     this.srv.CheckSetTaskDate(this.tsk);
+
+    this.tsk.states.forEach(el => {
+      el.isDone = false;
+    });
   }
 
   refrCounter() {

@@ -36,8 +36,8 @@ export class MainWindowComponent implements OnInit {
   isSucessShown = false;
   isSucessShownOv = false;
   lastGlobalBeforeSort: boolean;
-  qwickSortVals: sortArr[] = [];
   pers: Pers;
+  qwickSortVals: sortArr[] = [];
 
   constructor(private route: ActivatedRoute, public srv: PersService, public dialog: MatDialog, private srvSt: StatesService, private router: Router) {
   }
@@ -111,26 +111,8 @@ export class MainWindowComponent implements OnInit {
     if (t.parrentTask) {
       // Логика для навыков
       if (t.requrense != 'нет') {
-        // Если все активные на сегодня выполнены
-        // Находим задачу
-        let task: Task;
-        let abil: Ability;
-        ({ task, abil } = this.srv.findTaskAnAb(t.parrentTask, task, abil));
-
-        // Находим нужный стайт
-        for (let i = 0; i < task.states.length; i++) {
-          const element = task.states[i];
-          if (element.id === t.id) {
-            element.isDone = true;
-            this.srv.savePers(true);
-          }
-        }
-
-        if (task.states.filter(n => {
-          return n.isActive && !n.isDone
-        }).length === 0) {
-          this.srv.taskPlus(t.parrentTask);
-        }
+        this.srv.subtaskDoneOrFail(t.parrentTask, t.id, true);
+        this.srv.savePers(true);
       }
       // Логика для подзадач
       else {
@@ -161,7 +143,8 @@ export class MainWindowComponent implements OnInit {
     this.srv.changesBefore();
 
     if (t.parrentTask) {
-      this.srv.taskMinus(t.parrentTask);
+      this.srv.subtaskDoneOrFail(t.parrentTask, t.id, false);
+      this.srv.savePers(true, false);
     }
     else {
       this.srv.taskMinus(t.id);
@@ -317,6 +300,30 @@ export class MainWindowComponent implements OnInit {
     this.srv.setCurInd(i);
   }
 
+  qwickAddTask() {
+    this.srv.isDialogOpen = true;
+    const dialogRef = this.dialog.open(AddItemDialogComponent, {
+      panelClass: 'my-dialog',
+      data: { header: 'Добавить задачу', text: '' },
+      backdropClass: 'backdrop'
+    });
+
+    dialogRef.afterClosed()
+      .subscribe(name => {
+        if (name) {
+          let dialQwest = this.srv.pers$.value.qwests.find(n => n.name == 'Дела');
+          if (dialQwest == null) {
+            this.srv.addQwest('Дела');
+          }
+          dialQwest = this.srv.pers$.value.qwests.find(n => n.name == 'Дела');
+          this.srv.addTskToQwest(dialQwest, name);
+
+          this.srv.savePers(false);
+        }
+        this.srv.isDialogOpen = false;
+      });
+  }
+
   setGlobalTaskView(b: boolean) {
     this.srv.saveGlobalTaskViewState(b);
   }
@@ -380,30 +387,6 @@ export class MainWindowComponent implements OnInit {
     }
 
     this.srv.savePers(false);
-  }
-
-  qwickAddTask(){
-    this.srv.isDialogOpen = true;
-    const dialogRef = this.dialog.open(AddItemDialogComponent, {
-      panelClass: 'my-dialog',
-      data: { header: 'Добавить задачу', text: '' },
-      backdropClass: 'backdrop'
-    });
-
-    dialogRef.afterClosed()
-      .subscribe(name => {
-        if (name) {
-          let dialQwest = this.srv.pers$.value.qwests.find(n=>n.name=='Дела');
-          if (dialQwest == null) {
-            this.srv.addQwest('Дела');
-          }
-          dialQwest = this.srv.pers$.value.qwests.find(n=>n.name=='Дела');
-          this.srv.addTskToQwest(dialQwest, name);
-
-          this.srv.savePers(false);
-        }
-        this.srv.isDialogOpen = false;
-      });
   }
 
   taskToEnd(tsk: Task) {

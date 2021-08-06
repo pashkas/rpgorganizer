@@ -993,8 +993,15 @@ export class PersService {
           if (tsk.requrense != 'нет') {
             tsk.plusToNames.unshift(new plusToName('' + tsk.time, null, null, ''));
 
-            let exp = this.getTaskChangesExp(tsk, true) * 10.0;
-            exp = Math.floor(exp);
+            let exp = 0;
+
+            if (tsk.isSumStates && tsk.states.length > 0) {
+              exp = this.getSubtaskExpChange(tsk, true, tsk.states[0]) * 10.0;
+            }
+            else {
+              exp = this.getTaskChangesExp(tsk, true) * 10.0;
+            }
+
             tsk.plusToNames.push(new plusToName('+' + exp + ' exp', null, null, ''));
           }
 
@@ -1679,6 +1686,54 @@ export class PersService {
     }
   }
 
+  subtaskDoneOrFail(taskId: string, subtaskId: string, isDone: boolean) {
+    let tsk: Task = this.allMap[taskId].item;
+    let subTask: taskState = this.allMap[subtaskId].item;
+    if (this.isNullOrUndefined(subTask.failCounter)) {
+      subTask.failCounter = 0;
+    }
+
+    if (isDone) {
+      this.CasinoRevards(tsk);
+    }
+
+    let expChange = this.getSubtaskExpChange(tsk, isDone, subTask);
+
+    if (isDone) {
+      this.pers$.value.exp += expChange;
+    }
+    else {
+      this.pers$.value.exp -= expChange;
+    }
+
+    if (isDone) {
+      subTask.failCounter = 0;
+    }
+    else {
+      subTask.failCounter++;
+    }
+
+    //tsk.states.find(n => n.id == subtaskId);
+    subTask.isDone = true;
+
+    let allIsDone = tsk.states.filter(n => n.isActive && !n.isDone).length;
+
+    if (allIsDone == 0) {
+      this.setTaskNextDate(tsk, isDone);
+      this.setStatesNotDone(tsk);
+    }
+
+    this.setCurInd(0);
+  }
+
+  private getSubtaskExpChange(tsk: Task, isDone: boolean, subTask: taskState) {
+    let activeSubtasksCount = tsk.states.filter(n => n.isActive).length;
+    let expChange = this.getTaskChangesExp(tsk, isDone, subTask) / activeSubtasksCount;
+
+    expChange = Math.ceil(expChange * 10.0) / 10.0;
+    return expChange;
+  }
+
   /**
    * Клик плюс по задаче.
    * @param id Идентификатор задачи.
@@ -2237,12 +2292,16 @@ export class PersService {
     result.unshift(0);
   }
 
-  private getTaskChangesExp(task: Task, isPlus: boolean) {
+  private getTaskChangesExp(task: Task, isPlus: boolean, subTask: taskState = null) {
     const koef = this.getWeekKoef(task.requrense, isPlus, task.tskWeekDays);
     let expKoef = this.getExpKoef(isPlus);
     expKoef = 1;
     if (!isPlus) {
-      expKoef = Math.pow(2, task.failCounter);
+      let failCounter = task.failCounter;
+      if (subTask) {
+        failCounter = subTask.failCounter;
+      }
+      expKoef = Math.pow(2, failCounter);
     }
 
     expKoef = expKoef * Task.getHardness(task);
@@ -2252,11 +2311,14 @@ export class PersService {
     if (task.tesValue == null || task.tesValue == undefined) {
       task.tesValue = 0;
     }
+
     let taskStreang = task.value;
 
     let chValFinaly = chVal * Math.floor(taskStreang);
 
-    chValFinaly = Math.ceil(chValFinaly * 10.0) / 10.0;
+    if (subTask) {
+      chValFinaly = Math.ceil(chValFinaly * 10.0) / 10.0;
+    }
 
     return chValFinaly;
   }
@@ -2268,7 +2330,7 @@ export class PersService {
   private getTskFromState(tsk: Task, st: taskState, isAll: boolean): Task {
     let stT = new Task();
     let stateProgr;
-    stT.failCounter = tsk.failCounter;
+    stT.failCounter = st.failCounter;
     //stT.tittle = tsk.name + ': ' + st.name;
 
     let plusName = tsk.curLvlDescr3;

@@ -218,6 +218,7 @@ export class taskState implements IImg {
     value: number;
     requrense: string;
     timeVal: number;
+    failCounter: number;
 }
 
 export interface IImg {
