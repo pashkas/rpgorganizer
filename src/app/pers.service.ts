@@ -980,24 +980,7 @@ export class PersService {
 
           tsk.isCounter = false;
           tsk.isTimer = false;
-          tsk.progressValue = (tsk.value / 10) * 100;
 
-          ab.value = tsk.value;
-          ab.progressValue = tsk.progressValue;
-
-          const rng = new Rangse();
-          if (tsk.isPerk) {
-            if (tsk.value == 0) {
-              rng.name = "-";
-            }
-            else {
-              rng.name = "👍";
-            }
-          }
-          else {
-            rng.name = tsk.value + '';
-          }
-          ab.rang = rng;
 
           tsk.plusToNames = [];
           tsk.plusToNames.push(new plusToName(ch.name, ch.id, '/pers/characteristic', ''));
@@ -1086,6 +1069,15 @@ export class PersService {
             tsk.value = tsk.value + 1;
           }
 
+          if (tsk.value < 0) {
+            tsk.value = 0;
+          }
+          if (tsk.value > 10) {
+            tsk.value = 10;
+          }
+          
+          tsk.progressValue = (tsk.value / 10) * 100;
+
           abMax += tsk.hardnes * 10;
           abCur += tsk.hardnes * tsk.value;
 
@@ -1096,6 +1088,23 @@ export class PersService {
           else {
             tsk.mayUp = false;
           }
+
+          ab.value = tsk.value;
+          ab.progressValue = tsk.progressValue;
+
+          const rng = new Rangse();
+          if (tsk.isPerk) {
+            if (tsk.value == 0) {
+              rng.name = "-";
+            }
+            else {
+              rng.name = "👍";
+            }
+          }
+          else {
+            rng.name = tsk.value + '';
+          }
+          ab.rang = rng;
 
           if (prs.currentView == curpersview.SkillTasks
             || prs.currentView == curpersview.SkillsSort
