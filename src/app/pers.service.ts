@@ -580,11 +580,25 @@ export class PersService {
         tsk.value = 0;
       }
       else {
-        if (tsk.hardnes == 0.5) {
-          tsk.value -= 2;
-        }
-        else {
-          tsk.value -= 1;
+        let tskDescr = tsk.statesDescr[tsk.value];
+        for (let i = tsk.value; i > 0; i--) {
+          if (i == 0) {
+            tsk.value = 0;
+          }
+          else {
+            if (tsk.hardnes == 0.5) {
+              tsk.value -= 2;
+            }
+            else {
+              tsk.value -= 1;
+            }
+            if (tsk.value < 0) {
+              tsk.value = 0;
+            }
+            if (tsk.statesDescr[tsk.value] != tskDescr) {
+              break;
+            }
+          }
         }
       }
 
@@ -949,9 +963,7 @@ export class PersService {
           if (!tsk.hardnes) {
             tsk.hardnes = 1;
           }
-          if (tsk.hardnes == 0.5 && tsk.value % 2 != 0) {
-            tsk.value = tsk.value + 1;
-          }
+
           if (this.isNullOrUndefined(tsk.time)) {
             tsk.time = "00:00";
           }
@@ -1009,9 +1021,6 @@ export class PersService {
 
           this.CheckSetTaskDate(tsk);
 
-          abMax += tsk.hardnes * 10;
-          abCur += tsk.hardnes * tsk.value;
-
           for (const st of tsk.states) {
             if (this.isNullOrUndefined(st.time)) {
               st.time = "00:00";
@@ -1059,6 +1068,26 @@ export class PersService {
           if (!doneReq) {
             ab.isNotDoneReqvirements = true;
           }
+
+          // Чтобы с каждым уровнем в задаче что-то менялось
+          if (tsk.value < 10 && tsk.value > 0) {
+            for (let i = tsk.value + 1; i <= 10; i++) {
+              const cur = tsk.statesDescr[tsk.value];
+              const next = tsk.statesDescr[i];
+              if (next != cur) {
+                break;
+              }
+              tsk.value = i;
+            }
+          }
+
+          // Легкие сразу по два уровня
+          if (tsk.hardnes == 0.5 && tsk.value % 2 != 0) {
+            tsk.value = tsk.value + 1;
+          }
+
+          abMax += tsk.hardnes * 10;
+          abCur += tsk.hardnes * tsk.value;
 
           if (tsk.value <= 9
             && doneReq) {
