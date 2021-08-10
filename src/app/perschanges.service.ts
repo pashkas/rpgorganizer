@@ -141,7 +141,7 @@ export class PerschangesService {
         if (changesMap[n].after > changesMap[n].before) {
           newLevel = true;
         }
-        else if (changesMap[n].after > changesMap[n].before) {
+        else if (changesMap[n].after < changesMap[n].before) {
         }
       }
       // Ранг
@@ -259,10 +259,8 @@ export class PerschangesService {
 
       dialogRefLvlUp.close();
 
-      if (!this.afterPers.isTES) {
-        this.srvSt.selTabPersList = 0;
-        this.router.navigate(['/pers']);
-      }
+      this.srvSt.selTabPersList = 0;
+      this.router.navigate(['/pers']);
     }
   }
 

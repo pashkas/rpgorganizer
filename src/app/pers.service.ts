@@ -564,6 +564,13 @@ export class PersService {
     for (let i = 0; i < ab.tasks.length; i++) {
       const tsk: Task = ab.tasks[i];
 
+      // Обнуляем фэйлы
+      tsk.failCounter = 0;
+      for (let j = 0; j < tsk.states.length; j++) {
+        const st = tsk.states[j];
+        st.failCounter = 0;
+      }
+
       if (tsk.value < 1) {
         continue;
       }
@@ -617,6 +624,10 @@ export class PersService {
     }
 
     this.savePers(true, 'minus');
+
+    if (this.pers$.value.ON > 0) {
+      this.router.navigate(['/pers']);
+    }
   }
 
   /**
@@ -1075,7 +1086,7 @@ export class PersService {
           if (tsk.value > 10) {
             tsk.value = 10;
           }
-          
+
           tsk.progressValue = (tsk.value / 10) * 100;
 
           abMax += tsk.hardnes * 10;
@@ -1719,6 +1730,11 @@ export class PersService {
       task.lastNotDone = true;
       task.failCounter++;
 
+      if (task.failCounter >= 3) {
+        let ab: Ability = this.allMap[id].link;
+        this.downAbility(ab);
+      }
+
       this.setCurInd(0);
       this.changeExpKoef(false);
       this.savePers(true, 'minus');
@@ -1752,6 +1768,11 @@ export class PersService {
     }
     else {
       subTask.failCounter++;
+    }
+
+    if (subTask.failCounter >= 3) {
+      let ab: Ability = this.allMap[taskId].link;
+      this.downAbility(ab);
     }
 
     //tsk.states.find(n => n.id == subtaskId);
@@ -1840,6 +1861,13 @@ export class PersService {
 
     for (let i = 0; i < ab.tasks.length; i++) {
       const tsk: Task = ab.tasks[i];
+
+      // Обнуляем фэйлы
+      tsk.failCounter = 0;
+      for (let j = 0; j < tsk.states.length; j++) {
+        const st = tsk.states[j];
+        st.failCounter = 0;
+      }
 
       if (tsk.value < 1) {
         tsk.date = new Date();
