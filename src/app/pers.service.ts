@@ -996,6 +996,8 @@ export class PersService {
           tsk.plusToNames = [];
           tsk.plusToNames.push(new plusToName(ch.name, ch.id, '/pers/characteristic', ''));
 
+          this.setTaskTittle(tsk);
+
           if (tsk.requrense != 'нет') {
             tsk.plusToNames.unshift(new plusToName('' + tsk.time, null, null, ''));
 
@@ -1010,8 +1012,6 @@ export class PersService {
 
             tsk.plusToNames.push(new plusToName('+' + exp + ' exp', null, null, ''));
           }
-
-          this.setTaskTittle(tsk);
 
           this.CheckSetTaskDate(tsk);
 
