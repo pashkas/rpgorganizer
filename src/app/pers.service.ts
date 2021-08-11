@@ -1366,8 +1366,8 @@ export class PersService {
         startExp = exp;
         ons += thisLevel;
         let multiplicator =
-          1 + (i / 20.0);
-        //this.getMonsterLevel(i, maxLevel);
+        //1 + (i / 20.0);
+        this.getMonsterLevel(i, maxLevel);
         exp += ons * multiplicator;
         nextExp = exp;
         if (exp > prs.exp) {
