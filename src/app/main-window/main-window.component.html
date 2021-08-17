@@ -77,7 +77,8 @@
               </ng-container>
              
                 
-                <span matBadge="{{this.pers.currentTask.failCounter|failMod}}" matBadgeSize="medium" matBadgeColor="warn" matBadgePosition="above after" matBadgeOverlap="false" >{{this.pers.currentTask.tittle}}</span>
+                <span matBadge="{{this.pers.currentTask.failCounter|failMod}}" matBadgeSize="medium" matBadgeColor="warn" matBadgePosition="above after" matBadgeOverlap="false" 
+                [ngClass]="{'text-danger': this.pers.currentTask.failCounter >= 2}">{{this.pers.currentTask.tittle}}</span>
               <!-- {{this.pers.currentTask.imageLvl + '/' + this.pers.currentTask.image}} -->
             </ng-container>
           </h4>

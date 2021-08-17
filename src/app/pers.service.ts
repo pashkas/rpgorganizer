@@ -2422,13 +2422,13 @@ export class PersService {
       stT.tittle = plusName;
     }
 
-    if (!isAll) {
-      let all = tsk.states.filter(n => n.isActive).length;
-      let done = tsk.states.filter(n => n.isActive && n.isDone).length;
-      if (all > 1) {
-        stateProgr = done + '/' + all;
-      }
-    }
+    // if (!isAll) {
+    //   let all = tsk.states.filter(n => n.isActive).length;
+    //   let done = tsk.states.filter(n => n.isActive && n.isDone).length;
+    //   if (all > 1) {
+    //     stateProgr = done + '/' + all;
+    //   }
+    // }
 
     stT.name = stT.tittle;
     stT.qwestId = tsk.qwestId;
