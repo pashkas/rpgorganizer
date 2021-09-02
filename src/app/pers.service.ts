@@ -771,17 +771,28 @@ export class PersService {
   getSet(tsk: Task, aim: number): number[] {
     let result: number[] = [];
 
-    if (aim > this.pers$.value.maxAttrLevel) {
-      this.getSetMaxNeatEnd(aim, result, tsk);
-    }
-    else {
-      this.getSetLinear(aim, result, tsk);
-    }
+    this.getSetMaxNeatEnd(aim, result, tsk);
+
+    // if (aim > this.pers$.value.maxAttrLevel) {
+    //   this.getSetMaxNeatEnd(aim, result, tsk);
+    // }
+    // else {
+    //   this.getSetLinear(aim, result, tsk);
+    // }
 
     if (tsk.hardnes == 0.5) {
+      if (tsk.name == 'Ватсара') {
+        debugger;
+      }
+      let prev = result[result.length - 1];
       for (let i = result.length - 1; i > 0; i--) {
-        if (i % 2 == 0) {
-          result[i - 1] = result[i];
+        if (i % 2 != 0) {
+          let tmp = result[i];
+          result[i] = prev;
+          prev = tmp;
+        }
+        else {
+          result[i] = prev;
         }
       }
     }
@@ -1366,8 +1377,8 @@ export class PersService {
         startExp = exp;
         ons += thisLevel;
         let multiplicator =
-        //1 + (i / 20.0);
-        this.getMonsterLevel(i, maxLevel);
+          //1 + (i / 20.0);
+          this.getMonsterLevel(i, maxLevel);
         exp += ons * multiplicator;
         nextExp = exp;
         if (exp > prs.exp) {
