@@ -46,9 +46,9 @@
         <button *ngIf="tsk.mayUp&& this.pers.ON>0" class="icon-small" mat-icon-button (click)="upAbil();">
           <img src="assets/icons/up.png" class="img-fluid">
         </button>
-        <!-- <button *ngIf="tsk.value>=1" class="icon-small" mat-icon-button (click)="downAbil();">
+        <button *ngIf="tsk.value>=1" class="icon-small" mat-icon-button (click)="downAbil();">
           <img src="assets/icons/down.png" class="img-fluid">
-        </button> -->
+        </button>
         <span *ngIf="tsk.requrense != 'нет'">
           <img src="assets/icons/diamond.png" class="img-fluid" [ngStyle]="{'object-fit': 'contain', 'height':'1.5em'}">
           <span [ngClass]="{'text-success': pers.ON>0, 'text-danger': pers.ON<0}">
@@ -100,8 +100,8 @@
     <ng-container>
       <br>
       <ng-container *ngFor="let st of tsk.statesDescr; let i = index;">
-        <div *ngIf="i!=0 && st &&(!tsk.isPerk || (tsk.isPerk && i==10))"
-          class="text-center px-0 py-1 border-0" [ngClass]="{'bg-success': i==tsk.value && tskAbility.isOpen}">
+        <div *ngIf="i!=0 && st &&(!tsk.isPerk || (tsk.isPerk && i==10))" class="text-center px-0 py-1 border-0"
+          [ngClass]="{'bg-success': i==tsk.value && tskAbility.isOpen}">
           <b *ngIf="!tsk.isPerk">{{i}}<ng-container *ngIf="st&&!tsk.isPerk">: </ng-container></b>{{st}}
         </div>
       </ng-container>
