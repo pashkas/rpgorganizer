@@ -750,7 +750,7 @@ export class PersService {
     let expChange = 0;
     switch (qwHardness) {
       case 1:
-        expChange = exp * 0.25;
+        expChange = exp * 0.20;
         break;
       case 2:
         expChange = exp * 0.5;
