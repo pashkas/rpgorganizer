@@ -625,9 +625,9 @@ export class PersService {
 
     this.savePers(true, 'minus');
 
-    if (this.pers$.value.ON > 0) {
-      this.router.navigate(['/pers']);
-    }
+    // if (this.pers$.value.ON > 0) {
+    //   this.router.navigate(['/pers']);
+    // }
   }
 
   /**
@@ -771,19 +771,16 @@ export class PersService {
   getSet(tsk: Task, aim: number): number[] {
     let result: number[] = [];
 
-    this.getSetMaxNeatEnd(aim, result, tsk);
+    // this.getSetMaxNeatEnd(aim, result, tsk);
 
-    // if (aim > this.pers$.value.maxAttrLevel) {
-    //   this.getSetMaxNeatEnd(aim, result, tsk);
-    // }
-    // else {
-    //   this.getSetLinear(aim, result, tsk);
-    // }
+    if (aim > this.pers$.value.maxAttrLevel) {
+      this.getSetMaxNeatEnd(aim, result, tsk);
+    }
+    else {
+      this.getSetLinear(aim, result, tsk);
+    }
 
     if (tsk.hardnes == 0.5) {
-      if (tsk.name == 'Ватсара') {
-        debugger;
-      }
       let prev = result[result.length - 1];
       for (let i = result.length - 1; i > 0; i--) {
         if (i % 2 != 0) {
