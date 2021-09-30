@@ -10,17 +10,17 @@ import { Diary } from 'src/Models/Diary';
 export class DiaryComponent implements OnInit {
 
   @Input() isEditMode: boolean;
-  @Input() isFromMain:boolean;
+  @Input() isFromMain: boolean;
   Diary: Diary[] = [];
 
   constructor(private srv: PersService) { }
 
   ngOnInit() {
-    // this.Diary = this.srv.pers.Diary;
+    this.Diary = this.srv.pers$.value.Diary;
   }
 
-  onDiaryChanged(e){
-    // this.Diary = this.srv.pers.Diary;
+  onDiaryChanged(e) {
+    this.Diary = this.srv.pers$.value.Diary;
   }
 
 }

@@ -24,6 +24,10 @@ import { curpersview } from 'src/Models/curpersview';
   providedIn: 'root'
 })
 export class PersService {
+  clearDiary() {
+    this.pers$.value.Diary = [];
+    this.pers$.value.Diary.unshift(new Diary(moment().startOf('day').toDate(), []));
+  }
   // Персонаж
   private unsubscribe$ = new Subject();
 
@@ -1121,7 +1125,12 @@ export class PersService {
             }
           }
           else {
-            rng.name = tsk.value + '';
+            if (tsk.value == 10) {
+              rng.name = "👍";
+            }
+            else {
+              rng.name = tsk.value + '';
+            }
           }
           ab.rang = rng;
 
@@ -1334,7 +1343,7 @@ export class PersService {
 
     prs.qwests = ordered;
 
-    prs.Diary = [];
+    // prs.Diary = [];
 
     prs.tasks = tasks;
 
@@ -2095,7 +2104,7 @@ export class PersService {
     prs.isNoExpShow = true;
     prs.isMax5 = false;
     prs.isNoAbs = false;
-    prs.isNoDiary = true;
+    // prs.isNoDiary = true;
 
     if (prs.isNoDiary) {
       return;
@@ -2393,9 +2402,7 @@ export class PersService {
 
     let chValFinaly = chVal * Math.floor(taskStreang);
 
-    if (subTask) {
-      chValFinaly = Math.ceil(chValFinaly * 10.0) / 10.0;
-    }
+    chValFinaly = Math.ceil(chValFinaly * 10.0) / 10.0;
 
     return chValFinaly;
   }

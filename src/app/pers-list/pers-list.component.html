@@ -102,11 +102,11 @@
                               <a class="pl-2" (click)="showAbility(ab)">
                                 {{ab.rang.name}}
                               </a>
-<!-- 
+
                               <a *ngIf="ab.tasks[0]?.mayUp && pers.ON>0" class="ml-0 px-1 mr-0" (click)="upAbil(ab)">
                                 <img src="assets/icons/up.png" class="img-fluid"
                                   [ngStyle]="{'object-fit': 'contain', 'height':'1.5em'}">
-                              </a> -->
+                              </a>
                             </div>
                           </div>
                         </div>
@@ -248,10 +248,12 @@
 
           <br>
           <mat-slide-toggle [(ngModel)]="pers.isAutoPumping">Автопрокачка!</mat-slide-toggle>
+          <br>
+          <mat-slide-toggle [(ngModel)]="pers.isNoDiary">Отключить дневник</mat-slide-toggle>
           <button mat-stroked-button color="accent" class="w-100 mt-2" (click)="resp()">
             Респаун
           </button>
-           <button mat-stroked-button color="accent" class="w-100 mt-2" (click)="newgame()">
+          <button mat-stroked-button color="accent" class="w-100 mt-2" (click)="newgame()">
             Новая игра
           </button>
           <button mat-stroked-button color="accent" class="w-100 mt-2" (click)="loadSamplePers()">
@@ -285,8 +287,8 @@
                   <a [routerLink]="['/pers/qwest', qwest.id]">
                     <h6 *ngIf="qwest.progressValue < 100">
                       <!-- {{qwest.tasksDone}}/{{qwest.tasks.length}} -->
-                    {{qwest.progressValue| number: '1.0-0'}}%
-                  </h6>
+                      {{qwest.progressValue| number: '1.0-0'}}%
+                    </h6>
                   </a>
                   <img *ngIf="qwest.progressValue >= 100" (click)="doneQwest(qwest)" src="assets/icons/star.png"
                     class="img-fluid" [ngStyle]="{'object-fit': 'contain', 'height':'1.5em'}">

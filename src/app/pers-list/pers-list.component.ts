@@ -268,7 +268,7 @@ export class PersListComponent implements OnInit {
       this.pers.level = 0;
       this.pers.inventory = [];
 
-      // this.srv.clearDiary(); 
+      this.srv.clearDiary(); 
       // там тоже перс сохраняется...
       this.saveData();
     }

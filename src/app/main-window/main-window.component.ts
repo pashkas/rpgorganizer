@@ -108,21 +108,30 @@ export class MainWindowComponent implements OnInit {
 
     this.srv.changesBefore();
 
+    let tskName = "";
+
     if (t.parrentTask) {
       // Логика для навыков
       if (t.requrense != 'нет') {
+        tskName = this.srv.allMap[t.id].item.name;
         this.srv.subtaskDoneOrFail(t.parrentTask, t.id, true);
-        this.srv.savePers(true);
       }
       // Логика для подзадач
       else {
-        this.srv.allMap[t.id].item.isDone = true;
-        this.srv.savePers(true);
+        const subTsk = this.srv.allMap[t.id].item;
+        subTsk.isDone = true;
       }
     }
     else {
       this.srv.taskPlus(t.id);
+      tskName = t.tittle;
     }
+    if (tskName && !this.srv.pers$.value.isNoDiary) {
+      this.srv.pers$.value.Diary[0].done += tskName + '; ';
+    }
+
+    this.srv.savePers(true);
+
     this.srv.changesAfter(true);
   }
 
@@ -142,14 +151,23 @@ export class MainWindowComponent implements OnInit {
 
     this.srv.changesBefore();
 
+    let tskName = "";
+
     if (t.parrentTask) {
+      tskName = this.srv.allMap[t.id].item.name;
       this.srv.subtaskDoneOrFail(t.parrentTask, t.id, false);
       this.srv.savePers(true, false);
     }
     else {
+      tskName = t.tittle;
       this.srv.taskMinus(t.id);
     }
 
+    if (tskName && !this.srv.pers$.value.isNoDiary) {
+      this.srv.pers$.value.Diary[0].notDone += tskName + '; ';
+    }
+
+    this.srv.savePers(true);
     this.srv.changesAfter(false);
   }
 
