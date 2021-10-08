@@ -1363,18 +1363,33 @@ export class PersService {
 
     let hasPersLevel = false;
     let hasMaxLevel = true;
-    let round = Math.ceil(abTotalMax / 100);
-    if (round < 1) {
-      round = 1;
-    }
-    let i = 0;
+    // let round = Math.ceil(abTotalMax / 100);
+    // if (round < 1) {
+    //   round = 1;
+    // }
+
+    let levels: number = 100;
+    let xp_for_first_level: number = 1.0;
+    let xp_for_last_level: number = 5.0;
+    let B: number = Math.log(xp_for_last_level / xp_for_first_level) / (levels - 1);
+    let A: number = xp_for_first_level / (Math.exp(B) - 1.0);
+
+
+    let numLevel = 0;
     do {
-      // let thisLevel = Math.ceil(abTotalMax * ((i + 1) / 100)) - prevOn;
-      // if (thisLevel <= 0) {
-      //   thisLevel = 1;
-      // }
-      let thisLevel = round;
-      prevOn = thisLevel;
+      const i = numLevel + 1;
+
+      let old_xp: number = A * Math.exp(B * (i - 1));
+      let new_xp: number = A * Math.exp(B * (i));
+
+
+      const round = abTotalMax * (i / 100);
+      let thisLevel = Math.ceil(round - prevOn);
+      if (thisLevel <= 0) {
+        thisLevel = 1;
+      }
+      // let thisLevel = round;
+      prevOn += thisLevel;
       // if (i % 5 == 0) {
       //   thisLevel = 2;
       // }
@@ -1382,14 +1397,18 @@ export class PersService {
       if (!hasPersLevel) {
         startExp = exp;
         ons += thisLevel;
-        let multiplicator =
-          //1 + (i / 20.0);
-          this.getMonsterLevel(i, maxLevel);
+        let multiplicator = new_xp-old_xp;
+        // numLevel * 0.05;
+        // 1 + (numLevel * 0.04);
+        //this.getMonsterLevel(numLevel, maxLevel);
+        // if (multiplicator < 1) {
+        //   multiplicator = 1;
+        // }
         exp += ons * multiplicator;
         nextExp = exp;
         if (exp > prs.exp) {
           hasPersLevel = true;
-          persLevel = i;
+          persLevel = numLevel;
         }
       }
 
@@ -1403,7 +1422,7 @@ export class PersService {
       //   hasMaxLevel = true;
       // }
 
-      i++;
+      numLevel++;
     } while (!hasPersLevel || !hasMaxLevel);
 
     let prevPersLevel = prs.level;
@@ -1787,10 +1806,10 @@ export class PersService {
       subTask.failCounter++;
     }
 
-    if (subTask.failCounter >= 3) {
-      let ab: Ability = this.allMap[taskId].link;
-      this.downAbility(ab);
-    }
+    // if (subTask.failCounter >= 3) {
+    //   let ab: Ability = this.allMap[taskId].link;
+    //   this.downAbility(ab);
+    // }
 
     //tsk.states.find(n => n.id == subtaskId);
     subTask.isDone = true;
@@ -1917,6 +1936,18 @@ export class PersService {
         }
         if (tsk.value > 10) {
           tsk.value = 10;
+        }
+      }
+
+      // Чтобы с каждым уровнем в задаче что-то менялось
+      if (tsk.value < 10 && tsk.value > 0) {
+        for (let i = tsk.value + 1; i <= 10; i++) {
+          const cur = tsk.statesDescr[tsk.value];
+          const next = tsk.statesDescr[i];
+          if (next != cur) {
+            break;
+          }
+          tsk.value = i;
         }
       }
 
