@@ -147,7 +147,7 @@
     </mat-form-field>
 
     <!-- Опыт -->
-    <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="8px">
+    <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="8px" *ngIf="!pers.isTES">
       <div style="width: 100%;">
         <mat-form-field class="w-100">
           <input matInput onfocus="this.select()" autocomplete="off" placeholder="Опыт" [(ngModel)]="qwest.exp"

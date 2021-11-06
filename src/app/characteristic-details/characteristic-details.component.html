@@ -67,6 +67,7 @@
     <!-- Начальное значение -->
     <mat-form-field class="w-100">
       <mat-label>Начальное значение</mat-label>
+      <!-- <input matInput onfocus="this.select()" autocomplete="off" placeholder="0" [(ngModel)]="charact.startRang.val" name="charact.startRang.val"> -->
       <mat-select [(ngModel)]="charact.startRang.val" name="food">
         <mat-option *ngFor="let rang of rangse" [value]="rang.val">
           {{rang.name}}

@@ -107,7 +107,7 @@ export class PerschangesService {
       }
       // Характеристики
       else if (changesMap[n].type == 'cha') {
-        if (changesMap[n].after != changesMap[n].before) {
+        if (changesMap[n].after != changesMap[n].before && !this.afterPers.isTES) {
           changes.push(
             new ChangesModel(changesMap[n].name, 'cha', changesMap[n].before, changesMap[n].after, 0, this.afterPers.maxAttrLevel, changesMap[n].img)
           );
@@ -115,7 +115,7 @@ export class PerschangesService {
       }
       // Перки
       else if (changesMap[n].type == 'perk') {
-        if (changesMap[n].after != changesMap[n].before) {
+        if (changesMap[n].after != changesMap[n].before && !this.afterPers.isTES) {
           changes.push(
             new ChangesModel(changesMap[n].name, 'perk', changesMap[n].before, changesMap[n].after, 0, this.afterPers.maxAttrLevel, changesMap[n].img)
           );
@@ -123,7 +123,7 @@ export class PerschangesService {
       }
       // Навыки
       else if (changesMap[n].type == 'abil') {
-        if (changesMap[n].after != changesMap[n].before) {
+        if (changesMap[n].after != changesMap[n].before && !this.afterPers.isTES) {
           changes.push(
             new ChangesModel(changesMap[n].name, 'abil', changesMap[n].before, changesMap[n].after, 0, this.afterPers.maxAttrLevel, changesMap[n].img)
           );
@@ -249,7 +249,7 @@ export class PerschangesService {
       }
     }
 
-    if (newLevel && this.afterPers.ON > 0) {
+    if (newLevel && (this.afterPers.ON > 0 || this.afterPers.isTES)) {
       let dialogRefLvlUp = this.dialog.open(LevelUpMsgComponent, {
         panelClass: classPanel,
         backdropClass: 'backdrop'

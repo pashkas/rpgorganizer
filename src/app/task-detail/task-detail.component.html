@@ -34,19 +34,19 @@
       </ng-container>
 
       <div>
-        {{tsk.date| datestring}}
-        ({{tsk.requrense | titlecase }})
+        {{tsk.date|datestring}}
+        ({{tsk.requrense|titlecase }})
       </div>
 
       <!-- <div>
         {{tsk.timeVal | timeVal}}
       </div> -->
 
-      <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="7px">
+      <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="5px">
         <button *ngIf="tsk.mayUp&& this.pers.ON>0" class="icon-small" mat-icon-button (click)="upAbil();">
           <img src="assets/icons/up.png" class="img-fluid">
         </button>
-        <button class="icon-small" mat-icon-button (click)="downAbil();">
+        <button class="icon-small" *ngIf="tsk.value > 0" mat-icon-button (click)="downAbil();">
           <img src="assets/icons/down.png" class="img-fluid">
         </button>
         <span *ngIf="tsk.requrense != 'нет'">
@@ -97,7 +97,7 @@
         </div>
       </mat-list>
     </ng-container>
-    <ng-container>
+    <ng-container *ngIf="!pers.isTES">
       <br>
       <ng-container *ngFor="let st of tsk.statesDescr; let i = index;">
         <div *ngIf="i!=0 && st &&(!tsk.isPerk || (tsk.isPerk && i==10))" class="text-center px-0 py-1 border-0"
@@ -106,9 +106,12 @@
         </div>
       </ng-container>
     </ng-container>
-    <!-- <div class="text-center px-0 py-1 border-0">
-      {{tsk.curLvlDescr}}
-    </div> -->
+    <div *ngIf="pers.isTES" class="text-center px-0 py-1 border-0">
+      <br>
+      <div class="border">
+        {{tsk.curLvlDescr}}
+      </div>
+    </div>
   </form>
   <br>
   <br>
@@ -202,11 +205,13 @@
         <mat-chip-list [selectable]="true" [multiple]="true">
           <mat-chip (click)="tsk.isPerk=!tsk.isPerk" [selected]="tsk.isPerk" color="accent">перк?</mat-chip>
 
-          <mat-divider vertical class="vertdiv"></mat-divider>
+          <ng-container *ngIf="!pers.isTES">
+            <mat-divider vertical class="vertdiv"></mat-divider>
 
-          <mat-chip (click)="tsk.hardnes=0.5" [selected]="tsk.hardnes==0.5" color="accent">легко</mat-chip>
-          <mat-chip (click)="tsk.hardnes=1" [selected]="tsk.hardnes==1" color="accent">норм</mat-chip>
-          <mat-chip (click)="tsk.hardnes=2" [selected]="tsk.hardnes==2" color="accent">сложно</mat-chip>
+            <mat-chip (click)="tsk.hardnes=0.5" [selected]="tsk.hardnes==0.5" color="accent">легко</mat-chip>
+            <mat-chip (click)="tsk.hardnes=1" [selected]="tsk.hardnes==1" color="accent">норм</mat-chip>
+            <mat-chip (click)="tsk.hardnes=2" [selected]="tsk.hardnes==2" color="accent">сложно</mat-chip>
+          </ng-container>
 
           <mat-divider vertical class="vertdiv"></mat-divider>
 
