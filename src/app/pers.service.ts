@@ -145,6 +145,11 @@ export class PersService {
   }
 
   GetRndEnamy(tsk: IImg, lvl: number, maxlvl: number): string {
+    if (this.pers$.value.isTES && tsk.requrense != 'нет') {
+      lvl = Math.floor(tsk.value);
+      maxlvl = this._maxAbilLevel;
+    }
+
     let mnstrLvl = this.getMonsterLevel(lvl, maxlvl);
 
     tsk.imageLvl = '' + mnstrLvl;
@@ -1152,7 +1157,7 @@ export class PersService {
 
           tsk.progressValue = (tsk.value / this._maxAbilLevel) * 100;
 
-          abMax += tsk.hardnes * 10;
+          abMax += tsk.hardnes * this._maxAbilLevel;
           abCur += tsk.hardnes * tsk.value;
           tesAbMax += tsk.hardnes * this._tesMaxLvl;
           tesAbCur += tsk.hardnes * tsk.tesValue;
@@ -1193,7 +1198,12 @@ export class PersService {
             }
           }
           else {
-            rng.name = tsk.value + '';
+            if (ab.isOpen == false) {
+              rng.name = '-';
+            }
+            else {
+              rng.name = tsk.value + '';
+            }
           }
 
           ab.rang = rng;
@@ -1245,6 +1255,7 @@ export class PersService {
         abMax = 1;
       }
 
+      debugger;
       const start = ch.startRang.val;
       let left = this._maxCharactLevel - start;
       let progr = (abCur / abMax);
@@ -3010,7 +3021,7 @@ export class PersService {
         tsk.tittle = tsk.name;
       }
 
-      tsk.curLvlDescr = "Ур. "+Math.floor(tsk.value) + "" + ': ' + plusState.trim() + '';
+      tsk.curLvlDescr = "Ур. " + Math.floor(tsk.value) + "" + ': ' + plusState.trim() + '';
       tsk.curLvlDescr2 = ' (' + plusState.trim() + ')';
       tsk.curLvlDescr3 = plusState.trim();
     }
