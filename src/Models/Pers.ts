@@ -10,6 +10,10 @@ import { curpersview } from './curpersview';
 
 export class Pers {
 
+    lastTaskId: any;
+
+    isAutofocus: boolean = false;
+
     imgVers: number = 1;
     /**
      * Количество выполненных без пропусков задач.
@@ -38,7 +42,7 @@ export class Pers {
         "ХРЕНЬ", "МАЗАФАКА", "Ну вот...", "Минус", "Капец", "Чудовищно", "Ужасно", "Пипец"
     ];
 
-    static commonRevSet: revSetting = { name: 'Обычный', probability: 100, cumulative: 7.74};
+    static commonRevSet: revSetting = { name: 'Обычный', probability: 100, cumulative: 7.74 };
     static uncommonRevSet: revSetting = { name: 'Превосходный', probability: 100, cumulative: 11.61 };
     static rareRevSet: revSetting = { name: 'Редкий', probability: 100, cumulative: 13.55 };
     static epicRevSet: revSetting = { name: 'Магический', probability: 100, cumulative: 14.52 };

@@ -43,6 +43,10 @@ export class Task implements IImg {
     date: Date = this.getNowDate();
     descr: string = "";
     id: any = uuid();
+
+    prevId: any;
+    nextId: any;
+
     image: string = "";
     isDone: boolean = false;
 
@@ -91,6 +95,8 @@ export class Task implements IImg {
     timeVal: number;
     curLvlDescr3: string;
     qwestId: string;
+    autoInd: number;
+    lastDate: number;
 
     static getHardness(tsk: Task): number {
         if (!tsk.hardnes) {
@@ -204,6 +210,10 @@ export class Task implements IImg {
 export class taskState implements IImg {
     abRang: Rangse;
     id: any = uuid();
+
+    prevId: any;
+    nextId: any;
+
     name: string;
 
     isDone: boolean = false;
@@ -219,6 +229,7 @@ export class taskState implements IImg {
     requrense: string;
     timeVal: number;
     failCounter: number;
+  lastDate: number;
 }
 
 export interface IImg {

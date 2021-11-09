@@ -19,6 +19,7 @@ import * as moment from 'moment';
 import { isNullOrUndefined } from 'util';
 import { SamplePers } from 'src/Models/SamplePers';
 import { curpersview } from 'src/Models/curpersview';
+import { DateTime } from 'luxon';
 
 @Injectable({
   providedIn: 'root'
@@ -51,7 +52,7 @@ export class PersService {
   allMap: {};
   get baseTaskPoints(): number {
     if (this.pers$.value.isTES) {
-      return 8.0;
+      return 10.0;
     }
 
     return 1.0;
@@ -336,7 +337,7 @@ export class PersService {
   }
 
   changeTes(task: Task, isUp: boolean, subTasksCoef: number = 1) {
-    let change = this.getTaskChangesExp(task, isUp) / subTasksCoef;
+    let change = this.getTaskChangesExp(task, isUp, null, subTasksCoef);
     if (isUp) {
       task.tesValue += change;
     }
@@ -1044,6 +1045,7 @@ export class PersService {
           }
           else {
             tsk.value = Math.floor(tsk.tesValue); //this.getAbTesLvl(tsk.tesValue);
+            tsk.failCounter = 0;
           }
 
           if (tsk.value < 0) {
@@ -1255,7 +1257,6 @@ export class PersService {
         abMax = 1;
       }
 
-      debugger;
       const start = ch.startRang.val;
       let left = this._maxCharactLevel - start;
       let progr = (abCur / abMax);
@@ -1572,7 +1573,16 @@ export class PersService {
   private countPersLevelAndOnsTES(exp: number, abCount: number, abOpenned: number) {
     let persLevel = Math.floor(exp);
 
-    let onEveryLevel = Math.floor(100 / abCount);
+    let abs = (abCount);
+
+    if (abs < 1) {
+      abs = 1;
+    }
+
+    let onEveryLevel = Math.floor(100 / abs);
+    if (onEveryLevel < 1) {
+      onEveryLevel = 1;
+    }
     let gainedOns = Math.floor(persLevel / onEveryLevel);
 
     let ons = (this._tesStartOn + gainedOns) - abOpenned;
@@ -1787,6 +1797,10 @@ export class PersService {
       let aValDate = aDate.valueOf();
       let bValDate = bDate.valueOf();
 
+      if (prs.isAutofocus) {
+        return a.lastDate - b.lastDate;
+      }
+
       // По дате
       if (prs.currentView != curpersview.SkillsSort) {
         if (aValDate != bValDate) {
@@ -1838,6 +1852,7 @@ export class PersService {
   subtaskDoneOrFail(taskId: string, subtaskId: string, isDone: boolean) {
     let tsk: Task = this.allMap[taskId].item;
     let subTask: taskState = this.allMap[subtaskId].item;
+    subTask.lastDate = new Date().getTime();
     if (this.isNullOrUndefined(subTask.failCounter)) {
       subTask.failCounter = 0;
     }
@@ -1916,6 +1931,7 @@ export class PersService {
 
     ({ task, abil } = this.findTaskAnAb(id, task, abil));
     if (task) {
+      task.lastDate = new Date().getTime();
       task.counterValue = 0;
       task.timerValue = 0;
       if (this.isNullOrUndefined(task.failCounter)) {
@@ -1954,6 +1970,8 @@ export class PersService {
    */
   taskPlus(id: string) {
     let tsk: Task = this.allMap[id].item;
+    tsk.lastDate = new Date().getTime();
+
     if (tsk.requrense != 'нет') {
       let task: Task;
       let abil: Ability;
@@ -2539,7 +2557,7 @@ export class PersService {
     return expChange;
   }
 
-  private getTaskChangesExp(task: Task, isPlus: boolean, subTask: taskState = null) {
+  private getTaskChangesExp(task: Task, isPlus: boolean, subTask: taskState = null, subTasksCoef: number = 1) {
     const koef = this.getWeekKoef(task.requrense, isPlus, task.tskWeekDays);
     let expKoef = this.getExpKoef(isPlus);
     expKoef = 1;
@@ -2553,7 +2571,7 @@ export class PersService {
 
     expKoef = expKoef * Task.getHardness(task);
 
-    let chVal = this.baseTaskPoints * koef * expKoef;
+    let chVal = (this.baseTaskPoints / subTasksCoef) * koef * expKoef;
 
     if (task.tesValue == null || task.tesValue == undefined) {
       task.tesValue = 0;
@@ -2676,6 +2694,7 @@ export class PersService {
     stT.timerValue = tsk.timerValue;
     stT.timerStart = tsk.timerStart;
     stT.requrense = tsk.requrense;
+    stT.lastDate = st.lastDate;
 
     //stT.image = tsk.image;
     if (!st.image) {
@@ -2697,7 +2716,7 @@ export class PersService {
       stT.plusToNames.unshift(new plusToName(stateProgr, null, null, ''));
     }
 
-    if (stT.requrense != 'нет') {
+    if (stT.requrense != 'нет' && !this.pers$.value.isAutofocus) {
       stT.time = st.time;
       stT.plusToNames.unshift(new plusToName('' + st.time, null, null, ''));
     }
@@ -2925,6 +2944,10 @@ export class PersService {
 
         let start = 0;
         let progr = start + (1 - start) * (tsk.tesValue / this._tesMaxLvl);
+
+        if (progr < 0.01) {
+          progr = 0.01;
+        }
 
         if (tsk.isPerk) {
           progr = 1;

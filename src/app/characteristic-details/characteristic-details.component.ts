@@ -94,6 +94,14 @@ export class CharacteristicDetailsComponent implements OnInit {
     }
   }
 
+  upAbil(ab: Ability) {
+    this.srv.changesBefore();
+
+    this.srv.upAbility(ab);
+
+    this.srv.changesAfter(true);
+  }
+
   /**
    * Сохранить данные.
    */

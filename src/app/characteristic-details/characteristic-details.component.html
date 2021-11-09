@@ -2,13 +2,11 @@
   <div class="d-flex w-100 justify-content-end px-2 py-2">
     <!-- Назад -->
     <button mat-icon-button (click)="goBack()" class="mx-2" *ngIf="!isEditMode">
-      <img src="assets/icons/left.png" class="img-fluid"
-        [ngStyle]="{'object-fit': 'contain', 'height':'2.5em'}">
+      <img src="assets/icons/left.png" class="img-fluid" [ngStyle]="{'object-fit': 'contain', 'height':'2.5em'}">
     </button>
     <!-- Редактировать -->
     <button mat-icon-button (click)="saveData()">
-      <img src="assets/icons/edit.png" class="img-fluid"
-        [ngStyle]="{'object-fit': 'contain', 'height':'3em'}">
+      <img src="assets/icons/edit.png" class="img-fluid" [ngStyle]="{'object-fit': 'contain', 'height':'3em'}">
       <!-- <img *ngIf="isEditMode" src="assets/icons/create.png" class="img-fluid"
         [ngStyle]="{'object-fit': 'contain', 'height':'3em'}"> -->
     </button>
@@ -33,16 +31,20 @@
     <!-- Навыки -->
     <ul class="list-group p-0 pt-1" *ngIf="charact.abilities.length>0">
       <li *ngFor="let ab of charact.abilities" class="list-group-item px-0 py-1 border-0">
-        <a class="align-self-center w-100 text-primary" (click)="showAbility(ab)">
+        <div class="align-self-center w-100 text-primary">
           <div class="d-flex">
             <div class="flex-grow-1 text-left align-self-baseline">
-              <h6>{{ab.name}}<app-ab-hardness [tsk]="ab.tasks[0]"></app-ab-hardness></h6>
+              <a (click)="showAbility(ab)">{{ab.name}}<app-ab-hardness [tsk]="ab.tasks[0]"></app-ab-hardness></a>
             </div>
-            <div class="text-right align-self-baseline">
-              <h6>{{ab.rang.name}}</h6>
+            <div fxLayout="row" fxLayoutAlign="space-around" class="text-right align-self-baseline">
+              <a (click)="showAbility(ab)">{{ab.rang.name}}</a>
+              <a *ngIf="ab.tasks[0]?.mayUp && pers.ON>0" class="ml-0 px-1 mr-0" (click)="upAbil(ab)">
+                <img src="assets/icons/up.png" class="img-fluid"
+                  [ngStyle]="{'object-fit': 'contain', 'height':'1.5em'}">
+              </a>
             </div>
           </div>
-        </a>
+        </div>
         <!-- <mat-progress-bar class="myprogr" color="accent" mode="determinate" value="{{ab.progressValue}}">
         </mat-progress-bar> -->
       </li>
@@ -61,7 +63,8 @@
     <app-image-component [(data)]="charact.image" [isCanEdit]="true"></app-image-component>
     <!-- Название -->
     <mat-form-field class="w-100">
-      <input matInput onfocus="this.select()" autocomplete="off" placeholder="Название" [(ngModel)]="charact.name" name="charact.name">
+      <input matInput onfocus="this.select()" autocomplete="off" placeholder="Название" [(ngModel)]="charact.name"
+        name="charact.name">
     </mat-form-field>
 
     <!-- Начальное значение -->
@@ -77,7 +80,8 @@
 
     <!-- Описание -->
     <mat-form-field class="w-100">
-      <textarea matInput autosize minRows='1' maxRows='5' useImportant='true' onfocus="this.select()" autocomplete="off" placeholder="Описание" [(ngModel)]="charact.descr" name="charact.descr"></textarea>
+      <textarea matInput autosize minRows='1' maxRows='5' useImportant='true' onfocus="this.select()" autocomplete="off"
+        placeholder="Описание" [(ngModel)]="charact.descr" name="charact.descr"></textarea>
     </mat-form-field>
 
     <!-- Навыки -->

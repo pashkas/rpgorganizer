@@ -46,7 +46,7 @@
         <button *ngIf="tsk.mayUp&& this.pers.ON>0" class="icon-small" mat-icon-button (click)="upAbil();">
           <img src="assets/icons/up.png" class="img-fluid">
         </button>
-        <button class="icon-small" *ngIf="tsk.value > 0" mat-icon-button (click)="downAbil();">
+        <button class="icon-small" *ngIf="tsk.value > 0 && !pers.isTES" mat-icon-button (click)="downAbil();">
           <img src="assets/icons/down.png" class="img-fluid">
         </button>
         <span *ngIf="tsk.requrense != 'нет'">

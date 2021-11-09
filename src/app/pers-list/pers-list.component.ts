@@ -191,19 +191,19 @@ export class PersListComponent implements OnInit {
     if (this.isEditMode) {
       this.isEditMode = false;
     }
-    else{
+    else {
       this.location.back();
     }
   }
 
-  loadSamplePers(){
+  loadSamplePers() {
     if (window.confirm('Вы уверены, что хотите загрузить тренировочного перса?')) {
       this.srv.loadLearningPers(this.pers.userId);
       this.saveData();
     }
   }
 
-  newgame(){
+  newgame() {
     if (window.confirm('Вы уверены, что хотите очистить все данные?')) {
       this.srv.setNewPers(this.pers.userId);
       this.saveData();
@@ -226,10 +226,10 @@ export class PersListComponent implements OnInit {
     }
 
     this.srv.pers$
-    .pipe(takeUntil(this.unsubscribe$))
-    .subscribe(n=>{
-      this.pers=n;
-    });
+      .pipe(takeUntil(this.unsubscribe$))
+      .subscribe(n => {
+        this.pers = n;
+      });
   }
 
   /**
@@ -237,12 +237,15 @@ export class PersListComponent implements OnInit {
    */
   resp() {
     if (window.confirm('Вы уверены?')) {
+      this.pers.lastTaskId = null;
       this.pers.isOffline = true;
       this.pers.characteristics.forEach(cha => {
         cha.abilities.forEach(ab => {
           ab.isOpen = false;
           ab.tasks.forEach(tsk => {
             this.srv.GetRndEnamy(tsk, this.pers.level, this.pers.maxPersLevel);
+            tsk.prevId = null;
+            tsk.nextId = null;
             tsk.failCounter = 0;
             // tsk.time = "00:00";
             tsk.value = 0;
@@ -251,6 +254,8 @@ export class PersListComponent implements OnInit {
             tsk.date = new Date();
             this.srv.GetRndEnamy(tsk, this.pers.level, this.pers.maxPersLevel);
             tsk.states.forEach(st => {
+              st.prevId = null;
+              st.nextId = null;
               // st.time = "00:00";
               this.srv.GetRndEnamy(st, this.pers.level, this.pers.maxPersLevel);
             });
@@ -268,13 +273,13 @@ export class PersListComponent implements OnInit {
       this.pers.level = 0;
       this.pers.inventory = [];
 
-      this.srv.clearDiary(); 
+      this.srv.clearDiary();
       // там тоже перс сохраняется...
       this.saveData();
     }
   }
 
-  rest(){
+  rest() {
     this.pers.isRest = true;
     this.srv.savePers(false);
     this.router.navigate(['/main']);
@@ -297,7 +302,7 @@ export class PersListComponent implements OnInit {
     this.srv.showAbility(ab);
   }
 
-  sync(isDownload){
+  sync(isDownload) {
     this.srv.sync(isDownload);
   }
 
