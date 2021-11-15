@@ -28,7 +28,7 @@ export class PersService {
   // Персонаж
   private unsubscribe$ = new Subject();
 
-  _tesStartOn: number = 4;
+  _tesStartOn: number = 5;
 
   get _maxCharactLevel(): number {
     if (this.pers$.value.isTES) {
@@ -196,13 +196,6 @@ export class PersService {
       //   return -(aSame - bSame);
       // }
 
-      // Перк?
-      let aperk = aTask.isPerk ? 1 : 0;
-      let bperk = bTask.isPerk ? 1 : 0;
-
-      if (aperk != bperk) {
-        return (aperk - bperk);
-      }
 
       // Значение
       if (a.value != b.value) {
@@ -212,6 +205,14 @@ export class PersService {
       // Сложность
       if (aTask.hardnes != bTask.hardnes) {
         return aTask.hardnes - bTask.hardnes;
+      }
+
+      // Перк?
+      let aperk = aTask.isPerk ? 1 : 0;
+      let bperk = bTask.isPerk ? 1 : 0;
+
+      if (aperk != bperk) {
+        return (aperk - bperk);
       }
 
       return a.name.localeCompare(b.name);
@@ -310,7 +311,12 @@ export class PersService {
       // }
 
       if (a.value != b.value) {
-        return (a.value - b.value);
+        if (!this.pers$.value.isTES) {
+          return (a.value - b.value);
+        }
+        else {
+          return -(a.value - b.value);
+        }
       }
 
       return a.name.localeCompare(b.name);
@@ -1045,6 +1051,13 @@ export class PersService {
           }
           else {
             tsk.value = Math.floor(tsk.tesValue); //this.getAbTesLvl(tsk.tesValue);
+            if (tsk.value < 0) {
+              tsk.value = 0;
+            }
+
+            if (tsk.value > this._maxAbilLevel) {
+              tsk.value = this._maxAbilLevel;
+            }
             tsk.failCounter = 0;
           }
 
@@ -1085,6 +1098,10 @@ export class PersService {
           for (const st of tsk.states) {
             if (this.isNullOrUndefined(st.time)) {
               st.time = "00:00";
+            }
+
+            if (prs.isTES) {
+              st.failCounter = 0;
             }
           }
 
@@ -1585,7 +1602,13 @@ export class PersService {
     }
     let gainedOns = Math.floor(persLevel / onEveryLevel);
 
-    let ons = (this._tesStartOn + gainedOns) - abOpenned;
+    let startOn = 1;
+    let twoDaysTes = 12.546;
+    let pointLev = 1 / abs;
+
+    startOn = Math.ceil(onEveryLevel / (twoDaysTes * pointLev));
+
+    let ons = (startOn + gainedOns) - abOpenned;
     exp = exp * 100;
     let prevOn = 0;
     let startExp = persLevel * 100;
@@ -2626,23 +2649,23 @@ export class PersService {
   }
 
   private getTesChangeKoef(tesVal: number): number {
-    let levels: number = this._tesMaxLvl;
-    let xp_for_first_level: number = 1;
-    let xp_for_last_level: number = 100;
+    // let levels: number = this._tesMaxLvl;
+    // let xp_for_first_level: number = 1;
+    // let xp_for_last_level: number = 10;
 
-    let B: number = Math.log(xp_for_last_level / xp_for_first_level) / (levels - 1);
-    let A: number = xp_for_first_level / (Math.exp(B) - 1.0);
+    // let B: number = Math.log(xp_for_last_level / xp_for_first_level) / (levels - 1);
+    // let A: number = xp_for_first_level / (Math.exp(B) - 1.0);
 
-    let i = Math.floor(tesVal) + 1;
+    // let i = Math.floor(tesVal) + 1;
 
-    let old_xp: number = A * Math.exp(B * (i - 1));
-    let new_xp: number = A * Math.exp(B * (i));
+    // let old_xp: number = A * Math.exp(B * (i - 1));
+    // let new_xp: number = A * Math.exp(B * (i));
 
-    let multi = new_xp - old_xp;
+    // let multi = new_xp - old_xp;
 
-    return 1 / multi;
+    // return 1 / multi;
 
-    // return (1 / (1 + tesVal / 10.0));
+    return (1 / (1 + tesVal / 10.0));
   }
 
   private getTskFromState(tsk: Task, st: taskState, isAll: boolean): Task {
@@ -2943,7 +2966,7 @@ export class PersService {
         tsk.IsNextLvlSame = false;
 
         let start = 0;
-        let progr = start + (1 - start) * (tsk.tesValue / this._tesMaxLvl);
+        let progr = start + (1 - start) * (tsk.value / this._maxAbilLevel);
 
         if (progr < 0.01) {
           progr = 0.01;

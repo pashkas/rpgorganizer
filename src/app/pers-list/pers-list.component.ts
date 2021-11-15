@@ -244,6 +244,7 @@ export class PersListComponent implements OnInit {
           ab.isOpen = false;
           ab.tasks.forEach(tsk => {
             this.srv.GetRndEnamy(tsk, this.pers.level, this.pers.maxPersLevel);
+            tsk.lastDate = 0;
             tsk.prevId = null;
             tsk.nextId = null;
             tsk.failCounter = 0;
@@ -254,6 +255,7 @@ export class PersListComponent implements OnInit {
             tsk.date = new Date();
             this.srv.GetRndEnamy(tsk, this.pers.level, this.pers.maxPersLevel);
             tsk.states.forEach(st => {
+              st.lastDate = 0;
               st.prevId = null;
               st.nextId = null;
               // st.time = "00:00";
