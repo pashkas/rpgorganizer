@@ -199,7 +199,7 @@ export class PersService {
 
       // Значение
       if (a.value != b.value) {
-        return -(a.value - b.value);
+        return (a.value - b.value);
       }
 
       // Сложность
@@ -311,12 +311,7 @@ export class PersService {
       // }
 
       if (a.value != b.value) {
-        if (!this.pers$.value.isTES) {
-          return (a.value - b.value);
-        }
-        else {
-          return -(a.value - b.value);
-        }
+        return (a.value - b.value);
       }
 
       return a.name.localeCompare(b.name);
@@ -1244,6 +1239,9 @@ export class PersService {
               }
               else {
                 if (this.checkTask(tsk) || prs.currentView == curpersview.SkillsSort) {
+                  if (prs.isAutofocus) {
+                    tsk.plusToNames.shift();
+                  }
                   tasks.push(tsk);
                 }
               }
@@ -1448,6 +1446,8 @@ export class PersService {
     prs.tasks = tasks;
 
     if (prs.currentView == curpersview.SkillTasks || prs.currentView == curpersview.SkillsSort || prs.currentView == curpersview.SkillsGlobal) {
+      this.chainOrganize(prs);
+
       this.sortPersTasks(prs);
     }
 
@@ -1553,6 +1553,136 @@ export class PersService {
       }
     }
   }
+
+  chainGetDateById(id: string) {
+    if (!this.allMap[id].item.date) {
+      return this.allMap[id].link.date;
+    }
+    else {
+      return this.allMap[id].item.date;
+    }
+  }
+
+  chainDo(id: string, isSubtask: boolean) {
+    let tskDate = new Date(this.chainGetDateById(id)).setHours(0, 0, 0, 0);
+
+    let chain = this.pers$.value.chainTable;
+
+    // Задачи с большей датой вначале кидаем вконец
+    while (true) {
+      if (chain[0] == 'end_line') {
+        break;
+      }
+
+      let chDate = new Date(this.chainGetDateById(chain[0])).setHours(0, 0, 0, 0);
+
+      if (chDate <= tskDate) {
+        break;
+      }
+
+      let tmp = chain.shift();
+      chain.push(tmp);
+    }
+
+    // если end_line вначале - кидаем в конец
+    if (chain[0] == 'end_line') {
+      let tmp = chain.shift();
+      chain.push(tmp);
+    }
+
+    // Пересоздаем список
+    let newChain = [];
+    let toEndChain = [];
+
+    let getThis: boolean = false;
+    for (let i = 0; i < chain.length; i++) {
+      const ch = chain[i];
+      if (ch == id) {
+        getThis = true;
+      }
+
+      if (ch == 'end_line') {
+        newChain.push(ch);
+        getThis = false;
+      }
+      else {
+        let itemDate = new Date(this.chainGetDateById(ch)).setHours(0, 0, 0, 0);
+
+        if (getThis && ch != id && itemDate <= tskDate) {
+          getThis = false;
+        }
+
+        if (getThis) {
+          toEndChain.push(ch);
+        }
+        else {
+          newChain.push(ch);
+        }
+      }
+    }
+
+    // Создаем новый
+    chain = [];
+
+    for (let i = 0; i < newChain.length; i++) {
+      const elem = newChain[i];
+      chain.push(elem);
+    }
+
+    for (let i = 0; i < toEndChain.length; i++) {
+      const elem = toEndChain[i];
+      chain.push(elem);
+    }
+
+    // если end_line вначале - кидаем в конец
+    if (chain[0] == 'end_line') {
+      let tmp = chain.shift();
+      chain.push(tmp);
+    }
+
+    this.pers$.value.chainTable = chain;
+  }
+
+  chainOrganize(prs: Pers) {
+    //prs.chainTable = [];
+
+    if (prs.chainTable == null || prs.chainTable == undefined || prs.chainTable.length == 0) {
+      prs.chainTable = [];
+      prs.chainTable.unshift("end_line");
+    }
+
+    // Удаляем лишние записи
+    prs.chainTable = prs.chainTable
+      .filter(n => n == 'end_line' || !this.isNullOrUndefined(this.allMap[n]));
+
+    // Добавляем записи, которых нет в таблице
+    for (let i = 0; i < prs.tasks.length; i++) {
+      const tsk = prs.tasks[i];
+
+      let inChain = prs.chainTable.find(n => n == tsk.id);
+      if (!inChain) {
+        prs.chainTable.unshift(tsk.id);
+      }
+    }
+
+    let tasksDic = prs.tasks.reduce((acc, el) => {
+      acc[el.id] = el;
+
+      return acc;
+    }, {});
+
+    // Проставляем индексы
+    for (let i = 0; i < prs.chainTable.length; i++) {
+      const ch = prs.chainTable[i];
+
+      if (ch != 'end_line') {
+        if (tasksDic[ch]) {
+          tasksDic[ch].chainIdx = i;
+        }
+      }
+    }
+  }
+
 
   getAbTesLvl(tesValue: number): number {
     let levels: number = this._maxAbilLevel + 1;
@@ -1815,14 +1945,15 @@ export class PersService {
         return -(aType - bType);
       }
 
-      let aDate = new Date(a.date).setHours(0, 0, 0, 0);
+      // Автофокус
+      if (prs.isAutofocus) {
+        return a.chainIdx - b.chainIdx;
+      }
+
       let bDate = new Date(b.date).setHours(0, 0, 0, 0);
+      let aDate = new Date(a.date).setHours(0, 0, 0, 0);
       let aValDate = aDate.valueOf();
       let bValDate = bDate.valueOf();
-
-      if (prs.isAutofocus) {
-        return a.lastDate - b.lastDate;
-      }
 
       // По дате
       if (prs.currentView != curpersview.SkillsSort) {
@@ -1875,6 +2006,7 @@ export class PersService {
   subtaskDoneOrFail(taskId: string, subtaskId: string, isDone: boolean) {
     let tsk: Task = this.allMap[taskId].item;
     let subTask: taskState = this.allMap[subtaskId].item;
+    this.chainDo(subTask.id, true);
     subTask.lastDate = new Date().getTime();
     if (this.isNullOrUndefined(subTask.failCounter)) {
       subTask.failCounter = 0;
@@ -1954,6 +2086,7 @@ export class PersService {
 
     ({ task, abil } = this.findTaskAnAb(id, task, abil));
     if (task) {
+      this.chainDo(task.id, false);
       task.lastDate = new Date().getTime();
       task.counterValue = 0;
       task.timerValue = 0;
@@ -1993,6 +2126,7 @@ export class PersService {
    */
   taskPlus(id: string) {
     let tsk: Task = this.allMap[id].item;
+    this.chainDo(tsk.id, false);
     tsk.lastDate = new Date().getTime();
 
     if (tsk.requrense != 'нет') {

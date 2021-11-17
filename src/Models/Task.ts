@@ -106,6 +106,8 @@ export class Task implements IImg {
         return tsk.hardnes;
     }
 
+    chainIdx: number = -1;
+
     /**
      * Получить формулу для роста/понижения значения задачи.
      * @param curVal Значение.
@@ -214,6 +216,8 @@ export class taskState implements IImg {
     prevId: any;
     nextId: any;
 
+    chainIdx: number = -1;
+
     name: string;
 
     isDone: boolean = false;
@@ -229,7 +233,7 @@ export class taskState implements IImg {
     requrense: string;
     timeVal: number;
     failCounter: number;
-  lastDate: number;
+    lastDate: number;
 }
 
 export interface IImg {

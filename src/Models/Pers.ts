@@ -22,6 +22,8 @@ export class Pers {
 
     Diary: Diary[] = [];
 
+    chainTable: string[] = [];
+
     /**
      * Очки навыков.
      */

@@ -37,7 +37,7 @@
                 </ng-template>
               </div>
             </div>
-            <div *ngIf="t.requrense != 'нет'" class="px-2">
+            <div *ngIf="t.requrense != 'нет' && !pers.isAutofocus" class="px-2">
               <ngx-material-timepicker-toggle [for]="pikTimeInList"></ngx-material-timepicker-toggle>
               <ngx-material-timepicker (timeSet)="onTimeChanged($event, t.id)" #pikTimeInList [format]="24"
                 [defaultTime]="t.time"></ngx-material-timepicker>
@@ -103,7 +103,7 @@
             <ng-template #elseTemplate>
 
               <span class="text-secondary">
-                <ng-container *ngIf="i==0 && this.pers.currentTask.requrense!='нет'">
+                <ng-container *ngIf="i==0 && this.pers.currentTask.requrense!='нет' && !pers.isAutofocus">
                   <ngx-material-timepicker-toggle [for]="toggleTimepicker"></ngx-material-timepicker-toggle>
                   <ngx-material-timepicker (timeSet)="onTimeChanged($event, this.pers.currentTask.id)" #toggleTimepicker
                     [format]="24" [defaultTime]="this.pers.currentTask.time">
