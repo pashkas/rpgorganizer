@@ -385,6 +385,16 @@ export class MainWindowComponent implements OnInit {
       this.srv.pers$.value.currentView = curpersview.SkillsSort;
     }
     else if (this.srv.pers$.value.currentView == curpersview.SkillsSort) {
+      for (let index = 0; index < this.srv.pers$.value.tasks.length; index++) {
+        if (this.srv.pers$.value.tasks[index].parrentTask) {
+          this.setIndForState(this.srv.pers$.value.tasks[index].parrentTask, this.srv.pers$.value.tasks[index].id, index);
+        }
+        else {
+          this.srv.pers$.value.tasks[index].order = index;
+        }
+      }
+
+
       this.srv.pers$.value.currentView = curpersview.SkillTasks;
     }
 
@@ -424,5 +434,9 @@ export class MainWindowComponent implements OnInit {
       }
       this.srv.savePers(false);
     }
+    // else if(this.srv.pers$.value.currentView == curpersview.SkillsSort)
+    // {
+    //   this.srv.showTask(this.srv.pers$.value.tasks[i]);
+    // }
   }
 }

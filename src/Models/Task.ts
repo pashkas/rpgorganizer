@@ -238,6 +238,7 @@ export class taskState implements IImg {
 
 export interface IImg {
     image: string;
+    parrentTask: string;
     imageLvl: string;
     value: number;
     requrense: string;

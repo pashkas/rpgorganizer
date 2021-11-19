@@ -18,16 +18,21 @@
     *ngIf="this.pers.currentView=='SkillsSort'||this.pers.currentView=='SkillsGlobal'||this.pers.currentView=='QwestsGlobal'||this.pers.currentView=='QwestSort'">
     <mat-list (cdkDropListDropped)="drop($event)" cdkDropList class="list-group  py-2 h-100 w-100 overflow-auto">
       <ng-container *ngFor="let t of this.pers.tasks; let i = index;">
-        <div cdkDrag mat-list-item (click)="tskClick(i);"
-          [ngClass]="{'list-group-item-danger': t.lastNotDone && !isSort, 'list-group-item-warning': t.requrense != 'нет' && checkDate(t.date)}">
-          <div class="d-flex align-items-center" [ngClass]="{' py-2': !isSort}">
+        <div cdkDrag mat-list-item (click)="tskClick(i);" class="{{t| listBg:this.pers.currentView}}">
+          <div class="d-flex align-items-center" [ngClass]="{' py-2': pers.currentView!='SkillsSort' }">
             <div class="flex-grow-1 text-center">
               <div class="pointer">
                 <ng-container *ngIf="t.requrense != 'нет' && checkDate(t.date)" class="bg-danger">
                   [{{t.date| datestring}}]
                 </ng-container>
                 <ng-container *ngIf="t.requrense != 'нет' || this.pers.currentView=='QwestSort'; else elseTemplate">
-                  {{t.tittle}}
+                  <ng-container *ngIf="this.pers.currentView == 'SkillsSort'">
+                    <a [routerLink]="['/pers/task', t.parrentTask ? t.parrentTask : t.id, false]" class="text-dark">{{t.tittle}}</a>
+                  </ng-container>
+                  <ng-container *ngIf="this.pers.currentView != 'SkillsSort'">
+                    {{t.tittle}}
+                  </ng-container>
+
                 </ng-container>
                 <ng-template #elseTemplate>
                   <ng-container *ngIf="t.plusToNames[1]?.name as nn">
@@ -43,7 +48,8 @@
                 [defaultTime]="t.time"></ngx-material-timepicker>
               {{t.time}}
             </div>
-            <button mat-button cdkDragHandle [hidden]="this.pers.currentView!='QwestSort'">
+            <button mat-button cdkDragHandle
+              [hidden]="!(this.pers.currentView=='QwestSort' || (this.pers.currentView == 'SkillsSort' && pers.isAutofocus))">
               <i class="fa fa-lg fa-expand-arrows-alt"></i>
             </button>
           </div>

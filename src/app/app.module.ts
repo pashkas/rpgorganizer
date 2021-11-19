@@ -32,6 +32,7 @@ import { TimerCounterComponent } from './main-window/timer-counter/timer-counter
 import { NgxMaterialTimepickerModule } from 'ngx-material-timepicker';
 import { FailModPipe } from './fail-mod.pipe';
 import { MainProgrDescPipe } from './main-window/main-progr-desc.pipe';
+import { ListBgPipe } from './list-bg.pipe';
 
 registerLocaleData(localeRu, 'ru');
 
@@ -52,6 +53,7 @@ registerLocaleData(localeRu, 'ru');
     TimerCounterComponent,
     FailModPipe,
     MainProgrDescPipe,
+    ListBgPipe,
   ],
   imports: [
     NgxMaterialTimepickerModule,

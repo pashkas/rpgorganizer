@@ -20,6 +20,10 @@
     </app-image-component>
     <h4 class="text-center">
       {{tsk.name}}<app-ab-hardness [tsk]="tsk"></app-ab-hardness>
+      <ng-container *ngIf="tskAbility">
+        ({{tskAbility.rang.name}})
+      </ng-container>
+      
     </h4>
     <div abil="progress" *ngIf="tskAbility" [ngStyle]="{'height': '3px'}">
       <div class="progress-bar" [style.width]="tskAbility.progressValue + '%'"
