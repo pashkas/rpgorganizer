@@ -27,7 +27,8 @@
                 </ng-container>
                 <ng-container *ngIf="t.requrense != 'нет' || this.pers.currentView=='QwestSort'; else elseTemplate">
                   <ng-container *ngIf="this.pers.currentView == 'SkillsSort'">
-                    <a [routerLink]="['/pers/task', t.parrentTask ? t.parrentTask : t.id, false]" class="text-dark">{{t.tittle}}</a>
+                    <a [routerLink]="['/pers/task', t.parrentTask ? t.parrentTask : t.id, false]"
+                      class="text-dark">{{t.tittle}}</a>
                   </ng-container>
                   <ng-container *ngIf="this.pers.currentView != 'SkillsSort'">
                     {{t.tittle}}
@@ -50,7 +51,7 @@
             </div>
             <button mat-button cdkDragHandle
               [hidden]="!(this.pers.currentView=='QwestSort' || (this.pers.currentView == 'SkillsSort' && pers.isAutofocus))">
-              <i class="fa fa-lg fa-expand-arrows-alt"></i>
+              <mat-icon>drag_handle</mat-icon>
             </button>
           </div>
         </div>
