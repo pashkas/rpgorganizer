@@ -23,7 +23,7 @@
       <ng-container *ngIf="tskAbility">
         ({{tskAbility.rang.name}})
       </ng-container>
-      
+
     </h4>
     <div abil="progress" *ngIf="tskAbility" [ngStyle]="{'height': '3px'}">
       <div class="progress-bar" [style.width]="tskAbility.progressValue + '%'"
@@ -110,7 +110,7 @@
         </div>
       </ng-container>
     </ng-container>
-    <div *ngIf="pers.isTES" class="text-center px-0 py-1 border-0">
+    <div *ngIf="pers.isTES && tsk.curLvlDescr" class="text-center px-0 py-1 border-0">
       <br>
       <div class="border">
         {{tsk.curLvlDescr}}
@@ -209,12 +209,14 @@
         <mat-chip-list [selectable]="true" [multiple]="true">
           <mat-chip (click)="tsk.isPerk=!tsk.isPerk" [selected]="tsk.isPerk" color="accent">перк?</mat-chip>
 
-          <ng-container *ngIf="!pers.isTES">
+          <ng-container>
             <mat-divider vertical class="vertdiv"></mat-divider>
-
-            <mat-chip (click)="tsk.hardnes=0.5" [selected]="tsk.hardnes==0.5" color="accent">легко</mat-chip>
+            <mat-chip *ngIf="!pers.isTES" (click)="tsk.hardnes=0.5" [selected]="tsk.hardnes==0.5" color="accent">легко
+            </mat-chip>
             <mat-chip (click)="tsk.hardnes=1" [selected]="tsk.hardnes==1" color="accent">норм</mat-chip>
-            <mat-chip (click)="tsk.hardnes=2" [selected]="tsk.hardnes==2" color="accent">сложно</mat-chip>
+            <mat-chip (click)="tsk.hardnes=2" [selected]="tsk.hardnes==2" color="accent">слож</mat-chip>
+            <mat-chip *ngIf="pers.isTES" (click)="tsk.hardnes=3" [selected]="tsk.hardnes==3" color="accent">оч. слож
+            </mat-chip>
           </ng-container>
 
           <mat-divider vertical class="vertdiv"></mat-divider>
@@ -233,15 +235,21 @@
     <ng-container *ngIf="tsk.requrense != 'нет'">
       <!-- Таймер, счетчик -->
       <div fxLayoutGap="8px" fxLayout="row" fxLayoutAlign="space-between center">
-        <mat-form-field>
-          <input matInput autocomplete="off" onfocus="this.select()" placeholder="Минут" [(ngModel)]="tsk.aimTimer"
+        <mat-form-field fxFlex>
+          <input matInput autocomplete="off" onfocus="this.select()" placeholder="Цель" [(ngModel)]="tsk.aimTimer"
             name="tsk.aimTimer">
         </mat-form-field>
 
-        <mat-form-field>
+        <mat-chip-list [selectable]="true">
+          <mat-chip (click)="tsk.aimUnit = 'Часов'" [selected]="tsk.aimUnit == 'Часов'" color="accent">Часов</mat-chip>
+          <mat-chip (click)="tsk.aimUnit = 'Минут'" [selected]="tsk.aimUnit == 'Минут'" color="accent">Минут</mat-chip>
+          <mat-chip (click)="tsk.aimUnit = 'Секунд'" [selected]="tsk.aimUnit == 'Секунд'" color="accent">Секунд</mat-chip>
+          <mat-chip (click)="tsk.aimUnit = 'Раз'" [selected]="tsk.aimUnit == 'Раз'" color="accent">Раз</mat-chip>
+        </mat-chip-list>
+        <!-- <mat-form-field>
           <input matInput autocomplete="off" onfocus="this.select()" placeholder="Раз" [(ngModel)]="tsk.aimCounter"
             name="tsk.aimCounter">
-        </mat-form-field>
+        </mat-form-field> -->
 
       </div>
     </ng-container>

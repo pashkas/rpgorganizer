@@ -31,7 +31,7 @@
     <!-- Навыки -->
     <ul class="list-group p-0 pt-1" *ngIf="charact.abilities.length>0">
       <li *ngFor="let ab of charact.abilities" class="list-group-item px-0 py-1 border-0">
-        <div class="align-self-center w-100 text-primary">
+        <div class="align-self-center w-100" [ngClass]="{'text-primary': ab.value>=0,                      'text-warning': ab.tasks[0].isPerk}">
           <div class="d-flex">
             <div class="flex-grow-1 text-left align-self-baseline">
               <a (click)="showAbility(ab)">{{ab.name}}<app-ab-hardness [tsk]="ab.tasks[0]"></app-ab-hardness></a>

@@ -157,8 +157,8 @@ export class PerschangesService {
       // Опыт
       if (changesMap[n].type == 'exp') {
         let isShowBySettings = this.afterPers.isNoExpShow != true
-          || isDoneQwest == true
-          || changesMap[n].after < changesMap[n].before;
+          || isDoneQwest == true;
+          // || changesMap[n].after < changesMap[n].before;
         //|| isDoneQwest == true;
         if (isShowBySettings) {
           if (changesMap[n].after != changesMap[n].before) {
