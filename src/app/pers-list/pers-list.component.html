@@ -93,13 +93,13 @@
                           >
                             <!-- [ngClass]="{'text-success' : ab.tasks[0]?.mayUp && ab.tasks[0]?.IsNextLvlSame && !ab.isNotDoneReqvirements,
                             'text-danger': ab.isNotDoneReqvirements}" -->
-                            <a (click)="showAbility(ab)" class="flex-grow-1 text-left align-self-baseline">
+                            <a (click)="showAbility(ab)" class="flex-grow-1 text-left align-self-baseline pointer">
                               {{ab.name}}<app-ab-hardness [tsk]="ab.tasks[0]"></app-ab-hardness>
                             </a>
                             <div fxLayout="row" fxLayoutAlign="space-around" class="text-right align-self-baseline">
                               <!-- [ngClass]="{'text-success' : ab.tasks[0]?.mayUp && ab.tasks[0]?.IsNextLvlSame && !ab.isNotDoneReqvirements,
                                 'text-danger': ab.isNotDoneReqvirements}" -->
-                              <a class="pl-2" (click)="showAbility(ab)">
+                              <a class="pl-2 pointer" (click)="showAbility(ab)">
                                 {{ab.rang.name}}
                               </a>
 
