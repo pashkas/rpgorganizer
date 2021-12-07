@@ -3203,7 +3203,7 @@ export class PersService {
 
         // Состояния
         if (tsk.states.length > 0) {
-          let stateInd = this.tesTaskTittleCount(progr, tsk.states.length, false, 'State');
+          let stateInd = this.tesTaskTittleCount(progr, tsk.states.length - 1, false, 'State');
 
           if (stateInd > tsk.states.length - 1) {
             stateInd = tsk.states.length - 1;
