@@ -19,9 +19,18 @@
   <form class="pb-4">
     <!-- Картинка -->
     <app-image-component [(data)]="charact.image"></app-image-component>
-    <h4 class="text-center">{{charact.name}} ({{charact.rang.name}})</h4>
-    <mat-progress-bar class="myprogr" color="accent" mode="determinate" value="{{charact.progressValue}}">
-    </mat-progress-bar>
+    <div class="progress position-relative" style="height: 32px;">
+      <div class="progress-bar attrprogr" role="progressbar" [style.width]="charact.progressValue + '%'">
+      </div>
+      <div class="d-flex position-absolute w-100 px-1">
+        <div class="flex-grow-1 text-left align-self-baseline">
+          <h4>{{charact.name}}</h4>
+        </div>
+        <div class="text-right align-self-baseline">
+          <h4>{{charact.rang.name}}</h4>
+        </div>
+      </div>
+    </div>
     <!-- Описание -->
     <div *ngIf="charact.descr" class="text-center pt-2 font-small  text-secondary">
       <i>
@@ -31,19 +40,22 @@
     <!-- Навыки -->
     <ul class="list-group p-0 pt-1" *ngIf="charact.abilities.length>0">
       <li *ngFor="let ab of charact.abilities" class="list-group-item px-0 py-1 border-0">
-        <div class="align-self-center w-100" [ngClass]="{'text-primary': ab.value>=0,                      'text-warning': ab.tasks[0].isPerk}">
-          <div class="d-flex">
-            <div class="flex-grow-1 text-left align-self-baseline">
-              <a (click)="showAbility(ab)">{{ab.name}}<app-ab-hardness [tsk]="ab.tasks[0]"></app-ab-hardness></a>
+        <div class="align-self-center w-100 d-flex">
+          <div class=" flex-grow-1 progress position-relative" style="height: 24px;">
+            <div class="progress-bar abprogr" role="progressbar" [style.width]="ab.progressValue + '%'">
             </div>
-            <div fxLayout="row" fxLayoutAlign="space-around" class="text-right align-self-baseline">
-              <a (click)="showAbility(ab)">{{ab.rang.name}}</a>
-              <a *ngIf="ab.tasks[0]?.mayUp && pers.ON>0" class="ml-0 px-1 mr-0" (click)="upAbil(ab)">
-                <img src="assets/icons/up.png" class="img-fluid"
-                  [ngStyle]="{'object-fit': 'contain', 'height':'1.5em'}">
-              </a>
+            <div class="d-flex  position-absolute w-100 px-1 abText text-primary">
+              <div class="flex-grow-1 text-left align-self-baseline pointer">
+                <a (click)="showAbility(ab)">{{ab.name}}</a>
+              </div>
+              <div class="text-right align-self-baseline pointer">
+                <a (click)="showAbility(ab)">{{ab.rang.name}}</a>
+              </div>
             </div>
           </div>
+          <a *ngIf="ab.tasks[0]?.mayUp && pers.ON>0" class="ml-0 px-1 mr-0 pointer" (click)="upAbil(ab)">
+            <img src="assets/icons/up.png" class="img-fluid" [ngStyle]="{'object-fit': 'contain', 'height':'1.5em'}">
+          </a>
         </div>
         <!-- <mat-progress-bar class="myprogr" color="accent" mode="determinate" value="{{ab.progressValue}}">
         </mat-progress-bar> -->

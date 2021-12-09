@@ -68,15 +68,19 @@
             <!-- Характеристики -->
             <ul class="list-group py-0">
               <li *ngFor="let item of pers.characteristics; let i = index;"
-                class="list-group-item pb-0 px-0 mt-0 mb-0 border-0">
+                class="list-group-item pb-0 px-0 mt-0 mb-0 border-0 pt-2">
                 <!-- Характеристика -->
                 <a class="align-self-center w-100" [routerLink]="['/pers/characteristic', item.id]">
-                  <div class="d-flex">
-                    <div class="flex-grow-1 text-left align-self-baseline">
-                      <h4>{{item.name}}</h4>
+                  <div class="progress position-relative" style="height: 28px;">
+                    <div class="progress-bar attrprogr" role="progressbar" [style.width]="item.progressValue + '%'">
                     </div>
-                    <div class="text-right align-self-baseline">
-                      <h4>{{item.rang.name}}</h4>
+                    <div class="d-flex position-absolute w-100 px-1">
+                      <div class="flex-grow-1 text-left align-self-baseline">
+                        <h4>{{item.name}}</h4>
+                      </div>
+                      <div class="text-right align-self-baseline">
+                        <h4>{{item.rang.name}}</h4>
+                      </div>
                     </div>
                   </div>
                 </a>
@@ -87,29 +91,41 @@
                   <div>
                     <ul class="list-group py-0" *ngIf="item.abilities.length>0">
                       <li *ngFor="let ab of item.abilities" class="list-group-item py-0 mt-1 mb-0 pr-0 pl-0 border-0">
-                        <div class="d-flex align-items-baseline w-100">
-                          <div class="w-100 d-flex" [ngClass]="{'text-primary': ab.value>=0,  
-                          'text-warning': ab.tasks[0].isPerk}"
-                          >
-                            <!-- [ngClass]="{'text-success' : ab.tasks[0]?.mayUp && ab.tasks[0]?.IsNextLvlSame && !ab.isNotDoneReqvirements,
-                            'text-danger': ab.isNotDoneReqvirements}" -->
-                            <a (click)="showAbility(ab)" class="flex-grow-1 text-left align-self-baseline pointer">
-                              {{ab.name}}<app-ab-hardness [tsk]="ab.tasks[0]"></app-ab-hardness>
-                            </a>
-                            <div fxLayout="row" fxLayoutAlign="space-around" class="text-right align-self-baseline">
-                              <!-- [ngClass]="{'text-success' : ab.tasks[0]?.mayUp && ab.tasks[0]?.IsNextLvlSame && !ab.isNotDoneReqvirements,
-                                'text-danger': ab.isNotDoneReqvirements}" -->
-                              <a class="pl-2 pointer" (click)="showAbility(ab)">
-                                {{ab.rang.name}}
-                              </a>
-
-                              <a *ngIf="ab.tasks[0]?.mayUp && pers.ON>0" class="ml-0 px-1 mr-0" (click)="upAbil(ab)">
-                                <img src="assets/icons/up.png" class="img-fluid"
-                                  [ngStyle]="{'object-fit': 'contain', 'height':'1.5em'}">
-                              </a>
+                        <div class="align-self-center w-100 d-flex">
+                          <div class=" flex-grow-1 progress position-relative" style="height: 20px;">
+                            <div class="progress-bar abprogr" role="progressbar" [style.width]="ab.progressValue + '%'">
+                            </div>
+                            <div class="d-flex  position-absolute w-100 px-1 abText text-primary">
+                              <div class="flex-grow-1 text-left align-self-baseline pointer">
+                                <a (click)="showAbility(ab)">{{ab.name}}</a>
+                              </div>
+                              <div class="text-right align-self-baseline pointer">
+                                <a (click)="showAbility(ab)">{{ab.rang.name}}</a>
+                              </div>
                             </div>
                           </div>
+                          <a *ngIf="ab.tasks[0]?.mayUp && pers.ON>0" class="ml-0 px-1 mr-0 pointer"
+                            (click)="upAbil(ab)">
+                            <img src="assets/icons/up.png" class="img-fluid"
+                              [ngStyle]="{'object-fit': 'contain', 'height':'1.5em'}">
+                          </a>
                         </div>
+                        <!-- <div class="w-100 d-flex" [ngClass]="{'text-primary': ab.value>=0,  
+                        'text-warning': ab.tasks[0].isPerk}">
+                          <a (click)="showAbility(ab)" class="flex-grow-1 text-left align-self-baseline pointer">
+                            {{ab.name}}<app-ab-hardness [tsk]="ab.tasks[0]"></app-ab-hardness>
+                          </a>
+                          <div fxLayout="row" fxLayoutAlign="space-around" class="text-right align-self-baseline">
+                            <a class="pl-2 pointer" (click)="showAbility(ab)">
+                              {{ab.rang.name}}
+                            </a>
+                            <a *ngIf="ab.tasks[0]?.mayUp && pers.ON>0" class="ml-0 px-1 mr-0" (click)="upAbil(ab)">
+                              <img src="assets/icons/up.png" class="img-fluid"
+                                [ngStyle]="{'object-fit': 'contain', 'height':'1.5em'}">
+                            </a>
+                          </div>
+                        </div> -->
+
                       </li>
                     </ul>
                   </div>
@@ -122,7 +138,7 @@
 
           <div fxLayout="row grid" fxLayoutAlign="space-between center" fxLayoutGap="6px grid" class="nomarg">
             <div fxFlex="100">
-              <button class="w-100" [routerLink]="['/mind-map']" mat-flat-button color="accent">
+              <button class="w-100" [routerLink]="['/mind-map']" mat-stroked-button color="accent">
                 Карта персонажа
               </button>
             </div>

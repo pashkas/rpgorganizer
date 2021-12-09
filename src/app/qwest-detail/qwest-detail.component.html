@@ -19,9 +19,15 @@
     <!-- Картинка -->
     <app-image-component [(data)]="qwest.image"></app-image-component>
 
-    <h4 class="text-center">{{qwest.name}}</h4>
-    <mat-progress-bar *ngIf="true" class="myprogr" color="accent" mode="determinate" value="{{qwest.progressValue}}">
-    </mat-progress-bar>
+    <div class="progress position-relative" style="height: 32px;">
+      <div class="progress-bar abprogr" role="progressbar" [style.width]="qwest.progressValue + '%'">
+      </div>
+      <div class="position-absolute w-100 px-1 text-center">
+        <div class=" align-self-baseline">
+          <h4>{{qwest.name}}</h4>
+        </div>
+      </div>
+    </div>
 
     <!-- Описание -->
     <div *ngIf="qwest.descr" class="text-center pt-2 font-small  text-secondary">

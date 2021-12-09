@@ -18,18 +18,23 @@
     <app-image-component *ngIf="tskAbility && tskAbility?.image" [(data)]="tskAbility.image"></app-image-component>
     <app-image-component *ngIf="!tskAbility" [data]="'assets/img/'+ tsk.imageLvl + '/'+tsk.image+'.jpg'">
     </app-image-component>
-    <h4 class="text-center">
-      {{tsk.name}}<app-ab-hardness [tsk]="tsk"></app-ab-hardness>
-      <ng-container *ngIf="tskAbility">
-        ({{tskAbility.rang.name}})
-      </ng-container>
-
-    </h4>
-    <div abil="progress" *ngIf="tskAbility" [ngStyle]="{'height': '3px'}">
-      <div class="progress-bar" [style.width]="tskAbility.progressValue + '%'"
-        [ngStyle]="{'background-color': 'LightGreen', 'height': '3px'}">
+    <div class="progress position-relative" style="height: 32px;" *ngIf="tskAbility">
+      <div class="progress-bar abprogr" role="progressbar" [style.width]="tskAbility.progressValue + '%'">
+      </div>
+      <div class="d-flex position-absolute w-100 px-1">
+        <div class="flex-grow-1 text-left align-self-baseline">
+          <h4>{{tskAbility.name}}</h4>
+        </div>
+        <div class="text-right align-self-baseline">
+          <h4>{{tskAbility.rang.name}}</h4>
+        </div>
       </div>
     </div>
+
+    <div class="w-100 px-1 text-center" *ngIf="!tskAbility">
+      <h4>{{tsk.name}}</h4>
+    </div>
+
     <br *ngIf="tskAbility">
     <!-- Дата и время, повтор -->
     <div fxLayout="row" fxLayoutAlign="space-between center" class="form-row" *ngIf="tskAbility">
@@ -243,7 +248,8 @@
         <mat-chip-list [selectable]="true">
           <mat-chip (click)="tsk.aimUnit = 'Часов'" [selected]="tsk.aimUnit == 'Часов'" color="accent">Часов</mat-chip>
           <mat-chip (click)="tsk.aimUnit = 'Минут'" [selected]="tsk.aimUnit == 'Минут'" color="accent">Минут</mat-chip>
-          <mat-chip (click)="tsk.aimUnit = 'Секунд'" [selected]="tsk.aimUnit == 'Секунд'" color="accent">Секунд</mat-chip>
+          <mat-chip (click)="tsk.aimUnit = 'Секунд'" [selected]="tsk.aimUnit == 'Секунд'" color="accent">Секунд
+          </mat-chip>
           <mat-chip (click)="tsk.aimUnit = 'Раз'" [selected]="tsk.aimUnit == 'Раз'" color="accent">Раз</mat-chip>
         </mat-chip-list>
         <!-- <mat-form-field>
