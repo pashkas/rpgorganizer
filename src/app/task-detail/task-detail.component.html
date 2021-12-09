@@ -191,11 +191,9 @@
     <div fxLayout="row" fxLayoutGap="0.3em" fxLayoutAlign="center center" *ngIf="tsk.requrense == 'дни недели'">
       <div *ngFor="let wd of weekDays">
         <ng-container>
-          <span (click)="setWeekDays(wd)"
-            [ngClass]="{'text-dark': !tsk.tskWeekDays.includes(wd), 'badge-unchecked': !tsk.tskWeekDays.includes(wd), 'primary-color-dark': tsk.tskWeekDays.includes(wd)}"
-            class="badge pointer">
-            {{wd}}
-          </span>
+          <mat-chip (click)="setWeekDays(wd)" [selected]="tsk.tskWeekDays.includes(wd)" color="accent">
+            {{'    ' + wd + '    '}}
+          </mat-chip>
         </ng-container>
       </div>
     </div>

@@ -1231,6 +1231,14 @@ export class PersService {
             abCount += tsk.hardnes;
           }
 
+          if (!tsk.tskWeekDays) {
+            tsk.tskWeekDays = [];
+          }
+
+          if (tsk.tskWeekDays.length == 0) {
+            tsk.tskWeekDays.push('пн');
+          }
+
           if (!tsk.aimUnit) {
             if (tsk.aimCounter > 0) {
               tsk.aimUnit = 'Раз';
