@@ -195,6 +195,9 @@
             <button class="icon-small" (click)="delTask(tsk.id)" mat-icon-button>
               <img src="assets/icons/del.png" class="img-fluid">
             </button>
+            <button class="icon-small" (click)="moveTaskToAnotherQwest(tsk)" mat-icon-button cdkDragHandle>
+              <img src="assets/icons/up.png" class="img-fluid">
+            </button>
             <button class="icon-small" mat-icon-button cdkDragHandle>
               <img src="assets/icons/right.png" class="img-fluid">
             </button>

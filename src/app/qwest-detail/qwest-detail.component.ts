@@ -30,7 +30,7 @@ export class QwestDetailComponent implements OnInit {
    */
   isFromDoneQwest: boolean = false;
   isFromMain: boolean;
-  linkAbs: Task[]=[];
+  linkAbs: Task[] = [];
   nextQwests: Qwest[] = [];
   pers: Pers;
   prevQwest: Qwest;
@@ -76,6 +76,7 @@ export class QwestDetailComponent implements OnInit {
       });
   }
 
+
   addNextQwest() {
     this.srv.isDialogOpen = true;
     const dialogRef = this.dialog.open(AddItemDialogComponent, {
@@ -117,10 +118,17 @@ export class QwestDetailComponent implements OnInit {
   }
 
   chooseNextQwest() {
+
+    let sortedQwests = this.pers.qwests.sort((a, b) => a.name.localeCompare(b.name)).filter(n => n.id != this.qwest.id);
+
+    if (sortedQwests.length < 1) {
+      return;
+    }
+
     this.srv.isDialogOpen = true;
     const dialogRef = this.dialog.open(ChangeCharactComponent, {
       panelClass: 'my-big',
-      data: { characteristic: this.qwest, allCharacts: this.pers.qwests.sort((a, b) => a.name.localeCompare(b.name)), tittle: 'Выберите квест' },
+      data: { characteristic: sortedQwests[0], allCharacts: sortedQwests, tittle: 'Выберите квест' },
       backdropClass: 'backdrop'
     });
 
@@ -166,6 +174,41 @@ export class QwestDetailComponent implements OnInit {
     this.qwest.rewards = this.qwest.rewards.filter(n => {
       return n.id != id;
     });
+  }
+
+  moveTaskToAnotherQwest(tsk: Task) {
+    let sortedQwests = this.pers.qwests.sort((a, b) => a.name.localeCompare(b.name)).filter(n => n.id != this.qwest.id);
+
+    if (sortedQwests.length < 1) {
+      return;
+    }
+
+    this.srv.isDialogOpen = true;
+
+    const dialogRef = this.dialog.open(ChangeCharactComponent, {
+      panelClass: 'my-big',
+      data: { characteristic: sortedQwests[0], allCharacts: sortedQwests, tittle: 'Выберите квест (перенос задачи)' },
+      backdropClass: 'backdrop'
+    });
+
+    dialogRef.afterClosed()
+      .subscribe(n => {
+        if (n) {
+          if (n.id != this.qwest.id) {
+            for (const qw of this.pers.qwests) {
+              if (qw.id == n.id) {
+                qw.tasks.push(tsk);
+                this.qwest.tasks = this.qwest.tasks.filter(n => n.id != tsk.id);
+
+                break;
+              }
+            }
+          }
+
+          this.srv.savePers(false);
+        }
+        this.srv.isDialogOpen = false;
+      });
   }
 
   /**
@@ -262,40 +305,40 @@ export class QwestDetailComponent implements OnInit {
     }
 
     this.srv.pers$
-    .pipe(takeUntil(this.unsubscribe$))
-    .pipe(switchMap(n=>combineLatest(
-      [
-        this.route.params,
-        of(n)
-      ]
-    )))
-    .subscribe(n=>{
-      const id = n[0]['id'];
-      const fromMain = n[0]['fromMain'];
-      this.pers=n[1];
+      .pipe(takeUntil(this.unsubscribe$))
+      .pipe(switchMap(n => combineLatest(
+        [
+          this.route.params,
+          of(n)
+        ]
+      )))
+      .subscribe(n => {
+        const id = n[0]['id'];
+        const fromMain = n[0]['fromMain'];
+        this.pers = n[1];
 
-      if (fromMain) {
-        this.isFromMain = true;
-      }
-      else {
-        this.isFromMain = false;
-      }
-
-      for (const qw of this.pers.qwests) {
-        if (qw.id === id) {
-          if (qw.hardnes == null || qw.hardnes == undefined) {
-            qw.hardnes = 0;
-          }
-          this.qwest = qw;
-          break;
+        if (fromMain) {
+          this.isFromMain = true;
         }
-      }
+        else {
+          this.isFromMain = false;
+        }
 
-      this.findLinks();
+        for (const qw of this.pers.qwests) {
+          if (qw.id === id) {
+            if (qw.hardnes == null || qw.hardnes == undefined) {
+              qw.hardnes = 0;
+            }
+            this.qwest = qw;
+            break;
+          }
+        }
 
-      this.getNextPrevQwests();
-      this.getQwestAb();
-    });
+        this.findLinks();
+
+        this.getNextPrevQwests();
+        this.getQwestAb();
+      });
   }
 
   /**
