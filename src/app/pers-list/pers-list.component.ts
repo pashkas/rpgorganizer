@@ -198,7 +198,7 @@ export class PersListComponent implements OnInit {
 
   loadSamplePers() {
     if (window.confirm('Вы уверены, что хотите загрузить тренировочного перса?')) {
-      this.srv.loadLearningPers(this.pers.userId);
+      this.srv.setLearningPers(this.pers.userId);
       this.saveData();
     }
   }

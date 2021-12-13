@@ -1097,16 +1097,17 @@ export class PersService {
     return false;
   }
 
-  loadLearningPers(userId) {
+  setLearningPers(userId) {
     let sp = new SamplePers();
     let samplePers: Pers = JSON.parse(sp.prsjson);
     samplePers.userId = userId;
     samplePers.id = userId;
     samplePers.isOffline = true;
-    this.checkPersNewFields(samplePers);
+    for (const ch of samplePers.characteristics) {
+      ch.startRang = { val: 0, name: "0", img: "" };
+    }
 
-    this.pers$.next(samplePers);
-    this.savePers(false);
+    this.setPers(JSON.stringify(samplePers));
   }
 
   /**
@@ -1681,6 +1682,10 @@ export class PersService {
     let ons = 0;
     let prevOn = 0;
 
+    if (tesAbTotalMax == 0) {
+      tesAbTotalMax = 1;
+    }
+
     // Расчет уровня и очков навыков для персонажа
     if (prs.isTES) {
       exp = this.countTesExp(tesAbTotalMax, tesAbTotalCur);
@@ -1795,10 +1800,7 @@ export class PersService {
     prs.nextExp = 0;
     prs.isOffline = true;
 
-    this.checkPersNewFields(prs);
-    prs.currentView = curpersview.SkillTasks;
-    this.pers$.next(prs);
-    this.savePers(false);
+    this.setPers(JSON.stringify(prs));
   }
 
   setPers(data: any) {
@@ -2439,7 +2441,10 @@ export class PersService {
     prs.isNoExpShow = true;
     prs.isMax5 = false;
     prs.isNoAbs = false;
-    // prs.isNoDiary = true;
+    prs.isNoDiary = true;
+    prs.isTES = true;
+    prs.isAutoPumping = false;
+    prs.isAutofocus = true;
 
     if (prs.isNoDiary) {
       return;
@@ -2532,10 +2537,13 @@ export class PersService {
       abs = 1;
     }
 
-    let onEveryLevel = Math.floor(100 / abs);
-    if (onEveryLevel < 1) {
-      onEveryLevel = 1;
-    }
+    // let onEveryLevel = Math.floor(100 / abs);
+    // if (onEveryLevel < 1) {
+    //   onEveryLevel = 1;
+    // }
+
+    let onEveryLevel = 2;
+
     let gainedOns = Math.floor(persLevel / onEveryLevel);
 
     let startOn = 1;
@@ -2543,6 +2551,8 @@ export class PersService {
     let pointLev = 1 / abs;
 
     startOn = Math.ceil(onEveryLevel / (twoDaysTes * pointLev));
+    // startOn = Math.ceil(2 / (twoDaysTes * pointLev));
+    // startOn = 5;
 
     let ons = (startOn + gainedOns) - abOpenned;
     exp = exp * 100;
