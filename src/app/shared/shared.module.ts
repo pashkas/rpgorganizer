@@ -11,11 +11,11 @@ import { FlexLayoutModule } from "@angular/flex-layout";
 import { PersChangesComponent } from '../pers-changes/pers-changes.component';
 import { PersChangesItemComponent } from '../pers-changes-item/pers-changes-item.component';
 import { AddItemDialogComponent } from '../add-item-dialog/add-item-dialog.component';
-import { ImageComponentComponent } from '../image-component/image-component.component';
 import { NgxMasonryModule } from 'ngx-masonry';
 import { TimeValPipe } from './time-val.pipe';
 import { NgxMaterialTimepickerModule } from 'ngx-material-timepicker';
 import { DatestringPipe } from './datestring.pipe';
+import { AbHardnessPipe } from '../ab-hardness.pipe';
 
 @NgModule({
   declarations: [
@@ -25,6 +25,7 @@ import { DatestringPipe } from './datestring.pipe';
     AddItemDialogComponent,
     TimeValPipe,
     DatestringPipe,
+    AbHardnessPipe
   ],
   imports: [
     NgxMaterialTimepickerModule,
@@ -64,7 +65,8 @@ import { DatestringPipe } from './datestring.pipe';
     AddItemDialogComponent,
     TimeValPipe,
     MatSelectModule,
-    DatestringPipe
+    DatestringPipe,
+    AbHardnessPipe
   ]
 })
 export class SharedModule { }

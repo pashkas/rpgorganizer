@@ -19,7 +19,8 @@
     <mat-list (cdkDropListDropped)="drop($event)" cdkDropList class="list-group  py-2 h-100 w-100 overflow-auto">
       <ng-container *ngFor="let t of this.pers.tasks; let i = index;">
         <div cdkDrag mat-list-item (click)="tskClick(i);" class="{{t| listBg:this.pers.currentView}}">
-          <div class="d-flex align-items-center" [ngClass]="{' py-2': pers.currentView!='SkillsSort' }">
+          <div class="d-flex align-items-center"
+            [ngClass]="{'py-2': pers.currentView!='SkillsSort', 'py-0':  pers.currentView=='SkillsSort'}">
             <div class="flex-grow-1 text-center">
               <div class="pointer">
                 <ng-container *ngIf="t.requrense != 'нет' && checkDate(t.date)" class="bg-danger">
@@ -49,10 +50,9 @@
                 [defaultTime]="t.time"></ngx-material-timepicker>
               {{t.time}}
             </div>
-            <button mat-button cdkDragHandle
+            <mat-icon cdkDragHandle class="pointer pr-1"
               [hidden]="!(this.pers.currentView=='QwestSort' || (this.pers.currentView == 'SkillsSort' && pers.isAutofocus))">
-              <mat-icon>drag_handle</mat-icon>
-            </button>
+              drag_handle</mat-icon>
           </div>
         </div>
       </ng-container>
@@ -101,11 +101,11 @@
         <ng-container *ngFor="let pl of this.pers.currentTask.plusToNames; let i=index;">
           <ng-container *ngIf="i>0"> | </ng-container>
           <ng-container *ngIf="pl.linkType; else noLinkType">
-            <a class="text-secondary" (click)="openPlusType(pl.linkId, pl.linkType)">{{pl.name}}</a>
+            <a class="text-secondary pointer" (click)="openPlusType(pl.linkId, pl.linkType)">{{pl.name}}</a>
           </ng-container>
           <ng-template #noLinkType>
             <ng-container *ngIf="pl.linkName; else elseTemplate">
-              <a class="text-secondary" [routerLink]="[pl.linkName, pl.linkId]">{{pl.name}}</a>
+              <a class="text-secondary pointer" [routerLink]="[pl.linkName, pl.linkId]">{{pl.name}}</a>
             </ng-container>
             <ng-template #elseTemplate>
 

@@ -158,7 +158,7 @@ export class PerschangesService {
       if (changesMap[n].type == 'exp') {
         let isShowBySettings = this.afterPers.isNoExpShow != true
           || isDoneQwest == true;
-          // || changesMap[n].after < changesMap[n].before;
+        // || changesMap[n].after < changesMap[n].before;
         //|| isDoneQwest == true;
         if (isShowBySettings) {
           if (changesMap[n].after != changesMap[n].before) {
@@ -249,7 +249,8 @@ export class PerschangesService {
       }
     }
 
-    if (newLevel && (this.afterPers.ON > 0 || this.afterPers.isTES)) {
+    // || this.afterPers.isTES
+    if (newLevel) {
       let dialogRefLvlUp = this.dialog.open(LevelUpMsgComponent, {
         panelClass: classPanel,
         backdropClass: 'backdrop'
@@ -260,7 +261,9 @@ export class PerschangesService {
       dialogRefLvlUp.close();
 
       this.srvSt.selTabPersList = 0;
-      this.router.navigate(['/pers']);
+      if (this.afterPers.ON > 0) {
+        this.router.navigate(['/pers']);
+      }
     }
   }
 

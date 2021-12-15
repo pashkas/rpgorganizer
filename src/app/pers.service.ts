@@ -1626,16 +1626,26 @@ export class PersService {
 
     let root = prs.qwests.filter(q => !q.parrentId)
       .sort((a, b) => {
+        let aIsDeal = a.name == 'Дела' ? 1 : 0;
+        let bIsDeal = b.name == 'Дела' ? 1 : 0;
+        if (aIsDeal != bIsDeal) {
+          return (aIsDeal - bIsDeal);
+        }
+
         if (a.progressValue != b.progressValue) {
           return a.progressValue - b.progressValue;
         }
+
         return a.name.localeCompare(b.name);
       });
+
     let child = prs.qwests
       .sort((a, b) => {
+
         if (a.progressValue != b.progressValue) {
           return a.progressValue - b.progressValue;
         }
+
         return a.name.localeCompare(b.name);
       })
       .filter(q => q.parrentId);
@@ -2172,7 +2182,12 @@ export class PersService {
       this.pers$.value.currentQwestId = qw.id;
 
       if (tsk) {
-        tsk.isDone = true;
+        if (qw.name == 'Дела') {
+          qw.tasks = qw.tasks.filter(n=>n.id != id);
+        }
+        else {
+          tsk.isDone = true;
+        }
         this.savePers(true, 'plus');
         if (this.pers$.value.currentView != curpersview.QwestTasks) {
           this.setCurInd(0);
@@ -2555,6 +2570,9 @@ export class PersService {
     // startOn = 5;
 
     let ons = (startOn + gainedOns) - abOpenned;
+    if (abOpenned >= abs) {
+      ons = 0;
+    }
     exp = exp * 100;
     let prevOn = 0;
     let startExp = persLevel * 100;
