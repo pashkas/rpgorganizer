@@ -44,6 +44,7 @@ export class PersService {
   mn4Count: number = 745;
   mn5Count: number = 285;
   pers$ = new BehaviorSubject<Pers>(null);
+  twoDaysTes = 12.546;
   // Пользователь
   user: FirebaseUserModel;
 
@@ -293,7 +294,7 @@ export class PersService {
    * @param qwest Квест.
    * @param newTsk Название задачи.
    */
-  addTskToQwest(qwest: Qwest, newTsk: string): any {
+  addTskToQwest(qwest: Qwest, newTsk: string, toBegin: boolean = false): any {
     var tsk = new Task();
     tsk.name = newTsk;
     tsk.tittle = tsk.name = newTsk;
@@ -301,7 +302,12 @@ export class PersService {
 
     this.GetRndEnamy(tsk, this.pers$.value.level, this.pers$.value.maxPersLevel);
 
-    qwest.tasks.push(tsk);
+    if (!toBegin) {
+      qwest.tasks.push(tsk);
+    }
+    else {
+      qwest.tasks.unshift(tsk);
+    }
 
     this.sortQwestTasks(qwest);
   }
@@ -617,7 +623,10 @@ export class PersService {
   }
 
   countTesExp(tesAbTotalMax: number, tesAbTotalCur: number): number {
-    let exp = (tesAbTotalCur / tesAbTotalMax) * 100;
+    let tesThreeAbTwoDays = 37.63;
+
+    let exp = tesAbTotalCur / (tesThreeAbTwoDays / 2);
+    // let exp = (tesAbTotalCur / tesAbTotalMax) * 100;
 
     return exp;
   }
@@ -1097,19 +1106,6 @@ export class PersService {
     return false;
   }
 
-  setLearningPers(userId) {
-    let sp = new SamplePers();
-    let samplePers: Pers = JSON.parse(sp.prsjson);
-    samplePers.userId = userId;
-    samplePers.id = userId;
-    samplePers.isOffline = true;
-    for (const ch of samplePers.characteristics) {
-      ch.startRang = { val: 0, name: "0", img: "" };
-    }
-
-    this.setPers(JSON.stringify(samplePers));
-  }
-
   /**
    * Загрузить персонажа из БД.
    * @param userId Идентификатор пользователя
@@ -1225,12 +1221,8 @@ export class PersService {
           if (prs.isTES && tsk.hardnes < 1) {
             tsk.hardnes = 1;
           }
-          if (!prs.isTES) {
-            abCount++;
-          }
-          else {
-            abCount += tsk.hardnes;
-          }
+          
+          abCount += 1;
 
           if (!tsk.tskWeekDays) {
             tsk.tskWeekDays = [];
@@ -1636,7 +1628,6 @@ export class PersService {
 
     let child = prs.qwests
       .sort((a, b) => {
-
         if (a.progressValue != b.progressValue) {
           return a.progressValue - b.progressValue;
         }
@@ -1794,6 +1785,19 @@ export class PersService {
         this.pers$.value.currentQwestId = this.pers$.value.currentTask.qwestId;
       }
     }
+  }
+
+  setLearningPers(userId) {
+    let sp = new SamplePers();
+    let samplePers: Pers = JSON.parse(sp.prsjson);
+    samplePers.userId = userId;
+    samplePers.id = userId;
+    samplePers.isOffline = true;
+    for (const ch of samplePers.characteristics) {
+      ch.startRang = { val: 0, name: "0", img: "" };
+    }
+
+    this.setPers(JSON.stringify(samplePers));
   }
 
   setNewPers(userid: string) {
@@ -2557,16 +2561,18 @@ export class PersService {
     let gainedOns = Math.floor(persLevel / onEveryLevel);
 
     let startOn = 1;
-    let twoDaysTes = 12.546;
-    let pointLev = 1 / abs;
+    // let pointLev = 1 / abs;
 
-    startOn = Math.ceil(onEveryLevel / (twoDaysTes * pointLev));
+    startOn = 3;
+    const totalGained = (startOn + gainedOns);
+    // startOn = Math.ceil(onEveryLevel / (twoDaysTes * pointLev));
     // startOn = Math.ceil(2 / (twoDaysTes * pointLev));
     // startOn = 5;
 
-    let ons = (startOn + gainedOns) - abOpenned;
-    if (abOpenned >= abs) {
-      ons = 0;
+    debugger;
+    let ons = totalGained - abOpenned;
+    if (startOn + gainedOns > abs) {
+      ons = abs - abOpenned;
     }
     exp = exp * 100;
     let prevOn = 0;
