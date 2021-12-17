@@ -1474,12 +1474,7 @@ export class PersService {
         }
 
         if (ab.isOpen) {
-          if (!prs.isTES) {
-            abOpenned++;
-          }
-          else {
-            abOpenned += ab.tasks[0].hardnes;
-          }
+          abOpenned++;
         }
         ch.HasSameAbLvl = isHasSameAbil;
       }
@@ -2183,7 +2178,7 @@ export class PersService {
 
       if (tsk) {
         if (qw.name == 'Дела') {
-          qw.tasks = qw.tasks.filter(n=>n.id != id);
+          qw.tasks = qw.tasks.filter(n => n.id != id);
         }
         else {
           tsk.isDone = true;
