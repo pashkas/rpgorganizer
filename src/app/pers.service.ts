@@ -1253,7 +1253,7 @@ export class PersService {
             }
           }
           else {
-            tsk.value = Math.floor(tsk.tesValue); //this.getAbTesLvl(tsk.tesValue);
+            tsk.value = Math.ceil(tsk.tesValue / tsk.hardnes); //this.getAbTesLvl(tsk.tesValue);
             if (tsk.value < 0) {
               tsk.value = 0;
             }
@@ -1382,8 +1382,8 @@ export class PersService {
 
           abMax += tsk.hardnes * this._maxAbilLevel;
           abCur += tsk.hardnes * tsk.value;
-          tesAbMax += tsk.hardnes * this._tesMaxLvl;
-          tesAbCur += tsk.hardnes * tsk.tesValue;
+          tesAbMax += this._tesMaxLvl;
+          tesAbCur += tsk.tesValue;
 
           if (tsk.value <= 9
             && doneReq) {
@@ -2832,12 +2832,12 @@ export class PersService {
       expKoef = Math.pow(2, failCounter);
     }
 
-    if (this.pers$.value.isTES) {
-      expKoef = expKoef / Task.getHardness(task);
-    }
-    else {
-      expKoef = expKoef * Task.getHardness(task);
-    }
+    // if (this.pers$.value.isTES) {
+    //   expKoef = expKoef / Task.getHardness(task);
+    // }
+    // else {
+    //   expKoef = expKoef * Task.getHardness(task);
+    // }
 
     let chVal = (this.baseTaskPoints / subTasksCoef) * koef * expKoef;
 
@@ -3219,8 +3219,8 @@ export class PersService {
         let start = 0;
         let progr = start + (1 - start) * (tsk.value / this._maxAbilLevel);
 
-        if (progr < 0.01) {
-          progr = 0.01;
+        if (progr < 0.07) {
+          progr = 0.07;
         }
 
         if (tsk.isPerk) {
