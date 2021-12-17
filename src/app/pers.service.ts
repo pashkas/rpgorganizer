@@ -2569,7 +2569,6 @@ export class PersService {
     // startOn = Math.ceil(2 / (twoDaysTes * pointLev));
     // startOn = 5;
 
-    debugger;
     let ons = totalGained - abOpenned;
     if (startOn + gainedOns > abs) {
       ons = abs - abOpenned;
