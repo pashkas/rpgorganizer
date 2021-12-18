@@ -1253,14 +1253,8 @@ export class PersService {
             }
           }
           else {
-            tsk.value = Math.ceil(tsk.tesValue / tsk.hardnes); //this.getAbTesLvl(tsk.tesValue);
-            if (tsk.value < 0) {
-              tsk.value = 0;
-            }
+            tsk.value = Math.floor(tsk.tesValue / tsk.hardnes); //this.getAbTesLvl(tsk.tesValue);
 
-            if (tsk.value > this._maxAbilLevel) {
-              tsk.value = this._maxAbilLevel;
-            }
             tsk.failCounter = 0;
           }
 
@@ -3219,8 +3213,8 @@ export class PersService {
         let start = 0;
         let progr = start + (1 - start) * (tsk.value / this._maxAbilLevel);
 
-        if (progr < 0.07) {
-          progr = 0.07;
+        if (progr < 0.01) {
+          progr = 0.01;
         }
 
         if (tsk.isPerk) {
