@@ -623,7 +623,8 @@ export class PersService {
   }
 
   countTesExp(tesAbTotalMax: number, tesAbTotalCur: number): number {
-    let tesThreeAbTwoDays = 37.63;
+    // let tesThreeAbTwoDays = 37.63;
+    let tesThreeAbTwoDays = 37;
 
     let exp = tesAbTotalCur / (tesThreeAbTwoDays / 2);
     // let exp = (tesAbTotalCur / tesAbTotalMax) * 100;
@@ -1221,7 +1222,7 @@ export class PersService {
           if (prs.isTES && tsk.hardnes < 1) {
             tsk.hardnes = 1;
           }
-          
+
           abCount += 1;
 
           if (!tsk.tskWeekDays) {
@@ -2452,7 +2453,7 @@ export class PersService {
     prs.isNoDiary = true;
     prs.isTES = true;
     prs.isAutoPumping = false;
-    prs.isAutofocus = true;
+    prs.isAutofocus = false;
 
     if (prs.isNoDiary) {
       return;
@@ -2851,15 +2852,26 @@ export class PersService {
       let tesVal = task.tesValue;
 
       while (true) {
+        const tesKoef = this.getTesChangeKoef(tesVal);
+
+        let tesLeft = 1;
+        if (isPlus) {
+          tesLeft = (Math.floor(tesVal) + 1) - tesVal;
+        }
+        else {
+          tesLeft = tesVal - Math.floor(tesVal);
+        }
+
         let ch: number = 0;
-        if (chVal >= 1) {
-          ch = 1;
+        if (chVal * tesKoef > tesLeft) {
+          ch = tesLeft / expKoef;
+          if (ch < 0.01) {
+            ch = 0.01;
+          }
         }
         else {
           ch = chVal;
         }
-
-        const tesKoef = this.getTesChangeKoef(tesVal);
 
         change += ch * tesKoef;
 
@@ -2904,7 +2916,7 @@ export class PersService {
 
     // return 1 / multi;
 
-    return (1 / (1 + tesVal / 10.0));
+    return (1 / (1 + Math.floor(tesVal) / 10.0));
   }
 
   private getTskFromState(tsk: Task, st: taskState, isAll: boolean): Task {
@@ -3209,6 +3221,10 @@ export class PersService {
         plusState = '';
         tsk.statesDescr = [];
         tsk.IsNextLvlSame = false;
+
+        if (tsk.tesValue > 0) {
+          debugger;
+        }
 
         let start = 0;
         let progr = start + (1 - start) * (tsk.value / this._maxAbilLevel);
