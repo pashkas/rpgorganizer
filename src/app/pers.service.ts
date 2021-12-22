@@ -624,7 +624,7 @@ export class PersService {
 
   countTesExp(tesAbTotalMax: number, tesAbTotalCur: number): number {
     // let tesThreeAbTwoDays = 37.63;
-    let tesThreeAbTwoDays = 37;
+    let tesThreeAbTwoDays = 36.6;
 
     let exp = tesAbTotalCur / (tesThreeAbTwoDays / 2);
     // let exp = (tesAbTotalCur / tesAbTotalMax) * 100;
