@@ -78,7 +78,7 @@ export class PersService {
 
   get baseTaskPoints(): number {
     if (this.pers$.value.isTES) {
-      return 10.0;
+      return 5.0;
     }
 
     return 1.0;
@@ -398,21 +398,21 @@ export class PersService {
 
   changeTes(task: Task, isUp: boolean, subTasksCoef: number = 1) {
     let change = this.getTaskChangesExp(task, isUp, null, subTasksCoef);
-    let changeAb = this.getTaskChangesExp(task, isUp, null, subTasksCoef, true);
+    // let changeAb = this.getTaskChangesExp(task, isUp, null, subTasksCoef, true);
 
     if (isUp) {
       task.tesValue += change;
-      task.tesAbValue += changeAb;
+      // task.tesAbValue += changeAb;
     }
     else {
       task.tesValue -= change;
-      task.tesAbValue -= changeAb;
+      // task.tesAbValue -= changeAb;
       if (task.tesValue < 0) {
         task.tesValue = 0;
       }
-      if (task.tesAbValue < 0) {
-        task.tesAbValue = 0;
-      }
+      // if (task.tesAbValue < 0) {
+      //   task.tesAbValue = 0;
+      // }
     }
   }
 
@@ -584,7 +584,7 @@ export class PersService {
 
   countTesExp(tesAbTotalMax: number, tesAbTotalCur: number): number {
     // let tesThreeAbTwoDays = 37.63;
-    let tesThreeAbTwoDays = 36.6;
+    let tesThreeAbTwoDays = 22;
 
     let exp = tesAbTotalCur / (tesThreeAbTwoDays / 2);
     // let exp = (tesAbTotalCur / tesAbTotalMax) * 100;
@@ -1184,12 +1184,13 @@ export class PersService {
             tsk.tesAbValue = 0;
           }
 
-          if (!tsk.hardnes) {
-            tsk.hardnes = 1;
-          }
-          if (prs.isTES && tsk.hardnes < 1) {
-            tsk.hardnes = 1;
-          }
+          tsk.hardnes = 1;
+          // if (!tsk.hardnes) {
+          //   tsk.hardnes = 1;
+          // }
+          // if (prs.isTES && tsk.hardnes < 1) {
+          //   tsk.hardnes = 1;
+          // }
 
           abCount += 1;
 
@@ -1222,10 +1223,7 @@ export class PersService {
             }
           }
           else {
-            tsk.value = Math.floor(tsk.tesAbValue);
-            if (tsk.value > 0) {
-              debugger;
-            }
+            tsk.value = Math.floor(tsk.tesValue);
 
             tsk.failCounter = 0;
           }
@@ -1350,9 +1348,6 @@ export class PersService {
           abCur += tsk.value;
           tesAbMax += this._tesMaxLvl;
           tesAbCur += tsk.tesValue;
-          if (tsk.tesValue > 0) {
-            debugger;
-          }
 
           if (tsk.value <= 9
             && doneReq) {

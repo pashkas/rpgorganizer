@@ -212,7 +212,7 @@
         <mat-chip-list [selectable]="true" [multiple]="true">
           <mat-chip (click)="tsk.isPerk=!tsk.isPerk" [selected]="tsk.isPerk" color="accent">перк?</mat-chip>
 
-          <ng-container>
+          <!-- <ng-container>
             <mat-divider vertical class="vertdiv"></mat-divider>
             <mat-chip *ngIf="!pers.isTES" (click)="tsk.hardnes=0.5" [selected]="tsk.hardnes==0.5" color="accent">легко
             </mat-chip>
@@ -220,7 +220,7 @@
             <mat-chip (click)="tsk.hardnes=2" [selected]="tsk.hardnes==2" color="accent">слож</mat-chip>
             <mat-chip *ngIf="pers.isTES" (click)="tsk.hardnes=3" [selected]="tsk.hardnes==3" color="accent">оч. слож
             </mat-chip>
-          </ng-container>
+          </ng-container> -->
 
           <mat-divider vertical class="vertdiv"></mat-divider>
 
