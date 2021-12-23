@@ -99,6 +99,7 @@ export class Task implements IImg {
     qwestId: string;
     autoInd: number;
     lastDate: number;
+    tesAbValue: number = 0;
 
     static getHardness(tsk: Task): number {
         if (!tsk.hardnes) {

@@ -252,6 +252,7 @@ export class PersListComponent implements OnInit {
             // tsk.time = "00:00";
             tsk.value = 0;
             tsk.tesValue = 0;
+            tsk.tesAbValue = 0;
             tsk.refreshCounter = 0;
             tsk.date = new Date();
             this.srv.GetRndEnamy(tsk, 0, this.pers.maxPersLevel);

@@ -20,6 +20,7 @@ import { isNullOrUndefined } from 'util';
 import { SamplePers } from 'src/Models/SamplePers';
 import { curpersview } from 'src/Models/curpersview';
 import { DateTime } from 'luxon';
+import { TskTimeValDialogComponent } from './tsk-time-val-dialog/tsk-time-val-dialog.component';
 
 @Injectable({
   providedIn: 'root'
@@ -329,54 +330,6 @@ export class PersService {
     }
   }
 
-  chainDo(id: string, isSubtask: boolean) {
-    return;
-
-    let chain = this.pers$.value.chainTable;
-    let todayDate = new Date().setHours(0, 0, 0, 0);
-
-    // Пересоздаем список
-    let newChain = [];
-    let toBegin = [];
-
-    let getThis: boolean = false;
-    for (let i = 0; i < chain.length; i++) {
-      const ch = chain[i];
-      if (ch == id) {
-        getThis = true;
-        debugger;
-      }
-
-      let itemDate = this.chainGetDateById(ch);
-
-      if (getThis && ch != id && itemDate <= todayDate) {
-        getThis = false;
-      }
-
-      if (getThis) {
-        toBegin.push(ch);
-      }
-      else {
-        newChain.push(ch);
-      }
-    }
-
-    // Создаем новый
-    chain = [];
-
-    for (let i = 0; i < toBegin.length; i++) {
-      const elem = toBegin[i];
-      chain.push(elem);
-    }
-
-    for (let i = 0; i < newChain.length; i++) {
-      const elem = newChain[i];
-      chain.push(elem);
-    }
-
-    this.pers$.value.chainTable = chain;
-  }
-
   chainGetDateById(id: string): number {
     if (!this.allMap[id].item.date) {
       return new Date(this.allMap[id].link.date).setHours(0, 0, 0, 0);
@@ -445,13 +398,20 @@ export class PersService {
 
   changeTes(task: Task, isUp: boolean, subTasksCoef: number = 1) {
     let change = this.getTaskChangesExp(task, isUp, null, subTasksCoef);
+    let changeAb = this.getTaskChangesExp(task, isUp, null, subTasksCoef, true);
+
     if (isUp) {
       task.tesValue += change;
+      task.tesAbValue += changeAb;
     }
     else {
       task.tesValue -= change;
+      task.tesAbValue -= changeAb;
       if (task.tesValue < 0) {
         task.tesValue = 0;
+      }
+      if (task.tesAbValue < 0) {
+        task.tesAbValue = 0;
       }
     }
   }
@@ -1216,6 +1176,14 @@ export class PersService {
 
       for (const ab of ch.abilities) {
         for (const tsk of ab.tasks) {
+          if (tsk.tesValue == null || tsk.tesValue == undefined || tsk.tesValue < 0) {
+            tsk.tesValue = 0;
+          }
+
+          if (tsk.tesAbValue == null || tsk.tesAbValue == undefined || tsk.tesAbValue < 0) {
+            tsk.tesAbValue = 0;
+          }
+
           if (!tsk.hardnes) {
             tsk.hardnes = 1;
           }
@@ -1254,7 +1222,10 @@ export class PersService {
             }
           }
           else {
-            tsk.value = Math.floor(tsk.tesValue / tsk.hardnes); //this.getAbTesLvl(tsk.tesValue);
+            tsk.value = Math.floor(tsk.tesAbValue);
+            if (tsk.value > 0) {
+              debugger;
+            }
 
             tsk.failCounter = 0;
           }
@@ -1375,10 +1346,13 @@ export class PersService {
 
           tsk.progressValue = (tsk.value / this._maxAbilLevel) * 100;
 
-          abMax += tsk.hardnes * this._maxAbilLevel;
-          abCur += tsk.hardnes * tsk.value;
+          abMax += this._maxAbilLevel;
+          abCur += tsk.value;
           tesAbMax += this._tesMaxLvl;
           tesAbCur += tsk.tesValue;
+          if (tsk.tesValue > 0) {
+            debugger;
+          }
 
           if (tsk.value <= 9
             && doneReq) {
@@ -1770,6 +1744,18 @@ export class PersService {
     }
   }
 
+  hardnessKoef(hardnes: number) {
+    if (hardnes <= 1) {
+      return 1;
+    }
+    if (hardnes <= 2) {
+      return 100.45454545454547 / 124.25373134328362;
+    }
+    if (hardnes <= 3) {
+      return 100.45454545454547 / 144.4155844155844;
+    }
+  }
+
   setCurInd(i: number): any {
     this.pers$.value.currentTaskIndex = i;
     this.pers$.value.currentTask = this.pers$.value.tasks[i];
@@ -2005,7 +1991,6 @@ export class PersService {
   subtaskDoneOrFail(taskId: string, subtaskId: string, isDone: boolean) {
     let tsk: Task = this.allMap[taskId].item;
     let subTask: taskState = this.allMap[subtaskId].item;
-    this.chainDo(subTask.id, true);
     subTask.lastDate = new Date().getTime();
     if (this.isNullOrUndefined(subTask.failCounter)) {
       subTask.failCounter = 0;
@@ -2085,7 +2070,6 @@ export class PersService {
 
     ({ task, abil } = this.findTaskAnAb(id, task, abil));
     if (task) {
-      this.chainDo(task.id, false);
       task.lastDate = new Date().getTime();
       task.counterValue = 0;
       task.timerValue = 0;
@@ -2125,7 +2109,6 @@ export class PersService {
    */
   taskPlus(id: string) {
     let tsk: Task = this.allMap[id].item;
-    this.chainDo(tsk.id, false);
     tsk.lastDate = new Date().getTime();
 
     if (tsk.requrense != 'нет') {
@@ -2814,17 +2797,11 @@ export class PersService {
     return expChange;
   }
 
-  private getTaskChangesExp(task: Task, isPlus: boolean, subTask: taskState = null, subTasksCoef: number = 1) {
+  private getTaskChangesExp(task: Task, isPlus: boolean, subTask: taskState = null, subTasksCoef: number = 1, isChangeAb: boolean = false) {
     const koef = this.getWeekKoef(task.requrense, isPlus, task.tskWeekDays);
-    let expKoef = this.getExpKoef(isPlus);
-    expKoef = 1;
-
-    if (!isPlus) {
-      let failCounter = task.failCounter;
-      if (subTask) {
-        failCounter = subTask.failCounter;
-      }
-      expKoef = Math.pow(2, failCounter);
+    let expKoef = 1;
+    if (isChangeAb) {
+      subTasksCoef = subTasksCoef * task.hardnes;
     }
 
     // if (this.pers$.value.isTES) {
@@ -2836,6 +2813,9 @@ export class PersService {
 
     let chVal = (this.baseTaskPoints / subTasksCoef) * koef * expKoef;
 
+    if (task.tesAbValue == null || task.tesAbValue == undefined) {
+      task.tesAbValue = 0;
+    }
     if (task.tesValue == null || task.tesValue == undefined) {
       task.tesValue = 0;
     }
@@ -2849,10 +2829,16 @@ export class PersService {
     // Расчет для ТЕС
     if (this.pers$.value.isTES) {
       let change = 0;
-      let tesVal = task.tesValue;
+      let tesVal;
+      if (isChangeAb) {
+        tesVal = task.tesAbValue;
+      }
+      else {
+        tesVal = task.tesValue;
+      }
 
       while (true) {
-        const tesKoef = this.getTesChangeKoef(tesVal);
+        let tesKoef = this.getTesChangeKoef(tesVal);
 
         let tesLeft = 1;
         if (isPlus) {
@@ -2864,7 +2850,7 @@ export class PersService {
 
         let ch: number = 0;
         if (chVal * tesKoef > tesLeft) {
-          ch = tesLeft / expKoef;
+          ch = tesLeft / tesKoef;
           if (ch < 0.01) {
             ch = 0.01;
           }
@@ -2875,11 +2861,21 @@ export class PersService {
 
         change += ch * tesKoef;
 
-        if (isPlus) {
-          tesVal = task.tesValue + change;
+        if (!isChangeAb) {
+          if (isPlus) {
+            tesVal = task.tesValue + change;
+          }
+          else {
+            tesVal = task.tesValue - change;
+          }
         }
         else {
-          tesVal = task.tesValue - change;
+          if (isPlus) {
+            tesVal = task.tesAbValue + change;
+          }
+          else {
+            tesVal = task.tesAbValue - change;
+          }
         }
 
         chVal -= ch;
@@ -3221,11 +3217,6 @@ export class PersService {
         plusState = '';
         tsk.statesDescr = [];
         tsk.IsNextLvlSame = false;
-
-        if (tsk.tesValue > 0) {
-          debugger;
-        }
-
         let start = 0;
         let progr = start + (1 - start) * (tsk.value / this._maxAbilLevel);
 
