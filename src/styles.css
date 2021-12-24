@@ -239,8 +239,8 @@ mat-form-field {
 }
 
 mat-chip {
-    font-size: x-small !important;
-    padding: 5px !important;
+    font-size: small !important;
+    /* padding: 5px !important; */
 }
 
 .perk {

@@ -2640,10 +2640,10 @@ export class PersService {
     else if (progr < 40) {
       return 2; // Авантюрист
     }
-    else if (progr < 60) {
+    else if (progr < 80) {
       return 3; // Воин
     }
-    else if (progr < 80) {
+    else if (progr < 100) {
       return 4; // Герой
     }
     else {
@@ -3212,11 +3212,11 @@ export class PersService {
         plusState = '';
         tsk.statesDescr = [];
         tsk.IsNextLvlSame = false;
-        let start = 0;
+        let start = 0.04;
         let progr = start + (1 - start) * (tsk.value / this._maxAbilLevel);
 
-        if (progr < 0.01) {
-          progr = 0.01;
+        if (progr < 0.04) {
+          progr = 0.04;
         }
 
         if (tsk.isPerk) {
