@@ -157,7 +157,7 @@
     <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="10px">
       <mat-chip-list fxFlex="noshrink" [selectable]="false">
         <mat-chip (click)="qwickSetDate('today')" color="accent">Сегодня</mat-chip>
-        <mat-chip (click)="qwickSetDate('tomorrow')" color="accent">&nbsp;завтра&nbsp;</mat-chip>
+        <mat-chip (click)="qwickSetDate('tomorrow')" color="accent">&nbsp;Завтра&nbsp;</mat-chip>
       </mat-chip-list>
 
       <mat-form-field>
@@ -208,11 +208,13 @@
 
     <!-- Сложность -->
     <ng-container *ngIf="tsk.requrense != 'нет'">
-      <div fxLayout="row" fxLayoutAlign="space-between center" class="pb-3">
-        <mat-chip (click)="tsk.isPerk=!tsk.isPerk" [selected]="tsk.isPerk" color="accent">&nbsp;&nbsp;Перк?&nbsp;&nbsp;
-        </mat-chip>
+      <div fxLayout="row" fxLayoutAlign="center center" class="pb-3">
+        <mat-chip-list selectable multiple>
+          <mat-chip (click)="tsk.isPerk=!tsk.isPerk" [selected]="tsk.isPerk" color="accent">
+            &nbsp;&nbsp;Перк?&nbsp;&nbsp;
+          </mat-chip>
 
-        <!-- <ng-container>
+          <!-- <ng-container>
             <mat-divider vertical class="vertdiv"></mat-divider>
             <mat-chip *ngIf="!pers.isTES" (click)="tsk.hardnes=0.5" [selected]="tsk.hardnes==0.5" color="accent">легко
             </mat-chip>
@@ -222,11 +224,11 @@
             </mat-chip>
           </ng-container> -->
 
-        <!-- <mat-divider vertical class="vertdiv"></mat-divider> -->
+          <!-- <mat-divider vertical class="vertdiv"></mat-divider> -->
 
-        <mat-chip-list [selectable]="true" [multiple]="true">
           <mat-chip [selected]="tsk.isStatePlusTitle" color="accent"
-            (click)="tsk.isStatePlusTitle=!tsk.isStatePlusTitle">Название</mat-chip>
+            (click)="tsk.isStatePlusTitle=!tsk.isStatePlusTitle">
+            Название</mat-chip>
           <mat-chip [selected]="tsk.isStateInTitle" color="accent" (click)="tsk.isStateInTitle=!tsk.isStateInTitle">
             Загловок
           </mat-chip>

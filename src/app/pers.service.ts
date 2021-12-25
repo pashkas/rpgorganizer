@@ -3212,11 +3212,11 @@ export class PersService {
         plusState = '';
         tsk.statesDescr = [];
         tsk.IsNextLvlSame = false;
-        let start = 0.04;
+        let start = 0;
         let progr = start + (1 - start) * (tsk.value / this._maxAbilLevel);
 
-        if (progr < 0.04) {
-          progr = 0.04;
+        if (progr < 0.01) {
+          progr = 0.01;
         }
 
         if (tsk.isPerk) {
