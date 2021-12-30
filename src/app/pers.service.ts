@@ -584,9 +584,9 @@ export class PersService {
 
   countTesExp(tesAbTotalMax: number, tesAbTotalCur: number): number {
     // let tesThreeAbTwoDays = 37.63;
-    let tesThreeAbTwoDays = 22;
+    let absInTwoDays = 37;
 
-    let exp = tesAbTotalCur / (tesThreeAbTwoDays / 2);
+    let exp = tesAbTotalCur / (absInTwoDays / 2);
     // let exp = (tesAbTotalCur / tesAbTotalMax) * 100;
 
     return exp;
@@ -2536,7 +2536,7 @@ export class PersService {
     let startOn = 1;
     // let pointLev = 1 / abs;
 
-    startOn = 3;
+    startOn = 5;
     const totalGained = (startOn + gainedOns);
     // startOn = Math.ceil(onEveryLevel / (twoDaysTes * pointLev));
     // startOn = Math.ceil(2 / (twoDaysTes * pointLev));
