@@ -584,9 +584,9 @@ export class PersService {
 
   countTesExp(tesAbTotalMax: number, tesAbTotalCur: number): number {
     // let tesThreeAbTwoDays = 37.63;
-    let absInTwoDays = 37;
+    let tesThreeAbTwoDays = 22;
 
-    let exp = tesAbTotalCur / (absInTwoDays / 2);
+    let exp = tesAbTotalCur / (tesThreeAbTwoDays / 1);
     // let exp = (tesAbTotalCur / tesAbTotalMax) * 100;
 
     return exp;
@@ -2529,14 +2529,14 @@ export class PersService {
     //   onEveryLevel = 1;
     // }
 
-    let onEveryLevel = 2;
+    let onEveryLevel = 1;
 
     let gainedOns = Math.floor(persLevel / onEveryLevel);
 
     let startOn = 1;
     // let pointLev = 1 / abs;
 
-    startOn = 5;
+    startOn = 3;
     const totalGained = (startOn + gainedOns);
     // startOn = Math.ceil(onEveryLevel / (twoDaysTes * pointLev));
     // startOn = Math.ceil(2 / (twoDaysTes * pointLev));
@@ -2629,21 +2629,21 @@ export class PersService {
 
   private getMonsterLevel(prsLvl: number, maxLevel: number): number {
     if (!maxLevel) {
-      maxLevel = 100;
+      maxLevel = 50;
     }
 
-    let progr = (prsLvl / maxLevel) * 100;
+    let progr = (prsLvl / maxLevel) * 50;
 
-    if (progr < 20) {
+    if (progr < 10) {
       return 1; // Обыватель
     }
-    else if (progr < 40) {
+    else if (progr < 20) {
       return 2; // Авантюрист
     }
-    else if (progr < 80) {
+    else if (progr < 40) {
       return 3; // Воин
     }
-    else if (progr < 100) {
+    else if (progr < 50) {
       return 4; // Герой
     }
     else {
