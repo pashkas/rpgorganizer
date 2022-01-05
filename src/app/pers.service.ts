@@ -2629,21 +2629,21 @@ export class PersService {
 
   private getMonsterLevel(prsLvl: number, maxLevel: number): number {
     if (!maxLevel) {
-      maxLevel = 50;
+      maxLevel = 100;
     }
 
-    let progr = (prsLvl / maxLevel) * 50;
+    let progr = (prsLvl / maxLevel) * 100;
 
-    if (progr < 10) {
+    if (progr < 20) {
       return 1; // Обыватель
     }
-    else if (progr < 20) {
+    else if (progr < 40) {
       return 2; // Авантюрист
     }
-    else if (progr < 40) {
+    else if (progr < 80) {
       return 3; // Воин
     }
-    else if (progr < 50) {
+    else if (progr < 100) {
       return 4; // Герой
     }
     else {
