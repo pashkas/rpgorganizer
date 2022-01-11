@@ -40,11 +40,11 @@ export class ReqAddComponent implements OnInit {
         }
       }
   
-      this.selVal = 10;
+      this.selVal = 100;
   
       this.abs = this.abs.sort((a, b) => a.elName.localeCompare(b.elName));
   
-      for (let i = 1; i <= 10; i++) {
+      for (let i = 1; i <= 100; i++) {
         this.abVals.push(i);
       }
     });

@@ -16,9 +16,6 @@ export class ReqEditComponent implements OnInit {
 
   constructor(public dialog: MatDialog, private srv: PersService) { }
 
-  ngOnInit() {
-  }
-
   addReq() {
     this.srv.isDialogOpen = true;
     let dialogRef = this.dialog.open(ReqAddComponent, {
@@ -40,5 +37,8 @@ export class ReqEditComponent implements OnInit {
 
   delReq(id) {
     this.reqvirementsChange.emit(this.reqvirements.filter(n => n.id != id));
+  }
+
+  ngOnInit() {
   }
 }
